@@ -21,7 +21,6 @@ export default function RiderSettingsPage() {
   const orderTypes = [
     { id: "food", label: "Food Delivery", icon: "🍔" },
     { id: "grocery", label: "Grocery", icon: "🛒" },
-    { id: "pharmacy", label: "Pharmacy", icon: "💊" },
     { id: "parcel", label: "Parcels", icon: "📦" },
   ];
 

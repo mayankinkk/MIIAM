@@ -43,34 +43,26 @@ interface GroceryItem extends BaseItem {
   stock: number;
 }
 
-interface PharmacyItem extends BaseItem {
-  stock: number;
-  requires_prescription: boolean;
-}
-
 interface FlowerItem extends BaseItem {
   description?: string;
 }
 
-type AnyItem = MenuItem | GroceryItem | PharmacyItem | FlowerItem;
+type AnyItem = MenuItem | GroceryItem | FlowerItem;
 
 const CATEGORIES: Record<string, string[]> = {
   food: ["Main Course", "Starters", "Beverages", "Desserts", "Snacks", "Rice", "Breads"],
   grocery: ["Fruits", "Vegetables", "Dairy", "Bakery", "Spices", "Pulses", "Oils", "Beverages"],
-  pharmacy: ["Pain Relief", "Antibiotics", "Vitamins", "Diabetes", "Blood Pressure", "Heart Care", "Cold & Flu", "Skin Care", "Baby Care"],
   flowers: ["Bouquets", "Arrangements", "Combos", "Hampers", "Sympathy", "Corporate"],
 };
 
 const TABLE_MAP: Record<string, string> = {
   food: "menu_items",
   grocery: "grocery_products",
-  pharmacy: "pharmacy_medicines",
   flowers: "flower_items",
 };
 
 function getVendorKey(type?: string): string {
   if (type === "grocery") return "grocery";
-  if (type === "pharmacy") return "pharmacy";
   if (type === "flowers") return "flowers";
   return "food";
 }
@@ -94,7 +86,6 @@ export default function PartnerMenuPage() {
     description: string;
     is_veg: boolean;
     stock: string;
-    requires_prescription: boolean;
     imageFiles: File[];
     image_url: string;
     showUrlInput: boolean;
@@ -109,7 +100,6 @@ export default function PartnerMenuPage() {
     description: "",
     is_veg: true,
     stock: "",
-    requires_prescription: false,
     imageFiles: [],
     image_url: "",
     showUrlInput: false,
@@ -252,7 +242,6 @@ export default function PartnerMenuPage() {
       description: "",
       is_veg: true,
       stock: "",
-      requires_prescription: false,
       imageFiles: [],
       image_url: "",
       showUrlInput: false,
@@ -280,11 +269,6 @@ export default function PartnerMenuPage() {
     } else if (vendorKey === "grocery") {
       base.stock = parseInt(newItem.stock) || 0;
       if (newItem.description) base.description = newItem.description;
-    } else if (vendorKey === "pharmacy") {
-      base.stock = parseInt(newItem.stock) || 0;
-      base.requires_prescription = newItem.requires_prescription;
-      if (newItem.description) base.description = newItem.description;
-    } else if (vendorKey === "flowers") {
       if (newItem.description) base.description = newItem.description;
     }
     return base;
@@ -313,11 +297,6 @@ export default function PartnerMenuPage() {
     } else if (vendorKey === "grocery") {
       const g = item as GroceryItem;
       base.stock = g.stock;
-    } else if (vendorKey === "pharmacy") {
-      const p = item as PharmacyItem;
-      base.stock = p.stock;
-      base.requires_prescription = p.requires_prescription;
-    } else if (vendorKey === "flowers") {
       const f = item as FlowerItem;
       if (f.description) base.description = f.description;
     }
@@ -426,7 +405,7 @@ export default function PartnerMenuPage() {
   };
 
   const handleStockChange = async (item: AnyItem, delta: number) => {
-    const currentStock = ('stock' in item ? (item as GroceryItem | PharmacyItem | MenuItem).stock : 0) ?? 0;
+    const currentStock = ('stock' in item ? (item as GroceryItem | MenuItem).stock : 0) ?? 0;
     const newStock = currentStock + delta;
     if (newStock < 0) return;
     try {
@@ -450,7 +429,7 @@ export default function PartnerMenuPage() {
 
   const pageTitle = vendorKey === "food" ? "Menu Items" :
     vendorKey === "grocery" ? "Grocery Products" :
-    vendorKey === "pharmacy" ? "Medicines" : "Flower Items";
+    "Flower Items";
 
   return (
     <div className="p-4 md:p-8 space-y-8">
@@ -483,7 +462,7 @@ export default function PartnerMenuPage() {
             className="bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">add</span>
-            Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
+            Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : "Item"}
           </button>
           <button
             onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
@@ -560,7 +539,7 @@ export default function PartnerMenuPage() {
               {(() => {
                 const total = items.length;
                 const noDesc = items.filter(i => !('description' in i) || !(i as MenuItem | FlowerItem).description).length;
-                const outOfStock = items.filter(i => 'stock' in i && (i as GroceryItem | PharmacyItem | MenuItem).stock === 0).length;
+                const outOfStock = items.filter(i => 'stock' in i && (i as GroceryItem | MenuItem).stock === 0).length;
                 const noImg = items.filter(i => !i.image_url).length;
                 const suggestions: string[] = [];
                 if (noDesc > 0) suggestions.push(`Add descriptions to ${noDesc} item${noDesc > 1 ? 's' : ''} to boost conversion`);
@@ -638,7 +617,7 @@ export default function PartnerMenuPage() {
                       payload.is_veg = c.is_veg;
                       payload.stock = parseInt(c.stock || '0', 10) || 0;
                     }
-                    if (vendorKey === 'grocery' || vendorKey === 'pharmacy') {
+                    if (vendorKey === 'grocery') {
                       payload.stock = parseInt(c.stock || '0', 10) || 0;
                     }
                     const { error } = await supabase.from(table).insert(payload);
@@ -779,14 +758,14 @@ export default function PartnerMenuPage() {
         ) : filteredItems.length === 0 ? (
           <div className="p-12 text-center">
             <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60 mb-3">
-              {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant_menu"}
+              {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "flowers" ? "local_florist" : "restaurant_menu"}
             </span>
             <p className="text-[var(--color-outline-variant)] font-medium">No {pageTitle.toLowerCase()} found</p>
             <button
               onClick={() => { resetNewItem(); setShowAddModal(true); }}
               className="mt-4 text-[var(--color-primary)] font-bold text-sm hover:underline"
             >
-              Add your first {vendorKey === "pharmacy" ? "medicine" : vendorKey === "grocery" ? "product" : "item"}
+              Add your first {vendorKey === "grocery" ? "product" : "item"}
             </button>
           </div>
         ) : (
@@ -815,11 +794,8 @@ export default function PartnerMenuPage() {
                 {vendorKey === "food" && (
                   <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Type</th>
                 )}
-                {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                {(vendorKey === "food" || vendorKey === "grocery") && (
                   <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Stock</th>
-                )}
-                {vendorKey === "pharmacy" && (
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Rx</th>
                 )}
                 {vendorKey === "food" && (
                   <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
@@ -859,7 +835,7 @@ export default function PartnerMenuPage() {
                           />
                         ) : null}
                         <span className="mi-fallback material-symbols-outlined text-[var(--color-outline-variant)]" style={{ display: item.image_url ? "none" : "flex" }}>
-                          {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "pharmacy" ? "medication" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
+                          {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
                         </span>
                       </div>
                       <div>
@@ -881,7 +857,7 @@ export default function PartnerMenuPage() {
                       </span>
                     </td>
                   )}
-                  {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
+                  {(vendorKey === "food" || vendorKey === "grocery") && (
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         {'stock' in item && (
@@ -891,8 +867,8 @@ export default function PartnerMenuPage() {
                               aria-label="Decrease stock"
                               className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
                             >−</button>
-                            <span className={`text-sm font-bold min-w-[2ch] text-center ${('stock' in item && (item as GroceryItem | PharmacyItem | MenuItem).stock === 0) ? 'text-red-600' : ('stock' in item && (item as GroceryItem | PharmacyItem | MenuItem).stock! < 10) ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
-                              {'stock' in item ? (item as GroceryItem | PharmacyItem | MenuItem).stock : 0}
+                            <span className={`text-sm font-bold min-w-[2ch] text-center ${('stock' in item && (item as GroceryItem | MenuItem).stock === 0) ? 'text-red-600' : ('stock' in item && (item as GroceryItem | MenuItem).stock! < 10) ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
+                              {'stock' in item ? (item as GroceryItem | MenuItem).stock : 0}
                             </span>
                             <button
                               onClick={() => handleStockChange(item, 1)}
@@ -902,13 +878,6 @@ export default function PartnerMenuPage() {
                           </>
                         )}
                       </div>
-                    </td>
-                  )}
-                  {vendorKey === "pharmacy" && (
-                    <td className="p-4">
-                      {(item as PharmacyItem).requires_prescription && (
-                        <span className="text-[10px] font-bold px-2 py-1 bg-red-100 text-red-700 rounded-full uppercase">Rx</span>
-                      )}
                     </td>
                   )}
                   {vendorKey === "food" && (
@@ -992,7 +961,7 @@ export default function PartnerMenuPage() {
           <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h2 id="add-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
-                Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : vendorKey === "pharmacy" ? "Medicine" : "Item"}
+                Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : "Item"}
               </h2>
               <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
                 <span className="material-symbols-outlined">close</span>
@@ -1006,7 +975,7 @@ export default function PartnerMenuPage() {
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                  placeholder={vendorKey === "food" ? "e.g., Butter Chicken" : vendorKey === "grocery" ? "e.g., Organic Apples" : vendorKey === "pharmacy" ? "e.g., Paracetamol" : "e.g., Rose Bouquet"}
+                  placeholder={vendorKey === "food" ? "e.g., Butter Chicken" : vendorKey === "grocery" ? "e.g., Organic Apples"  : "e.g., Rose Bouquet"}
                   className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                 />
               </div>
@@ -1049,7 +1018,7 @@ export default function PartnerMenuPage() {
                   />
                 </div>
               )}
-              {(vendorKey === "grocery" || vendorKey === "pharmacy") && (
+              {(vendorKey === "grocery") && (
                 <div>
                   <label htmlFor="add-item-stock" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
@@ -1176,19 +1145,6 @@ export default function PartnerMenuPage() {
                   <p className="text-xs text-amber-600 mt-2 ml-8">Featured items appear first on your menu with a special badge</p>
                 </div>
               )}
-              {vendorKey === "pharmacy" && (
-                <div>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={newItem.requires_prescription}
-                      onChange={(e) => setNewItem({ ...newItem, requires_prescription: e.target.checked })}
-                      className="w-5 h-5 accent-[var(--color-primary)]"
-                    />
-                    <span className="text-sm font-semibold text-[var(--color-on-surface)]">Requires Prescription</span>
-                  </label>
-                </div>
-              )}
               <div>
                 <label className="text-sm font-semibold text-[var(--color-on-surface)]">Images</label>
                 <input
@@ -1254,7 +1210,7 @@ export default function PartnerMenuPage() {
                 disabled={uploading}
                 className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl mt-4 hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
               >
-                {uploading ? "Uploading..." : `Add ${vendorKey === "pharmacy" ? "Medicine" : vendorKey === "grocery" ? "Product" : "Item"}`}
+                {uploading ? "Uploading..." : `Add ${vendorKey === "grocery" ? "Product" : "Item"}`}
               </button>
             </div>
           </div>
@@ -1319,14 +1275,14 @@ export default function PartnerMenuPage() {
                   />
                 </div>
               )}
-              {(vendorKey === "food" || vendorKey === "grocery" || vendorKey === "pharmacy") && (
+              {(vendorKey === "food" || vendorKey === "grocery") && (
                 <div>
                   <label htmlFor="edit-item-stock" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
                   <input
                     id="edit-item-stock"
                     type="number"
                     min="0"
-                    value={'stock' in editingItem ? (editingItem as GroceryItem | PharmacyItem | MenuItem).stock ?? 0 : 0}
+                    value={'stock' in editingItem ? (editingItem as GroceryItem | MenuItem).stock ?? 0 : 0}
                     onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
                     className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
                   />
@@ -1433,19 +1389,6 @@ export default function PartnerMenuPage() {
                     <option value="lunch">Lunch (11 AM – 4 PM)</option>
                     <option value="dinner">Dinner (4 PM – 11 PM)</option>
                   </select>
-                </div>
-              )}
-              {vendorKey === "pharmacy" && (
-                <div>
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={(editingItem as PharmacyItem).requires_prescription}
-                      onChange={(e) => setEditingItem({ ...editingItem, requires_prescription: e.target.checked })}
-                      className="w-5 h-5 accent-[var(--color-primary)]"
-                    />
-                    <span className="text-sm font-semibold text-[var(--color-on-surface)]">Requires Prescription</span>
-                  </label>
                 </div>
               )}
               {editingItem && (("images" in editingItem && (editingItem as MenuItem).images && (editingItem as MenuItem).images!.length > 0) || ("image_url" in editingItem && (editingItem as MenuItem).image_url)) && (

@@ -301,7 +301,7 @@ export async function sendWelcomeEmail(name: string, email: string): Promise<{ s
           </div>
           <div style="${contentStyles}">
             <h2 style="color: var(--color-on-surface); margin-bottom: 20px;">Hi ${escapeHtml(name)}! 👋</h2>
-            <p style="color: #666; margin-bottom: 25px;">Welcome to MIIAM - your one-stop superapp for food, groceries, beauty, pharmacy, and more!</p>
+            <p style="color: #666; margin-bottom: 25px;">Welcome to MIIAM - your one-stop superapp for food, groceries, beauty, and more!</p>
             
             <div style="text-align: center; margin-bottom: 20px;">
               <a href="https://miiam.in/app/home" style="background: var(--color-primary); color: white; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block;">Start Ordering</a>

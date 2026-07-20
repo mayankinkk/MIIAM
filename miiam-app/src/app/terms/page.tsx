@@ -107,7 +107,7 @@ export default function TermsOfService() {
                 <section id="introduction" className="scroll-mt-20">
                   <h2 className="text-xl font-bold text-on-background mb-4">1. Introduction</h2>
                   <p className="text-on-surface-variant leading-relaxed">
-                    Welcome to MIIAM ("we," "our," or "us"). These Terms of Service ("Terms") govern your access to and use of the MIIAM mobile application, website, and related services (collectively, the "Platform"). MIIAM is a technology platform that connects users with local vendors, delivery riders, and service providers across food delivery, grocery, pharmacy, beauty, and various on-demand services.
+                    Welcome to MIIAM ("we," "our," or "us"). These Terms of Service ("Terms") govern your access to and use of the MIIAM mobile application, website, and related services (collectively, the "Platform"). MIIAM is a technology platform that connects users with local vendors, delivery riders, and service providers across food delivery, grocery, beauty, and various on-demand services.
                   </p>
                   <p className="text-on-surface-variant leading-relaxed mt-4">
                     By accessing or using our Platform, you agree to be bound by these Terms. If you disagree with any part of these Terms, you may not access our Platform.
@@ -149,7 +149,6 @@ export default function TermsOfService() {
                     <ul className="list-disc pl-6 space-y-2">
                       <li><strong>Food Delivery:</strong> Orders from restaurants, cloud kitchens, and food outlets</li>
                       <li><strong>Grocery Delivery:</strong> Fresh produce, daily essentials, and household items</li>
-                      <li><strong>Pharmacy:</strong> Medicines and health products with prescription upload capability</li>
                       <li><strong>Beauty & Personal Care:</strong> Salon services, beauty products, and at-home treatments</li>
                       <li><strong>On-Demand Services:</strong> Home cleaning, AC repair, plumbing, electrical, and pest control</li>
                       <li><strong>Flowers & Gifts:</strong> Flower arrangements, gift baskets, and special occasion items</li>

@@ -164,7 +164,7 @@ export default function ServiceProductGrid({
     setLoading(false);
   }
 
-  const hasStock = vendorType === "grocery" || vendorType === "pharmacy";
+  const hasStock = vendorType === "grocery";
   const categoryIcon = (product: Product) => {
     const cat = (product.category || "").toLowerCase();
     if (cat.includes("fruit")) return "🍎";
@@ -175,7 +175,6 @@ export default function ServiceProductGrid({
     if (cat.includes("pulse") || cat.includes("rice") || cat.includes("dal") || cat.includes("grain")) return "🌾";
     if (cat.includes("oil")) return "🫒";
     if (cat.includes("beverage") || cat.includes("tea") || cat.includes("drink")) return "🧃";
-    if (vendorType === "pharmacy") return "💊";
     if (vendorType === "flower" || vendorType === "flowers") return "🌸";
     return "🛒";
   };

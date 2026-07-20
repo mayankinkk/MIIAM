@@ -10,7 +10,7 @@ const vendorSchema = z.object({
   owner_name: z.string().min(2, "Owner name must be at least 2 characters"),
   phone: z.string().regex(/^\d{10}$/, "Phone must be a valid 10-digit Indian number"),
   shop_name: z.string().min(2, "Shop name must be at least 2 characters"),
-  type: z.enum(["food", "pharmacy", "flowers"]),
+  type: z.enum(["food", "flowers"]),
   address: z.string().min(5, "Address must be at least 5 characters"),
   city: z.string().min(2, "City must be at least 2 characters"),
   state: z.string().min(2, "State must be at least 2 characters"),
@@ -259,7 +259,6 @@ export default function VendorRegister() {
                 <label htmlFor="type" className={labelClass}>Store Type *</label>
                 <select id="type" value={form.type} onChange={(e) => update("type", e.target.value)} className={inputClass}>
                   <option value="food">Food & Restaurant</option>
-                  <option value="pharmacy">Pharmacy</option>
                   <option value="flowers">Flowers & Gifts</option>
                 </select>
               </div>

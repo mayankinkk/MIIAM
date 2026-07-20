@@ -12,7 +12,6 @@ interface FeatureFlag {
 const flags: FeatureFlag[] = [
   { key: "feature_food_enabled", label: "Food Ordering", description: "Enable food delivery ordering feature" },
   { key: "feature_grocery_enabled", label: "Grocery Ordering", description: "Enable grocery ordering feature" },
-  { key: "feature_pharmacy_enabled", label: "Pharmacy Ordering", description: "Enable pharmacy ordering feature" },
   { key: "feature_flowers_enabled", label: "Flowers Ordering", description: "Enable flowers ordering feature" },
   { key: "feature_printing_enabled", label: "Printing Services", description: "Enable printing services feature" },
   { key: "feature_wallet_enabled", label: "Wallet Feature", description: "Enable in-app wallet and payments" },

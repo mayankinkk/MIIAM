@@ -115,7 +115,6 @@ export default function VendorPage() {
 
         let itemsTable = "menu_items";
         if (vendorData?.type === "grocery") itemsTable = "grocery_products";
-        else if (vendorData?.type === "pharmacy") itemsTable = "pharmacy_medicines";
         else if (vendorData?.type === "flower" || vendorData?.type === "flowers") itemsTable = "flower_items";
 
         const { data: menuData } = await supabase
@@ -157,7 +156,7 @@ export default function VendorPage() {
 
   const handleCustomizeItem = (item: MenuItem) => {
     const isFoodVendor = vendor && (vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine);
-    const isGroceryOrOther = vendor && (vendor.type === "grocery" || vendor.type === "pharmacy" || vendor.type === "flower" || vendor.type === "flowers");
+    const isGroceryOrOther = vendor && (vendor.type === "grocery" || vendor.type === "flower" || vendor.type === "flowers");
     if (isFoodVendor && !isGroceryOrOther) {
       setCustomizingItem(item);
     } else {

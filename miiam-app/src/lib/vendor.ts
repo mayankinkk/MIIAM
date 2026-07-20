@@ -32,7 +32,6 @@ export async function getVendorIdForUser(): Promise<string | null> {
 const MENU_TABLE_MAP: Record<string, string> = {
   food: "menu_items",
   grocery: "grocery_products",
-  pharmacy: "pharmacy_medicines",
   flowers: "flower_items",
 };
 

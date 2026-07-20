@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import logger from "@/lib/logger";
 
 export type ServiceCategory =
-  | "food" | "pharmacy" | "flowers" | "beauty"
+  | "food" | "flowers" | "beauty"
   | "ac" | "cleaning" | "plumbing" | "electrical" | "pest" | "car" | "appliance";
 
 export interface ServiceHours {
