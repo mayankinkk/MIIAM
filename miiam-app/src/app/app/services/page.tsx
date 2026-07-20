@@ -377,9 +377,17 @@ function ServicesContent() {
           </div>
 
           {loadingServices ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-3" />
-              <p className="text-sm text-gray-400">Loading services...</p>
+            <div className="grid grid-cols-2 gap-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+                  <div className="h-36 bg-surface-container animate-pulse" />
+                  <div className="p-3 space-y-2">
+                    <div className="h-4 bg-surface-container rounded w-3/4 animate-pulse" />
+                    <div className="h-3 bg-surface-container rounded w-1/2 animate-pulse" />
+                    <div className="h-3 bg-surface-container rounded w-1/3 animate-pulse" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : filteredServices.length === 0 ? (
             <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">

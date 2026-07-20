@@ -138,8 +138,21 @@ export default function EditProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] flex justify-center pt-32">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex justify-center pt-32">
+        <div className="w-full max-w-lg px-6 space-y-6">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-24 h-24 rounded-full bg-surface-container animate-pulse" />
+            <div className="h-4 bg-surface-container rounded w-32 animate-pulse" />
+          </div>
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="space-y-1.5">
+                <div className="h-3 bg-surface-container rounded w-20 animate-pulse" />
+                <div className="h-12 bg-surface-container rounded-xl animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

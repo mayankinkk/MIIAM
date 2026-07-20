@@ -72,8 +72,31 @@ export default function StorePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface pb-36">
+        <header className="bg-surface border-b border-outline-variant/10 px-5 pt-5 pb-3">
+          <div className="h-6 bg-surface-container rounded w-32 animate-pulse" />
+          <div className="h-3 bg-surface-container rounded w-48 mt-1 animate-pulse" />
+        </header>
+        <div className="px-5 py-4 flex gap-2 overflow-hidden">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-9 bg-surface-container rounded-full w-20 animate-pulse flex-shrink-0" />
+          ))}
+        </div>
+        <div className="px-5 grid grid-cols-2 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+              <div className="h-40 bg-surface-container animate-pulse" />
+              <div className="p-3 space-y-2">
+                <div className="h-4 bg-surface-container rounded w-3/4 animate-pulse" />
+                <div className="h-3 bg-surface-container rounded w-1/2 animate-pulse" />
+                <div className="flex justify-between items-center">
+                  <div className="h-5 bg-surface-container rounded w-16 animate-pulse" />
+                  <div className="h-8 bg-primary/20 rounded-lg w-8 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
