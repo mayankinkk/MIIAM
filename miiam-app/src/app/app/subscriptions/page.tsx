@@ -142,7 +142,7 @@ export default function SubscriptionsPage() {
             <p className="text-on-surface-variant font-semibold mt-4">{t.profile.scheduledSubscriptions}</p>
             <p className="text-xs text-on-surface-variant/60 mt-1">Set up a recurring order during checkout</p>
             <Link
-              href="/app/grocery"
+              href="/app/store"
               className="inline-block mt-6 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-all"
             >
               {t.common.seeAll}
