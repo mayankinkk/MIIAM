@@ -39,6 +39,8 @@ export default function OrdersPage() {
 
   const [userId, setUserId] = useState<string | null>(null);
   const { addToast } = useToastStore();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "delivered" | "cancelled">("all");
 
   useEffect(() => {
     fetchOrders();
@@ -167,6 +169,17 @@ export default function OrdersPage() {
     }
   };
 
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch = !searchQuery ||
+      order.vendor?.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.id.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === "all" ||
+      (statusFilter === "active" && ["pending", "accepted", "preparing", "picking_up", "on_the_way", "arrived"].includes(order.status)) ||
+      (statusFilter === "delivered" && order.status === "delivered") ||
+      (statusFilter === "cancelled" && order.status === "cancelled");
+    return matchesSearch && matchesStatus;
+  });
+
   return (
     <>
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
@@ -181,6 +194,49 @@ export default function OrdersPage() {
           <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface dark:text-[var(--color-on-surface)]">{t.orders.title}</h1>
           <p className="text-on-surface-variant dark:text-[var(--color-outline)] text-lg">{t.orders.subtitle}</p>
         </section>
+
+        {!loading && orders.length > 0 && (
+          <div className="mb-6 space-y-3">
+            {/* Search */}
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-lg">search</span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by restaurant or order ID..."
+                className="w-full pl-12 pr-4 py-3 bg-surface-container rounded-2xl border border-outline-variant/20 focus:border-primary outline-none text-sm"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <span className="material-symbols-outlined text-on-surface-variant text-lg">close</span>
+                </button>
+              )}
+            </div>
+            {/* Status Filter Chips */}
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              {([
+                { key: "all", label: "All", icon: "receipt_long" },
+                { key: "active", label: "Active", icon: "pending" },
+                { key: "delivered", label: "Delivered", icon: "check_circle" },
+                { key: "cancelled", label: "Cancelled", icon: "cancel" },
+              ] as const).map((chip) => (
+                <button
+                  key={chip.key}
+                  onClick={() => setStatusFilter(chip.key)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                    statusFilter === chip.key
+                      ? "bg-primary text-white"
+                      : "bg-surface-container text-on-surface-variant border border-outline-variant/20"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-sm">{chip.icon}</span>
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="space-y-4">
@@ -198,19 +254,19 @@ export default function OrdersPage() {
               actionHref="/auth/login" 
             />
           </div>
-        ) : orders.length === 0 ? (
+        ) : filteredOrders.length === 0 ? (
           <div className="py-12">
             <EmptyState 
-              icon="local_shipping" 
-              title={t.orders.noOrders}
-              description={t.orders.noOrdersDesc}
-              actionLabel={t.orders.startOrdering} 
-              actionHref="/app/home" 
+              icon="search_off" 
+              title="No orders found"
+              description={searchQuery ? `No orders matching "${searchQuery}"` : "No orders in this category"}
+              actionLabel={searchQuery ? "Clear search" : t.orders.startOrdering}
+              actionHref={searchQuery ? "/app/orders" : "/app/home"}
             />
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <div key={order.id} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm overflow-hidden">
                 <Link href={`/app/orders/${order.id}`} className="block p-6 hover:bg-surface-container-low/30 dark:hover:bg-[var(--color-surface-container)]/30 transition-all">
                   <div className="flex items-center gap-4">
