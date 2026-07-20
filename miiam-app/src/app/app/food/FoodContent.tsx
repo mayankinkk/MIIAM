@@ -464,6 +464,9 @@ export default function FoodPageContent() {
     return "all";
   });
   const [openNow, setOpenNow] = useState(false);
+  const [deliveryTimeMax, setDeliveryTimeMax] = useState<number | null>(null);
+  const [freeDelivery, setFreeDelivery] = useState(false);
+  const [minRating, setMinRating] = useState<number | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [searchQuery, setSearchQuery] = useState("");
   const [priceMin, setPriceMin] = useState(0);
@@ -660,7 +663,19 @@ export default function FoodPageContent() {
     ? searchedRestaurants.filter((r) => parseIsOpen(r.opening_hours))
     : searchedRestaurants;
 
-  const { visibleItems: visibleRestaurants, hasMore: hasMoreRestaurants, loadMore: loadMoreRestaurants, sentinelRef: restaurantSentinel } = useInfiniteScroll({ items: openFilteredRestaurants, pageSize: 8 });
+  const deliveryFilteredRestaurants = deliveryTimeMax
+    ? openFilteredRestaurants.filter((r) => (r.delivery_time_min || 999) <= deliveryTimeMax)
+    : openFilteredRestaurants;
+
+  const freeDeliveryFilteredRestaurants = freeDelivery
+    ? deliveryFilteredRestaurants.filter((r) => !r.delivery_charge || r.delivery_charge === 0)
+    : deliveryFilteredRestaurants;
+
+  const ratingFilteredRestaurants = minRating
+    ? freeDeliveryFilteredRestaurants.filter((r) => parseFloat(String(r.rating || "0")) >= minRating)
+    : freeDeliveryFilteredRestaurants;
+
+  const { visibleItems: visibleRestaurants, hasMore: hasMoreRestaurants, loadMore: loadMoreRestaurants, sentinelRef: restaurantSentinel } = useInfiniteScroll({ items: ratingFilteredRestaurants, pageSize: 8 });
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
@@ -769,6 +784,15 @@ export default function FoodPageContent() {
         <button onClick={() => setOpenNow(!openNow)} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${openNow ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
           <span className="material-symbols-outlined text-sm">schedule</span> Open Now
         </button>
+        <button onClick={() => setDeliveryTimeMax(deliveryTimeMax === 30 ? null : 30)} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${deliveryTimeMax === 30 ? "bg-primary text-white" : "bg-surface-container text-on-surface-variant"}`}>
+          <span className="material-symbols-outlined text-sm">timer</span> Under 30 min
+        </button>
+        <button onClick={() => setFreeDelivery(!freeDelivery)} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${freeDelivery ? "bg-emerald-600 text-white" : "bg-emerald-100 text-emerald-700"}`}>
+          <span className="material-symbols-outlined text-sm">local_shipping</span> Free delivery
+        </button>
+        <button onClick={() => setMinRating(minRating === 4 ? null : 4)} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${minRating === 4 ? "bg-amber-500 text-white" : "bg-amber-100 text-amber-700"}`}>
+          <span className="material-symbols-outlined text-sm">star</span> 4+ rating
+        </button>
         <SortDropdown sort={sortBy} setSort={setSortBy} />
         <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
         <button onClick={() => setShowMap(!showMap)} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors ${showMap ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"}`}>
@@ -780,7 +804,7 @@ export default function FoodPageContent() {
       {showMap && !loading && (
         <div className="px-4 mb-4">
           <RestaurantMap
-            restaurants={openFilteredRestaurants}
+            restaurants={ratingFilteredRestaurants}
             onRestaurantClick={(id) => window.location.href = `/app/food/${id}`}
           />
         </div>
