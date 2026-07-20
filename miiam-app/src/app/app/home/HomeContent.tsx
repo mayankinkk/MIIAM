@@ -1,21 +1,27 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/client";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { useTranslation } from "@/lib/i18n/useTranslation";
-import { useLanguageStore, type Language } from "@/lib/store/languageStore";
 import { HomeSkeleton } from "@/components/Skeleton";
-import BlurImage from "@/components/BlurImage";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
-import { buildDisplayAddress, reverseGeocode, geocodePincode } from "@/lib/geocoding";
+import { reverseGeocode, geocodePincode } from "@/lib/geocoding";
 
-
-
+import HomeHeader from "@/components/home/HomeHeader";
+import OffersCarousel from "@/components/home/OffersCarousel";
+import ActiveOrderBubble from "@/components/home/ActiveOrderBubble";
+import ServiceabilityChip from "@/components/home/ServiceabilityChip";
+import HomeCategories from "@/components/home/HomeCategories";
+import QuickReorder from "@/components/home/QuickReorder";
+import SpotlightCard from "@/components/home/SpotlightCard";
+import PromotedPartners from "@/components/home/PromotedPartners";
+import NearbyRestaurants from "@/components/home/NearbyRestaurants";
+import LocationModal from "@/components/home/LocationModal";
+import NotificationsPanel from "@/components/home/NotificationsPanel";
 
 import type { User } from "@supabase/supabase-js";
 
@@ -76,16 +82,14 @@ interface UserProfile extends User {
 }
 
 export default function HomePage() {
-
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
-  const { language, setLanguage } = useLanguageStore();
   const [loading, setLoading] = useState(true);
 
   const categories = [
-    { id: "food", label: t.nav.food, icon: "restaurant", color: "from-orange-400 to-red-400", bgLight: "bg-orange-50" },
-    { id: "services", label: t.nav.services, icon: "handyman", color: "from-blue-400 to-indigo-400", bgLight: "bg-blue-50" },
-    { id: "store", label: "Store", icon: "storefront", color: "from-emerald-400 to-teal-400", bgLight: "bg-emerald-50" },
+    { id: "food", label: t.nav.food, icon: "restaurant", color: "from-orange-400 to-red-400" },
+    { id: "services", label: t.nav.services, icon: "handyman", color: "from-blue-400 to-indigo-400" },
+    { id: "store", label: "Store", icon: "storefront", color: "from-emerald-400 to-teal-400" },
   ];
 
   const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);
@@ -116,7 +120,6 @@ export default function HomePage() {
   const [lastOrder, setLastOrder] = useState<{ id: string; vendor_id: string; vendor_name: string; items: string; total: number; placed_at: string } | null>(null);
 
   useEffect(() => {
-    // Check if redirecting from another page requesting location change
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       if (params.get("selectLocation") === "true") {
@@ -153,7 +156,6 @@ export default function HomePage() {
         profile_name: profileResult.data?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
       });
 
-      // Fetch last completed order for quick reorder
       const { data: lastOrderData } = await supabase
         .from("orders")
         .select("id, status, total_amount, placed_at, vendor_id, items")
@@ -200,18 +202,12 @@ export default function HomePage() {
       const vendors = vendorsResult.data;
       if (vendors) {
         const userCity = locationStore.city?.toLowerCase() || "";
-        
-        // Strict filter: pincode match OR city match only
         const local = vendors.filter((v: HomeVendor) => {
           const pincodeMatch = v.pincode === pincode;
           const cityMatch = userCity && v.city?.toLowerCase() === userCity;
           return pincodeMatch || cityMatch;
         });
-        
-        // Mark serviceable only if we found local vendors
         setLocalServiceable(local.length > 0);
-        
-        // Show ONLY local vendors — empty array if none found
         setNearbyRestaurants(local);
         setFeaturedRestaurants(local.filter((v: HomeVendor) => v.is_featured || v.is_promoted).slice(0, 6));
         setSpotlightRestaurant(local.find((v: HomeVendor) => v.is_featured) || null);
@@ -261,7 +257,6 @@ export default function HomePage() {
       }
       fetchActiveOrder();
 
-      // Set up Realtime subscription to get live notification updates
       let cancelled = false;
       const channelPromise = supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
         if (!user || cancelled) return null;
@@ -412,7 +407,6 @@ export default function HomePage() {
 
   const userName = user?.profile_name || user?.email?.split("@")[0] || "User";
 
-  // Load promotions from DB
   useEffect(() => {
     async function loadPromos() {
       try {
@@ -437,7 +431,6 @@ export default function HomePage() {
     loadPromos();
   }, [supabase]);
 
-  // Auto-rotate offers
   useEffect(() => {
     if (offers.length <= 1) return;
     const timer = setInterval(() => {
@@ -458,596 +451,74 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-background pb-24">
-      {/* Header */}
-      <header className="bg-surface border-b border-outline-variant/10">
-        <div className="px-5 pt-5 pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <span className="text-lg font-black text-primary">{userName.charAt(0).toUpperCase()}</span>
-              </div>
-              <div>
-                <p className="text-xs text-on-surface-variant font-medium">{greeting} {timeIcon}</p>
-                <h1 className="text-xl font-black text-on-surface capitalize leading-tight">{userName}</h1>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => {
-                  const langs: Language[] = ["en", "hi", "as", "bn"];
-                  const idx = langs.indexOf(language);
-                  setLanguage(langs[(idx + 1) % langs.length]);
-                }}
-                className="h-8 px-2.5 rounded-full bg-surface-container-high text-on-surface text-[11px] font-bold border border-outline-variant/15 flex items-center gap-1 active:scale-95 transition-transform"
-                aria-label="Toggle language"
-              >
-                <span className="material-symbols-outlined text-[14px]">translate</span>
-                {language.toUpperCase()}
-              </button>
-              <button
-                aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
-                onClick={async () => {
-                  setShowNotifications(!showNotifications);
-                  if (unreadCount > 0 && user) {
-                    setUnreadCount(0);
-                    void supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
-                  }
-                }}
-                className="relative w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center active:scale-95 transition-all border border-outline-variant/10"
-              >
-                <span className="material-symbols-outlined text-[20px] text-on-surface-variant" aria-hidden="true" style={{ fontVariationSettings: unreadCount > 0 ? "'FILL' 1" : "'FILL' 0" }}>notifications</span>
-                {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-surface flex items-center justify-center animate-bounce">
-                    <span className="text-[9px] text-white font-black leading-none px-0.5">{unreadCount > 9 ? "9+" : unreadCount}</span>
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
+      <HomeHeader
+        userName={userName}
+        greeting={greeting}
+        timeIcon={timeIcon}
+        location={location}
+        unreadCount={unreadCount}
+        onLocationClick={() => setShowLocationModal(true)}
+        onNotificationsClick={async () => {
+          setShowNotifications(!showNotifications);
+          if (unreadCount > 0 && user) {
+            setUnreadCount(0);
+            void supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
+          }
+        }}
+      />
 
-        {/* Location Quick Switch */}
-        <div className="px-5 pb-3">
-          <button
-            onClick={() => setShowLocationModal(true)}
-            className="flex items-center gap-3 bg-primary/5 hover:bg-primary/10 px-4 py-2.5 rounded-2xl w-full transition-colors border border-primary/10"
-          >
-            <div className="w-8 h-8 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="material-symbols-outlined text-primary text-lg">location_on</span>
-            </div>
-            <div className="flex-1 text-left min-w-0">
-              <p className="text-[10px] text-primary font-bold uppercase tracking-wider">{t.home.deliveringTo}</p>
-              <p className="font-bold text-on-surface text-sm truncate">{location}</p>
-            </div>
-            <span className="material-symbols-outlined text-on-surface-variant text-xl">unfold_more</span>
-          </button>
-        </div>
+      <OffersCarousel offers={offers} currentOffer={currentOffer} />
 
-        {/* Search */}
-        <div className="px-5 pb-4">
-          <Link href="/app/search" className="flex items-center w-full bg-surface-container-high rounded-2xl px-4 py-3.5 hover:bg-surface-container-highest transition-all border border-outline-variant/10 active:scale-[0.99]">
-            <span className="material-symbols-outlined text-primary text-xl">search</span>
-            <span className="ml-3 text-on-surface-variant/70 text-sm flex-1">{t.home.searchPlaceholder}</span>
-            <span className="material-symbols-outlined text-on-surface-variant/40 text-lg">mic</span>
-          </Link>
-        </div>
-      </header>
-
-      {/* Offers Carousel */}
-      {offers.length > 0 && (
-        <div className="px-5 pt-3 pb-1">
-          <Link href="/app/home">
-            <div className={`relative h-36 rounded-3xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].gradient} shadow-lg`}>
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9zdmc+')] opacity-50" />
-              <div className="absolute top-4 left-5">
-                <span className="text-[10px] font-black bg-white/20 backdrop-blur-sm text-white px-2.5 py-1 rounded-full uppercase tracking-wider">
-                  {offers[currentOffer].badge}
-                </span>
-              </div>
-              <div className="absolute inset-0 flex items-center justify-between px-5 pt-6">
-                <div className="flex-1 pr-4">
-                  <h3 className="text-2xl font-black text-white leading-tight drop-shadow-sm">{offers[currentOffer].title}</h3>
-                  <p className="text-white/85 text-sm mt-1.5 font-medium">{offers[currentOffer].subtitle}</p>
-                </div>
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-white text-2xl">arrow_forward</span>
-                </div>
-              </div>
-              {/* Progress Bar */}
-              {offers.length > 1 && (
-                <div className="absolute bottom-3 left-5 right-5 flex gap-1.5">
-                  {offers.map((_, i) => (
-                    <div key={i} className="flex-1 h-1 rounded-full bg-white/20 overflow-hidden">
-                      <div
-                        className={`h-full rounded-full bg-white transition-all duration-400 ${i === currentOffer ? "w-full" : "w-0"}`}
-                        style={i === currentOffer ? { animation: "offerProgress 4s linear" } : {}}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </Link>
-        </div>
-      )}
-
-      {/* Floating Order Bubble */}
       {activeOrder && (
-        <div className="fixed bottom-20 right-4 z-40"
-          style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
-          {/* Expanded Order Details */}
-          {orderBubbleExpanded && (
-            <div className="absolute bottom-16 right-0 w-72 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                    <span className="material-symbols-outlined text-orange-600">delivery_dining</span>
-                  </div>
-                  <div>
-                    <p className="font-bold text-on-surface">{activeOrder.vendor}</p>
-                    <p className="text-xs text-on-surface-variant">{activeOrder.items}</p>
-                  </div>
-                </div>
-                <button onClick={() => setOrderBubbleExpanded(false)} aria-label="Close order details" className="text-gray-400 w-11 h-11 flex items-center justify-center rounded-full">
-                  <span className="material-symbols-outlined" aria-hidden="true">close</span>
-            </button>
-          </div>
-              
-              {/* Progress Steps */}
-              <div className="space-y-3">
-                {activeOrder.steps.map((step: OrderStep, index: number) => (
-                  <div key={step.id} className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      step.completed ? 'bg-green-500' : index === 2 ? 'bg-orange-500 animate-pulse' : 'bg-surface-container-high'
-                    }`}>
-                      {step.completed ? (
-                        <span className="material-symbols-outlined text-white text-sm">check</span>
-                      ) : index === 2 ? (
-                        <span className="material-symbols-outlined text-white text-xs">local_shipping</span>
-                      ) : (
-                        <div className="w-2 h-2 bg-on-surface-variant/40 rounded-full" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className={`text-sm font-bold ${step.completed ? 'text-on-surface' : index === 2 ? 'text-orange-600' : 'text-on-surface-variant/60'}`}>
-                        {step.label}
-                      </p>
-                      {step.time && <p className="text-xs text-on-surface-variant/60">{step.time}</p>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              {/* ETA */}
-              <div className="mt-4 p-3 bg-orange-50 rounded-xl flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-on-surface-variant">{t.home.estimatedDelivery}</p>
-                  <p className="font-bold text-orange-600">{activeOrder.eta}</p>
-                </div>
-                <Link href={`/app/orders/${activeOrder.id}`} className="text-primary font-bold text-sm">
-                  {t.home.trackOrder}
-                </Link>
-              </div>
-            </div>
-          )}
-          
-          {/* Bubble Button */}
-          <button
-            onClick={() => setOrderBubbleExpanded(!orderBubbleExpanded)}
-            aria-label="Toggle order details"
-            className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all ${
-              orderBubbleExpanded ? 'bg-primary' : 'bg-surface-container-lowest border border-outline-variant/15'
-            }`}
-          >
-            <span className={`material-symbols-outlined text-2xl ${
-              orderBubbleExpanded ? 'text-white' : 'text-orange-600'
-            }`}>
-              delivery_dining
-            </span>
-          </button>
-        </div>
+        <ActiveOrderBubble
+          activeOrder={activeOrder}
+          expanded={orderBubbleExpanded}
+          onToggle={() => setOrderBubbleExpanded(!orderBubbleExpanded)}
+          onClose={() => setOrderBubbleExpanded(false)}
+        />
       )}
 
-      {/* Serviceability Chip */}
-      {locationStore.pincode && (
-        <div className="px-5 pt-3">
-          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold ${
-            localServiceable ? "bg-green-500/10 text-green-600 border border-green-500/15" : "bg-amber-500/10 text-amber-600 border border-amber-500/15"
-          }`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${localServiceable ? "bg-green-500 animate-pulse" : "bg-amber-500"}`} />
-            {checkingPincode ? t.home.checkingAvailability : localServiceable
-              ? `${t.home.showingNearby} ${locationStore.displayAddress}`
-              : `${t.home.noExactMatch} ${locationStore.pincode}`
-            }
-          </div>
-        </div>
-      )}
+      <ServiceabilityChip
+        pincode={userPincode}
+        displayAddress={locationStore.displayAddress || ""}
+        localServiceable={localServiceable}
+        checkingPincode={checkingPincode}
+      />
 
-      {/* Categories */}
-      <div className="px-5 pt-4 pb-2">
-        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-          {categories.map((cat) => (
-            <Link key={cat.id} href={`/app/${cat.id}`} className="flex flex-col items-center gap-2 flex-shrink-0 group">
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-sm group-active:scale-95 transition-transform`}>
-                <span className="material-symbols-outlined text-white text-xl">{cat.icon}</span>
-              </div>
-              <span className="text-[10px] font-bold text-on-surface-variant">{cat.label}</span>
-            </Link>
-          ))}
-        </div>
-      </div>
+      <HomeCategories categories={categories} />
 
-      {/* Quick Reorder */}
-      {lastOrder && (
-        <div className="px-5 pt-2 pb-1">
-          <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-4 border border-primary/10">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>replay</span>
-              <span className="text-xs font-bold text-primary uppercase tracking-wider">Order again</span>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="font-bold text-on-surface text-sm truncate">{lastOrder.vendor_name}</p>
-                <p className="text-[11px] text-on-surface-variant truncate mt-0.5">{lastOrder.items}</p>
-                <p className="text-[10px] text-on-surface-variant/60 mt-0.5">₹{lastOrder.total} · {new Date(lastOrder.placed_at).toLocaleDateString()}</p>
-              </div>
-              <Link
-                href={`/app/vendor/${lastOrder.vendor_id}`}
-                className="flex-shrink-0 bg-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm"
-              >
-                Reorder
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+      {lastOrder && <QuickReorder order={lastOrder} />}
 
-      {/* Spotlight Section - Featured Today */}
-      {spotlightRestaurant && (
-        <div className="px-4 pb-4">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="material-symbols-outlined text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-            <h2 className="text-lg font-bold text-on-surface">{t.home.featuredToday}</h2>
-          </div>
-          <Link href={`/app/vendor/${spotlightRestaurant.id}`} className="block relative bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-5 text-white overflow-hidden">
-            <div className="absolute -right-6 -bottom-6 w-40 h-40 bg-[var(--color-surface-container-lowest)]/10 rounded-full blur-2xl" />
-            <div className="relative z-10 flex items-center gap-4">
-              <div className="w-20 h-20 bg-[var(--color-surface-container-lowest)]/20 rounded-2xl flex items-center justify-center overflow-hidden">
-                {spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url ? (
-                  <BlurImage src={spotlightRestaurant.cover_image_url || spotlightRestaurant.image_url || ""} alt={`${spotlightRestaurant.name || spotlightRestaurant.shop_name} featured`} fill className="w-full h-full" sizes="80px" />
-                ) : (
-                  <span className="text-3xl">🍽️</span>
-                )}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="bg-white/30 text-xs font-bold px-2 py-0.5 rounded-full">⭐ {t.home.featured}</span>
-                </div>
-                <h3 className="text-xl font-black">{spotlightRestaurant.name || spotlightRestaurant.shop_name}</h3>
-                <p className="text-sm text-white/80">{spotlightRestaurant.cuisine || t.home.variousCuisines}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="flex items-center gap-1 bg-[var(--color-surface-container-lowest)]/20 px-2 py-1 rounded-full text-xs font-bold">
-                    ★ {spotlightRestaurant.rating || 4.0}
-                  </span>
-                  <span className="text-xs text-white/80">{t.home.minDelivery}</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-      )}
+      {spotlightRestaurant && <SpotlightCard restaurant={spotlightRestaurant} />}
 
-      {/* Featured/Promoted Section */}
-      {featuredRestaurants.length > 0 && (
-        <div className="px-4 pb-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-purple-500" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <h2 className="text-lg font-bold text-on-surface">{t.home.promotedPartners}</h2>
-            </div>
-          </div>
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {featuredRestaurants.map((restaurant) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-purple-500/30 transition-all">
-                <div className="relative h-28 bg-surface-container">
-                  {restaurant.cover_image_url || restaurant.image_url ? (
-                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
-                  )}
-                  {restaurant.is_promoted && (
-                    <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      {t.home.promoted}
-                    </div>
-                  )}
-                  {restaurant.is_new && (
-                    <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                      {t.home.new}
-                    </div>
-                  )}
-                </div>
-                <div className="p-2">
-                  <h4 className="font-bold text-sm text-on-surface truncate">{restaurant.name || restaurant.shop_name}</h4>
-                  <div className="flex items-center gap-1 mt-1">
-                    <span className="text-xs font-bold text-green-700">★ {restaurant.rating || 4.0}</span>
-                    <span className="text-xs text-on-surface-variant/70">• {restaurant.cuisine?.split(",")[0] || t.home.various}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      <PromotedPartners restaurants={featuredRestaurants} />
 
-      {/* Nearby Popular Restaurants */}
-      <div className="px-5 pb-4">
-        <div className="flex items-center justify-between mb-3">
-          <div>
-            <h2 className="text-lg font-black text-on-surface">{t.home.nearbyPopular}</h2>
-            <p className="text-[11px] text-on-surface-variant mt-0.5">{nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length} restaurants nearby</p>
-          </div>
-          <Link href="/app/food" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">{t.home.seeAll}</Link>
-        </div>
-        {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').length > 0 ? (
-          <div className="space-y-3">
-            {nearbyRestaurants.filter(r => r.type === 'food' || r.type === 'restaurant').slice(0, 8).map((restaurant, idx) => (
-              <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="block bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.98] transition-transform">
-                <div className="flex">
-                  <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative overflow-hidden">
-                    {restaurant.cover_image_url || restaurant.image_url ? (
-                      <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-orange-100 to-amber-50">🍽️</div>
-                    )}
-                    {restaurant.is_new && (
-                      <span className="absolute top-1.5 left-1.5 bg-green-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded-md">{t.home.new}</span>
-                    )}
-                  </div>
-                  <div className="p-3 flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <h3 className="font-bold text-sm text-on-surface truncate">{restaurant.name || restaurant.shop_name}</h3>
-                        <p className="text-[11px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine || t.home.various}</p>
-                      </div>
-                      <div className="flex items-center gap-0.5 bg-green-500/10 px-2 py-1 rounded-lg flex-shrink-0">
-                        <span className="text-[11px] font-black text-green-600">{restaurant.rating || 4.0}</span>
-                        <span className="text-green-600 text-[10px]">★</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3 mt-2">
-                      <span className="flex items-center gap-1 text-[11px] text-on-surface-variant">
-                        <span className="material-symbols-outlined text-[12px] text-primary">schedule</span>
-                        {restaurant.delivery_time_min || 25}–{restaurant.delivery_time_max || 35} min
-                      </span>
-                      {restaurant.delivery_charge !== undefined && restaurant.delivery_charge !== null && (
-                        <span className={`text-[11px] font-bold ${Number(restaurant.delivery_charge) === 0 ? "text-green-600" : "text-on-surface-variant"}`}>
-                          {Number(restaurant.delivery_charge) === 0 ? "Free delivery" : `₹${restaurant.delivery_charge}`}
-                        </span>
-                      )}
-                      {restaurant.min_order_amount && (
-                        <span className="text-[10px] text-on-surface-variant/60">Min ₹{restaurant.min_order_amount}</span>
-                      )}
-                    </div>
-                    {idx < 2 && restaurant.is_featured && (
-                      <div className="flex items-center gap-1 mt-1.5">
-                        <span className="material-symbols-outlined text-[12px] text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        <span className="text-[10px] font-bold text-amber-600">{t.home.topRated}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : !locationStore.pincode ? (
-          <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
-            </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.locationRequired}</h3>
-            <p className="text-sm text-on-surface-variant mb-5">
-              {t.home.locationRequiredDesc}
-            </p>
-            <button
-              onClick={() => setShowLocationModal(true)}
-              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
-            >
-              {t.home.selectPincode}
-            </button>
-          </div>
-        ) : locationStore.pincode ? (
-          <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
-            <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
-            </div>
-            <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
-            <p className="text-sm text-on-surface-variant mb-1">
-              {t.home.notAvailableDesc}
-            </p>
-            <p className="text-sm font-bold text-primary mb-4">
-              {locationStore.displayAddress} ({locationStore.pincode})
-            </p>
-            <p className="text-xs text-[var(--color-outline-variant)] mb-5">
-              {t.home.expanding}
-            </p>
-            <button
-              onClick={() => setShowLocationModal(true)}
-              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
-            >
-              {t.home.changeLocation}
-            </button>
-          </div>
-        ) : (
-          <div className="text-center py-8 text-on-surface-variant/70">
-            <span className="material-symbols-outlined text-4xl mb-2">restaurant</span>
-            <p>{t.home.noRestaurantsNearby}</p>
-          </div>
-        )}
-      </div>
+      <NearbyRestaurants
+        restaurants={nearbyRestaurants}
+        hasLocation={!!userPincode || !!locationStore.city}
+        hasPincode={!!userPincode}
+        displayAddress={locationStore.displayAddress || ""}
+        onLocationClick={() => setShowLocationModal(true)}
+      />
 
-      {/* Location Modal */}
-      {showLocationModal && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-end md:items-center justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="location-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowLocationModal(false); }}>
-          <div className="bg-surface-container-lowest w-full md:w-96 rounded-t-3xl md:rounded-3xl p-6 pb-8 border-t border-x border-outline-variant/10 md:border animate-in slide-in-from-bottom duration-300 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 id="location-modal-title" className="text-xl font-black text-on-surface">{t.home.enterPincode}</h2>
-              <button onClick={() => setShowLocationModal(false)} aria-label="Close location modal" className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center">
-                <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
-              </button>
-            </div>
+      <LocationModal
+        isOpen={showLocationModal}
+        onClose={() => setShowLocationModal(false)}
+        manualPincode={manualPincode}
+        onPincodeChange={(value) => { setManualPincode(value); setPincodeError(""); }}
+        pincodeError={pincodeError}
+        isLoadingLocation={isLoadingLocation}
+        onCheckAvailability={handleManualLocation}
+        onDetectLocation={getCurrentLocation}
+      />
 
-            <p className="text-sm text-on-surface-variant mb-4">{t.home.enterPincodeDesc}</p>
-
-            {/* Pincode Entry */}
-            <div className="mb-4">
-              <label htmlFor="pincode-input" className="text-xs font-bold text-[var(--color-outline)] mb-1 block">{t.home.pincode}</label>
-              <input
-                id="pincode-input"
-                type="tel"
-                inputMode="numeric"
-                maxLength={6}
-                value={manualPincode}
-                onChange={(e) => {
-                  setManualPincode(e.target.value.replace(/\D/g, ""));
-                  setPincodeError("");
-                }}
-                placeholder={t.home.enter6Digit}
-                className="w-full px-4 py-4 bg-surface-container-high rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center text-on-surface"
-                autoFocus
-              />
-              {pincodeError && <p className="text-red-500 text-xs mt-2 text-center font-bold">{pincodeError}</p>}
-            </div>
-
-            <button
-              onClick={handleManualLocation}
-              disabled={manualPincode.length !== 6 || isLoadingLocation}
-              className="w-full mb-3 bg-primary text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
-            >
-              {isLoadingLocation ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  {t.home.detectingArea}
-                </>
-              ) : (
-                t.home.checkAvailability
-              )}
-            </button>
-
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex-1 h-px bg-outline-variant/20" />
-              <span className="text-xs text-gray-400 font-bold">{t.home.or}</span>
-              <div className="flex-1 h-px bg-outline-variant/20" />
-            </div>
-
-            {/* GPS Button */}
-            <button
-              onClick={getCurrentLocation}
-              disabled={isLoadingLocation}
-              className="w-full flex items-center gap-4 p-4 border border-outline-variant/20 rounded-xl hover:bg-surface-container-high transition-colors"
-            >
-              <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center">
-                {isLoadingLocation ? (
-                  <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <span className="material-symbols-outlined text-green-600">my_location</span>
-                )}
-              </div>
-              <div className="text-left">
-                <p className="font-bold text-on-surface text-sm">{t.home.detectMyLocation}</p>
-                <p className="text-[10px] text-on-surface-variant">{t.home.useGps}</p>
-              </div>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Notifications Dropdown */}
-      {showNotifications && (
-        <div className="fixed inset-0 z-50" onClick={() => setShowNotifications(false)} role="dialog" aria-modal="true" aria-labelledby="notifications-title" onKeyDown={(e) => { if (e.key === "Escape") setShowNotifications(false); }}>
-          <div className="absolute inset-0 bg-black/30" />
-          <div 
-            className="absolute right-0 top-0 h-full w-full max-w-md bg-surface-container-lowest border-l border-outline-variant/10 shadow-2xl animate-in slide-in-from-right duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-outline-variant/10">
-              <h2 id="notifications-title" className="text-xl font-black text-on-surface">{t.home.notifications}</h2>
-              <button 
-                onClick={() => setShowNotifications(false)}
-                aria-label="Close notifications"
-                className="w-11 h-11 bg-surface-container-high rounded-full flex items-center justify-center"
-              >
-                <span className="material-symbols-outlined text-on-surface-variant" aria-hidden="true">close</span>
-              </button>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex border-b border-outline-variant/10" role="tablist" aria-label="Notification categories">
-              <button role="tab" aria-selected={notifTab === "all"} onClick={() => setNotifTab("all")} className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === "all" ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}>
-                {t.home.all}
-              </button>
-              <button role="tab" aria-selected={notifTab === "orders"} onClick={() => setNotifTab("orders")} className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === "orders" ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}>
-                {t.home.ordersTab}
-              </button>
-              <button role="tab" aria-selected={notifTab === "offers"} onClick={() => setNotifTab("offers")} className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === "offers" ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}>
-                {t.home.offersTab}
-              </button>
-            </div>
-
-            {/* Notifications List */}
-            <div className="overflow-y-auto h-[calc(100vh-140px)]">
-              {notifications
-                .filter(n => notifTab === "all" || (notifTab === "orders" && (n.type === "order" || n.type === "info")) || (notifTab === "offers" && (n.type === "promo" || n.type === "offer")))
-                .map((notif) => (
-                <div key={notif.id} className={`p-4 border-b border-outline-variant/10 transition-colors ${!notif.is_read ? 'bg-primary/10' : 'hover:bg-surface-container-high/50'}`}>
-                  <div className="flex gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      notif.type === "order" ? "bg-surface-container-high" :
-                      notif.type === "promo" ? "bg-amber-500/10" : "bg-surface-container-low"
-                    }`}>
-                      <span className="material-symbols-outlined text-primary">
-                        {notif.type === "order" ? "restaurant" :
-                         notif.type === "promo" ? "local_offer" : "info"}
-                      </span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between">
-                        <p className={`font-bold text-on-surface text-sm ${!notif.is_read ? 'text-primary' : ''}`}>{notif.title}</p>
-                        <span className="text-[10px] text-gray-400">
-                          {new Date(notif.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="text-xs text-on-surface-variant mt-1">{notif.body || notif.message}</p>
-                      {notif.type === "offer" && (
-                        <button
-                          onClick={() => {
-                            if (notif.body) {
-                              navigator.clipboard.writeText(notif.body);
-                              import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Coupon code copied!", "success"));
-                            }
-                          }}
-                          className="mt-2 text-xs font-bold text-primary"
-                          aria-label={`Apply offer: ${notif.title}`}
-                        >
-                          {t.home.applyNow}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* Empty State */}
-              {notifications.length === 0 && (
-                <div className="p-8 text-center">
-                  <span className="material-symbols-outlined text-4xl text-gray-300">notifications_off</span>
-                  <p className="text-gray-500 mt-2">{t.home.noNotifications}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <NotificationsPanel
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        notifications={notifications}
+        notifTab={notifTab}
+        onTabChange={setNotifTab}
+      />
     </div>
   );
 }
