@@ -1,11 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
-import Link from "next/link";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { createClient } from "@/lib/supabase/client";
 import { useSupportSettings } from "@/lib/hooks/useSupportSettings";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+
+interface ChatMessage {
+  id: string;
+  from: "user" | "support";
+  text: string;
+  time: string;
+}
 
 const quickActions = [
   { id: "track", icon: "local_shipping", label: "Track my order", color: "bg-blue-100 text-blue-700" },
@@ -44,20 +50,18 @@ const faqs = [
   },
 ];
 
-const chatMessages = [
-  { id: 1, from: "bot", text: "Hi! 👋 Welcome to MIIAM Support. How can I help you today?", time: "Just now" },
-];
-
 export default function SupportPage() {
   const { t } = useTranslation();
   const supabase = useMemo(() => createClient(), []);
   const support = useSupportSettings();
   const [tab, setTab] = useState<"home" | "chat" | "faqs" | "tickets">("home");
-  const [messages, setMessages] = useState(chatMessages);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [issueType, setIssueType] = useState("");
-  const [orderIssue, setOrderIssue] = useState("");
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   interface OrderData {
   id: string;
@@ -74,11 +78,55 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
   const [faqCategory, setFaqCategory] = useState<string>("All");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  const formatTime = (iso: string) => {
+    const d = new Date(iso);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHrs = Math.floor(diffMins / 60);
+    if (diffHrs < 24) return `${diffHrs}h ago`;
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  };
+
+  const ensureConversation = useCallback(async (orderContext?: string) => {
+    if (conversationId) return conversationId;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+    setUserId(user.id);
+
+    const contextNote = orderContext ? ` [Related to: ${orderContext}]` : "";
+
+    const { data: conv, error } = await supabase
+      .from("support_conversations")
+      .insert({
+        user_id: user.id,
+        status: "open",
+        priority: "normal",
+      })
+      .select()
+      .single();
+
+    if (error || !conv) return null;
+    setConversationId(conv.id);
+
+    await supabase.from("support_messages").insert({
+      conversation_id: conv.id,
+      sender_id: user.id,
+      sender_type: "user",
+      message: `Hi! I need help.${contextNote}`,
+    });
+
+    return conv.id;
+  }, [conversationId, supabase]);
+
   useEffect(() => {
     async function fetchOrders() {
       setOrdersLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        setUserId(user.id);
         const { data: orders } = await supabase
           .from("orders")
           .select("id, vendor:vendors(name), status, total_amount, placed_at")
@@ -93,26 +141,81 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
   }, []);
 
   useEffect(() => {
+    if (!conversationId) return;
+
+    const loadMessages = async () => {
+      const { data } = await supabase
+        .from("support_messages")
+        .select("id, conversation_id, sender_id, sender_type, message, created_at")
+        .eq("conversation_id", conversationId)
+        .order("created_at", { ascending: true });
+      if (data) {
+        setMessages(data.map((m: { id: string; sender_type: string; message: string; created_at: string }) => ({
+          id: m.id,
+          from: m.sender_type === "user" ? "user" : "support",
+          text: m.message,
+          time: formatTime(m.created_at),
+        })));
+      }
+    };
+
+    loadMessages();
+
+    const channel = supabase
+      .channel(`support-msg-${conversationId}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "support_messages", filter: `conversation_id=eq.${conversationId}` },
+        (payload: { new: { id: string; sender_type: string; message: string; created_at: string } }) => {
+          const m = payload.new;
+          setMessages(prev => {
+            if (prev.some(p => p.id === m.id)) return prev;
+            return [...prev, {
+              id: m.id,
+              from: m.sender_type === "user" ? "user" : "support",
+              text: m.message,
+              time: formatTime(m.created_at),
+            }];
+          });
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [conversationId, supabase]);
+
+  useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!newMessage.trim()) return;
-
-    const userMsg = { id: messages.length + 1, from: "user" as const, text: newMessage, time: "Just now" };
-    setMessages([...messages, userMsg]);
+  const handleSend = async () => {
+    if (!newMessage.trim() || sending) return;
+    setSending(true);
+    const text = newMessage;
     setNewMessage("");
 
-    setTimeout(() => {
-      const botMsg = { id: messages.length + 2, from: "bot" as const, text: "Thanks for your message! Our team is reviewing your query and will get back to you shortly. For immediate help, please call us at 99578 73472.", time: "Just now" };
-      setMessages(prev => [...prev, botMsg]);
-    }, 1500);
+    const convId = await ensureConversation();
+    if (!convId) {
+      setSending(false);
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setSending(false); return; }
+
+    await supabase.from("support_messages").insert({
+      conversation_id: convId,
+      sender_id: user.id,
+      sender_type: "user",
+      message: text,
+    });
+    setSending(false);
   };
 
-  const handleQuickAction = (action: string) => {
+  const handleQuickAction = async (action: string) => {
     setIssueType(action);
     setShowQuickActions(false);
-    
+
     const actionTexts: Record<string, string> = {
       track: "I want to track my order",
       cancel: "I need to cancel my order",
@@ -122,18 +225,23 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
       more: "I need more help",
     };
 
-    const userMsg = { id: messages.length + 1, from: "user" as const, text: actionTexts[action] || action, time: "Just now" };
-    setMessages([...messages, userMsg]);
-
     let orderContext = "";
     if (selectedOrder) {
-      orderContext = ` (Order: #${selectedOrder.id.slice(0, 8).toUpperCase()} - ${selectedOrder.vendor?.name})`;
+      orderContext = `Order #${selectedOrder.id.slice(0, 8).toUpperCase()} - ${selectedOrder.vendor?.name}`;
     }
 
-    setTimeout(() => {
-      const botMsg = { id: messages.length + 2, from: "bot" as const, text: `I understand you need help with "${action}".${orderContext} Let me connect you with our support team. What's the details of your issue?`, time: "Just now" };
-      setMessages(prev => [...prev, botMsg]);
-    }, 1500);
+    const convId = await ensureConversation(orderContext);
+    if (!convId) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    await supabase.from("support_messages").insert({
+      conversation_id: convId,
+      sender_id: user.id,
+      sender_type: "user",
+      message: actionTexts[action] || action,
+    });
 
     setTab("chat");
   };
@@ -319,6 +427,14 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
           <div className="flex flex-col h-full min-h-0">
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+              {messages.length === 0 && (
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-2xl px-5 py-3 bg-surface-container-lowest text-on-surface shadow-sm rounded-bl-md">
+                    <p className="text-sm leading-relaxed">Hi! Welcome to MIIAM Support. How can I help you today?</p>
+                    <p className="text-xs mt-2 text-[var(--color-outline-variant)]">Just now</p>
+                  </div>
+                </div>
+              )}
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[85%] rounded-2xl px-5 py-3 ${
@@ -331,6 +447,17 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
                   </div>
                 </div>
               ))}
+              {sending && (
+                <div className="flex justify-end">
+                  <div className="bg-primary/70 text-white rounded-2xl rounded-br-md px-5 py-3">
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div ref={chatEndRef} />
             </div>
 
@@ -361,10 +488,10 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               />
               <button
                 onClick={handleSend}
-                disabled={!newMessage.trim()}
+                disabled={!newMessage.trim() || sending}
                 className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-50"
               >
-                <span className="material-symbols-outlined">send</span>
+                <span className="material-symbols-outlined">{sending ? "hourglass_empty" : "send"}</span>
               </button>
             </div>
           </div>
