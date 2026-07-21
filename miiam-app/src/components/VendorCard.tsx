@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import BlurImage from "@/components/BlurImage";
@@ -36,7 +37,7 @@ function parseIsOpen(openingHours: unknown): boolean {
   return mins >= oh * 60 + om && mins <= ch * 60 + cm;
 }
 
-export default function VendorCard({ vendor, index = 0 }: VendorCardProps) {
+export default memo(function VendorCard({ vendor, index = 0 }: VendorCardProps) {
   const isOpen = parseIsOpen(vendor.opening_hours);
 
   return (
@@ -95,4 +96,4 @@ export default function VendorCard({ vendor, index = 0 }: VendorCardProps) {
       </Link>
     </motion.div>
   );
-}
+});

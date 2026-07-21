@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import BlurImage from "@/components/BlurImage";
@@ -20,7 +21,7 @@ interface ServiceCardProps {
   index?: number;
 }
 
-export default function ServiceCard({ service, index = 0 }: ServiceCardProps) {
+export default memo(function ServiceCard({ service, index = 0 }: ServiceCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -66,4 +67,4 @@ export default function ServiceCard({ service, index = 0 }: ServiceCardProps) {
       </Link>
     </motion.div>
   );
-}
+});

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { motion } from "framer-motion";
 import BlurImage from "@/components/BlurImage";
 
@@ -21,7 +22,7 @@ interface MenuItemCardProps {
   index?: number;
 }
 
-export default function MenuItemCard({ item, quantity = 0, onAdd, onIncrement, onDecrement, index = 0 }: MenuItemCardProps) {
+export default memo(function MenuItemCard({ item, quantity = 0, onAdd, onIncrement, onDecrement, index = 0 }: MenuItemCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -88,4 +89,4 @@ export default function MenuItemCard({ item, quantity = 0, onAdd, onIncrement, o
       </div>
     </motion.div>
   );
-}
+});
