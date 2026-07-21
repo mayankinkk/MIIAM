@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import BlurImage from "@/components/BlurImage";
 import { useTranslation } from "@/lib/i18n/useTranslation";
