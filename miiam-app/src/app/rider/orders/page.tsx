@@ -10,7 +10,7 @@ import { startLocationTracking, stopLocationTracking } from "@/lib/rider-locatio
 import OrderCard from "@/components/rider/orders/OrderCard";
 import CashCollectModal from "@/components/rider/orders/CashCollectModal";
 import IssueReportModal from "@/components/rider/orders/IssueReportModal";
-import ActiveDeliveryView from "@/components/rider/orders/ActiveDeliveryView";
+import ActiveDeliveryView from "@/components/rider/orders/OrderDetailView";
 import type { Order, OrderItem } from "@/components/rider/orders/types";
 import type * as Leaflet from 'leaflet';
 import logger from "@/lib/logger";

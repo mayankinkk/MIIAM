@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { OrderWithTiming } from "@/app/rider/dashboard/types";
 import { calculatePeakEarnings } from "@/app/rider/dashboard/utils";
 import CustomerLocationView from "@/components/rider/CustomerLocationView";
+import ShareLiveLocationButton from "@/components/rider/ShareLiveLocationButton";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 
 interface ActiveDeliveryViewProps {
@@ -297,23 +298,7 @@ function ActiveDeliveryView({
                   )}
                 </button>
               </div>
-              <button 
-                onClick={() => {
-                  if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                      (pos) => {
-                        const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                        navigator.clipboard.writeText(url);
-                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationCopied, "success"));
-                      },
-                      () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationError, "error"))
-                    );
-                  }
-                }}
-                className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined">share_location</span>{t.rider.delivery.shareLiveLocation}
-              </button>
+              <ShareLiveLocationButton className="w-full mt-3" />
               <a 
                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.stops[currentStopIndex].address)}`}
                 target="_blank"
@@ -346,23 +331,7 @@ function ActiveDeliveryView({
                   )}
                 </button>
               </div>
-              <button 
-                onClick={() => {
-                  if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                      (pos) => {
-                        const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                        navigator.clipboard.writeText(url);
-                        import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationCopied, "success"));
-                      },
-                      () => import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(t.rider.delivery.locationError, "error"))
-                    );
-                  }
-                }}
-                className="w-full mt-3 py-2 bg-green-100 text-green-700 font-bold rounded-xl flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined">share_location</span>{t.rider.delivery.shareLiveLocation}
-              </button>
+              <ShareLiveLocationButton className="w-full mt-3" />
               <a 
                 href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(currentOrder.customerAddress)}`}
                 target="_blank"
