@@ -30,6 +30,7 @@ export default function EnhancedProfilePage() {
     { id: "addresses", icon: "location_on", label: t.profile.savedAddresses, sub: t.profile.manageDeliveryAddresses, color: "text-green-500", bg: "bg-green-50" },
     { id: "favorites", icon: "favorite", label: t.profile.favorites, sub: t.profile.yourSavedItems, color: "text-red-500", bg: "bg-red-50" },
     { id: "wallet", icon: "account_balance_wallet", label: "Wallet", sub: "Balance & gift cards", color: "text-emerald-500", bg: "bg-emerald-50" },
+    { id: "referral", icon: "redeem", label: "Refer & Earn", sub: "Invite friends, earn rewards", color: "text-amber-500", bg: "bg-amber-50" },
     { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-purple-500", bg: "bg-purple-50" },
     { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-indigo-500", bg: "bg-indigo-50" },
     { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-[var(--color-outline)]", bg: "bg-[var(--color-surface-subtle)]" },
