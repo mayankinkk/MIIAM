@@ -56,6 +56,18 @@ export default function AdminDashboard() {
   useEffect(() => {
     loadDashboardData();
     checkDbHealth();
+
+    const channel = supabase
+      .channel("admin-dashboard")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "orders" }, () => {
+        loadDashboardData();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders" }, () => {
+        loadDashboardData();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const checkDbHealth = async () => {
