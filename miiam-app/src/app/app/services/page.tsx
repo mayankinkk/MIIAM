@@ -466,49 +466,47 @@ function ServicesContent() {
                 <motion.div key={service.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
                   className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5">
                   {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-36 overflow-hidden">
                     <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                     {service.badge && (
-                      <span className="absolute top-3 left-3 bg-primary text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wide shadow-lg">
+                      <span className="absolute top-2 left-2 bg-primary text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide shadow-md">
                         {t.services[service.badge as keyof typeof t.services] || service.badge}
                       </span>
                     )}
                     {service.originalPrice && (
-                      <span className="absolute top-3 right-3 bg-status-error text-white text-[10px] font-black px-2.5 py-1.5 rounded-full shadow-lg">
+                      <span className="absolute top-2 right-2 bg-status-error text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">
                         {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
                       </span>
                     )}
-                    <div className="absolute bottom-3 left-3 flex gap-2">
-                      <span className="bg-white/95 backdrop-blur-sm text-on-surface text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
-                        <span className="material-symbols-outlined text-[14px]">schedule</span>
+                    <div className="absolute bottom-2 left-2 flex gap-1.5">
+                      <span className="bg-white/95 backdrop-blur-sm text-on-surface text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <span className="material-symbols-outlined text-[12px]">schedule</span>
                         {service.duration}
                       </span>
                       {service.rating > 0 && (
-                        <span className="bg-primary text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
-                          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        <span className="bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                          <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                           {service.rating}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="p-5">
+                  <div className="p-4">
                     {/* Title & Reviews */}
-                    <div className="mb-1">
-                      <h3 className="font-bold text-on-surface text-lg leading-tight">{service.name}</h3>
-                      <p className="text-xs text-on-surface-variant mt-1">{service.reviews > 0 ? `${service.reviews.toLocaleString()} ${t.services.reviews}` : ""}</p>
-                    </div>
+                    <h3 className="font-bold text-on-surface text-base leading-tight">{service.name}</h3>
+                    <p className="text-[10px] text-on-surface-variant mt-0.5">{service.reviews > 0 ? `${service.reviews.toLocaleString()} ${t.services.reviews}` : ""}</p>
 
                     {/* What's Included */}
                     {service.included.length > 0 && (
-                      <div className="mt-4 bg-surface-container-low rounded-2xl p-4">
-                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-3">{t.services.whatIncluded}</p>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      <div className="mt-3 bg-surface-container-low rounded-xl p-3">
+                        <p className="text-[9px] font-black text-primary uppercase tracking-widest mb-2">{t.services.whatIncluded}</p>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1">
                           {service.included.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <span className="material-symbols-outlined text-status-success text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              <span className="text-sm text-on-surface font-medium">{item.trim()}</span>
+                            <div key={idx} className="flex items-center gap-1">
+                              <span className="material-symbols-outlined text-status-success text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                              <span className="text-[11px] text-on-surface font-medium">{item.trim()}</span>
                             </div>
                           ))}
                         </div>
@@ -516,19 +514,19 @@ function ServicesContent() {
                     )}
 
                     {/* Price & CTA */}
-                    <div className="flex items-center justify-between mt-5">
-                      <div className="flex items-baseline gap-2">
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-outline/10">
+                      <div className="flex items-baseline gap-1.5">
                         {service.originalPrice && (
-                          <span className="text-sm text-on-surface-variant line-through">{"₹"}{service.originalPrice}</span>
+                          <span className="text-xs text-on-surface-variant line-through">{"₹"}{service.originalPrice}</span>
                         )}
-                        <span className="font-black text-2xl text-on-surface">{"₹"}{service.price}</span>
+                        <span className="font-black text-xl text-on-surface">{"₹"}{service.price}</span>
                       </div>
                       <button onClick={() => {
                         if (!isServiceable) { addToast(t.services.cannotBook, "error"); } else { setBookingService(service); }
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-                      }} className={`px-6 py-3 rounded-2xl font-bold text-sm active:scale-95 transition-all ${
+                      }} className={`px-5 py-2 rounded-xl font-bold text-xs active:scale-95 transition-all ${
                         isServiceable
-                          ? "bg-primary text-white hover:bg-primary-dim shadow-lg shadow-primary/20"
+                          ? "bg-primary text-white hover:bg-primary-dim shadow-md shadow-primary/20"
                           : "bg-surface-container text-on-surface-variant cursor-not-allowed"
                       }`}>
                         {isServiceable ? t.services.bookNow : t.services.unavailable}
