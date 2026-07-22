@@ -405,15 +405,15 @@ function ServicesContent() {
                 <div className="mb-2">
                   <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
                     {filteredServices.filter(s => s.badge).map((service) => (
-                      <div key={service.id} className="flex-shrink-0 w-64 bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 card-lift">
-                        <div className="relative h-32 overflow-hidden">
-                          <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="256px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                          <span className="absolute top-2 left-2 bg-blue-600 text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide">
+                      <div key={service.id} className="flex-shrink-0 w-64 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5 card-lift">
+                        <div className="relative h-36 overflow-hidden">
+                          <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="256px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          <span className="absolute top-2 left-2 bg-primary text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide shadow-md">
                             {t.services[service.badge as keyof typeof t.services] || service.badge}
                           </span>
                           {service.originalPrice && (
-                            <span className="absolute top-2 right-2 bg-red-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full">
+                            <span className="absolute top-2 right-2 bg-status-error text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-md">
                               {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
                             </span>
                           )}
@@ -439,20 +439,20 @@ function ServicesContent() {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-lg">⭐</span>
-                      <h2 className="text-lg font-bold text-gray-900">Top Rated</h2>
+                      <h2 className="text-lg font-bold text-on-surface">Top Rated</h2>
                     </div>
                     <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                       {topRated.map((service) => (
-                        <Link key={`top-${service.id}`} href={`/app/services/${service.id}`} className="flex-shrink-0 w-36 bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 active:scale-[0.97] transition-transform">
-                          <div className="relative h-20 overflow-hidden">
-                            <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="144px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
-                            <span className="absolute top-1.5 right-1.5 bg-blue-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                        <Link key={`top-${service.id}`} href={`/app/services/${service.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-editorial-sm border border-outline/5 active:scale-[0.97] transition-transform">
+                          <div className="relative h-24 overflow-hidden">
+                            <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="144px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+                            <span className="absolute top-1.5 right-1.5 bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
                               <span className="text-[8px]">★</span> {service.rating}
                             </span>
                           </div>
-                          <div className="p-2.5">
-                            <h3 className="font-bold text-gray-900 text-[11px] truncate">{service.name}</h3>
-                            <p className="text-[10px] font-bold text-blue-600 mt-0.5">₹{service.price}</p>
+                          <div className="p-3">
+                            <h3 className="font-bold text-on-surface text-[11px] truncate">{service.name}</h3>
+                            <p className="text-[10px] font-bold text-primary mt-0.5">₹{service.price}</p>
                           </div>
                         </Link>
                       ))}
@@ -464,51 +464,51 @@ function ServicesContent() {
               {/* All Services - Vertical Cards */}
               {filteredServices.map((service, index) => (
                 <motion.div key={service.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                  className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5">
                   {/* Image */}
-                  <div className="relative h-44 overflow-hidden">
-                    <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  <div className="relative h-48 overflow-hidden">
+                    <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                     {service.badge && (
-                      <span className="absolute top-3 left-3 bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide shadow-md">
+                      <span className="absolute top-3 left-3 bg-primary text-white text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wide shadow-lg">
                         {t.services[service.badge as keyof typeof t.services] || service.badge}
                       </span>
                     )}
                     {service.originalPrice && (
-                      <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md">
+                      <span className="absolute top-3 right-3 bg-status-error text-white text-[10px] font-black px-2.5 py-1.5 rounded-full shadow-lg">
                         {Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF
                       </span>
                     )}
                     <div className="absolute bottom-3 left-3 flex gap-2">
-                      <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                        <span className="material-symbols-outlined text-[12px]">schedule</span>
+                      <span className="bg-white/95 backdrop-blur-sm text-on-surface text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+                        <span className="material-symbols-outlined text-[14px]">schedule</span>
                         {service.duration}
                       </span>
                       {service.rating > 0 && (
-                        <span className="bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                          <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        <span className="bg-primary text-white text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-md">
+                          <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                           {service.rating}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="p-4">
-                    {/* Title & Rating */}
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-bold text-gray-900 text-base leading-tight">{service.name}</h3>
+                  <div className="p-5">
+                    {/* Title & Reviews */}
+                    <div className="mb-1">
+                      <h3 className="font-bold text-on-surface text-lg leading-tight">{service.name}</h3>
+                      <p className="text-xs text-on-surface-variant mt-1">{service.reviews > 0 ? `${service.reviews.toLocaleString()} ${t.services.reviews}` : ""}</p>
                     </div>
-                    <p className="text-xs text-gray-400">{service.reviews > 0 ? `${service.reviews.toLocaleString()} ${t.services.reviews}` : ""}</p>
 
                     {/* What's Included */}
                     {service.included.length > 0 && (
-                      <div className="mt-3 bg-blue-50/50 rounded-xl p-3 border border-blue-100">
-                        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">{t.services.whatIncluded}</p>
-                        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                      <div className="mt-4 bg-surface-container-low rounded-2xl p-4">
+                        <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-3">{t.services.whatIncluded}</p>
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                           {service.included.map((item, idx) => (
-                            <div key={idx} className="flex items-center gap-1.5">
-                              <span className="material-symbols-outlined text-blue-500 text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                              <span className="text-xs text-gray-600 font-medium">{item.trim()}</span>
+                            <div key={idx} className="flex items-center gap-2">
+                              <span className="material-symbols-outlined text-status-success text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                              <span className="text-sm text-on-surface font-medium">{item.trim()}</span>
                             </div>
                           ))}
                         </div>
@@ -516,20 +516,20 @@ function ServicesContent() {
                     )}
 
                     {/* Price & CTA */}
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                    <div className="flex items-center justify-between mt-5">
                       <div className="flex items-baseline gap-2">
                         {service.originalPrice && (
-                          <span className="text-sm text-gray-400 line-through">{"₹"}{service.originalPrice}</span>
+                          <span className="text-sm text-on-surface-variant line-through">{"₹"}{service.originalPrice}</span>
                         )}
-                        <span className="font-black text-2xl text-gray-900">{"₹"}{service.price}</span>
+                        <span className="font-black text-2xl text-on-surface">{"₹"}{service.price}</span>
                       </div>
                       <button onClick={() => {
                         if (!isServiceable) { addToast(t.services.cannotBook, "error"); } else { setBookingService(service); }
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-                      }} className={`px-6 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all ${
+                      }} className={`px-6 py-3 rounded-2xl font-bold text-sm active:scale-95 transition-all ${
                         isServiceable
-                          ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "bg-primary text-white hover:bg-primary-dim shadow-lg shadow-primary/20"
+                          : "bg-surface-container text-on-surface-variant cursor-not-allowed"
                       }`}>
                         {isServiceable ? t.services.bookNow : t.services.unavailable}
                       </button>
