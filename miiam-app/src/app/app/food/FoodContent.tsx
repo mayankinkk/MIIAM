@@ -1045,10 +1045,6 @@ export default function FoodPageContent() {
                           <span className="text-[10px] text-on-surface-variant">{restaurant.delivery_time_min ? `${restaurant.delivery_time_min}–${restaurant.delivery_time_max || restaurant.delivery_time_min + 15} min` : `30-40 min`}</span>
                           {!restaurant.delivery_charge && <span className="text-[10px] text-green-600 font-bold">Free delivery</span>}
                         </div>
-                        <div className="flex items-center gap-1 mt-2 ml-9 text-primary font-bold text-[10px]">
-                          <span>{t.food.viewMenu}</span>
-                          <span className="material-symbols-outlined text-xs">chevron_right</span>
-                        </div>
                       </div>
                     </div>
                   </Link>
