@@ -460,8 +460,6 @@ export default function FoodPageContent() {
     if (typeof window !== "undefined") return (localStorage.getItem("miiam-veg-filter") as "all" | "veg" | "non_veg") || "all";
     return "all";
   });
-  const [openNow, setOpenNow] = useState(false);
-
   const [sortBy, setSortBy] = useState<SortOption>("rating");
   const [searchQuery, setSearchQuery] = useState("");
   const [priceMin, setPriceMin] = useState(0);
@@ -654,11 +652,7 @@ export default function FoodPageContent() {
     ? filteredRestaurants.filter((r) => r.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || r.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()))
     : filteredRestaurants;
 
-  const openFilteredRestaurants = openNow
-    ? searchedRestaurants.filter((r) => parseIsOpen(r.opening_hours))
-    : searchedRestaurants;
-
-  const filteredReadyRestaurants = openFilteredRestaurants;
+  const filteredReadyRestaurants = searchedRestaurants;
 
   const { visibleItems: visibleRestaurants, hasMore: hasMoreRestaurants, loadMore: loadMoreRestaurants, sentinelRef: restaurantSentinel } = useInfiniteScroll({ items: filteredReadyRestaurants, pageSize: 8 });
 
@@ -765,9 +759,6 @@ export default function FoodPageContent() {
         </button>
         <button onClick={() => setVegFilter("non_veg")} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
           <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
-        </button>
-        <button onClick={() => setOpenNow(!openNow)} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${openNow ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
-          <span className="material-symbols-outlined text-sm">schedule</span> Open Now
         </button>
         <SortDropdown sort={sortBy} setSort={setSortBy} />
         <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
@@ -897,12 +888,12 @@ export default function FoodPageContent() {
               {t.home.changeLocation}
             </button>
           </div>
-        ) : openFilteredRestaurants.length === 0 ? (
-          <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => { setVegFilter("all"); setOpenNow(false); }} />
+        ) : searchedRestaurants.length === 0 ? (
+          <EmptyState icon="🍽️" title={t.food.noRestaurants} description={t.food.noRestaurantsDesc} actionLabel={t.food.showAll} onAction={() => { setVegFilter("all"); }} />
         ) : (
           <>
             {/* Popular Near You - Top Rated */}
-            {openFilteredRestaurants.length > 3 && (
+            {searchedRestaurants.length > 3 && (
               <div className="px-4 mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -911,7 +902,7 @@ export default function FoodPageContent() {
                   </div>
                 </div>
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                  {[...openFilteredRestaurants]
+                  {[...searchedRestaurants]
                     .sort((a, b) => parseFloat(String(b.rating || "0")) - parseFloat(String(a.rating || "0")))
                     .slice(0, 6)
                     .map((restaurant) => (
@@ -929,7 +920,7 @@ export default function FoodPageContent() {
                             sizes="144px"
                             fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                           />
-                          <span className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm">#{openFilteredRestaurants.indexOf(restaurant) + 1}</span>
+                          <span className="absolute top-1.5 left-1.5 bg-amber-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-sm">#{searchedRestaurants.indexOf(restaurant) + 1}</span>
                           <span className="absolute bottom-1.5 right-1.5 bg-white/90 text-on-surface text-[10px] font-black px-1.5 py-0.5 rounded-full">★ {restaurant.rating || "4.0"}</span>
                         </div>
                         <div className="p-2.5">
@@ -946,10 +937,10 @@ export default function FoodPageContent() {
             <div className="px-4 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-bold text-on-surface">{selectedCategory === "all" ? "All Restaurants" : foodCategories.find(c => c.id === selectedCategory)?.name || "Restaurants"}</h2>
-                <span className="text-xs font-bold text-primary">{openFilteredRestaurants.length} places</span>
+                <span className="text-xs font-bold text-primary">{searchedRestaurants.length} places</span>
               </div>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-                {openFilteredRestaurants.map((restaurant) => (
+                {searchedRestaurants.map((restaurant) => (
                   <Link
                     key={restaurant.id}
                     href={`/app/food/${restaurant.id}`}
