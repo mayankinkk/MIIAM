@@ -3,6 +3,14 @@ import Razorpay from "razorpay";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
+import { z } from "zod";
+
+const verifyPaymentSchema = z.object({
+  razorpay_order_id: z.string().min(1, "Order ID is required"),
+  razorpay_payment_id: z.string().min(1, "Payment ID is required"),
+  razorpay_signature: z.string().min(1, "Signature is required"),
+  orderId: z.string().uuid("Invalid order ID format").optional(),
+});
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
@@ -31,11 +39,13 @@ export async function POST(req: NextRequest) {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = await req.json();
-
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return NextResponse.json({ error: "Missing payment verification parameters" }, { status: 400 });
+    const body = await req.json();
+    const parsed = verifyPaymentSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = parsed.data;
 
     // Verify signature
     const crypto = await import("crypto");
@@ -54,12 +64,11 @@ export async function POST(req: NextRequest) {
     const payment = await razorpay.payments.fetch(razorpay_payment_id);
 
     if (payment.status !== "captured" && payment.status !== "authorized") {
-      return NextResponse.json({ error: `Payment not captured: ${payment.status}` }, { status: 400 });
+      return NextResponse.json({ error: "Payment not captured" }, { status: 400 });
     }
 
     // Update order in database if orderId provided
     if (orderId) {
-      // Verify the order belongs to the authenticated user
       const { data: order, error: fetchError } = await supabase
         .from("orders")
         .select("user_id")
@@ -92,10 +101,9 @@ export async function POST(req: NextRequest) {
       method: payment.method,
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Payment verification failed";
     logger.error({ err: error }, "Payment verification failed");
     return NextResponse.json(
-      { error: message },
+      { error: "Payment verification failed" },
       { status: 500 }
     );
   }

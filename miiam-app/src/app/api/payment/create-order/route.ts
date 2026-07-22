@@ -3,6 +3,13 @@ import Razorpay from "razorpay";
 import { createClient } from "@/lib/supabase/server";
 import { checkCsrf, getClientIp, checkIpRateLimit } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
+import { z } from "zod";
+
+const createOrderSchema = z.object({
+  amount: z.number().positive("Amount must be positive").max(1000000, "Amount too large"),
+  receipt: z.string().max(255).optional(),
+  notes: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+});
 
 export async function POST(req: NextRequest) {
   const logger = createRouteLogger("payment/create-order");
@@ -25,21 +32,23 @@ export async function POST(req: NextRequest) {
 
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       return NextResponse.json(
-        { error: "Payment gateway not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in .env.local" },
+        { error: "Payment gateway not configured" },
         { status: 503 }
       );
     }
 
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID!,
-      key_secret: process.env.RAZORPAY_KEY_SECRET!,
-    });
-
-    const { amount, receipt, notes } = await req.json();
-
-    if (!amount || amount <= 0) {
-      return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
+    const body = await req.json();
+    const parsed = createOrderSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+
+    const { amount, receipt, notes } = parsed.data;
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
 
     const order = await razorpay.orders.create({
       amount: Math.round(amount * 100), // Razorpay expects paise
@@ -55,10 +64,9 @@ export async function POST(req: NextRequest) {
       keyId: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Failed to create payment order";
     logger.error({ err: error }, "Razorpay order creation failed");
     return NextResponse.json(
-      { error: message },
+      { error: "Failed to create payment order" },
       { status: 500 }
     );
   }

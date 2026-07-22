@@ -2,8 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { withRateLimit } from "@/lib/api-utils";
 import { createRouteLogger } from "@/lib/logger";
+import { z } from "zod";
 
 const logger = createRouteLogger("notifications");
+
+const createNotificationSchema = z.object({
+  user_id: z.string().uuid("Invalid user ID format"),
+  title: z.string().min(1, "Title is required").max(200, "Title must be at most 200 characters"),
+  body: z.string().min(1, "Message body is required").max(1000, "Message must be at most 1000 characters"),
+  data: z.record(z.string(), z.string()).optional(),
+  type: z.enum(["general", "order", "promotion", "system"]).default("general"),
+});
 
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   try {
@@ -14,14 +23,12 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { user_id, title, body: message, data, type = "general" } = body;
-
-    if (!user_id || !title || !message) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    const parsed = createNotificationSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
     }
+
+    const { user_id, title, body: message, data, type } = parsed.data;
 
     // Only allow creating notifications for self or admin
     if (user_id !== user.id) {

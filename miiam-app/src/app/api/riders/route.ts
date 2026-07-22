@@ -2,8 +2,18 @@ import { NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { withRateLimit } from "@/lib/api-utils";
 import { createRouteLogger } from "@/lib/logger";
+import { z } from "zod";
 
 const logger = createRouteLogger("riders");
+
+const createRiderSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(10, "Phone must be at least 10 digits").max(15, "Phone must be at most 15 digits"),
+  full_name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name must be at most 100 characters"),
+  vehicle_type: z.string().min(1, "Vehicle type is required").max(50),
+  vehicle_number: z.string().max(20).optional().default(""),
+  id_proof_type: z.string().min(1, "ID proof type is required").max(50),
+});
 
 async function requireAdmin() {
   const supabase = await createClient();
@@ -25,50 +35,70 @@ export const POST = withRateLimit(async function POST(request: Request) {
   const adminClient = createAdminClient();
   
   const formData = await request.formData();
-  const email = formData.get("email") as string;
-  const phone = formData.get("phone") as string;
-  const full_name = formData.get("full_name") as string;
-  const vehicle_type = formData.get("vehicle_type") as string;
-  const vehicle_number = formData.get("vehicle_number") as string;
-  const id_proof_type = formData.get("id_proof_type") as string;
+  const raw = {
+    email: formData.get("email") as string,
+    phone: formData.get("phone") as string,
+    full_name: formData.get("full_name") as string,
+    vehicle_type: formData.get("vehicle_type") as string,
+    vehicle_number: formData.get("vehicle_number") as string,
+    id_proof_type: formData.get("id_proof_type") as string,
+  };
+  
+  const parsed = createRiderSchema.safeParse(raw);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
+  }
+  
+  const { email, phone, full_name, vehicle_type, vehicle_number, id_proof_type } = parsed.data;
   const profile_photo = formData.get("profile_photo") as File | null;
   const id_proof_image = formData.get("id_proof_image") as File | null;
   
-  if (!email || !phone || !full_name) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-  }
-  
+  let userId = "";
+
   const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
     email,
     phone,
     email_confirm: true,
   });
   
-  let userId = "";
-
   if (authError) {
-    if (authError.message.toLowerCase().includes("email") || authError.message.toLowerCase().includes("phone") || authError.code === "email_exists" || authError.code === "phone_exists") {
-      // Find the existing user
-      const { data: users } = await adminClient.auth.admin.listUsers();
-      const existingUser = users.users.find(u => u.email === email || u.phone === phone);
-      if (existingUser) {
-        userId = existingUser.id;
+    if (authError.code === "email_exists" || authError.code === "phone_exists") {
+      // Query profiles table directly to find existing user
+      let existingUserId = null;
+      if (authError.code === "email_exists") {
+        const { data } = await adminClient
+          .from("profiles")
+          .select("id")
+          .eq("email", email)
+          .maybeSingle();
+        existingUserId = data?.id;
       } else {
-        return NextResponse.json({ error: "User exists in auth but could not be retrieved" }, { status: 400 });
+        const { data } = await adminClient
+          .from("profiles")
+          .select("id")
+          .eq("phone", phone)
+          .maybeSingle();
+        existingUserId = data?.id;
+      }
+      
+      if (existingUserId) {
+        userId = existingUserId;
+      } else {
+        return NextResponse.json({ error: "User exists but could not be retrieved" }, { status: 400 });
       }
     } else {
-      return NextResponse.json({ error: authError.message || "Failed to create user" }, { status: 400 });
+      return NextResponse.json({ error: "Failed to create user" }, { status: 400 });
     }
   } else if (authData.user) {
     userId = authData.user.id;
   } else {
     return NextResponse.json({ error: "Failed to create user" }, { status: 400 });
   }
+  
   let profilePhotoUrl = "";
   let idProofUrl = "";
   
   try {
-    // 1. Upload Profile Photo to Supabase Storage
     if (profile_photo && profile_photo.size > 0) {
       const fileExt = profile_photo.name.split(".").pop();
       const filePath = `${userId}/profile.${fileExt}`;
@@ -84,7 +114,6 @@ export const POST = withRateLimit(async function POST(request: Request) {
       }
     }
 
-    // 2. Upload ID Proof to Supabase Storage
     if (id_proof_image && id_proof_image.size > 0) {
       const fileExt = id_proof_image.name.split(".").pop();
       const filePath = `${userId}/id_proof.${fileExt}`;
@@ -104,23 +133,22 @@ export const POST = withRateLimit(async function POST(request: Request) {
   }
   
   try {
-    // Always upsert the profile to ensure avatar_url and other fields are updated
     const { error: profileError } = await adminClient.from("profiles").upsert({
       id: userId,
       full_name,
       email,
       phone,
       role: "rider",
-      avatar_url: profilePhotoUrl || undefined, // Only update if we have a new one, or keep old
+      avatar_url: profilePhotoUrl || undefined,
     }, { onConflict: 'id' });
     
     if (profileError) {
       logger.error({ err: profileError }, "Profile error");
-      return NextResponse.json({ error: "Failed to update profile: " + profileError.message }, { status: 400 });
+      return NextResponse.json({ error: "Failed to update profile" }, { status: 400 });
     }
   } catch (e: unknown) {
     logger.error({ err: e }, "Profile catch error");
-    return NextResponse.json({ error: (e instanceof Error ? e.message : "Unknown error") }, { status: 400 });
+    return NextResponse.json({ error: "Failed to update profile" }, { status: 400 });
   }
   
   try {
@@ -142,7 +170,7 @@ export const POST = withRateLimit(async function POST(request: Request) {
     
     if (riderError) {
       logger.error({ err: riderError }, "Rider error");
-      return NextResponse.json({ error: "Failed to update rider: " + riderError.message }, { status: 400 });
+      return NextResponse.json({ error: "Failed to update rider" }, { status: 400 });
     }
   } catch (e: unknown) {
     logger.error({ err: e }, "Rider catch error");
@@ -167,7 +195,7 @@ export const DELETE = withRateLimit(async function DELETE(request: Request) {
   const { error: riderError } = await adminClient.from("riders").delete().eq("id", riderId);
   
   if (riderError) {
-    return NextResponse.json({ error: riderError.message }, { status: 400 });
+    return NextResponse.json({ error: "Failed to delete rider" }, { status: 400 });
   }
   
   const { error: profileError } = await adminClient.from("profiles").delete().eq("id", riderId);
