@@ -171,7 +171,7 @@ function ActiveDeliveryView({
                           if (next.has(i)) next.delete(i); else next.add(i);
                           return next;
                         })}
-                        className={`text-[10px] px-2 py-1 rounded-full font-bold ${pickedItems.has(i) ? "bg-green-500 text-white" : "bg-green-100 text-green-700"}`}
+                        className={`text-[10px] px-2 py-1 rounded-full font-bold ${pickedItems.has(i) ? "bg-status-success text-white" : "bg-status-success/10 text-status-success"}`}
                       >
                         {pickedItems.has(i) ? t.rider.delivery.picked : t.rider.delivery.pick}
                       </button>
@@ -212,7 +212,7 @@ function ActiveDeliveryView({
                 <span className="material-symbols-outlined">inventory_2</span>{t.rider.delivery.goToShoppingList}
               </Link>
 
-              <button onClick={onItemsCollected} className="w-full mt-3 py-3 bg-green-500 text-white font-bold rounded-xl">
+              <button onClick={onItemsCollected} className="w-full mt-3 py-3 bg-status-success text-white font-bold rounded-xl">
                 {t.rider.delivery.allItemsCollected}
               </button>
             </>
@@ -257,7 +257,7 @@ function ActiveDeliveryView({
                   )}
                 </button>
               </div>
-              <button onClick={onPickedUp} className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl">
+              <button onClick={onPickedUp} className="w-full mt-3 py-4 bg-status-success text-white font-black rounded-xl">
                 {currentOrder.type === "multi_stop" ? `${t.rider.delivery.startDeliveries} (${currentOrder.stops?.length} ${t.rider.order.stops})` : t.rider.delivery.pickedUpOrder}
               </button>
             </>
@@ -306,7 +306,7 @@ function ActiveDeliveryView({
               >
                 <span className="material-symbols-outlined">navigation</span>{t.rider.delivery.navigateToStop}
               </a>
-              <button onClick={onArrived} className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl">
+              <button onClick={onArrived} className="w-full mt-3 py-4 bg-status-success text-white font-black rounded-xl">
                 {t.rider.delivery.iveArrived}
               </button>
             </>
@@ -339,7 +339,7 @@ function ActiveDeliveryView({
               >
                 <span className="material-symbols-outlined">navigation</span>{t.rider.delivery.navigate}
               </a>
-              <button onClick={onArrived} className="w-full mt-3 py-4 bg-green-500 text-white font-black rounded-xl">
+              <button onClick={onArrived} className="w-full mt-3 py-4 bg-status-success text-white font-black rounded-xl">
                 {t.rider.delivery.iveArrived}
               </button>
             </>
@@ -347,12 +347,12 @@ function ActiveDeliveryView({
 
           {deliveryStep === "arrived" && (
             <div className="text-center">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-green-600 text-5xl">location_on</span>
+              <div className="w-20 h-20 bg-status-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-status-success text-5xl">location_on</span>
               </div>
               <p className="font-bold text-xl mb-2">{t.rider.delivery.youveArrived}</p>
               <p className="text-sm text-[var(--color-outline)] mb-4">{t.rider.delivery.readyToComplete}</p>
-              <button onClick={onComplete} className="w-full py-4 bg-green-500 text-white font-black rounded-xl">
+              <button onClick={onComplete} className="w-full py-4 bg-status-success text-white font-black rounded-xl">
                 {t.rider.delivery.completeDelivery}
               </button>
             </div>

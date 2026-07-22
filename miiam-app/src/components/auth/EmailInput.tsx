@@ -37,7 +37,7 @@ export default function EmailInput({ purpose = "signup" }: EmailInputProps) {
         <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">Email Address</label>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com" className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none font-bold" />
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {error && <p className="text-status-error text-sm mt-2">{error}</p>}
       </div>
       <button onClick={handleSubmit} disabled={!email.includes("@") || isLoading}
         className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${email.includes("@") && !isLoading ? "bg-primary text-white hover:bg-primary-dim" : "bg-surface-container-high text-outline-variant cursor-not-allowed"}`}>

@@ -43,7 +43,7 @@ export default function OrderCard({ order, onAccept, isSelected, onToggleSelect 
       </div>
 
       {order.special_instructions && (
-        <div className="bg-amber-50 text-amber-800 text-xs p-2 rounded-lg mb-3">
+        <div className="bg-status-warning/10 text-status-warning text-xs p-2 rounded-lg mb-3">
           📝 {order.special_instructions}
         </div>
       )}

@@ -46,8 +46,8 @@ export default function AddressCard({ label, address, landmark, isSelected, onSe
               </button>
             )}
             {onDelete && (
-              <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-1.5 rounded-lg hover:bg-red-50 transition-colors">
-                <span className="material-symbols-outlined text-sm text-red-500">delete</span>
+              <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-1.5 rounded-lg hover:bg-status-error/10 transition-colors">
+                <span className="material-symbols-outlined text-sm text-status-error">delete</span>
               </button>
             )}
           </div>

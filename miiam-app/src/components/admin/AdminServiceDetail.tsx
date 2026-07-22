@@ -48,12 +48,12 @@ const COLOR_MAP: Record<string, string> = {
 };
 
 const TEXT_COLOR: Record<string, string> = {
-  blue: "text-blue-500",
-  amber: "text-amber-500",
+  blue: "text-status-info",
+  amber: "text-status-warning",
   emerald: "text-emerald-500",
   cyan: "text-cyan-500",
   purple: "text-purple-500",
-  red: "text-red-500",
+  red: "text-status-error",
 };
 
 export default function AdminServiceDetail({ serviceKey }: { serviceKey: string }) {
@@ -178,10 +178,10 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
-    confirmed: "bg-blue-100 text-blue-700",
+    confirmed: "bg-status-info/10 text-status-info",
     in_progress: "bg-indigo-100 text-indigo-700",
-    completed: "bg-green-100 text-green-700",
-    cancelled: "bg-red-100 text-red-700",
+    completed: "bg-status-success/10 text-status-success",
+    cancelled: "bg-status-error/10 text-status-error",
   };
 
   return (
@@ -279,7 +279,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                   <td className="p-4 text-right">
                     <button
                       onClick={() => handleDelete(b.id)}
-                      className="p-1.5 text-[var(--color-outline-variant)] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-1.5 text-[var(--color-outline-variant)] hover:text-status-error hover:bg-status-error/10 rounded-lg transition-colors"
                       title="Delete booking"
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>

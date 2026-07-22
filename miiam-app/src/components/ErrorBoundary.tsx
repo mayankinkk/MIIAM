@@ -45,8 +45,8 @@ export default class ErrorBoundary extends Component<Props, State> {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-16 px-6 text-center"
         >
-          <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-5">
-            <span className="material-symbols-outlined text-4xl text-red-500">{icon || "error"}</span>
+          <div className="w-20 h-20 bg-status-error/10 rounded-full flex items-center justify-center mb-5">
+            <span className="material-symbols-outlined text-4xl text-status-error">{icon || "error"}</span>
           </div>
           <h3 className="text-lg font-bold text-on-surface mb-1">{title || "Something went wrong"}</h3>
           <p className="text-sm text-on-surface-variant/70 max-w-xs mb-5">

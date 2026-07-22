@@ -55,11 +55,11 @@ export default function QuestModal({ open, quests, streakDays, onClose }: QuestM
             <div key={quest.id} className="p-3 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex justify-between items-center mb-2">
                 <span className="font-bold text-sm">{quest.title}</span>
-                <span className="text-green-600 dark:text-green-400 font-bold text-sm">+₹{quest.bonus}</span>
+                <span className="text-status-success font-bold text-sm">+₹{quest.bonus}</span>
               </div>
               <div className="w-full h-2 bg-[var(--color-surface-container-high)] rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-green-500 rounded-full" 
+                  className="h-full bg-status-success rounded-full" 
                   style={{ width: `${(quest.current / quest.target) * 100}%` }}
                 ></div>
               </div>

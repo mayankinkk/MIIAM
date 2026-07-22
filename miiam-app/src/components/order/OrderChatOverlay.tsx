@@ -99,8 +99,8 @@ export default function OrderChatOverlay({
             </div>
             <div>
               <h1 className="font-bold text-on-surface">{otherName || (senderType === "rider" ? "Customer" : thread === "user-vendor" ? "Restaurant" : "Rider")}</h1>
-              <p className="text-[10px] font-medium text-green-600 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+              <p className="text-[10px] font-medium text-status-success flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-status-success rounded-full"></span>
                 {thread === "user-vendor" ? "Restaurant" : "Online"}
               </p>
             </div>

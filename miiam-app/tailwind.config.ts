@@ -9,7 +9,39 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
-      colors: {},
+      colors: {
+        // MIIAM Design Tokens
+        brand: {
+          primary: "var(--color-brand-primary)",
+          "primary-hover": "var(--color-brand-primary-hover)",
+          "primary-light": "var(--color-brand-primary-light)",
+          secondary: "var(--color-brand-secondary)",
+          tertiary: "var(--color-brand-tertiary)",
+        },
+        surface: {
+          DEFAULT: "var(--color-surface)",
+          bright: "var(--color-surface-bright)",
+          dim: "var(--color-surface-dim)",
+          variant: "var(--color-surface-variant)",
+          neutral: "var(--color-surface-neutral)",
+        },
+        status: {
+          success: "var(--color-status-success)",
+          warning: "var(--color-status-warning)",
+          error: "var(--color-status-error)",
+          info: "var(--color-status-info)",
+        },
+        text: {
+          primary: "var(--color-text-primary)",
+          secondary: "var(--color-text-secondary)",
+          disabled: "var(--color-text-disabled)",
+          inverse: "var(--color-text-inverse)",
+        },
+        border: {
+          subtle: "var(--color-border-subtle)",
+          strong: "var(--color-border-strong)",
+        },
+      },
       borderRadius: {
         DEFAULT: "0.5rem",
         sm: "0.375rem",

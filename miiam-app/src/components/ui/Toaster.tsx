@@ -59,8 +59,8 @@ function ToastItem({
 
   const styles: Record<string, { bg: string; icon: string; bar: string }> = {
     success: { bg: "bg-emerald-500/10 dark:bg-emerald-500/15", icon: "text-emerald-500", bar: "bg-emerald-500" },
-    error:   { bg: "bg-red-500/10 dark:bg-red-500/15", icon: "text-red-500", bar: "bg-red-500" },
-    warning: { bg: "bg-amber-500/10 dark:bg-amber-500/15", icon: "text-amber-500", bar: "bg-amber-500" },
+    error:   { bg: "bg-status-error/10 dark:bg-status-error/15", icon: "text-status-error", bar: "bg-status-error" },
+    warning: { bg: "bg-status-warning/10 dark:bg-status-warning/15", icon: "text-status-warning", bar: "bg-status-warning" },
     info:    { bg: "bg-primary/10", icon: "text-primary", bar: "bg-primary" },
   };
 

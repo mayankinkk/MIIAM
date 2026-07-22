@@ -317,7 +317,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             </div>
             <div className="bg-[var(--color-surface-subtle)] rounded-lg p-2">
               <div className="bg-[var(--color-surface-container-high)] rounded-full h-1.5 overflow-hidden">
-                <div className="h-full bg-green-500 transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
+                <div className="h-full bg-status-success transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
               </div>
               <p className="text-[10px] text-[var(--color-outline)] mt-1">{pickedCount}/{items.length} items picked</p>
             </div>
@@ -330,9 +330,9 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
                   value={item.status || "pending"}
                   onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price ?? undefined)}
                   className={`text-[10px] font-bold px-1.5 py-1 rounded border-0 ${
-                    item.status === "available" ? "bg-green-100 text-green-700" :
-                    item.status === "unavailable" ? "bg-red-100 text-red-700" :
-                    item.status === "different_brand" ? "bg-amber-100 text-amber-700" :
+                    item.status === "available" ? "bg-status-success/10 text-status-success" :
+                    item.status === "unavailable" ? "bg-status-error/10 text-status-error" :
+                    item.status === "different_brand" ? "bg-status-warning/10 text-status-warning" :
                     "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                   }`}
                 >
@@ -383,16 +383,16 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
                 </button>
               )}
               {phase === "delivery" && onShareLocation && (
-                <button onClick={onShareLocation} className="flex-1 py-2 bg-green-500 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
+                <button onClick={onShareLocation} className="flex-1 py-2 bg-status-success text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
                   <span className="material-symbols-outlined text-sm">share_location</span>
                   Share Location
                 </button>
               )}
-              <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 text-red-600 rounded-lg text-[11px] font-bold border border-red-100">
+              <button onClick={onReportIssue} className="py-2 px-3 bg-status-error/10 text-status-error rounded-lg text-[11px] font-bold border border-status-error/20">
                 Report
               </button>
             </div>
-            <button onClick={onMarkDelivered} disabled={phase === "pickup"} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
+            <button onClick={onMarkDelivered} disabled={phase === "pickup"} className="w-full bg-status-success text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
               <span className="material-symbols-outlined text-sm">payments</span>
               {phase === "delivery" ? `Delivered — Collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}` : `Start delivery to collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}`}
             </button>

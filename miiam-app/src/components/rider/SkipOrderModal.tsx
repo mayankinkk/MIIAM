@@ -37,7 +37,7 @@ export default function SkipOrderModal({ open, onConfirm, onCancel }: SkipOrderM
           </button>
           <button 
             onClick={onConfirm}
-            className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl"
+            className="flex-1 py-3 bg-status-error text-white font-bold rounded-xl"
           >
 {t.rider.modals.skip}
           </button>

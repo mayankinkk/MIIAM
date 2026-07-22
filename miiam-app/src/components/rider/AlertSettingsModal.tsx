@@ -91,7 +91,7 @@ export default function AlertSettingsModal({
             <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-3">{t.rider.modals.developerTools}</p>
             <button 
               onClick={onClearOrders}
-              className="w-full py-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold text-xs flex items-center justify-center gap-2 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+              className="w-full py-3 rounded-xl bg-status-error/10 dark:bg-status-error/20 text-status-error font-bold text-xs flex items-center justify-center gap-2 hover:bg-status-error/20 dark:hover:bg-status-error/30 transition-colors"
             >
               <span className="material-symbols-outlined text-sm">delete_sweep</span>
               {t.rider.modals.clearPendingOrders}

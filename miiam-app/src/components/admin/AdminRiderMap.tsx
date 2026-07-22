@@ -229,7 +229,7 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
     <div className="relative w-full h-full">
       <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
       {fetchError && (
-        <div className="absolute top-2 left-2 right-2 z-[999] bg-red-50 border border-red-200 rounded-lg p-2 text-xs text-red-600">
+        <div className="absolute top-2 left-2 right-2 z-[999] bg-status-error/10 border border-status-error/20 rounded-lg p-2 text-xs text-status-error">
           Location fetch error: {fetchError}
         </div>
       )}

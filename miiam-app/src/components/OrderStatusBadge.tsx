@@ -1,12 +1,12 @@
 "use client";
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: string }> = {
-  pending: { label: "Pending", color: "text-amber-700", bg: "bg-amber-100 dark:bg-amber-900/30 dark:text-amber-400", icon: "hourglass_empty" },
-  confirmed: { label: "Confirmed", color: "text-blue-700", bg: "bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400", icon: "check_circle" },
+  pending: { label: "Pending", color: "text-status-warning", bg: "bg-status-warning/10 dark:bg-status-warning/30 dark:text-status-warning", icon: "hourglass_empty" },
+  confirmed: { label: "Confirmed", color: "text-status-info", bg: "bg-status-info/10 dark:bg-status-info/30 dark:text-status-info", icon: "check_circle" },
   preparing: { label: "Preparing", color: "text-orange-700", bg: "bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400", icon: "skillet" },
   out_for_delivery: { label: "On the Way", color: "text-purple-700", bg: "bg-purple-100 dark:bg-purple-900/30 dark:text-purple-400", icon: "delivery_dining" },
   delivered: { label: "Delivered", color: "text-emerald-700", bg: "bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400", icon: "task_alt" },
-  cancelled: { label: "Cancelled", color: "text-red-700", bg: "bg-red-100 dark:bg-red-900/30 dark:text-red-400", icon: "cancel" },
+  cancelled: { label: "Cancelled", color: "text-status-error", bg: "bg-status-error/10 dark:bg-status-error/30 dark:text-status-error", icon: "cancel" },
   refunded: { label: "Refunded", color: "text-gray-700", bg: "bg-gray-100 dark:bg-gray-800 dark:text-gray-400", icon: "replay" },
 };
 

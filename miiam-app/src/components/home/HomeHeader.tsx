@@ -51,7 +51,7 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
             >
               <span className="material-symbols-outlined text-[20px] text-on-surface-variant" aria-hidden="true" style={{ fontVariationSettings: unreadCount > 0 ? "'FILL' 1" : "'FILL' 0" }}>notifications</span>
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 rounded-full border-2 border-surface flex items-center justify-center animate-bounce">
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-status-error rounded-full border-2 border-surface flex items-center justify-center animate-bounce">
                   <span className="text-[9px] text-white font-black leading-none px-0.5">{unreadCount > 9 ? "9+" : unreadCount}</span>
                 </span>
               )}

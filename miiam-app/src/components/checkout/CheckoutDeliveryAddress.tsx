@@ -40,7 +40,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
             <p className="font-bold text-on-surface flex items-center gap-2 flex-wrap">
               <span className="truncate">{deliveryAddress.label || "Home"}</span>
               {deliveryAddress.lat && (
-                <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 shrink-0">
+                <span className="text-[10px] bg-status-success/10 text-status-success px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 shrink-0">
                   <span className="material-symbols-outlined text-[10px]">gps_fixed</span>GPS
                 </span>
               )}

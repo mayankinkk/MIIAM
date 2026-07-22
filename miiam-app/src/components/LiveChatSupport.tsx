@@ -181,7 +181,7 @@ export function SupportButton() {
         style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <span className="material-symbols-outlined text-2xl">chat</span>
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-[var(--color-surface)]" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-status-success rounded-full border-2 border-white dark:border-[var(--color-surface)]" />
       </button>
       {showChat && <LiveChatSupport onClose={() => setShowChat(false)} />}
     </>

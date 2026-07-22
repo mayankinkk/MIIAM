@@ -55,10 +55,10 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
         aria-pressed={isOnline}
         title={isOnline ? "Go Offline" : "Go Online"}
       >
-        <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-green-500 border-green-500" : "bg-[var(--color-surface-container-high)] border-[var(--color-outline-variant)]"}`}>
+        <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-status-success border-status-success" : "bg-[var(--color-surface-container-high)] border-[var(--color-outline-variant)]"}`}>
           <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-[var(--color-surface-container-lowest)]" : "bg-slate-400"}`} />
         </span>
-        <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-green-600" : "text-[var(--color-outline-variant)]"}`}>
+        <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-status-success" : "text-[var(--color-outline-variant)]"}`}>
           {isOnline ? "ONLINE" : "OFF"}
         </span>
       </button>

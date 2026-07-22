@@ -32,7 +32,7 @@ export default function NotificationBadge({ count, max = 99 }: NotificationBadge
         animate={{ scale: animating ? [1, 1.4, 1] : 1 }}
         exit={{ scale: 0 }}
         transition={{ type: "spring", stiffness: 500, damping: 20 }}
-        className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 rounded-full text-white text-[9px] font-black flex items-center justify-center px-1 shadow-md"
+        className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-status-error rounded-full text-white text-[9px] font-black flex items-center justify-center px-1 shadow-md"
       >
         {count > max ? `${max}+` : count}
       </motion.span>

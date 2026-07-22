@@ -70,7 +70,7 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
             maxLength={10}
           />
         </div>
-        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        {error && <p className="text-status-error text-sm mt-2">{error}</p>}
       </div>
 
       <button

@@ -77,7 +77,7 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
                 }}
                 className={`w-full text-left p-3 rounded-xl font-medium text-sm transition-all ${
                   cancelReason === reason
-                    ? "bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+                    ? "bg-status-error/10 dark:bg-status-error/20 text-status-error dark:text-status-error border border-status-error/20 dark:border-status-error/40"
                     : "bg-[var(--color-surface-subtle)] text-[var(--color-on-surface)] hover:bg-surface-container-high"
                 }`}
               >
@@ -97,7 +97,7 @@ export default function OrderCancelModal({ open, onClose, onCancel }: OrderCance
                   <button
                     onClick={handleCancelWithReason}
                     disabled={!cancelOtherReason.trim()}
-                    className="px-4 py-2 bg-red-500 text-white font-bold rounded-xl text-sm disabled:opacity-50"
+                    className="px-4 py-2 bg-status-error text-white font-bold rounded-xl text-sm disabled:opacity-50"
                   >
                     Submit
                   </button>

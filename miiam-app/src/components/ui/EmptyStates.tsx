@@ -28,7 +28,7 @@ export function EmptyState({
     cart: { bg: "bg-primary/10", icon: "text-primary" },
     orders: { bg: "bg-secondary/10", icon: "text-secondary" },
     favorites: { bg: "bg-rose-500/10", icon: "text-rose-500" },
-    search: { bg: "bg-amber-500/10", icon: "text-amber-500" },
+    search: { bg: "bg-status-warning/10", icon: "text-status-warning" },
     default: { bg: "bg-surface-container-high", icon: "text-on-surface-variant" },
   };
 
@@ -208,7 +208,7 @@ export function NetworkError({ onRetry }: { onRetry?: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col items-center justify-center py-12 px-6 text-center"
     >
-      <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center mb-6">
+      <div className="w-24 h-24 bg-status-error/10 rounded-full flex items-center justify-center mb-6">
         <span className="text-5xl">📡</span>
       </div>
       <h3 className="text-xl font-bold text-on-surface mb-2">Connection Lost</h3>

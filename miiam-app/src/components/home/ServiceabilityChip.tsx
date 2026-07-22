@@ -15,9 +15,9 @@ export default function ServiceabilityChip({ pincode, displayAddress, localServi
   return (
     <div className="px-5 pt-3">
       <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold ${
-        localServiceable ? "bg-green-500/10 text-green-600 border border-green-500/15" : "bg-amber-500/10 text-amber-600 border border-amber-500/15"
+        localServiceable ? "bg-status-success/10 text-status-success border border-status-success/15" : "bg-status-warning/10 text-status-warning border border-status-warning/15"
       }`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${localServiceable ? "bg-green-500 animate-pulse" : "bg-amber-500"}`} />
+        <span className={`w-1.5 h-1.5 rounded-full ${localServiceable ? "bg-status-success animate-pulse" : "bg-status-warning"}`} />
         {checkingPincode ? t.home.checkingAvailability : localServiceable
           ? `${t.home.showingNearby} ${displayAddress}`
           : `${t.home.noExactMatch} ${pincode}`

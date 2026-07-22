@@ -142,7 +142,7 @@ function ConfirmDialogInner({ state }: { state: ConfirmState }) {
             onClick={state.onConfirm}
             className={`flex-1 py-3 rounded-xl font-bold text-sm text-white transition-colors ${
               state.variant === "danger"
-                ? "bg-red-600 hover:bg-red-700"
+                ? "bg-status-error hover:bg-status-error/90"
                 : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)]"
             }`}
           >

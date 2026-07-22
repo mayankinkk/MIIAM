@@ -54,10 +54,10 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
 
   if (submitted) {
     return (
-      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 text-center">
-        <span className="material-symbols-outlined text-4xl text-green-600 dark:text-green-400">check_circle</span>
-        <h3 className="font-bold text-green-800 dark:text-green-200 mt-2">Thank you for your review!</h3>
-        <p className="text-sm text-green-600 dark:text-green-400">Your feedback helps others</p>
+      <div className="bg-status-success/10 border border-status-success/20 rounded-xl p-6 text-center">
+        <span className="material-symbols-outlined text-4xl text-status-success">check_circle</span>
+        <h3 className="font-bold text-status-success mt-2">Thank you for your review!</h3>
+        <p className="text-sm text-status-success">Your feedback helps others</p>
       </div>
     );
   }

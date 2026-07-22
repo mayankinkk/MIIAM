@@ -42,25 +42,25 @@ export default function DashboardHeader({ isOnline, streakDays, onToggleOnline, 
               window.open("tel:+919957873472", "_self");
             }
           }}
-          className="p-2 bg-red-50 rounded-full animate-pulse" 
+          className="p-2 bg-status-error/10 rounded-full animate-pulse" 
           title={t.rider.header.emergencySos}
         >
-          <span className="material-symbols-outlined text-red-500">emergency</span>
+          <span className="material-symbols-outlined text-status-error">emergency</span>
         </button>
         <button 
           onClick={onOpenQuests}
-          className="p-2 bg-amber-50 rounded-full relative" 
+          className="p-2 bg-status-warning/10 rounded-full relative" 
           title={t.rider.header.dailyQuests}
         >
-          <span className="material-symbols-outlined text-amber-500">local_fire_department</span>
+          <span className="material-symbols-outlined text-status-warning">local_fire_department</span>
           {streakDays > 0 && (
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
               {streakDays}
             </span>
           )}
         </button>
-        <Link href="/rider/analytics" className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-full" title={t.rider.header.analytics}>
-          <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">insights</span>
+        <Link href="/rider/analytics" className="p-2 bg-status-info/10 dark:bg-status-info/20 rounded-full" title={t.rider.header.analytics}>
+          <span className="material-symbols-outlined text-status-info">insights</span>
         </Link>
         <Link href="/rider/account" className="p-2">
           <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">person</span>

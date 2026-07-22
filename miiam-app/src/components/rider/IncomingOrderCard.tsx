@@ -70,7 +70,7 @@ export default function IncomingOrderCard({
               {order.items} {t.rider.order.items}
             </span>
             {order.priority === "high" && (
-              <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
+              <span className="bg-status-error/10 text-status-error px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
                 <span className="material-symbols-outlined text-[12px]">bolt</span>
                 {t.rider.order.highPriority}
               </span>

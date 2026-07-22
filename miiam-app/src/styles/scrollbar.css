@@ -1,0 +1,56 @@
+/* ==========================================================================
+   MIIAM Scrollbar Styles
+   Custom scrollbar styling for webkit and global standards
+   ========================================================================== */
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant, #dd9ca6);
+  border-radius: 10px;
+}
+
+/* Global scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant, #dd9ca6);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline, #a06770);
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant, #3d1520);
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline, #5c3340);
+}
+
+/* Hide scrollbar utility (alias: no-scrollbar below) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar utility (alias: scrollbar-hide above) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

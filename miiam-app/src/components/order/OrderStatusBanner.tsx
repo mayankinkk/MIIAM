@@ -19,11 +19,11 @@ export default function OrderStatusBanner({
 }: OrderStatusBannerProps) {
   if (type === "delay" && delayMinutes && delayMinutes > 0) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
-        <span className="material-symbols-outlined text-red-500 text-2xl mt-0.5">warning</span>
+      <div className="bg-status-error/10 border border-status-error/20 rounded-xl p-4 flex items-start gap-3">
+        <span className="material-symbols-outlined text-status-error text-2xl mt-0.5">warning</span>
         <div>
-          <p className="font-bold text-red-800">Order is Delayed</p>
-          <p className="text-sm text-red-600">
+          <p className="font-bold text-status-error">Order is Delayed</p>
+          <p className="text-sm text-status-error">
             {delayReason
               ? `${delayReason} — approximately ${delayMinutes} min extra`
               : `Approximately ${delayMinutes} min extra wait time`}
@@ -36,11 +36,11 @@ export default function OrderStatusBanner({
   if (type === "prep_time" && estimatedPrepTime && placedAt) {
     const t = new Date(new Date(placedAt).getTime() + estimatedPrepTime * 60000);
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-        <span className="material-symbols-outlined text-amber-500 text-2xl mt-0.5">timer</span>
+      <div className="bg-status-warning/10 border border-status-warning/20 rounded-xl p-4 flex items-start gap-3">
+        <span className="material-symbols-outlined text-status-warning text-2xl mt-0.5">timer</span>
         <div>
-          <p className="font-bold text-amber-800">{preparingLabel || "Preparing your order"}</p>
-          <p className="text-sm text-amber-600">
+          <p className="font-bold text-status-warning">{preparingLabel || "Preparing your order"}</p>
+          <p className="text-sm text-status-warning">
             Estimated ready by {t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </p>
         </div>

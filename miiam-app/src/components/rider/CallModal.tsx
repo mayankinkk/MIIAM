@@ -41,7 +41,7 @@ export default function CallModal({ open, onClose, name, phone }: CallModalProps
         </div>
         <a
           href={`tel:${phone}`}
-          className="w-full py-4 bg-green-500 text-white font-bold rounded-xl flex items-center justify-center gap-2"
+          className="w-full py-4 bg-status-success text-white font-bold rounded-xl flex items-center justify-center gap-2"
         >
           <span className="material-symbols-outlined">call</span>
           {t.rider.callModal.callNow}

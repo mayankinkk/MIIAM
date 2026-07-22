@@ -44,7 +44,7 @@ export default function LocationModal({ isOpen, onClose, manualPincode, onPincod
             className="w-full px-4 py-4 bg-surface-container-high rounded-xl border-2 border-transparent focus:border-primary outline-none text-2xl font-black tracking-[0.5em] text-center text-on-surface"
             autoFocus
           />
-          {pincodeError && <p className="text-red-500 text-xs mt-2 text-center font-bold">{pincodeError}</p>}
+          {pincodeError && <p className="text-status-error text-xs mt-2 text-center font-bold">{pincodeError}</p>}
         </div>
 
         <button

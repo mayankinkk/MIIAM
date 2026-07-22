@@ -57,7 +57,7 @@ export default function CheckoutScheduledDelivery({
   return (
     <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
       <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-700 shrink-0">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-status-warning/10 flex items-center justify-center text-status-warning shrink-0">
           <span className="material-symbols-outlined">schedule</span>
         </div>
         <div className="min-w-0">
@@ -146,7 +146,7 @@ export default function CheckoutScheduledDelivery({
       {(scheduledDate || scheduledTime) && (
         <button
           onClick={onClearSchedule}
-          className="mt-4 w-full p-3 rounded-lg text-sm font-semibold border border-red-300 text-red-600 hover:bg-red-50"
+          className="mt-4 w-full p-3 rounded-lg text-sm font-semibold border border-status-error/30 text-status-error hover:bg-status-error/10"
         >
           Clear Schedule
         </button>
@@ -212,11 +212,11 @@ export default function CheckoutScheduledDelivery({
 
       {/* Scheduled Order Info */}
       {scheduledDate && scheduledTime && (
-        <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800 flex items-start gap-3">
-          <span className="material-symbols-outlined text-green-600 dark:text-green-400 shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+        <div className="mt-4 p-4 bg-status-success/10 dark:bg-status-success/20 rounded-lg border border-status-success/20 dark:border-status-success/40 flex items-start gap-3">
+          <span className="material-symbols-outlined text-status-success shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           <div className="min-w-0">
-            <p className="font-bold text-green-700 dark:text-green-300">Scheduled for delivery</p>
-            <p className="text-sm text-green-600 dark:text-green-400 break-words">
+            <p className="font-bold text-status-success">Scheduled for delivery</p>
+            <p className="text-sm text-status-success break-words">
               {new Date(scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })} at {scheduledTime}
             </p>
           </div>

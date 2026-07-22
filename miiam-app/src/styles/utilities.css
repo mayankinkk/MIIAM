@@ -1,0 +1,198 @@
+/* ==========================================================================
+   MIIAM Utilities
+   Glassmorphism, gradients, device breakpoints, print styles
+   ========================================================================== */
+
+/* Glassmorphism */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.dark .glassmorphism {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.dark .glass-card {
+  background: rgba(26, 15, 18, 0.7);
+}
+
+/* Gradients */
+.bento-gradient-red {
+  background: linear-gradient(135deg, var(--color-primary, #ba001c) 0%, var(--color-primary-container, #ff7670) 100%);
+}
+
+.bento-gradient-blue {
+  background: linear-gradient(135deg, var(--color-secondary, #0b50d5) 0%, var(--color-secondary-container, #c4d0ff) 100%);
+}
+
+/* Common Phone Dimensions (not fixed, for reference & PWA) */
+/* Samsung Galaxy S Series */
+@media (min-width: 360px) and (min-height: 740px) { .galaxy-s { --w: 360px; --h: 740px; } }
+/* Samsung Galaxy A Series */
+@media (min-width: 360px) and (min-height: 800px) { .galaxy-a { --w: 360px; --h: 800px; } }
+/* Samsung Galaxy Note */
+@media (min-width: 412px) and (min-height: 846px) { .galaxy-note { --w: 412px; --h: 846px; } }
+/* Google Pixel */
+@media (min-width: 411px) and (min-height: 767px) { .pixel { --w: 411px; --h: 767px; } }
+/* OnePlus */
+@media (min-width: 411px) and (min-height: 820px) { .oneplus { --w: 411px; --h: 820px; } }
+/* Xiaomi Mi */
+@media (min-width: 393px) and (min-height: 851px) { .xiaomi { --w: 393px; --h: 851px; } }
+/* Realme */
+@media (min-width: 360px) and (min-height: 780px) { .realme { --w: 360px; --h: 780px; } }
+/* Moto G */
+@media (min-width: 360px) and (min-height: 720px) { .moto-g { --w: 360px; --h: 720px; } }
+
+/* iPhone variants */
+@media (min-width: 390px) and (min-height: 844px) { .iphone-13-14 { --w: 390px; --h: 844px; } }
+@media (min-width: 430px) and (min-height: 932px) { .iphone-pro-max { --w: 430px; --h: 932px; } }
+@media (min-width: 375px) and (min-height: 667px) { .iphone-se { --w: 375px; --h: 667px; } }
+@media (min-width: 414px) and (min-height: 896px) { .iphone-11-max { --w: 414px; --h: 896px; } }
+@media (min-width: 375px) and (min-height: 812px) { .iphone-x { --w: 375px; --h: 812px; } }
+/* iPhone 15 series */
+@media (min-width: 393px) and (min-height: 852px) { .iphone-15 { --w: 393px; --h: 852px; } }
+@media (min-width: 430px) and (min-height: 932px) { .iphone-15-pro-max { --w: 430px; --h: 932px; } }
+/* iPhone 16 series */
+@media (min-width: 393px) and (min-height: 852px) { .iphone-16 { --w: 393px; --h: 852px; } }
+@media (min-width: 393px) and (min-height: 852px) { .iphone-16-pro { --w: 393px; --h: 852px; } }
+@media (min-width: 430px) and (min-height: 932px) { .iphone-16-pro-max { --w: 430px; --h: 932px; } }
+/* iPhone 17 series (2026) */
+@media (min-width: 395px) and (min-height: 870px) { .iphone-17 { --w: 395px; --h: 870px; } }
+@media (min-width: 395px) and (min-height: 870px) { .iphone-17-pro { --w: 395px; --h: 870px; } }
+@media (min-width: 435px) and (min-height: 945px) { .iphone-17-pro-max { --w: 435px; --h: 945px; } }
+/* iPhone 18 series (2026-2027) - estimated */
+@media (min-width: 398px) and (min-height: 880px) { .iphone-18 { --w: 398px; --h: 880px; } }
+@media (min-width: 398px) and (min-height: 880px) { .iphone-18-pro { --w: 398px; --h: 880px; } }
+@media (min-width: 440px) and (min-height: 955px) { .iphone-18-pro-max { --w: 440px; --h: 955px; } }
+
+/* Tablet fallback */
+@media (min-width: 768px) and (max-width: 1024px) { .tablet { --w: 768px; --h: 1024px; } }
+
+/* Mobile dimensions */
+@layer components {
+  .phone-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  .phone-card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .phone-button {
+    min-height: 48px;
+    min-width: 48px;
+  }
+  
+  .phone-input {
+    min-height: 48px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+  
+  /* Responsive text scaling */
+  .text-responsive {
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+  }
+  
+  /* Responsive spacing */
+  .p-responsive {
+    padding: clamp(0.75rem, 3vw, 1.5rem);
+  }
+}
+
+/* ==========================================================================
+   PRINT STYLESHEET
+   - Hides app chrome (nav, buttons, breadcrumbs, modals)
+   - Makes .print-receipt, [data-print] visible
+   - Page sizes for receipt (80mm), KOT (80mm), label (100x150mm)
+   ========================================================================== */
+@media print {
+  @page {
+    size: auto;
+    margin: 6mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Hide everything that isn't a print surface */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show the printing surface */
+  .print-receipt,
+  .print-receipt *,
+  [data-print],
+  [data-print] *,
+  [data-print-target],
+  [data-print-target] * {
+    visibility: visible;
+  }
+
+  /* The actual print surface sits at 0,0 of the page */
+  .print-receipt,
+  [data-print] {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    page-break-after: always;
+  }
+
+  /* In modal popups (window.open) we need to allow only the target to show */
+  body.printing-kot [data-print="kot"],
+  body.printing-label [data-print="label"],
+  body.printing-receipt [data-print="receipt"] {
+    display: block !important;
+  }
+
+  body.printing-kot [data-print="receipt"],
+  body.printing-kot [data-print="label"],
+  body.printing-label [data-print="receipt"],
+  body.printing-label [data-print="kot"],
+  body.printing-receipt [data-print="kot"],
+  body.printing-receipt [data-print="label"] {
+    display: none !important;
+  }
+
+  /* Always hide app chrome even when only target shows */
+  nav, header, footer, aside, [role="navigation"], [role="banner"], [role="contentinfo"] {
+    display: none !important;
+  }
+}
+
+/* Stand-alone (opened in new window) print mode */
+@media print and (orientation: portrait) {
+  .print-receipt,
+  [data-print] {
+    margin: 0 auto;
+  }
+}
+
+/* Touch feedback for PWA */
+@media (hover: none) and (pointer: coarse) {
+  .touch-feedback {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .touch-feedback:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease-out;
+  }
+}

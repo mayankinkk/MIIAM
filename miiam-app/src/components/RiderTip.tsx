@@ -109,13 +109,13 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
 
 export function TipThankYou({ amount }: { amount: number }) {
   return (
-    <div className="bg-green-50 rounded-xl p-4 flex items-center gap-3">
-      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-        <span className="material-symbols-outlined text-green-600">favorite</span>
+    <div className="bg-status-success/10 rounded-xl p-4 flex items-center gap-3">
+      <div className="w-10 h-10 bg-status-success/20 rounded-full flex items-center justify-center">
+        <span className="material-symbols-outlined text-status-success">favorite</span>
       </div>
       <div>
-        <p className="font-bold text-green-800">Thanks for your generosity!</p>
-        <p className="text-sm text-green-600">₹{amount} tip added for your rider</p>
+        <p className="font-bold text-status-success">Thanks for your generosity!</p>
+        <p className="text-sm text-status-success">₹{amount} tip added for your rider</p>
       </div>
     </div>
   );
