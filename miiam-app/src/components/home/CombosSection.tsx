@@ -34,7 +34,7 @@ export default function CombosSection({ combos }: CombosSectionProps) {
         {combos.slice(0, 2).map((combo) => (
           <Link
             key={combo.id}
-            href={`/app/food?combo=${combo.id}`}
+            href={`/app/food/combo/${combo.id}`}
             className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.97] transition-transform"
           >
             <div className="relative h-28 overflow-hidden">
