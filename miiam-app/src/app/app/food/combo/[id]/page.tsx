@@ -167,7 +167,7 @@ export default function ComboDetailPage() {
                   const ok = await confirm({
                     title: "Add to Cart",
                     message: `Add "${combo.name}" to your cart for ₹${combo.combo_price}?`,
-                    variant: "primary",
+                    variant: "default",
                   });
                   if (ok && vendor) {
                     addItem({
