@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
@@ -455,7 +456,10 @@ export default function FoodPageContent() {
     { id: "desserts", name: "Desserts", icon: "🍰", color: "bg-pink-100" },
   ];
   const getSetting = useServiceSettingsStore((s) => s.getSetting);
+  const searchParams = useSearchParams();
+  const initialFilter = searchParams.get("filter") || "all";
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [activeFilter, setActiveFilter] = useState(initialFilter);
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">(() => {
     if (typeof window !== "undefined") return (localStorage.getItem("miiam-veg-filter") as "all" | "veg" | "non_veg") || "all";
     return "all";
@@ -769,11 +773,11 @@ export default function FoodPageContent() {
         {!loading && hasLocation && !noLocalVendors && (storeItems.length > 0 || menuItems.length > 0) && (
           <div className="space-y-5">
             {[
-              { max: 99, label: "Under ₹99", emoji: "🔥", color: "from-orange-500 to-red-500", dbCategory: "under_99" },
-              { max: 149, label: "Under ₹149", emoji: "💰", color: "from-emerald-500 to-teal-500", dbCategory: "under_149" },
-              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-blue-500 to-indigo-500", dbCategory: "under_199" },
-              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500", dbCategory: "under_249" },
-            ].map((bucket) => {
+              { max: 99, label: "Under ₹99", emoji: "🔥", color: "from-orange-500 to-red-500", dbCategory: "under_99", filter: "under_99" },
+              { max: 149, label: "Under ₹149", emoji: "💰", color: "from-emerald-500 to-teal-500", dbCategory: "under_149", filter: "under_149" },
+              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-blue-500 to-indigo-500", dbCategory: "under_199", filter: "under_199" },
+              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500", dbCategory: "under_249", filter: "under_249" },
+            ].filter((bucket) => activeFilter === "all" || activeFilter === bucket.filter).map((bucket) => {
               // Prefer store_items from DB, fall back to filtering menu_items
               const dbItems = storeItems
                 .filter((item) => item.category === bucket.dbCategory)
