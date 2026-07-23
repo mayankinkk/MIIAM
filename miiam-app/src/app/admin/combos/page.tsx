@@ -41,6 +41,8 @@ export default function CombosPage() {
     name: "",
     description: "",
     image_url: "",
+    image_file: null as File | null,
+    image_preview: "",
     original_price: "",
     combo_price: "",
     items: "",
@@ -78,7 +80,7 @@ export default function CombosPage() {
   }, [combos, filterActive, searchQuery]);
 
   function resetForm() {
-    setForm({ name: "", description: "", image_url: "", original_price: "", combo_price: "", items: "", vendor_id: "", category: "", display_order: "0" });
+    setForm({ name: "", description: "", image_url: "", image_file: null, image_preview: "", original_price: "", combo_price: "", items: "", vendor_id: "", category: "", display_order: "0" });
     setEditingCombo(null);
   }
 
@@ -92,6 +94,8 @@ export default function CombosPage() {
       name: combo.name,
       description: combo.description || "",
       image_url: combo.image_url || "",
+      image_file: null,
+      image_preview: combo.image_url || "",
       original_price: String(combo.original_price),
       combo_price: String(combo.combo_price),
       items: combo.items.join(", "),
@@ -108,10 +112,21 @@ export default function CombosPage() {
       addToast("Name and prices are required", "error");
       return;
     }
+
+    let imageUrl = form.image_url || null;
+    if (form.image_file) {
+      const ext = form.image_file.name.split(".").pop() || "jpg";
+      const path = `combos/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error: uploadError } = await supabase.storage.from("store-images").upload(path, form.image_file, { upsert: true });
+      if (uploadError) { addToast(uploadError.message, "error"); return; }
+      const { data: urlData } = supabase.storage.from("store-images").getPublicUrl(path);
+      imageUrl = urlData.publicUrl;
+    }
+
     const payload = {
       name: form.name,
       description: form.description || null,
-      image_url: form.image_url || null,
+      image_url: imageUrl,
       original_price: parseFloat(form.original_price),
       combo_price: parseFloat(form.combo_price),
       items: form.items ? form.items.split(",").map((s) => s.trim()).filter(Boolean) : [],
@@ -263,8 +278,29 @@ export default function CombosPage() {
                 <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Classic combo deal" />
               </div>
               <div>
-                <label className="text-xs font-bold text-gray-500">Image URL</label>
-                <input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="https://..." />
+                <label className="text-xs font-bold text-gray-500">Image</label>
+                <div className="mt-1 flex items-center gap-3">
+                  {form.image_preview ? (
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-200">
+                      <BlurImage src={form.image_preview} alt="Preview" fill className="w-full h-full" sizes="80px" />
+                      <button onClick={() => setForm({ ...form, image_file: null, image_preview: "", image_url: "" })} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">✕</button>
+                    </div>
+                  ) : (
+                    <label className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+                      <span className="material-symbols-outlined text-gray-400 text-xl">add_a_photo</span>
+                      <span className="text-[9px] text-gray-400 mt-0.5">Upload</span>
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setForm({ ...form, image_file: file, image_preview: URL.createObjectURL(file) });
+                        }
+                      }} />
+                    </label>
+                  )}
+                  <div className="flex-1">
+                    <input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value, image_preview: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Or paste image URL" />
+                  </div>
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
