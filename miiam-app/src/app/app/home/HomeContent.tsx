@@ -90,9 +90,12 @@ export default function HomePage() {
   const { recentlyViewed } = useRecentlyViewed();
 
   const categories = [
-    { id: "food", label: t.nav.food, icon: "restaurant", color: "from-orange-400 to-red-400" },
-    { id: "services", label: t.nav.services, icon: "handyman", color: "from-blue-400 to-indigo-400" },
-    { id: "store", label: "Store", icon: "storefront", color: "from-emerald-400 to-teal-400" },
+    { id: "food?filter=under_99", label: "Under ₹99", icon: "local_fire_department", color: "from-orange-400 to-red-400" },
+    { id: "food?filter=under_149", label: "Under ₹149", icon: "savings", color: "from-emerald-400 to-teal-400" },
+    { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-blue-400 to-indigo-400" },
+    { id: "food?filter=under_249", label: "Under ₹249", icon: "new_releases", color: "from-purple-400 to-pink-400" },
+    { id: "food?filter=combos", label: "Combos", icon: "merge", color: "from-amber-400 to-orange-400" },
+    { id: "food?filter=bakery", label: "Bakery", icon: "bakery_dining", color: "from-pink-400 to-rose-400" },
   ];
 
   const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);

@@ -20,7 +20,7 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
             <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${cat.color} flex items-center justify-center shadow-sm group-active:scale-95 transition-transform`}>
               <span className="material-symbols-outlined text-white text-xl">{cat.icon}</span>
             </div>
-            <span className="text-[10px] font-bold text-on-surface-variant">{cat.label}</span>
+            <span className="text-[10px] font-bold text-on-surface-variant whitespace-nowrap">{cat.label}</span>
           </Link>
         ))}
       </div>
