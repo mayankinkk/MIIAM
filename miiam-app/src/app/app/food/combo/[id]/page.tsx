@@ -177,10 +177,9 @@ export default function ComboDetailPage() {
                       vendor_name: vendor.shop_name,
                       name: combo.name,
                       price: combo.combo_price,
-                      quantity: 1,
                       image_url: combo.image_url,
                       is_veg: true,
-                    });
+                    }, 1);
                     addToast(`${combo.name} added to cart`, "success");
                   }
                 }}
