@@ -5,6 +5,9 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import { useCartStore } from "@/lib/store/cartStore";
+import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface Combo {
   id: string;
@@ -31,6 +34,9 @@ export default function ComboDetailPage() {
   const params = useParams();
   const router = useRouter();
   const comboId = params.id as string;
+  const { addItem } = useCartStore();
+  const { addToast } = useToastStore();
+  const { confirm } = useConfirm();
 
   console.log("[ComboDetail] Rendering with comboId:", comboId);
 
@@ -140,7 +146,7 @@ export default function ComboDetailPage() {
 
       {/* Price card */}
       <div className="mx-4 -mt-4 relative z-10 bg-surface-container-lowest rounded-2xl p-5 shadow-md border border-outline-variant/10">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <div className="flex items-center gap-3">
               <span className="text-3xl font-black text-primary">₹{combo.combo_price}</span>
@@ -149,12 +155,40 @@ export default function ComboDetailPage() {
             <p className="text-sm text-green-600 font-bold mt-1">You save ₹{savings.toFixed(0)}</p>
           </div>
           {vendor && (
-            <Link
-              href={`/app/food/${vendor.id}`}
-              className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
-            >
-              View Menu
-            </Link>
+            <>
+              <Link
+                href={`/app/food/${vendor.id}`}
+                className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
+              >
+                View Menu
+              </Link>
+              <button
+                onClick={async () => {
+                  const ok = await confirm({
+                    title: "Add to Cart",
+                    message: `Add "${combo.name}" to your cart for ₹${combo.combo_price}?`,
+                    variant: "primary",
+                  });
+                  if (ok && vendor) {
+                    addItem({
+                      id: `combo-${combo.id}`,
+                      menu_item_id: `combo-${combo.id}`,
+                      vendor_id: vendor.id,
+                      vendor_name: vendor.shop_name,
+                      name: combo.name,
+                      price: combo.combo_price,
+                      quantity: 1,
+                      image_url: combo.image_url,
+                      is_veg: true,
+                    });
+                    addToast(`${combo.name} added to cart`, "success");
+                  }
+                }}
+                className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
+              >
+                Add to Cart
+              </button>
+            </>
           )}
         </div>
       </div>
