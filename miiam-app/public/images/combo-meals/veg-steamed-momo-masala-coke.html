@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veg Steamed Momos + Masala Coke Combo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .combo-card {
+            width: 820px;
+            height: 520px;
+            background: #ffffff;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            border-radius: 20px;
+        }
+
+        /* Top badges */
+        .badge-veg {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #16a34a;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-veg svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .badge-combo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8f5e 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Main content area */
+        .combo-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            padding: 60px 40px 80px;
+        }
+
+        .item {
+            text-align: center;
+            width: 260px;
+        }
+
+        .item-image {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Momo illustration */
+        .momo-svg {
+            width: 160px;
+            height: 140px;
+        }
+
+        /* Coke illustration */
+        .coke-svg {
+            width: 100px;
+            height: 160px;
+        }
+
+        .item-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+        }
+
+        .item-desc {
+            font-size: 13px;
+            color: #888;
+            font-weight: 400;
+        }
+
+        /* Plus connector */
+        .plus-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plus-circle {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8f5e 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .plus-circle svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .connector-line {
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(180deg, #ff6b35 0%, #ffb088 100%);
+            border-radius: 1px;
+        }
+
+        /* Bottom price bar */
+        .price-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 28px;
+            background: #fafafa;
+            border-top: 1px solid #f0f0f0;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .price-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .price-current {
+            font-size: 30px;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .price-original {
+            font-size: 15px;
+            color: #bbb;
+            text-decoration: line-through;
+        }
+
+        .price-save {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .add-to-cart {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8f5e 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(255, 107, 53, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .add-to-cart svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="combo-card">
+        <!-- Pure Veg Badge -->
+        <div class="badge-veg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            PURE VEG
+        </div>
+
+        <!-- Combo Deal Badge -->
+        <div class="badge-combo">COMBO DEAL</div>
+
+        <!-- Main Content -->
+        <div class="combo-content">
+            <!-- Veg Steamed Momos -->
+            <div class="item">
+                <div class="item-image">
+                    <svg class="momo-svg" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Momos plate base -->
+                        <ellipse cx="100" cy="140" rx="85" ry="20" fill="#f5f0e8"/>
+                        <ellipse cx="100" cy="135" rx="80" ry="18" fill="#faf7f2"/>
+                        
+                        <!-- Momos -->
+                        <path d="M55 100C55 80 70 60 100 60C130 60 145 80 145 100C145 110 135 120 100 120C65 120 55 110 55 100Z" fill="#f5e6d3"/>
+                        <path d="M60 95C60 78 72 62 100 62C128 62 140 78 140 95" stroke="#e8d4bc" stroke-width="2" fill="none"/>
+                        
+                        <!-- Momo pleats -->
+                        <path d="M70 85C75 75 85 68 100 68C115 68 125 75 130 85" stroke="#dfc8b0" stroke-width="2" fill="none"/>
+                        <path d="M75 95C78 88 86 82 100 82C114 82 122 88 125 95" stroke="#dfc8b0" stroke-width="1.5" fill="none"/>
+                        
+                        <!-- Steam lines -->
+                        <path d="M85 50C85 40 90 35 85 25" stroke="#ddd" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+                        <path d="M100 45C100 35 105 30 100 20" stroke="#ddd" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+                        <path d="M115 50C115 40 120 35 115 25" stroke="#ddd" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
+                        
+                        <!-- Garnish -->
+                        <circle cx="90" cy="105" r="2" fill="#16a34a"/>
+                        <circle cx="110" cy="102" r="1.5" fill="#16a34a"/>
+                        <circle cx="100" cy="108" r="2" fill="#16a34a"/>
+                    </svg>
+                </div>
+                <div class="item-name">Veg Steamed Momos</div>
+                <div class="item-desc">10 Pieces • Freshly Steamed</div>
+            </div>
+
+            <!-- Plus Connector -->
+            <div class="plus-connector">
+                <div class="connector-line"></div>
+                <div class="plus-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                </div>
+                <div class="connector-line"></div>
+            </div>
+
+            <!-- Masala Coke -->
+            <div class="item">
+                <div class="item-image">
+                    <svg class="coke-svg" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Glass body -->
+                        <path d="M25 50L30 170C30 175 35 180 60 180C85 180 90 175 90 170L95 50" fill="#e8e8e8" stroke="#d0d0d0" stroke-width="1"/>
+                        
+                        <!-- Liquid -->
+                        <path d="M28 60L33 168C33 172 38 176 60 176C82 176 87 172 87 168L92 60" fill="#8b4513"/>
+                        
+                        <!-- Liquid swirl -->
+                        <path d="M40 100C50 95 70 105 80 100" stroke="#a0522d" stroke-width="3" fill="none" opacity="0.6"/>
+                        <path d="M35 130C45 125 75 135 85 130" stroke="#a0522d" stroke-width="2" fill="none" opacity="0.4"/>
+                        
+                        <!-- Ice cubes -->
+                        <rect x="40" y="70" width="15" height="12" rx="2" fill="#ffffff" opacity="0.7"/>
+                        <rect x="62" y="75" width="12" height="10" rx="2" fill="#ffffff" opacity="0.6"/>
+                        <rect x="48" y="90" width="10" height="8" rx="2" fill="#ffffff" opacity="0.5"/>
+                        
+                        <!-- Glass highlight -->
+                        <path d="M32 55L35 165" stroke="white" stroke-width="2" opacity="0.3"/>
+                        
+                        <!-- Straw -->
+                        <rect x="55" y="15" width="6" height="130" rx="3" fill="#c41e3a"/>
+                        <rect x="55" y="15" width="6" height="130" rx="3" fill="url(#straw-stripe)"/>
+                        
+                        <!-- Straw bend -->
+                        <path d="M58 15C58 15 70 10 75 20" stroke="#c41e3a" stroke-width="6" stroke-linecap="round" fill="none"/>
+                        
+                        <!-- Bubbles -->
+                        <circle cx="45" cy="140" r="3" fill="white" opacity="0.4"/>
+                        <circle cx="70" cy="150" r="2" fill="white" opacity="0.3"/>
+                        <circle cx="55" cy="160" r="2.5" fill="white" opacity="0.35"/>
+                        
+                        <defs>
+                            <pattern id="straw-stripe" patternUnits="userSpaceOnUse" width="6" height="8" patternTransform="rotate(45)">
+                                <rect width="3" height="8" fill="white" opacity="0.3"/>
+                            </pattern>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="item-name">Masala Coke</div>
+                <div class="item-desc">Regular • Spiced & Refreshing</div>
+            </div>
+        </div>
+
+        <!-- Price Bar -->
+        <div class="price-bar">
+            <div class="price-left">
+                <span class="price-current">₹149</span>
+                <span class="price-original">₹180</span>
+                <span class="price-save">Save ₹31</span>
+            </div>
+            <button class="add-to-cart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                Add to Cart
+            </button>
+        </div>
+    </div>
+</body>
+</html>

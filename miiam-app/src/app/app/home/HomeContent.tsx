@@ -508,7 +508,9 @@ export default function HomePage() {
 
       <RecentlyViewed items={recentlyViewed} />
 
-      <CombosSection combos={combos} />
+      <div id="combos">
+        <CombosSection combos={combos} />
+      </div>
 
       <LocationModal
         isOpen={showLocationModal}
