@@ -567,7 +567,7 @@ export default function RestaurantProfilePage() {
                     <span className={`w-2.5 h-2.5 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
                       <span className={`w-1 h-1 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                     </span>
-                    <p className="font-bold text-on-surface text-[10px] truncate">{item.name}</p>
+                    <p className="font-bold text-on-surface text-[10px] line-clamp-2">{item.name}</p>
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <span className="font-black text-primary text-xs">₹{item.price}</span>
@@ -659,7 +659,7 @@ export default function RestaurantProfilePage() {
                     <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
                       <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                     </span>
-                    <p className="font-bold text-on-surface text-sm truncate">{item.name}</p>
+                    <p className="font-bold text-on-surface text-sm line-clamp-2">{item.name}</p>
                     {item.is_featured && (
                       <span className="text-amber-500 text-xs flex-shrink-0">⭐</span>
                     )}

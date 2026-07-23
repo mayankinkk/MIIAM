@@ -48,7 +48,7 @@ export default function CombosSection({ combos }: CombosSectionProps) {
               </div>
             </div>
             <div className="p-3">
-              <h3 className="font-bold text-sm text-on-surface truncate">{combo.name}</h3>
+              <h3 className="font-bold text-sm text-on-surface line-clamp-2">{combo.name}</h3>
               <p className="text-[10px] text-on-surface-variant mt-0.5 truncate">{combo.description}</p>
               <div className="flex items-center gap-2 mt-2">
                 <span className="text-xs text-on-surface-variant line-through">₹{combo.original_price}</span>

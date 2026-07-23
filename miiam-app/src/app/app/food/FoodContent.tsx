@@ -832,7 +832,7 @@ export default function FoodPageContent() {
                             </span>
                           </div>
                           <div className="p-2.5">
-                            <h3 className="font-bold text-on-surface text-[11px] truncate leading-tight">{itemName}</h3>
+                            <h3 className="font-bold text-on-surface text-[11px] line-clamp-2 leading-tight">{itemName}</h3>
                             <p className="text-[9px] text-on-surface-variant truncate mt-1">{vendorName}</p>
                           </div>
                         </Link>
@@ -924,7 +924,7 @@ export default function FoodPageContent() {
                           <span className="absolute bottom-1.5 right-1.5 bg-white/90 text-on-surface text-[10px] font-black px-1.5 py-0.5 rounded-full">★ {restaurant.rating || "4.0"}</span>
                         </div>
                         <div className="p-2.5">
-                          <h3 className="font-bold text-on-surface text-[11px] truncate">{restaurant.shop_name}</h3>
+                          <h3 className="font-bold text-on-surface text-[11px] line-clamp-2">{restaurant.shop_name}</h3>
                           <p className="text-[9px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine}</p>
                         </div>
                       </Link>
@@ -983,7 +983,7 @@ export default function FoodPageContent() {
                     </div>
                     {/* Info */}
                     <div className="p-2.5">
-                      <h3 className="font-bold text-on-surface text-sm truncate">{restaurant.shop_name}</h3>
+                      <h3 className="font-bold text-on-surface text-sm line-clamp-2">{restaurant.shop_name}</h3>
                       <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{restaurant.cuisine}</p>
                       <div className="flex items-center gap-1.5 mt-1.5">
                         <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">★ {restaurant.rating || "4.0"}</span>
