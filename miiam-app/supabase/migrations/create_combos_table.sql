@@ -15,14 +15,14 @@ CREATE TABLE IF NOT EXISTS combos (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Add RLS policies
+-- Add RLS policies (drop first to avoid conflicts)
 ALTER TABLE combos ENABLE ROW LEVEL SECURITY;
 
--- Anyone can view active combos
+DROP POLICY IF EXISTS "Combos are viewable by everyone" ON combos;
 CREATE POLICY "Combos are viewable by everyone" ON combos
   FOR SELECT USING (is_active = true);
 
--- Vendors can manage their own combos
+DROP POLICY IF EXISTS "Vendors can manage their combos" ON combos;
 CREATE POLICY "Vendors can manage their combos" ON combos
   FOR ALL USING (auth.uid() = vendor_id);
 
@@ -40,6 +40,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS update_combos_updated_at ON combos;
 CREATE TRIGGER update_combos_updated_at
   BEFORE UPDATE ON combos
   FOR EACH ROW
