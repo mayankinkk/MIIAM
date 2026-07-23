@@ -30,12 +30,12 @@ export default function CombosSection({ combos }: CombosSectionProps) {
         </div>
         <Link href="/app/food" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>
-      <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-        {combos.map((combo) => (
+      <div className="grid grid-cols-2 gap-3">
+        {combos.slice(0, 2).map((combo) => (
           <Link
             key={combo.id}
             href={`/app/food?combo=${combo.id}`}
-            className="flex-shrink-0 w-48 bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.97] transition-transform"
+            className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.97] transition-transform"
           >
             <div className="relative h-28 overflow-hidden">
               {combo.image_url ? (
