@@ -154,41 +154,54 @@ export default function ComboDetailPage() {
             </div>
             <p className="text-sm text-green-600 font-bold mt-1">You save ₹{savings.toFixed(0)}</p>
           </div>
-          {vendor && (
-            <>
+          <>
+            {vendor && (
               <Link
                 href={`/app/food/${vendor.id}`}
                 className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
               >
                 View Menu
               </Link>
-              <button
-                onClick={async () => {
-                  const ok = await confirm({
-                    title: "Add to Cart",
-                    message: `Add "${combo.name}" to your cart for ₹${combo.combo_price}?`,
-                    variant: "default",
-                  });
-                  if (ok && vendor) {
-                    addItem({
-                      id: `combo-${combo.id}`,
-                      menu_item_id: `combo-${combo.id}`,
-                      vendor_id: vendor.id,
-                      vendor_name: vendor.shop_name,
-                      name: combo.name,
-                      price: combo.combo_price,
-                      image_url: combo.image_url,
-                      is_veg: true,
-                    }, 1);
-                    addToast(`${combo.name} added to cart`, "success");
-                  }
-                }}
-                className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
-              >
-                Add to Cart
-              </button>
-            </>
-          )}
+            )}
+            <button
+              onClick={async () => {
+                const ok = await confirm({
+                  title: "Add to Cart",
+                  message: `Add "${combo.name}" to your cart for ₹${combo.combo_price}?`,
+                  variant: "default",
+                });
+                if (ok && vendor) {
+                  addItem({
+                    id: `combo-${combo.id}`,
+                    menu_item_id: `combo-${combo.id}`,
+                    vendor_id: vendor.id,
+                    vendor_name: vendor.shop_name,
+                    name: combo.name,
+                    price: combo.combo_price,
+                    image_url: combo.image_url,
+                    is_veg: true,
+                  }, 1);
+                  addToast(`${combo.name} added to cart`, "success");
+                } else if (ok && !vendor && combo.vendor_id) {
+                  // Fallback if vendor not loaded but vendor_id exists
+                  addItem({
+                    id: `combo-${combo.id}`,
+                    menu_item_id: `combo-${combo.id}`,
+                    vendor_id: combo.vendor_id,
+                    vendor_name: "Restaurant",
+                    name: combo.name,
+                    price: combo.combo_price,
+                    image_url: combo.image_url,
+                    is_veg: true,
+                  }, 1);
+                  addToast(`${combo.name} added to cart`, "success");
+                }
+              }}
+              className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
+            >
+              Add to Cart
+            </button>
+          </>
         </div>
       </div>
 
