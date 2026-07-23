@@ -1,0 +1,46 @@
+-- Create combos table for MIIAM
+CREATE TABLE IF NOT EXISTS combos (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  vendor_id UUID REFERENCES vendors(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  description TEXT,
+  image_url TEXT,
+  original_price NUMERIC(10,2) NOT NULL,
+  combo_price NUMERIC(10,2) NOT NULL,
+  items TEXT[] DEFAULT '{}',
+  category TEXT,
+  is_active BOOLEAN DEFAULT true,
+  display_order INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Add RLS policies
+ALTER TABLE combos ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can view active combos
+CREATE POLICY "Combos are viewable by everyone" ON combos
+  FOR SELECT USING (is_active = true);
+
+-- Vendors can manage their own combos
+CREATE POLICY "Vendors can manage their combos" ON combos
+  FOR ALL USING (auth.uid() = vendor_id);
+
+-- Add index for faster queries
+CREATE INDEX IF NOT EXISTS idx_combos_vendor_id ON combos(vendor_id);
+CREATE INDEX IF NOT EXISTS idx_combos_active ON combos(is_active);
+CREATE INDEX IF NOT EXISTS idx_combos_display_order ON combos(display_order);
+
+-- Add updated_at trigger
+CREATE OR REPLACE FUNCTION update_combos_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_combos_updated_at
+  BEFORE UPDATE ON combos
+  FOR EACH ROW
+  EXECUTE FUNCTION update_combos_updated_at();

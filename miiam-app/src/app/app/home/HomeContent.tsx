@@ -216,6 +216,15 @@ export default function HomePage() {
         setFeaturedRestaurants(local.filter((v: HomeVendor) => v.is_featured || v.is_promoted).slice(0, 6));
         setSpotlightRestaurant(local.find((v: HomeVendor) => v.is_featured) || null);
       }
+
+      const { data: comboData } = await supabase
+        .from("combos")
+        .select("id, name, description, image_url, original_price, combo_price, items")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true })
+        .limit(10);
+      if (comboData) setCombos(comboData);
+
       setCheckingPincode(false);
       setLoading(false);
     }
