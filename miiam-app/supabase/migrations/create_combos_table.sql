@@ -22,9 +22,9 @@ DROP POLICY IF EXISTS "Combos are viewable by everyone" ON combos;
 CREATE POLICY "Combos are viewable by everyone" ON combos
   FOR SELECT USING (is_active = true);
 
-DROP POLICY IF EXISTS "Vendors can manage their combos" ON combos;
-CREATE POLICY "Vendors can manage their combos" ON combos
-  FOR ALL USING (auth.uid() = vendor_id);
+DROP POLICY IF EXISTS "Anyone can manage combos" ON combos;
+CREATE POLICY "Anyone can manage combos" ON combos
+  FOR ALL USING (true);
 
 -- Add index for faster queries
 CREATE INDEX IF NOT EXISTS idx_combos_vendor_id ON combos(vendor_id);
