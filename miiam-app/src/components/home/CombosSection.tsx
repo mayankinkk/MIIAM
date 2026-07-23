@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import BlurImage from "@/components/BlurImage";
+import Image from "next/image";
 
 interface Combo {
   id: string;
@@ -39,7 +39,7 @@ export default function CombosSection({ combos }: CombosSectionProps) {
           >
             <div className="relative h-28 overflow-hidden">
               {combo.image_url ? (
-                <BlurImage src={combo.image_url} alt={combo.name} fill className="w-full h-full object-cover" sizes="192px" />
+                <Image src={combo.image_url} alt={combo.name} fill className="object-cover" sizes="192px" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-orange-100 to-amber-50">🎉</div>
               )}
