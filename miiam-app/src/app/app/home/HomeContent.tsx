@@ -20,7 +20,7 @@ import HomeCategories from "@/components/home/HomeCategories";
 import QuickReorder from "@/components/home/QuickReorder";
 import SpotlightCard from "@/components/home/SpotlightCard";
 import PromotedPartners from "@/components/home/PromotedPartners";
-import NearbyRestaurants from "@/components/home/NearbyRestaurants";
+import CombosSection from "@/components/home/CombosSection";
 import LocationModal from "@/components/home/LocationModal";
 import NotificationsPanel from "@/components/home/NotificationsPanel";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
@@ -115,6 +115,7 @@ export default function HomePage() {
   const [nearbyRestaurants, setNearbyRestaurants] = useState<HomeVendor[]>([]);
   const [featuredRestaurants, setFeaturedRestaurants] = useState<HomeVendor[]>([]);
   const [spotlightRestaurant, setSpotlightRestaurant] = useState<HomeVendor | null>(null);
+  const [combos, setCombos] = useState<{ id: string; name: string; description: string; image_url: string; original_price: number; combo_price: number; items: string[] }[]>([]);
   const [localServiceable, setLocalServiceable] = useState(true);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
@@ -498,13 +499,7 @@ export default function HomePage() {
 
       <RecentlyViewed items={recentlyViewed} />
 
-      <NearbyRestaurants
-        restaurants={nearbyRestaurants}
-        hasLocation={!!userPincode || !!locationStore.city}
-        hasPincode={!!userPincode}
-        displayAddress={locationStore.displayAddress || ""}
-        onLocationClick={() => setShowLocationModal(true)}
-      />
+      <CombosSection combos={combos} />
 
       <LocationModal
         isOpen={showLocationModal}
