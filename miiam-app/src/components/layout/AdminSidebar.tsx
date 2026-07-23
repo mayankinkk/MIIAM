@@ -25,6 +25,7 @@ const menuGroups = [
       { name: "Food Orders", href: "/admin/foods", icon: "restaurant" },
       { name: "Menu Items", href: "/admin/foods/menu-items", icon: "menu_book" },
       { name: "Cuisines", href: "/admin/foods/cuisines", icon: "lunch_dining" },
+      { name: "Combos", href: "/admin/combos", icon: "merge" },
       { name: "Reviews", href: "/admin/reviews", icon: "star" },
       { name: "Verifications", href: "/admin/vendors/verification", icon: "verified" },
       { name: "Store Items", href: "/admin/store", icon: "storefront" },
