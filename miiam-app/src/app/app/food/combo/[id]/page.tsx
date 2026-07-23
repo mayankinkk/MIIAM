@@ -7,7 +7,6 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
-import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface Combo {
   id: string;
@@ -36,7 +35,6 @@ export default function ComboDetailPage() {
   const comboId = params.id as string;
   const { addItem } = useCartStore();
   const { addToast } = useToastStore();
-  const { confirm } = useConfirm();
 
   console.log("[ComboDetail] Rendering with comboId:", comboId);
 
@@ -164,31 +162,15 @@ export default function ComboDetailPage() {
               </Link>
             )}
             <button
-              onClick={async () => {
-                const ok = await confirm({
-                  title: "Add to Cart",
-                  message: `Add "${combo.name}" to your cart for ₹${combo.combo_price}?`,
-                  variant: "default",
-                });
-                if (ok && vendor) {
+              onClick={() => {
+                const vendorId = vendor?.id || combo.vendor_id;
+                const vendorName = vendor?.shop_name || "Restaurant";
+                if (vendorId) {
                   addItem({
                     id: `combo-${combo.id}`,
                     menu_item_id: `combo-${combo.id}`,
-                    vendor_id: vendor.id,
-                    vendor_name: vendor.shop_name,
-                    name: combo.name,
-                    price: combo.combo_price,
-                    image_url: combo.image_url,
-                    is_veg: true,
-                  }, 1);
-                  addToast(`${combo.name} added to cart`, "success");
-                } else if (ok && !vendor && combo.vendor_id) {
-                  // Fallback if vendor not loaded but vendor_id exists
-                  addItem({
-                    id: `combo-${combo.id}`,
-                    menu_item_id: `combo-${combo.id}`,
-                    vendor_id: combo.vendor_id,
-                    vendor_name: "Restaurant",
+                    vendor_id: vendorId,
+                    vendor_name: vendorName,
                     name: combo.name,
                     price: combo.combo_price,
                     image_url: combo.image_url,
