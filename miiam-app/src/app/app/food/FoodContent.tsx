@@ -12,6 +12,7 @@ import ServiceUnavailable from "@/components/ServiceUnavailable";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
 import { createClient } from "@/lib/supabase/client";
+import CombosSection from "@/components/home/CombosSection";
 
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
@@ -472,6 +473,7 @@ export default function FoodPageContent() {
   const [restaurants, setRestaurants] = useState<FoodVendor[]>([]);
   const [menuItems, setMenuItems] = useState<FoodMenuItem[]>([]);
   const [storeItems, setStoreItems] = useState<StoreItem[]>([]);
+  const [combos, setCombos] = useState<Array<{ id: string; name: string; description: string; image_url: string; original_price: number; combo_price: number; items: string[] }>>([]);
   const favoriteIds = useFavoritesStore((s) => s.favoriteIds);
   const toggle = useFavoritesStore((s) => s.toggle);
   const setFavorites = useFavoritesStore((s) => s.setFavorites);
@@ -544,6 +546,14 @@ export default function FoodPageContent() {
           logger.error({ err: storeError }, "Store items query failed");
         }
         setStoreItems(storeData || []);
+
+        const { data: comboData } = await supabase
+          .from("combos")
+          .select("id, name, description, image_url, original_price, combo_price, items")
+          .eq("is_active", true)
+          .order("display_order", { ascending: true })
+          .limit(10);
+        if (comboData) setCombos(comboData);
         
         if (heroRes?.data) setHeroAsset(heroRes.data);
       });
@@ -847,6 +857,11 @@ export default function FoodPageContent() {
               );
             })}
           </div>
+        )}
+
+        {/* Combos Section - show when filter is combos */}
+        {activeFilter === "combos" && !loading && (
+          <CombosSection combos={combos} />
         )}
 
         {loading ? (
