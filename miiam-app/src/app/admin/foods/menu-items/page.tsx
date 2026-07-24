@@ -370,6 +370,7 @@ export default function AdminMenuItemsPage() {
                     <option value="Beverages">Beverages</option>
                     <option value="Desserts">Desserts</option>
                     <option value="Sides">Sides</option>
+                    <option value="Bakery">Bakery</option>
                   </select>
                 </div>
                 <div>
@@ -437,6 +438,7 @@ export default function AdminMenuItemsPage() {
                     <option value="Starters">Starters</option>
                     <option value="Beverages">Beverages</option>
                     <option value="Desserts">Desserts</option>
+                    <option value="Bakery">Bakery</option>
                   </select>
                 </div>
                 <div>
