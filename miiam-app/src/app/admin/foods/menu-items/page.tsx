@@ -199,6 +199,19 @@ export default function AdminMenuItemsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Menu Items</h1>
         <div className="flex items-center gap-3">
+          <button onClick={() => {
+            const csv = "name,price,category,vendor_id,image_url\nSample Item,99,Main Course,vendor-uuid,https://example.com/image.jpg";
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "menu-items-template.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+          }} className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] px-4 py-3 rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)] flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">download</span>
+            Download Template
+          </button>
           <label className={`bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] px-4 py-3 rounded-xl font-bold text-sm cursor-pointer hover:bg-[var(--color-surface-subtle)] flex items-center gap-2 ${csvUploading ? "opacity-50 pointer-events-none" : ""}`}>
             <span className="material-symbols-outlined text-sm">upload_file</span>
             {csvUploading ? "Importing..." : "Import CSV"}
