@@ -213,7 +213,8 @@ export default function AdminMenuItemsPage() {
 
   const bulkDelete = async () => {
     if (selectedItems.size === 0) return;
-    if (!confirm(`Delete ${selectedItems.size} items?`)) return;
+    const confirmed = await confirm({ title: "Delete Items", message: `Delete ${selectedItems.size} items?`, variant: "danger" });
+    if (!confirmed) return;
     
     try {
       const { error } = await supabase.from("menu_items").delete().in("id", Array.from(selectedItems));

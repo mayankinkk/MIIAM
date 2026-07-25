@@ -39,15 +39,15 @@ export default function ComboAnalytics() {
     }
 
     const statsWithOrders = await Promise.all(
-      combos.map(async (combo) => {
+      combos.map(async (combo: { id: string; name: string; combo_price: number }) => {
         const { data: orders } = await supabase
           .from("order_items")
           .select("quantity, total_price")
           .eq("combo_id", combo.id)
           .gte("created_at", startDate.toISOString());
 
-        const orderCount = orders?.reduce((sum, o) => sum + (o.quantity || 1), 0) || 0;
-        const totalRevenue = orders?.reduce((sum, o) => sum + (o.total_price || 0), 0) || 0;
+        const orderCount = orders?.reduce((sum: number, o: { quantity?: number }) => sum + (o.quantity || 1), 0) || 0;
+        const totalRevenue = orders?.reduce((sum: number, o: { total_price?: number }) => sum + (o.total_price || 0), 0) || 0;
 
         return {
           id: combo.id,
