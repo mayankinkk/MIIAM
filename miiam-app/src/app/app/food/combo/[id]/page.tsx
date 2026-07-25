@@ -7,6 +7,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
+import { useConfirm } from "@/lib/hooks/useConfirm";
 
 interface Combo {
   id: string;
@@ -33,8 +34,11 @@ export default function ComboDetailPage() {
   const params = useParams();
   const router = useRouter();
   const comboId = params.id as string;
-  const { addItem } = useCartStore();
+  const { addItem, items } = useCartStore();
   const { addToast } = useToastStore();
+  const { confirm } = useConfirm();
+
+  const cartVendorId = items.length > 0 ? items[0].vendor_id : null;
 
   console.log("[ComboDetail] Rendering with comboId:", comboId);
 
@@ -162,10 +166,24 @@ export default function ComboDetailPage() {
               </Link>
             )}
             <button
-              onClick={() => {
+              onClick={async () => {
                 const vendorId = vendor?.id || combo.vendor_id;
                 const vendorName = vendor?.shop_name || "Restaurant";
-                if (vendorId) {
+                const isDifferentVendor = cartVendorId && vendorId && cartVendorId !== vendorId;
+                
+                if (isDifferentVendor && await confirm({ title: "Change Restaurant?", message: "Your cart has items from another restaurant. Add this combo and clear the cart?", variant: "danger" })) {
+                  addItem({
+                    id: `combo-${combo.id}`,
+                    menu_item_id: `combo-${combo.id}`,
+                    vendor_id: vendorId,
+                    vendor_name: vendorName,
+                    name: combo.name,
+                    price: combo.combo_price,
+                    image_url: combo.image_url,
+                    is_veg: true,
+                  }, 1);
+                  addToast(`${combo.name} added to cart`, "success");
+                } else if (!isDifferentVendor && vendorId) {
                   addItem({
                     id: `combo-${combo.id}`,
                     menu_item_id: `combo-${combo.id}`,
