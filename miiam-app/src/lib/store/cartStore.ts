@@ -73,7 +73,7 @@ export const useCartStore = create<CartStore>()(
         }
 
         // Haptic feedback on add
-        try { navigator.vibrate?.(10); } catch {}
+        import("@/lib/haptics").then(({ hapticFeedback }) => hapticFeedback("success"));
 
         if (!suppressToast) {
           useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
