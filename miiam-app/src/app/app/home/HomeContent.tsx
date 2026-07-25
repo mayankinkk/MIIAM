@@ -119,7 +119,18 @@ export default function HomePage() {
   const [nearbyRestaurants, setNearbyRestaurants] = useState<HomeVendor[]>([]);
   const [featuredRestaurants, setFeaturedRestaurants] = useState<HomeVendor[]>([]);
   const [spotlightRestaurant, setSpotlightRestaurant] = useState<HomeVendor | null>(null);
-  const [combos, setCombos] = useState<{ id: string; name: string; description: string; image_url: string; original_price: number; combo_price: number; items: string[] }[]>([]);
+  const [combos, setCombos] = useState<{ id: string; name: string; description: string; image_url: string; original_price: number; combo_price: number; items: string[] }[]>(() => {
+    if (typeof window !== "undefined") {
+      const cached = localStorage.getItem("miiam_combos_cache");
+      if (cached) {
+        try {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < 5 * 60 * 1000) return data;
+        } catch {}
+      }
+    }
+    return [];
+  });
   const [localServiceable, setLocalServiceable] = useState(true);
   const [checkingPincode, setCheckingPincode] = useState(false);
   const [dataError, setDataError] = useState<string | null>(null);
@@ -227,7 +238,10 @@ export default function HomePage() {
         .eq("is_active", true)
         .order("display_order", { ascending: true })
         .limit(10);
-      if (comboData) setCombos(comboData);
+      if (comboData) {
+        setCombos(comboData);
+        localStorage.setItem("miiam_combos_cache", JSON.stringify({ data: comboData, timestamp: Date.now() }));
+      }
 
       setCheckingPincode(false);
       setLoading(false);
