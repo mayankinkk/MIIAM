@@ -7,7 +7,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
-import { useConfirm } from "@/lib/hooks/useConfirm";
+import { useConfirm } from "@/components/ui/ConfirmDialog";
 
 interface Combo {
   id: string;

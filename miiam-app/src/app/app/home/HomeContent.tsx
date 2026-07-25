@@ -516,7 +516,7 @@ export default function HomePage() {
         checkingPincode={checkingPincode}
       />
 
-      <PullToRefresh onRefresh={async () => { await loadHome(); }} className="min-h-screen">
+      <PullToRefresh onRefresh={async () => { window.location.reload(); }} className="min-h-screen">
         <HomeCategories categories={categories} />
       </PullToRefresh>
 
