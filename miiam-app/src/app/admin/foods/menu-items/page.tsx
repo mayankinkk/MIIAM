@@ -33,6 +33,7 @@ export default function AdminMenuItemsPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [csvUploading, setCsvUploading] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [newItem, setNewItem] = useState({
     name: "",
     price: "",
@@ -192,6 +193,39 @@ export default function AdminMenuItemsPage() {
     return matchesSearch && matchesCategory && matchesVendor;
   });
 
+  const toggleSelectItem = (id: string) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.size === filteredItems.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(filteredItems.map(i => i.id)));
+    }
+  };
+
+  const bulkDelete = async () => {
+    if (selectedItems.size === 0) return;
+    if (!confirm(`Delete ${selectedItems.size} items?`)) return;
+    
+    try {
+      const { error } = await supabase.from("menu_items").delete().in("id", Array.from(selectedItems));
+      if (error) throw error;
+      useToastStore.getState().addToast(`${selectedItems.size} items deleted`, "success");
+      setSelectedItems(new Set());
+      loadData();
+    } catch (error: unknown) {
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
+    }
+  };
+
   if (loading) return <div className="px-8">Loading menu items...</div>;
 
   return (
@@ -199,6 +233,12 @@ export default function AdminMenuItemsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Menu Items</h1>
         <div className="flex items-center gap-3">
+          {selectedItems.size > 0 && (
+            <button onClick={bulkDelete} className="bg-red-500 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-red-600 flex items-center gap-2">
+              <span className="material-symbols-outlined text-sm">delete</span>
+              Delete ({selectedItems.size})
+            </button>
+          )}
           <button onClick={() => {
             const csv = "name,price,category,vendor_id,image_url\nSample Item,99,Main Course,vendor-uuid,https://example.com/image.jpg";
             const blob = new Blob([csv], { type: "text/csv" });
@@ -262,6 +302,14 @@ export default function AdminMenuItemsPage() {
         <table className="w-full text-left">
           <thead className="bg-[var(--color-surface-subtle)]">
             <tr>
+              <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">
+                <input
+                  type="checkbox"
+                  checked={selectedItems.size === filteredItems.length && filteredItems.length > 0}
+                  onChange={toggleSelectAll}
+                  className="w-4 h-4 rounded"
+                />
+              </th>
               <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Item</th>
               <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
               <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Category</th>
@@ -273,11 +321,19 @@ export default function AdminMenuItemsPage() {
           <tbody className="divide-y divide-slate-50 text-xs">
             {filteredItems.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-[var(--color-outline-variant)]">No items found</td>
+                <td colSpan={7} className="p-8 text-center text-[var(--color-outline-variant)]">No items found</td>
               </tr>
             ) : (
               filteredItems.map((item) => (
                 <tr key={item.id} className={item.is_available ? "" : "opacity-50"}>
+                  <td className="p-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedItems.has(item.id)}
+                      onChange={() => toggleSelectItem(item.id)}
+                      className="w-4 h-4 rounded"
+                    />
+                  </td>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg overflow-hidden">
