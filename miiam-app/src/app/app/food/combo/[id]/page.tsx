@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface Combo {
   id: string;
@@ -110,6 +111,8 @@ export default function ComboDetailPage() {
 
   return (
     <div className="min-h-screen bg-surface pb-8">
+      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Food", href: "/app/food" }, { label: "Combo", href: "/app/food?filter=combos" }, { label: combo.name }]} />
+      
       {/* Hero Image */}
       <div className="relative h-64 sm:h-80 overflow-hidden">
         {combo.image_url ? (
