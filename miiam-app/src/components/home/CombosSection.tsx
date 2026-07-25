@@ -49,6 +49,16 @@ export default function CombosSection({ combos }: CombosSectionProps) {
             </div>
             <div className="p-3">
               <h3 className="font-bold text-sm text-on-surface line-clamp-2">{combo.name}</h3>
+              {combo.category && (
+                <span className="inline-block mt-2 px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-bold rounded-full">
+                  {combo.category}
+                </span>
+              )}
+              {combo.items && combo.items.length > 0 && (
+                <span className="inline-block mt-2 ml-1 px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[9px] font-bold rounded-full">
+                  {combo.items.length} items
+                </span>
+              )}
               <div className="flex items-center gap-2 mt-2">
                 <span className="text-xs text-on-surface-variant line-through">₹{combo.original_price}</span>
                 <span className="text-sm font-black text-primary">₹{combo.combo_price}</span>
