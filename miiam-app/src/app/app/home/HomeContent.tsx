@@ -24,6 +24,7 @@ import CombosSection from "@/components/home/CombosSection";
 import LocationModal from "@/components/home/LocationModal";
 import NotificationsPanel from "@/components/home/NotificationsPanel";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
+import PullToRefresh from "@/components/PullToRefresh";
 
 import type { User } from "@supabase/supabase-js";
 
@@ -501,7 +502,9 @@ export default function HomePage() {
         checkingPincode={checkingPincode}
       />
 
-      <HomeCategories categories={categories} />
+      <PullToRefresh onRefresh={async () => { await loadHome(); }} className="min-h-screen">
+        <HomeCategories categories={categories} />
+      </PullToRefresh>
 
       {lastOrder && <QuickReorder order={lastOrder} />}
 
