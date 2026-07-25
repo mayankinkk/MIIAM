@@ -885,45 +885,55 @@ export default function FoodPageContent() {
         )}
 
         {/* Bakery Section - show when filter is bakery */}
-        {activeFilter === "bakery" && !loading && menuItems.length > 0 && (
+        {activeFilter === "bakery" && !loading && (
           <div className="px-4 mb-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">🧁</span>
-                <h2 className="text-lg font-bold text-on-surface">Bakery Items</h2>
+            {menuItems.filter(i => i.category === "Bakery").length > 0 ? (
+              <>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🧁</span>
+                    <h2 className="text-lg font-bold text-on-surface">Bakery Items</h2>
+                  </div>
+                  <span className="text-xs font-bold text-primary">{menuItems.filter(i => i.category === "Bakery").length} items</span>
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+                  {menuItems.filter(i => i.category === "Bakery").slice(0, 10).map((item) => {
+                    const restaurant = restaurants.find((r) => r.id === item.vendor_id);
+                    return (
+                      <Link
+                        key={item.id}
+                        href={`/app/food/${item.vendor_id}`}
+                        className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
+                      >
+                        <div className="relative h-24 bg-surface-container overflow-hidden">
+                          <BlurImage
+                            src={item.image_url || "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"}
+                            alt={item.name}
+                            fill
+                            className="w-full h-full"
+                            sizes="144px"
+                            fallbackSrc="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"
+                          />
+                          <span className="absolute bottom-1.5 right-1.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                            ₹{item.price}
+                          </span>
+                        </div>
+                        <div className="p-2.5">
+                          <h3 className="font-bold text-on-surface text-[11px] line-clamp-2 leading-tight">{item.name}</h3>
+                          <p className="text-[9px] text-on-surface-variant truncate mt-1">{restaurant?.shop_name || "Restaurant"}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-8">
+                <span className="text-4xl">🧁</span>
+                <p className="text-on-surface-variant text-sm mt-2">No bakery items yet</p>
+                <p className="text-on-surface-variant/60 text-xs mt-1">Bakery items from local vendors will appear here</p>
               </div>
-              <span className="text-xs font-bold text-primary">{menuItems.filter(i => i.category === "Bakery").length} items</span>
-            </div>
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              {menuItems.filter(i => i.category === "Bakery").slice(0, 10).map((item) => {
-                const restaurant = restaurants.find((r) => r.id === item.vendor_id);
-                return (
-                  <Link
-                    key={item.id}
-                    href={`/app/food/${item.vendor_id}`}
-                    className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
-                  >
-                    <div className="relative h-24 bg-surface-container overflow-hidden">
-                      <BlurImage
-                        src={item.image_url || "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"}
-                        alt={item.name}
-                        fill
-                        className="w-full h-full"
-                        sizes="144px"
-                        fallbackSrc="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"
-                      />
-                      <span className="absolute bottom-1.5 right-1.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
-                        ₹{item.price}
-                      </span>
-                    </div>
-                    <div className="p-2.5">
-                      <h3 className="font-bold text-on-surface text-[11px] line-clamp-2 leading-tight">{item.name}</h3>
-                      <p className="text-[9px] text-on-surface-variant truncate mt-1">{restaurant?.shop_name || "Restaurant"}</p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
+            )}
           </div>
         )}
 
