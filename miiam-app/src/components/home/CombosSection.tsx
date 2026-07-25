@@ -12,6 +12,7 @@ interface Combo {
   combo_price: number;
   items: string[];
   category?: string;
+  rating?: number;
 }
 
 interface CombosSectionProps {
@@ -49,6 +50,12 @@ export default function CombosSection({ combos }: CombosSectionProps) {
             </div>
             <div className="p-3">
               <h3 className="font-bold text-sm text-on-surface line-clamp-2">{combo.name}</h3>
+              {combo.rating && combo.rating > 0 && (
+                <div className="flex items-center gap-1 mt-2">
+                  <span className="text-yellow-500 text-xs">★</span>
+                  <span className="text-xs font-bold text-on-surface">{combo.rating.toFixed(1)}</span>
+                </div>
+              )}
               {combo.category && (
                 <span className="inline-block mt-2 px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-bold rounded-full">
                   {combo.category}
