@@ -703,6 +703,26 @@ export default function FoodPageContent() {
 
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Food' }]} />
 
+      {/* Active Filter Badge */}
+      {activeFilter !== "all" && (
+        <div className="px-6 mt-3">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
+            <span className="material-symbols-outlined text-sm">filter_list</span>
+            <span className="text-sm font-bold">
+              {activeFilter === "under_99" && "Under ₹99"}
+              {activeFilter === "under_149" && "Under ₹149"}
+              {activeFilter === "under_199" && "Under ₹199"}
+              {activeFilter === "under_249" && "Under ₹249"}
+              {activeFilter === "combos" && "Combos"}
+              {activeFilter === "bakery" && "Bakery"}
+            </span>
+            <button onClick={() => setActiveFilter("all")} className="ml-1 hover:bg-primary/20 rounded-full p-0.5">
+              <span className="material-symbols-outlined text-sm">close</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {heroAsset && (
         <div className="px-6 mt-4">
           <div className="rounded-2xl overflow-hidden relative h-44 shadow-sm">
