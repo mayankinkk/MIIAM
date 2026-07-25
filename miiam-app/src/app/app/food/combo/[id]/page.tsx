@@ -131,6 +131,24 @@ export default function ComboDetailPage() {
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
+          <button
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: combo.name,
+                  text: `Check out ${combo.name} - ₹${combo.combo_price} (${discountPct}% OFF)`,
+                  url: window.location.href,
+                });
+              } else {
+                navigator.clipboard.writeText(window.location.href);
+                addToast("Link copied to clipboard", "success");
+              }
+            }}
+            aria-label="Share combo"
+            className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
+          >
+            <span className="material-symbols-outlined">share</span>
+          </button>
         </div>
 
         {/* Discount badge */}
