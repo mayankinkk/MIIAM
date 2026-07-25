@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useLanguageStore, type Language } from "@/lib/store/languageStore";
+import { useThemeStore } from "@/lib/store/themeStore";
 
 interface HomeHeaderProps {
   userName: string;
@@ -17,6 +18,7 @@ interface HomeHeaderProps {
 export default function HomeHeader({ userName, greeting, timeIcon, location, unreadCount, onLocationClick, onNotificationsClick }: HomeHeaderProps) {
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguageStore();
+  const { theme, setTheme } = useThemeStore();
 
   return (
     <header className="bg-surface border-b border-outline-variant/10">
@@ -32,6 +34,13 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
             </div>
           </div>
           <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="h-8 px-2.5 rounded-full bg-surface-container-high text-on-surface text-[11px] font-bold border border-outline-variant/15 flex items-center gap-1 active:scale-95 transition-transform"
+              aria-label="Toggle dark mode"
+            >
+              <span className="material-symbols-outlined text-[14px]">{theme === "dark" ? "light_mode" : "dark_mode"}</span>
+            </button>
             <button
               onClick={() => {
                 const langs: Language[] = ["en", "hi", "as", "bn"];
