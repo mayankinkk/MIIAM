@@ -759,13 +759,16 @@ export default function FoodPageContent() {
               className="flex flex-col items-center gap-1.5 flex-shrink-0"
             >
               <div className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${selectedCategory === cat.id ? "border-primary shadow-lg shadow-primary/30" : "border-surface-container-high"}`}>
-                {cat.image ? (
-                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" loading="lazy" />
-                ) : (
-                  <div className={`w-full h-full ${cat.color} flex items-center justify-center`}>
-                    <span className="text-2xl">{cat.icon}</span>
-                  </div>
-                )}
+                <div className="relative w-full h-full">
+                  <BlurImage
+                    src={cat.image}
+                    alt={cat.name}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                    fallbackSrc=""
+                  />
+                </div>
               </div>
               <span className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
             </button>
