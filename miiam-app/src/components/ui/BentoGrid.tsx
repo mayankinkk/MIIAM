@@ -9,7 +9,7 @@ interface BentoGridProps {
 
 interface BentoItemProps {
   children: ReactNode;
-  span?: "full" | "half" | "third" | "two-thirds";
+  span?: "auto" | "full" | "half" | "third" | "two-thirds";
   height?: "auto" | "sm" | "md" | "lg";
   className?: string;
 }
