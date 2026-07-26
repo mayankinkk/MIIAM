@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useLanguageStore, type Language } from "@/lib/store/languageStore";
@@ -19,9 +20,16 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
   const { t } = useTranslation();
   const { language, setLanguage } = useLanguageStore();
   const { theme, setTheme } = useThemeStore();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="bg-surface border-b border-outline-variant/10">
+    <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "bg-surface/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-outline-variant/5" : "bg-surface border-b border-outline-variant/10"}`}>
       <div className="px-5 pt-5 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
