@@ -61,6 +61,10 @@ interface MenuItem {
   is_featured: boolean;
   description: string;
   vendor_id: string;
+  is_available: boolean;
+  order_count: number;
+  is_vegan?: boolean;
+  is_gluten_free?: boolean;
 }
 
 interface Review {
@@ -91,9 +95,10 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
   const { addItem, items, updateQuantity } = useCartStore();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
   const qty = cartItem?.quantity ?? 0;
+  const isAvailable = item.is_available !== false;
 
   const handleAdd = () => {
-    if (!isOpen) return;
+    if (!isOpen || !isAvailable) return;
     addItem({
       id: item.id,
       menu_item_id: item.id,
@@ -107,13 +112,13 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
     if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
   };
 
-  if (!isOpen) {
+  if (!isOpen || !isAvailable) {
     return (
       <span className={compact
         ? "px-2 py-0.5 bg-gray-200 text-gray-500 text-[9px] font-bold rounded-full cursor-not-allowed"
         : "px-4 py-1.5 bg-gray-200 text-gray-500 text-xs font-bold rounded-full cursor-not-allowed"
       }>
-        Closed
+        {!isAvailable ? "Sold Out" : "Closed"}
       </span>
     );
   }
@@ -317,6 +322,7 @@ export default function RestaurantProfilePage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [vegOnly, setVegOnly] = useState(false);
+  const [menuSort, setMenuSort] = useState<"default" | "price_low" | "price_high" | "rating">("default");
   const [menuSearch, setMenuSearch] = useState("");
   const { favoriteIds, toggle } = useFavoritesStore();
   const isFavorite = favoriteIds.includes(vendorId);
@@ -344,7 +350,7 @@ export default function RestaurantProfilePage() {
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
         supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured, cover_image_url, image_url").eq("id", vendorId).single(),
-        supabase.from("menu_items").select("id, name, price, category, image_url, description, is_veg, is_featured, vendor_id").eq("vendor_id", vendorId).order("name"),
+        supabase.from("menu_items").select("id, name, price, category, image_url, description, is_veg, is_featured, vendor_id, is_available, order_count, is_vegan, is_gluten_free").eq("vendor_id", vendorId).order("name"),
         supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
       if (vendorRes.error) {
@@ -417,7 +423,15 @@ export default function RestaurantProfilePage() {
   const filteredMenu = menuItems
     .filter((item) => activeCategory === "All" || item.category === activeCategory)
     .filter((item) => !vegOnly || item.is_veg)
-    .filter((item) => !menuSearch || item.name.toLowerCase().includes(menuSearch.toLowerCase()) || item.description?.toLowerCase().includes(menuSearch.toLowerCase()));
+    .filter((item) => !menuSearch || item.name.toLowerCase().includes(menuSearch.toLowerCase()) || item.description?.toLowerCase().includes(menuSearch.toLowerCase()))
+    .sort((a, b) => {
+      switch (menuSort) {
+        case "price_low": return a.price - b.price;
+        case "price_high": return b.price - a.price;
+        case "rating": return (b.order_count || 0) - (a.order_count || 0);
+        default: return (b.is_available !== false ? 1 : 0) - (a.is_available !== false ? 1 : 0) || a.name.localeCompare(b.name);
+      }
+    });
   const availableCategories = MENU_CATEGORIES.filter(
     (cat) => cat === "All" || menuItems.some((item) => item.category === cat)
   );
@@ -631,6 +645,29 @@ export default function RestaurantProfilePage() {
           ))}
         </div>
 
+        {/* Sort tabs */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 pb-3">
+          {[
+            { key: "default" as const, label: "Default", icon: "sort" },
+            { key: "price_low" as const, label: "Price: Low", icon: "arrow_upward" },
+            { key: "price_high" as const, label: "Price: High", icon: "arrow_downward" },
+            { key: "rating" as const, label: "Popular", icon: "trending_up" },
+          ].map((opt) => (
+            <button
+              key={opt.key}
+              onClick={() => setMenuSort(opt.key)}
+              className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all active:scale-95 ${
+                menuSort === opt.key
+                  ? "bg-surface-container text-on-surface"
+                  : "bg-surface-container-low text-on-surface-variant"
+              }`}
+            >
+              <span className="material-symbols-outlined text-xs">{opt.icon}</span>
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
         {/* Menu Items */}
         <div className="px-4 mt-3 space-y-3">
           {filteredMenu.length === 0 ? (
@@ -639,7 +676,7 @@ export default function RestaurantProfilePage() {
             </div>
           ) : (
             filteredMenu.map((item) => (
-              <div key={item.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3">
+              <div key={item.id} className={`bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3 transition-opacity ${item.is_available === false ? "opacity-60" : ""}`}>
                 <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
                   <BlurImage
                     src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
@@ -648,6 +685,11 @@ export default function RestaurantProfilePage() {
                     fill
                     fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                   />
+                  {item.is_available === false && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <span className="text-white text-[10px] font-black bg-red-500 px-2 py-0.5 rounded-full">SOLD OUT</span>
+                    </div>
+                  )}
                   {item.is_featured && (
                     <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
                       ⭐ {t.food.chefsSpecial}
@@ -663,6 +705,20 @@ export default function RestaurantProfilePage() {
                     {item.is_featured && (
                       <span className="text-amber-500 text-xs flex-shrink-0">⭐</span>
                     )}
+                    {item.order_count > 0 && (
+                      <span className="text-[9px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full flex-shrink-0">
+                        🔥 {item.order_count}+ orders
+                      </span>
+                    )}
+                  </div>
+                  {/* Dietary badges */}
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    {item.is_vegan && (
+                      <span className="text-[9px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-full">🌱 Vegan</span>
+                    )}
+                    {item.is_gluten_free && (
+                      <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">🌾 Gluten-Free</span>
+                    )}
                   </div>
                   {item.description && (
                     <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
@@ -677,6 +733,67 @@ export default function RestaurantProfilePage() {
           )}
         </div>
       </section>
+
+      {/* Frequently Ordered Together */}
+      {menuItems.filter(i => i.is_available !== false).length > 2 && (
+        <section className="mt-6 px-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-lg">🤝</span>
+            <h2 className="text-lg font-black text-on-surface">Frequently Ordered Together</h2>
+          </div>
+          <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+            {(() => {
+              const popular = [...menuItems]
+                .filter(i => i.is_available !== false)
+                .sort((a, b) => (b.order_count || 0) - (a.order_count || 0))
+                .slice(0, 3);
+              const totalComboPrice = popular.reduce((sum, i) => sum + i.price, 0);
+              return (
+                <>
+                  <div className="space-y-2">
+                    {popular.map((item, idx) => (
+                      <div key={item.id} className="flex items-center gap-3">
+                        <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-black flex items-center justify-center flex-shrink-0">{idx + 1}</span>
+                        <span className={`w-3 h-3 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
+                          <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                        </span>
+                        <p className="font-bold text-sm text-on-surface flex-1 line-clamp-1">{item.name}</p>
+                        <span className="text-xs font-bold text-on-surface-variant">₹{item.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-outline-variant flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-on-surface-variant">Order all together</p>
+                      <p className="font-black text-primary">₹{totalComboPrice}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        popular.forEach((item) => {
+                          addItem({
+                            id: item.id,
+                            menu_item_id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            image_url: item.image_url,
+                            is_veg: item.is_veg,
+                            vendor_id: vendor.id,
+                            vendor_name: vendor.shop_name,
+                          });
+                        });
+                        if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+                      }}
+                      className="px-4 py-2 bg-primary text-white text-xs font-bold rounded-full active:scale-95 transition-transform"
+                    >
+                      Add All
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </section>
+      )}
 
       {/* Reviews */}
       <section className="mt-6 px-4">
