@@ -313,6 +313,7 @@ export default function RestaurantProfilePage() {
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
+  const { addItem } = useCartStore();
 
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);

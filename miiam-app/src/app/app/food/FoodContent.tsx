@@ -478,6 +478,7 @@ export default function FoodPageContent() {
   const toggle = useFavoritesStore((s) => s.toggle);
   const setFavorites = useFavoritesStore((s) => s.setFavorites);
   const favorites = useMemo(() => new Set(favoriteIds), [favoriteIds]);
+  const { addItem } = useCartStore();
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [heroAsset, setHeroAsset] = useState<{ image_url: string; title: string; subtitle: string } | null>(null);
