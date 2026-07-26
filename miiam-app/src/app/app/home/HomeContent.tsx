@@ -90,7 +90,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const { recentlyViewed } = useRecentlyViewed();
 
-  const categories = [
+  const defaultCategories = [
     { id: "food?filter=under_99", label: "Under ₹99", icon: "local_fire_department", color: "from-orange-400 to-red-400" },
     { id: "food?filter=under_149", label: "Under ₹149", icon: "savings", color: "from-emerald-400 to-teal-400" },
     { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-blue-400 to-indigo-400" },
@@ -98,6 +98,7 @@ export default function HomePage() {
     { id: "food?filter=combos", label: "Combos", icon: "merge", color: "from-amber-400 to-orange-400" },
     { id: "food?filter=bakery", label: "Bakery", icon: "bakery_dining", color: "from-pink-400 to-rose-400" },
   ];
+  const [categories, setCategories] = useState(defaultCategories);
 
   const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);
   const offers = dbOffers;
@@ -460,6 +461,19 @@ export default function HomePage() {
       }
     }
     loadPromos();
+  }, [supabase]);
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const { data } = await supabase.from("site_settings").select("value").eq("key", "home_categories").maybeSingle();
+        if (data?.value) {
+          const parsed = typeof data.value === "string" ? JSON.parse(data.value) : data.value;
+          if (Array.isArray(parsed) && parsed.length > 0) setCategories(parsed);
+        }
+      } catch {}
+    }
+    loadCategories();
   }, [supabase]);
 
   useEffect(() => {

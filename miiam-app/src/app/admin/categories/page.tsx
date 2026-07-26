@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { useToastStore } from "@/lib/store/toastStore";
 
 const DEFAULT_CATEGORIES = [
   "Main Course",
@@ -17,29 +19,55 @@ const DEFAULT_CATEGORIES = [
 ];
 
 export default function AdminCategoriesPage() {
+  const supabase = useMemo(() => createClient(), []);
   const [categories, setCategories] = useState<string[]>([]);
   const [newCategory, setNewCategory] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("miiam_categories");
-    if (saved) {
-      setCategories(JSON.parse(saved));
-    } else {
+    loadCategories();
+  }, [supabase]);
+
+  async function loadCategories() {
+    setLoading(true);
+    try {
+      const { data } = await supabase.from("site_settings").select("value").eq("key", "menu_categories").maybeSingle();
+      if (data?.value) {
+        const parsed = typeof data.value === "string" ? JSON.parse(data.value) : data.value;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setCategories(parsed);
+          setLoading(false);
+          return;
+        }
+      }
+      // Fallback to defaults
+      setCategories(DEFAULT_CATEGORIES);
+      await supabase.from("site_settings").upsert({ key: "menu_categories", value: JSON.stringify(DEFAULT_CATEGORIES) }, { onConflict: "key" });
+    } catch {
       setCategories(DEFAULT_CATEGORIES);
     }
-  }, []);
+    setLoading(false);
+  }
 
-  const saveCategories = (updated: string[]) => {
+  const saveCategories = async (updated: string[]) => {
     setCategories(updated);
-    localStorage.setItem("miiam_categories", JSON.stringify(updated));
+    setSaving(true);
+    try {
+      await supabase.from("site_settings").upsert({ key: "menu_categories", value: JSON.stringify(updated) }, { onConflict: "key" });
+      useToastStore.getState().addToast("Categories saved to database", "success");
+    } catch (error: unknown) {
+      useToastStore.getState().addToast(`Failed: ${(error as Error).message}`, "error");
+    }
+    setSaving(false);
   };
 
   const addCategory = () => {
     if (!newCategory.trim()) return;
     if (categories.includes(newCategory.trim())) {
-      alert("Category already exists");
+      useToastStore.getState().addToast("Category already exists", "error");
       return;
     }
     saveCategories([...categories, newCategory.trim()]);
@@ -75,10 +103,15 @@ export default function AdminCategoriesPage() {
     saveCategories(updated);
   };
 
+  if (loading) return <div className="px-8 py-12 text-center text-on-surface-variant">Loading categories...</div>;
+
   return (
     <div className="px-8 space-y-8">
-      <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Categories</h1>
-      <p className="text-sm text-[var(--color-on-surface-variant)]">Manage menu item categories used across the app.</p>
+      <div>
+        <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Menu Categories</h1>
+        <p className="text-sm text-[var(--color-outline)] mt-1">Manage menu item categories used across the app. Changes sync to all users via database.</p>
+        {saving && <p className="text-xs text-primary mt-1">Saving...</p>}
+      </div>
 
       {/* Add new category */}
       <div className="flex gap-3">

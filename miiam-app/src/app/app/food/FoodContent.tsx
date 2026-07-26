@@ -448,7 +448,7 @@ function CartFloater() {
 export default function FoodPageContent() {
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
-  const foodCategories = [
+  const defaultFoodCategories = [
     { id: "pizza", name: t.food.pizza, icon: "🍕", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200&q=80", color: "bg-orange-100" },
     { id: "burgers", name: t.food.burgers, icon: "🍔", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80", color: "bg-amber-100" },
     { id: "biryani", name: t.food.biryani, icon: "🍚", image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200&q=80", color: "bg-yellow-100" },
@@ -456,6 +456,7 @@ export default function FoodPageContent() {
     { id: "italian", name: t.food.italian, icon: "🍝", image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&q=80", color: "bg-green-100" },
     { id: "desserts", name: "Desserts", icon: "🍰", image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80", color: "bg-pink-100" },
   ];
+  const [foodCategories, setFoodCategories] = useState(defaultFoodCategories);
   const getSetting = useServiceSettingsStore((s) => s.getSetting);
   const searchParams = useSearchParams();
   const initialFilter = searchParams.get("filter") || "all";
@@ -587,6 +588,26 @@ export default function FoodPageContent() {
   useEffect(() => {
     localStorage.setItem("miiam-veg-filter", vegFilter);
   }, [vegFilter]);
+
+  useEffect(() => {
+    async function loadCuisines() {
+      try {
+        const { data } = await supabase.from("cuisines").select("id, name, image_url").eq("active", true).order("name");
+        if (data && data.length > 0) {
+          const icons = ["🍕", "🍔", "🍚", "🥡", "🍝", "🍰", "🌮", "🍜", "🥘", "🥗", "🍱", "🧁"];
+          const colors = ["bg-orange-100", "bg-amber-100", "bg-yellow-100", "bg-red-100", "bg-green-100", "bg-pink-100", "bg-purple-100", "bg-blue-100", "bg-teal-100", "bg-rose-100", "bg-indigo-100", "bg-lime-100"];
+          setFoodCategories(data.map((c: { name: string; image_url?: string }, i: number) => ({
+            id: c.name.toLowerCase(),
+            name: c.name,
+            icon: icons[i % icons.length],
+            image: c.image_url || "",
+            color: colors[i % colors.length],
+          })));
+        }
+      } catch {}
+    }
+    loadCuisines();
+  }, [supabase]);
 
   // Real-time: listen for vendor status changes (online/offline toggle)
   useEffect(() => {
