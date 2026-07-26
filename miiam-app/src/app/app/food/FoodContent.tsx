@@ -766,7 +766,7 @@ export default function FoodPageContent() {
                     fill
                     className="object-cover"
                     sizes="64px"
-                    fallbackSrc=""
+                    fallbackSrc={cat.image}
                   />
                 </div>
               </div>
