@@ -277,70 +277,102 @@ export function CardSkeleton() {
 
 export function HomeSkeleton() {
   return (
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] pb-24">
-      {/* Header skeleton */}
-      <div className="bg-[var(--color-surface-container-lowest)] shadow-sm px-4 pt-4 pb-4">
-        <Skeleton className="h-4 w-24 mb-2" />
-        <Skeleton className="h-7 w-36 mb-3" />
-        <Skeleton className="h-12 w-full rounded-xl" />
-        <div className="mt-3">
-          <Skeleton className="h-12 w-full rounded-xl" />
+    <div className="min-h-screen bg-surface pb-24">
+      {/* Sticky Header */}
+      <div className="bg-surface-container-lowest px-5 pt-12 pb-4 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <Skeleton className="h-3 w-20 mb-1.5" />
+            <Skeleton className="h-6 w-40 mb-2" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-10 h-10 rounded-full" />
+            <Skeleton className="w-10 h-10 rounded-full" />
+          </div>
+        </div>
+        {/* Location bar */}
+        <div className="flex items-center gap-2 mt-2">
+          <Skeleton className="w-4 h-4 rounded-full" />
+          <Skeleton className="h-4 w-48" />
         </div>
       </div>
 
-      {/* Offers carousel skeleton */}
-      <div className="px-4 py-4">
-        <Skeleton className="h-28 w-full rounded-2xl" />
+      {/* Offers Carousel */}
+      <div className="px-5 mt-3">
+        <Skeleton className="h-32 w-full rounded-2xl" />
       </div>
 
-      {/* Categories skeleton */}
-      <div className="px-4 pb-4">
-        <Skeleton className="h-5 w-24 mb-3" />
-        <div className="grid grid-cols-3 gap-3">
+      {/* Serviceability Chip */}
+      <div className="px-5 mt-3">
+        <Skeleton className="h-8 w-48 rounded-full" />
+      </div>
+
+      {/* Categories - Horizontal Scroll */}
+      <div className="px-5 pt-4">
+        <div className="flex gap-4 overflow-hidden">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="bg-[var(--color-surface-container)] rounded-2xl p-4 text-center">
-              <Skeleton className="h-12 w-12 rounded-xl mx-auto mb-2" />
-              <Skeleton className="h-4 w-16 mx-auto" />
+            <div key={i} className="flex flex-col items-center gap-2 flex-shrink-0">
+              <Skeleton className="w-14 h-14 rounded-2xl" />
+              <Skeleton className="h-2.5 w-12" />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Spotlight skeleton */}
-      <div className="px-4 pb-4">
-        <Skeleton className="h-5 w-32 mb-3" />
-        <Skeleton className="h-32 w-full rounded-2xl" />
+      {/* Quick Reorder */}
+      <div className="px-5 mt-5">
+        <Skeleton className="h-5 w-28 mb-3" />
+        <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <Skeleton className="w-12 h-12 rounded-xl flex-shrink-0" />
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-48" />
+            </div>
+            <Skeleton className="h-9 w-20 rounded-full" />
+          </div>
+        </div>
       </div>
 
-      {/* Featured skeleton */}
-      <div className="px-4 pb-4">
+      {/* Spotlight */}
+      <div className="px-5 mt-5">
+        <Skeleton className="h-5 w-32 mb-3" />
+        <Skeleton className="h-44 w-full rounded-2xl" />
+      </div>
+
+      {/* Featured / Promoted */}
+      <div className="px-5 mt-5">
         <Skeleton className="h-5 w-36 mb-3" />
         <div className="flex gap-3 overflow-hidden">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex-shrink-0 w-36 bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden border border-[var(--color-border-subtle)]">
+            <div key={i} className="flex-shrink-0 w-40 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
               <Skeleton className="h-28 w-full" />
-              <div className="p-2 space-y-2">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-3 w-16" />
+              <div className="p-2.5 space-y-1.5">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-2.5 w-20" />
+                <div className="flex gap-2">
+                  <Skeleton className="h-4 w-10 rounded-full" />
+                  <Skeleton className="h-4 w-14 rounded-full" />
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Nearby restaurants skeleton */}
-      <div className="px-4 pb-4">
-        <Skeleton className="h-5 w-32 mb-3" />
-        <div className="space-y-3">
+      {/* Combos */}
+      <div className="px-5 mt-5">
+        <Skeleton className="h-5 w-24 mb-3" />
+        <div className="grid grid-cols-2 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex gap-3 bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden border border-[var(--color-border-subtle)] p-3">
-              <Skeleton className="h-20 w-20 rounded-xl flex-shrink-0" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-32" />
-                <Skeleton className="h-4 w-48" />
-                <div className="flex gap-2">
-                  <Skeleton className="h-5 w-12 rounded-full" />
-                  <Skeleton className="h-5 w-16 rounded-full" />
+            <div key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm">
+              <Skeleton className="h-28 w-full" />
+              <div className="p-2.5 space-y-1.5">
+                <Skeleton className="h-3.5 w-24" />
+                <Skeleton className="h-2.5 w-16" />
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-4 w-12" />
+                  <Skeleton className="h-5 w-14 rounded-full" />
                 </div>
               </div>
             </div>
