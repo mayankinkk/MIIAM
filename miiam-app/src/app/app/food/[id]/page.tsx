@@ -324,6 +324,9 @@ export default function RestaurantProfilePage() {
   const [vegOnly, setVegOnly] = useState(false);
   const [menuSort, setMenuSort] = useState<"default" | "price_low" | "price_high" | "rating">("default");
   const [menuSearch, setMenuSearch] = useState("");
+  const [scheduleDelivery, setScheduleDelivery] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
   const { favoriteIds, toggle } = useFavoritesStore();
   const isFavorite = favoriteIds.includes(vendorId);
 
@@ -547,6 +550,44 @@ export default function RestaurantProfilePage() {
             <p className="font-bold text-red-700 text-sm">Restaurant is currently closed</p>
             <p className="text-red-500 text-xs">You can browse the menu but cannot place orders right now.</p>
           </div>
+        </div>
+      )}
+
+      {/* Schedule Delivery */}
+      {isOpen && (
+        <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-xl">event</span>
+              <div>
+                <p className="font-bold text-sm text-on-surface">Schedule for Later</p>
+                <p className="text-[10px] text-on-surface-variant">Choose a date & time</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setScheduleDelivery(!scheduleDelivery)}
+              className={`relative w-12 h-7 rounded-full transition-colors ${scheduleDelivery ? "bg-primary" : "bg-surface-container-high"}`}
+            >
+              <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${scheduleDelivery ? "translate-x-6" : "translate-x-1"}`} />
+            </button>
+          </div>
+          {scheduleDelivery && (
+            <div className="flex gap-2 mt-3">
+              <input
+                type="date"
+                value={scheduleDate}
+                onChange={(e) => setScheduleDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+                className="flex-1 px-3 py-2 bg-surface-container-low rounded-xl text-sm border border-outline focus:outline-none focus:border-primary"
+              />
+              <input
+                type="time"
+                value={scheduleTime}
+                onChange={(e) => setScheduleTime(e.target.value)}
+                className="w-28 px-3 py-2 bg-surface-container-low rounded-xl text-sm border border-outline focus:outline-none focus:border-primary"
+              />
+            </div>
+          )}
         </div>
       )}
 

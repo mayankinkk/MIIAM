@@ -449,12 +449,12 @@ export default function FoodPageContent() {
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const foodCategories = [
-    { id: "pizza", name: t.food.pizza, icon: "🍕", color: "bg-orange-100" },
-    { id: "burgers", name: t.food.burgers, icon: "🍔", color: "bg-amber-100" },
-    { id: "biryani", name: t.food.biryani, icon: "🍚", color: "bg-yellow-100" },
-    { id: "chinese", name: t.food.chinese, icon: "🥡", color: "bg-red-100" },
-    { id: "italian", name: t.food.italian, icon: "🍝", color: "bg-green-100" },
-    { id: "desserts", name: "Desserts", icon: "🍰", color: "bg-pink-100" },
+    { id: "pizza", name: t.food.pizza, icon: "🍕", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200&q=80", color: "bg-orange-100" },
+    { id: "burgers", name: t.food.burgers, icon: "🍔", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=80", color: "bg-amber-100" },
+    { id: "biryani", name: t.food.biryani, icon: "🍚", image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=200&q=80", color: "bg-yellow-100" },
+    { id: "chinese", name: t.food.chinese, icon: "🥡", image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&q=80", color: "bg-red-100" },
+    { id: "italian", name: t.food.italian, icon: "🍝", image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&q=80", color: "bg-green-100" },
+    { id: "desserts", name: "Desserts", icon: "🍰", image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=200&q=80", color: "bg-pink-100" },
   ];
   const getSetting = useServiceSettingsStore((s) => s.getSetting);
   const searchParams = useSearchParams();
@@ -737,15 +737,17 @@ export default function FoodPageContent() {
 
       <PromoBannerCarousel />
 
-      {/* Circular Category Icons - GKB Style */}
+      {/* Circular Category Icons - Photo Style */}
       <div className="px-4 py-4">
         <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
           <button
             onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
             className="flex flex-col items-center gap-1.5 flex-shrink-0"
           >
-            <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-primary text-white shadow-lg shadow-primary/30" : "bg-surface-container-high text-on-surface-variant"}`}>
-              <span className="text-xl">🍽</span>
+            <div className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${selectedCategory === "all" ? "border-primary shadow-lg shadow-primary/30" : "border-surface-container-high"}`}>
+              <div className="w-full h-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center">
+                <span className="text-2xl">🍽</span>
+              </div>
             </div>
             <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-primary" : "text-on-surface-variant"}`}>{t.food.all}</span>
           </button>
@@ -755,8 +757,14 @@ export default function FoodPageContent() {
               onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
               className="flex flex-col items-center gap-1.5 flex-shrink-0"
             >
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.id ? "bg-primary text-white shadow-lg shadow-primary/30" : "bg-surface-container-high text-on-surface-variant"}`}>
-                <span className="text-xl">{cat.icon}</span>
+              <div className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${selectedCategory === cat.id ? "border-primary shadow-lg shadow-primary/30" : "border-surface-container-high"}`}>
+                {cat.image ? (
+                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" loading="lazy" />
+                ) : (
+                  <div className={`w-full h-full ${cat.color} flex items-center justify-center`}>
+                    <span className="text-2xl">{cat.icon}</span>
+                  </div>
+                )}
               </div>
               <span className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
             </button>
@@ -1096,12 +1104,14 @@ export default function FoodPageContent() {
             <div className="px-4 pb-4">
               <h3 className="text-base font-bold text-on-surface mb-3">More Options</h3>
               <div className="space-y-3">
-                {visibleRestaurants.map((restaurant) => (
-                  <Link
-                    key={`list-${restaurant.id}`}
-                    href={`/app/food/${restaurant.id}`}
-                    className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
-                  >
+                {visibleRestaurants.map((restaurant) => {
+                  const popularItem = menuItems.find((m) => m.vendor_id === restaurant.id && m.is_available !== false);
+                  return (
+                    <div key={`list-${restaurant.id}`} className="relative">
+                      <Link
+                        href={`/app/food/${restaurant.id}`}
+                        className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-lift active:scale-[0.98] transition-transform"
+                      >
                     <div className="flex">
                       <div className="w-28 h-28 flex-shrink-0 overflow-hidden bg-surface-container relative">
                         <BlurImage src={restaurant.cover_image_url || restaurant.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"} alt={restaurant.shop_name} fill className="w-full h-full" sizes="112px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
@@ -1140,7 +1150,32 @@ export default function FoodPageContent() {
                       </div>
                     </div>
                   </Link>
-                ))}
+                      {popularItem && parseIsOpen(restaurant.opening_hours) && (
+                        <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            addItem({
+                              id: popularItem.id,
+                              menu_item_id: popularItem.id,
+                              name: popularItem.name,
+                              price: popularItem.price,
+                              image_url: popularItem.image_url,
+                              is_veg: popularItem.is_veg,
+                              vendor_id: restaurant.id,
+                              vendor_name: restaurant.shop_name || "Restaurant",
+                            });
+                            if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
+                          }}
+                          className="absolute bottom-3 right-3 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform z-10"
+                          aria-label={`Quick add ${popularItem.name}`}
+                        >
+                          <span className="material-symbols-outlined text-lg">add</span>
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </>
