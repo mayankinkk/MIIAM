@@ -32,6 +32,12 @@ const menuGroups = [
     ],
   },
   {
+    title: "Services",
+    items: [
+      { name: "All Services", href: "/admin/services", icon: "handyman" },
+    ],
+  },
+  {
     title: "Fleet",
     items: [
       { name: "Manage Riders", href: "/admin/riders", icon: "two_wheeler" },
