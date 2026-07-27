@@ -32,18 +32,6 @@ const menuGroups = [
     ],
   },
   {
-    title: "Home Services",
-    items: [
-      { name: "All Services", href: "/admin/services", icon: "handyman" },
-      { name: "AC Repair", href: "/admin/services/ac", icon: "ac_unit" },
-      { name: "Plumbing", href: "/admin/services/plumbing", icon: "plumbing" },
-      { name: "Electrical", href: "/admin/services/electrical", icon: "electrical_services" },
-      { name: "Cleaning", href: "/admin/services/cleaning", icon: "cleaning_services" },
-      { name: "Appliance", href: "/admin/services/appliance", icon: "kitchen" },
-      { name: "Pest Control", href: "/admin/services/pest", icon: "bug_report" },
-    ],
-  },
-  {
     title: "Fleet",
     items: [
       { name: "Manage Riders", href: "/admin/riders", icon: "two_wheeler" },
@@ -64,6 +52,8 @@ const menuGroups = [
     items: [
       { name: "Content Manager", href: "/admin/page-assets", icon: "photo_library" },
       { name: "Banners", href: "/admin/banners", icon: "image" },
+      { name: "Home Categories", href: "/admin/home-categories", icon: "category" },
+      { name: "Menu Categories", href: "/admin/categories", icon: "list" },
       { name: "Blog & Tips", href: "/admin/blog", icon: "article" },
     ],
   },
