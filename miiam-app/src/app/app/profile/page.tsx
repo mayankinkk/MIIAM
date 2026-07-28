@@ -29,9 +29,6 @@ export default function EnhancedProfilePage() {
     { id: "subscriptions", icon: "repeat", label: t.profile.recurringOrders, sub: t.profile.scheduledSubscriptions, color: "text-purple-500", bg: "bg-purple-50" },
     { id: "addresses", icon: "location_on", label: t.profile.savedAddresses, sub: t.profile.manageDeliveryAddresses, color: "text-green-500", bg: "bg-green-50" },
     { id: "favorites", icon: "favorite", label: t.profile.favorites, sub: t.profile.yourSavedItems, color: "text-red-500", bg: "bg-red-50" },
-    { id: "wallet", icon: "account_balance_wallet", label: "Wallet", sub: "Balance & gift cards", color: "text-emerald-500", bg: "bg-emerald-50" },
-    { id: "referral", icon: "redeem", label: "Refer & Earn", sub: "Invite friends, earn rewards", color: "text-amber-500", bg: "bg-amber-50" },
-    { id: "group-order", icon: "group", label: "Group Order", sub: "Order together with friends", color: "text-blue-500", bg: "bg-blue-50" },
     { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-purple-500", bg: "bg-purple-50" },
     { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-indigo-500", bg: "bg-indigo-50" },
     { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-[var(--color-outline)]", bg: "bg-[var(--color-surface-subtle)]" },
@@ -151,7 +148,7 @@ export default function EnhancedProfilePage() {
 
         {/* Second Section */}
         <div className="space-y-2">
-          {menuItems.slice(4, 8).map((item) => (
+          {menuItems.slice(4, 5).map((item) => (
             <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
               <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
@@ -183,7 +180,7 @@ export default function EnhancedProfilePage() {
             </div>
           </div>
 
-          {menuItems.slice(8).map((item) => (
+          {menuItems.slice(5).map((item) => (
             item.special ? (
               <button 
                 key={item.id}
