@@ -143,13 +143,11 @@ export default function CheckoutPage() {
     removePromo,
   } = useCheckoutPromo({ promoCodes: promoCodesRaw, subtotal, items });
 
-  const { discount, totalDeliveryFee, grand } = calculateOrderTotals({
+  const { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
     promoApplied,
-    serviceVendorIds,
     tipAmount,
     serviceCharge,
-    vendorDeliveryCharges,
   });
 
   const { placeOrder } = usePlaceOrder(supabase);
@@ -257,8 +255,10 @@ export default function CheckoutPage() {
                 subtotal={subtotal}
                 discount={discount}
                 totalDeliveryFee={totalDeliveryFee}
-                vendorIds={vendorIds}
-                serviceCharge={serviceCharge}
+                totalServiceCharge={totalServiceCharge}
+                gstAmount={gstAmount}
+                packagingFee={packagingFee}
+                platformFee={platformFee}
                 grand={grand}
                 showTipSelector={showTipSelector}
                 tipAmount={tipAmount}

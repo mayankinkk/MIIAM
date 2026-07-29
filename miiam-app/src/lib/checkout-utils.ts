@@ -20,20 +20,20 @@ export interface PromoCode {
 export function calculateOrderTotals({
   subtotal,
   promoApplied,
-  serviceVendorIds,
   tipAmount,
   serviceCharge,
-  vendorDeliveryCharges,
 }: {
   subtotal: number;
   promoApplied: { code: string; discount: number; type: "percent" | "flat" } | null;
-  serviceVendorIds: string[];
   tipAmount: number;
   serviceCharge: number;
-  vendorDeliveryCharges?: Record<string, number>;
 }) {
   const discount = promoApplied ? promoApplied.discount : 0;
-  const totalDeliveryFee = serviceVendorIds.reduce((sum, vid) => sum + (vendorDeliveryCharges?.[vid] || 0), 0);
-  const grand = Math.max(0, +(subtotal - discount + totalDeliveryFee + (serviceVendorIds.length * serviceCharge) + tipAmount).toFixed(2));
-  return { discount, totalDeliveryFee, grand };
+  const totalDeliveryFee = 0;
+  const totalServiceCharge = serviceCharge;
+  const gstAmount = 0;
+  const packagingFee = 0;
+  const platformFee = 0;
+  const grand = Math.max(0, +(subtotal - discount + totalServiceCharge + tipAmount).toFixed(2));
+  return { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand };
 }

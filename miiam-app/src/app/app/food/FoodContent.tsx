@@ -630,33 +630,6 @@ export default function FoodPageContent() {
     };
   }, [supabase, userPincode, userCity, fetchData]);
 
-  if (foodSetting && !foodSetting.isEnabled) {
-    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
-  }
-
-  if (fetchError) {
-    if (fetchError === "network") {
-      return (
-        <div className="min-h-screen bg-surface flex items-center justify-center px-6">
-          <NetworkError onRetry={() => fetchData(userPincode, userCity)} />
-        </div>
-      );
-    }
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center px-6">
-        <EmptyState
-          icon="error"
-          emoji="⚠️"
-          title="Something went wrong"
-          description="We couldn't load restaurants right now. Please try again."
-          actionLabel="Retry"
-          onAction={() => fetchData(userPincode, userCity)}
-          type="default"
-        />
-      </div>
-    );
-  }
-
   const toggleFavorite = async (id: string) => {
     toggle(id);
     const { data: { user } } = await supabase.auth.getUser();
@@ -691,6 +664,33 @@ export default function FoodPageContent() {
   const filteredReadyRestaurants = searchedRestaurants;
 
   const { visibleItems: visibleRestaurants, hasMore: hasMoreRestaurants, loadMore: loadMoreRestaurants, sentinelRef: restaurantSentinel } = useInfiniteScroll({ items: filteredReadyRestaurants, pageSize: 8 });
+
+  if (foodSetting && !foodSetting.isEnabled) {
+    return <ServiceUnavailable serviceName="Food Delivery" message={foodSetting.message} icon="restaurant" />;
+  }
+
+  if (fetchError) {
+    if (fetchError === "network") {
+      return (
+        <div className="min-h-screen bg-surface flex items-center justify-center px-6">
+          <NetworkError onRetry={() => fetchData(userPincode, userCity)} />
+        </div>
+      );
+    }
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center px-6">
+        <EmptyState
+          icon="error"
+          emoji="⚠️"
+          title="Something went wrong"
+          description="We couldn't load restaurants right now. Please try again."
+          actionLabel="Retry"
+          onAction={() => fetchData(userPincode, userCity)}
+          type="default"
+        />
+      </div>
+    );
+  }
 
   return (
     <PullToRefresh onRefresh={handleRefresh} className="min-h-screen bg-surface">
