@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SwipeableCard from "@/components/SwipeableCard";
+import PullToRefresh from "@/components/PullToRefresh";
 
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
@@ -113,6 +114,10 @@ export default function CartPage() {
   const totalDeliveryFee = vendorIds.reduce((sum, vid) => sum + (vendorDeliveryCharges[vid] || 0), 0);
   const grandTotal = Math.max(0, total + totalDeliveryFee + serviceCharge);
 
+  const handleRefresh = useCallback(async () => {
+    await new Promise((r) => setTimeout(r, 500));
+  }, []);
+
 
   const fetchPastOrders = async () => {
     setLoadingOrders(true);
@@ -204,6 +209,7 @@ export default function CartPage() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Cart' }]} />
 
       <main className="pt-4 pb-40 px-3 sm:px-4 max-w-2xl mx-auto">
+        <PullToRefresh onRefresh={handleRefresh}>
         <section className="mb-6">
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
@@ -259,7 +265,9 @@ export default function CartPage() {
                     <SwipeableCard
                       key={item.id}
                       onSwipeLeft={() => removeItem(item.id)}
+                      onSwipeRight={() => saveForLater(item.id)}
                       leftAction={{ label: "Remove", color: "bg-red-500", icon: "delete" }}
+                      rightAction={{ label: "Save Later", color: "bg-amber-500", icon: "bookmark" }}
                     >
                     <div className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-2.5 sm:p-3 rounded-xl shadow-sm">
                       {/* Thumbnail */}
@@ -398,6 +406,10 @@ export default function CartPage() {
                   <span>{t.cart.serviceCharge}</span>
                   <span className="text-on-surface font-semibold truncate">₹{serviceCharge.toFixed(2)}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span>GST & Other Fees</span>
+                  <span className="text-green-600 font-semibold">FREE</span>
+                </div>
 
                 <div className="pt-4 border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 flex justify-between items-center gap-2">
                   <div className="min-w-0">
@@ -448,6 +460,7 @@ export default function CartPage() {
             </div>
           </div>
         )}
+        </PullToRefresh>
       </main>
 
       {safeItems.length > 0 && (
