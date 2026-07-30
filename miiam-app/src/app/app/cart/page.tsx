@@ -47,7 +47,6 @@ export default function CartPage() {
   const { addToast } = useToastStore();
 
   const [hydrated, setHydrated] = useState(() => useCartStore.persist?.hasHydrated() ?? false);
-  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
   const [serviceCharge, setServiceCharge] = useState(15);
 
   useEffect(() => {
@@ -67,28 +66,9 @@ export default function CartPage() {
     loadServiceCharge();
   }, [supabase]);
 
-  useEffect(() => {
-    async function loadVendorDetails() {
-      const safeItems = Array.isArray(items) ? items : [];
-      const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-      if (vendorIds.length === 0) {
-        setVendorDeliveryCharges({});
-        return;
-      }
-      const { data } = await supabase
-        .from("vendors")
-        .select("id, delivery_charge")
-        .in("id", vendorIds);
-      if (data) {
-        const charges = data.reduce((acc: Record<string, number>, v: { id: string; delivery_charge: number | null }) => {
-          acc[v.id] = v.delivery_charge || 0;
-          return acc;
-        }, {} as Record<string, number>);
-        setVendorDeliveryCharges(charges);
-      }
-    }
-    loadVendorDetails();
-  }, [items, supabase]);
+  const handleRefresh = useCallback(async () => {
+    await new Promise((r) => setTimeout(r, 500));
+  }, []);
 
   if (!hydrated) {
     return (
@@ -111,13 +91,7 @@ export default function CartPage() {
   const total = totalPrice();
 
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
-  const totalDeliveryFee = vendorIds.reduce((sum, vid) => sum + (vendorDeliveryCharges[vid] || 0), 0);
-  const grandTotal = Math.max(0, total + totalDeliveryFee + serviceCharge);
-
-  const handleRefresh = useCallback(async () => {
-    await new Promise((r) => setTimeout(r, 500));
-  }, []);
-
+  const grandTotal = Math.max(0, total + serviceCharge);
 
   const fetchPastOrders = async () => {
     setLoadingOrders(true);
@@ -396,11 +370,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>{t.cart.deliveryFee}</span>
-                  {totalDeliveryFee > 0 ? (
-                    <span className="text-on-surface font-semibold">₹{totalDeliveryFee.toFixed(2)}</span>
-                  ) : (
-                    <span className="text-green-600 font-semibold">FREE</span>
-                  )}
+                  <span className="text-green-600 font-semibold">FREE</span>
                 </div>
                 <div className="flex justify-between gap-2">
                   <span>{t.cart.serviceCharge}</span>

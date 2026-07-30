@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { Skeleton, FoodSkeleton } from "@/components/Skeleton";
+import { FoodSkeleton } from "@/components/Skeleton";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
