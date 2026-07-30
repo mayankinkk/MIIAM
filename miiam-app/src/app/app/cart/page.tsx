@@ -111,7 +111,7 @@ export default function CartPage() {
 
   const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
   const totalDeliveryFee = vendorIds.reduce((sum, vid) => sum + (vendorDeliveryCharges[vid] || 0), 0);
-  const grandTotal = Math.max(0, total + totalDeliveryFee + (vendorIds.length * serviceCharge));
+  const grandTotal = Math.max(0, total + totalDeliveryFee + serviceCharge);
 
 
   const fetchPastOrders = async () => {
@@ -396,7 +396,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between gap-2">
                   <span>{t.cart.serviceCharge}</span>
-                  <span className="text-on-surface font-semibold truncate">₹{(vendorIds.length * serviceCharge).toFixed(2)}</span>
+                  <span className="text-on-surface font-semibold truncate">₹{serviceCharge.toFixed(2)}</span>
                 </div>
 
                 <div className="pt-4 border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 flex justify-between items-center gap-2">
