@@ -3,7 +3,6 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { useToastStore } from "@/lib/store/toastStore";
 import { useCartStore } from "@/lib/store/cartStore";
 import AddressPickerSheet, { type SelectedAddress } from "@/components/AddressPickerSheet";
 import CheckoutDeliveryAddress from "@/components/checkout/CheckoutDeliveryAddress";
@@ -11,14 +10,11 @@ import CheckoutScheduledServices from "@/components/checkout/CheckoutScheduledSe
 import CheckoutScheduledDelivery from "@/components/checkout/CheckoutScheduledDelivery";
 import CheckoutPaymentMethods from "@/components/checkout/CheckoutPaymentMethods";
 import CheckoutOrderSummary from "@/components/checkout/CheckoutOrderSummary";
-import CheckoutPromoCode from "@/components/checkout/CheckoutPromoCode";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
 import { calculateOrderTotals } from "@/lib/checkout-utils";
-import type { PromoCode } from "@/lib/checkout-utils";
-import { useCheckoutPromo } from "@/lib/hooks/useCheckoutPromo";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
 import { useRazorpay } from "@/lib/hooks/useRazorpay";
 import logger from "@/lib/logger";
@@ -46,7 +42,6 @@ function parseIsOpen(hours: string | null | undefined): boolean {
 
 export default function CheckoutPage() {
   const { t } = useTranslation();
-  const [vendorDeliveryCharges, setVendorDeliveryCharges] = useState<Record<string, number>>({});
   const [vendorHours, setVendorHours] = useState<Record<string, string>>({});
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [scheduledDate, setScheduledDate] = useState<string>("");
@@ -64,8 +59,8 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
   const [serviceCharge, setServiceCharge] = useState(15);
-  const [promoCodesRaw, setPromoCodesRaw] = useState<PromoCode[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [showAddressWarning, setShowAddressWarning] = useState(false);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
 
@@ -78,19 +73,6 @@ export default function CheckoutPage() {
     if (allSaved) {
       try { setSavedAddresses(JSON.parse(allSaved)); } catch { /* corrupted data, ignore */ }
     }
-
-    async function loadPromoCodes() {
-      try {
-        const { data } = await supabase
-          .from("promo_codes")
-          .select("code, discount_value, min_order_amount, discount_type, is_active, vendor_id, max_discount, usage_limit, used_count, valid_until")
-          .eq("is_active", true);
-        if (data) setPromoCodesRaw(data);
-      } catch (err) {
-        logger.error({ err: err }, "Failed to load promo codes");
-      }
-    }
-    loadPromoCodes();
 
     async function loadServiceCharge() {
       try {
@@ -106,20 +88,17 @@ export default function CheckoutPage() {
         if (vendorIds.length === 0) return;
         const { data } = await supabase
           .from("vendors")
-          .select("id, delivery_charge, opening_hours")
+          .select("id, opening_hours")
           .in("id", vendorIds);
         if (data) {
-          const charges: Record<string, number> = {};
           const hours: Record<string, string> = {};
-          for (const v of data as { id: string; delivery_charge: number | null; opening_hours: string | null }[]) {
-            charges[v.id] = v.delivery_charge || 0;
+          for (const v of data as { id: string; opening_hours: string | null }[]) {
             if (v.opening_hours) hours[v.id] = v.opening_hours;
           }
-          setVendorDeliveryCharges(charges);
           setVendorHours(hours);
         }
       } catch (err) {
-        logger.error({ err: err }, "Failed to load vendor delivery charges");
+        logger.error({ err: err }, "Failed to load vendor details");
       }
     }
     loadVendorDetails();
@@ -133,19 +112,8 @@ export default function CheckoutPage() {
     return serviceVendorIds.some((id) => vendorHours[id] && !parseIsOpen(vendorHours[id]));
   }, [serviceVendorIds, vendorHours]);
 
-  const {
-    promoCode,
-    setPromoCode,
-    promoApplied,
-    promoError,
-    clearPromoError,
-    handleApplyPromo,
-    removePromo,
-  } = useCheckoutPromo({ promoCodes: promoCodesRaw, subtotal, items });
-
   const { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
-    promoApplied,
     tipAmount,
     serviceCharge,
   });
@@ -267,17 +235,6 @@ export default function CheckoutPage() {
                 onEditTip={() => setShowTipSelector(true)}
               />
 
-              <div className="mb-6 sm:mb-8">
-                <CheckoutPromoCode
-                  promoApplied={promoApplied}
-                  promoCode={promoCode}
-                  onPromoCodeChange={(code) => { setPromoCode(code); clearPromoError(); }}
-                  onApplyPromo={handleApplyPromo}
-                  onRemovePromo={removePromo}
-                  promoError={promoError}
-                />
-              </div>
-
               {hasClosedVendor && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-3 flex items-center gap-2">
                   <span className="material-symbols-outlined text-red-500 text-lg">schedule</span>
@@ -287,7 +244,11 @@ export default function CheckoutPage() {
 
               <button
                 onClick={() => {
-                  if (!deliveryAddress) return;
+                  if (!deliveryAddress) {
+                    setShowAddressWarning(true);
+                    setTimeout(() => setShowAddressWarning(false), 3000);
+                    return;
+                  }
                   setPlacing(true);
 
                   const orderArgs = {
@@ -296,7 +257,7 @@ export default function CheckoutPage() {
                     discount,
                     subtotal,
                     deliveryFee: totalDeliveryFee,
-                    promoCode: promoApplied?.code || "",
+                    promoCode: "",
                     scheduledDate,
                     scheduledTime,
                     specialInstructions,
@@ -332,6 +293,11 @@ export default function CheckoutPage() {
                 ) : t.checkout.placeOrder}
                 {!placing && <span className="material-symbols-outlined">shield</span>}
               </button>
+
+              {showAddressWarning && (
+                <p className="text-center mt-3 text-xs text-red-500 font-semibold animate-pulse">Please select a delivery address first</p>
+              )}
+
               <p className="text-center mt-6 text-xs text-on-surface-variant dark:text-[var(--color-outline)] flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-sm">lock</span>
                 {t.checkout.securePayment}

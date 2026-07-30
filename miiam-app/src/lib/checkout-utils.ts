@@ -19,21 +19,19 @@ export interface PromoCode {
 
 export function calculateOrderTotals({
   subtotal,
-  promoApplied,
   tipAmount,
   serviceCharge,
 }: {
   subtotal: number;
-  promoApplied: { code: string; discount: number; type: "percent" | "flat" } | null;
   tipAmount: number;
   serviceCharge: number;
 }) {
-  const discount = promoApplied ? promoApplied.discount : 0;
+  const discount = 0;
   const totalDeliveryFee = 0;
   const totalServiceCharge = serviceCharge;
   const gstAmount = 0;
   const packagingFee = 0;
   const platformFee = 0;
-  const grand = Math.max(0, +(subtotal - discount + totalServiceCharge + tipAmount).toFixed(2));
+  const grand = Math.max(0, +(subtotal + totalServiceCharge + tipAmount).toFixed(2));
   return { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand };
 }
