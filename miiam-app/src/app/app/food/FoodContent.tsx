@@ -105,83 +105,6 @@ function parseIsOpen(hours: string | null | undefined): boolean {
   } catch { return true; }
 }
 
-function PromoBannerCarousel() {
-  const supabase = useMemo(() => createClient(), []);
-  const [banners, setBanners] = useState<Array<{ id: string; badge: string; title: string; sub: string; gradient: string; image_url: string }>>([]);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    async function fetchBanners() {
-      const { data, error } = await supabase
-        .from("banners")
-        .select("*")
-        .eq("is_active", true)
-        .order("position");
-      
-      if (!error && data && data.length > 0) {
-        setBanners(data.map((b: { id: string; badge?: string; title: string; subtitle?: string; gradient?: string; link_url?: string; image_url: string }) => ({
-          id: b.id,
-          badge: b.badge || "",
-          title: b.title,
-          sub: b.subtitle || b.link_url || "",
-          gradient: b.gradient || "from-primary to-primary-container",
-          image_url: b.image_url,
-        })));
-      }
-    }
-    fetchBanners();
-  }, [supabase]);
-
-  useEffect(() => {
-    if (banners.length === 0) return;
-    const t = setInterval(() => setActive((a) => (a + 1) % banners.length), 4000);
-    return () => clearInterval(t);
-  }, [banners]);
-
-  if (banners.length === 0) return null;
-  const b = banners[active];
-
-  return (
-    <div className="px-6 mt-3">
-      <div 
-        style={b.image_url ? { backgroundImage: `url(${b.image_url})` } : {}}
-        className={`bg-cover bg-center relative rounded-2xl p-4 flex items-center justify-between overflow-hidden transition-all duration-500 h-28 ${
-          !b.image_url ? `bg-gradient-to-r ${b.gradient}` : ""
-        }`}
-      >
-        {b.image_url && <div className="absolute inset-0 bg-black/45 z-0" />}
-        
-        <div className="relative z-10 flex flex-col justify-between h-full w-full">
-          <div>
-            {b.badge && <span className="text-white/80 text-[10px] font-black uppercase tracking-widest">{b.badge}</span>}
-            <p className="text-white font-black text-base mt-0.5 leading-tight">{b.title}</p>
-            {b.sub && <p className="text-white/80 text-xs mt-0.5">{b.sub}</p>}
-          </div>
-          
-          <div className="flex gap-1 mt-2">
-            {banners.map((_, i) => (
-              <button 
-                key={i} 
-                onClick={() => setActive(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === active ? "w-5 bg-surface-container-lowest" : "w-1.5 bg-[var(--color-surface-container-lowest)]/40"}`}
-              />
-            ))}
-          </div>
-        </div>
-        
-        {!b.image_url && (
-          <>
-            <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[var(--color-surface-container-lowest)]/10 rounded-full" />
-            <div className="absolute -right-8 -top-4 w-28 h-28 bg-white/5 rounded-full" />
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-
-
 type SortOption = "rating" | "delivery_time" | "price_low" | "price_high";
 
 function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOption) => void }) {
@@ -756,8 +679,6 @@ export default function FoodPageContent() {
           </div>
         </div>
       )}
-
-      <PromoBannerCarousel />
 
       {/* Circular Category Icons - Photo Style */}
       <div className="px-4 py-4">
