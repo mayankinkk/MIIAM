@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { FoodSkeleton } from "@/components/Skeleton";
+import { SearchAutocomplete } from "@/components/SearchAutocomplete";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -725,21 +726,11 @@ export default function FoodPageContent() {
 
       {/* Search Bar */}
       <div className="px-4 pb-3">
-        <div className="relative">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search restaurants or cuisines..."
-            className="w-full pl-10 pr-4 py-3 bg-surface-container rounded-xl text-sm font-medium text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30"
-          />
-          {searchQuery && (
-            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
-              <span className="material-symbols-outlined text-lg">close</span>
-            </button>
-          )}
-        </div>
+        <SearchAutocomplete
+          onSelect={(term) => setSearchQuery(term)}
+          preventNavigation
+          className="w-full"
+        />
       </div>
 
       {/* Veg/Non-veg Filter + Sort — Sticky */}

@@ -14,6 +14,7 @@ interface SearchSuggestion {
 
 interface SearchAutocompleteProps {
   onSelect?: (query: string) => void;
+  preventNavigation?: boolean;
   className?: string;
 }
 
@@ -35,7 +36,7 @@ const cuisineIcons: Record<string, string> = {
   "Momos": "🥟",
 };
 
-export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompleteProps) {
+export function SearchAutocomplete({ onSelect, preventNavigation = false, className = "" }: SearchAutocompleteProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -139,7 +140,9 @@ export function SearchAutocomplete({ onSelect, className = "" }: SearchAutocompl
     setQuery("");
     setActiveIndex(-1);
     onSelect?.(term);
-    router.push(`/app/search?q=${encodeURIComponent(term)}`);
+    if (!preventNavigation) {
+      router.push(`/app/search?q=${encodeURIComponent(term)}`);
+    }
   };
 
   const clearRecentSearches = () => {
