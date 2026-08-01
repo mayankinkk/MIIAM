@@ -278,6 +278,7 @@ function ServicesContent() {
   const mappedCategory = categoryIdMap[rawCategory] || null;
   const [selectedCategory, setSelectedCategory] = useState<string>(categoryIdMap[rawCategory] ?? "all");
   const [bookingService, setBookingService] = useState<ServiceData | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const checkServiceability = useCallback(async () => { setIsServiceable(true); }, []);
 
@@ -289,9 +290,19 @@ function ServicesContent() {
   }
 
   const filteredServices = useMemo(() => {
-    if (selectedCategory === "all") return dbServices;
-    return dbServices.filter((s) => s.category === selectedCategory);
-  }, [selectedCategory, dbServices]);
+    let results = selectedCategory === "all" ? dbServices : dbServices.filter((s) => s.category === selectedCategory);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      results = results.filter(
+        (s) =>
+          s.name.toLowerCase().includes(q) ||
+          s.description.toLowerCase().includes(q) ||
+          s.category.toLowerCase().includes(q) ||
+          s.included.some((item) => item.toLowerCase().includes(q)),
+      );
+    }
+    return results;
+  }, [selectedCategory, dbServices, searchQuery]);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24">
@@ -310,9 +321,20 @@ function ServicesContent() {
           </Link>
         </div>
         {/* Search */}
-        <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center gap-3 border border-white/10">
+        <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center gap-3 border border-white/10 focus-within:border-white/30 transition-colors">
           <span className="material-symbols-outlined text-white/70">search</span>
-          <span className="text-white/50 text-sm">Search for services...</span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search for services..."
+            className="bg-transparent text-white text-sm placeholder-white/50 outline-none flex-1"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="text-white/50 hover:text-white/80">
+              <span className="material-symbols-outlined text-lg">close</span>
+            </button>
+          )}
         </div>
       </header>
 
