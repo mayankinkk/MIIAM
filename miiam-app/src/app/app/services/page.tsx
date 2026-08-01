@@ -245,30 +245,34 @@ function ServicesContent() {
   useEffect(() => {
     async function loadServices() {
       setLoadingServices(true);
-      const { data: cats } = await supabase.from("service_categories").select("id, name, slug, icon").eq("is_active", true).order("display_order");
-      if (cats) {
-        const colors = ["text-blue-600", "text-emerald-600", "text-cyan-600", "text-amber-600", "text-pink-600", "text-red-600", "text-purple-600", "text-orange-600", "text-indigo-600", "text-teal-600"];
-        const bgs = ["bg-blue-50", "bg-emerald-50", "bg-cyan-50", "bg-amber-50", "bg-pink-50", "bg-red-50", "bg-purple-50", "bg-orange-50", "bg-indigo-50", "bg-teal-50"];
-        const mapped = cats.map((c: { id: string; name: string; slug: string | null; icon: string }, i: number) => ({
-          id: c.id, name: c.name, slug: c.slug || c.name.toLowerCase().replace(/\s+/g, "_").replace(/&/g, ""), icon: c.icon || "home_repair_service", color: colors[i % colors.length], bg: bgs[i % bgs.length],
-        }));
-        setDbCategories(mapped);
-        const catIds = cats.map((c: { id: string }) => c.id);
-        if (catIds.length > 0) {
-          const { data: items } = await supabase.from("service_items").select("*, service_categories!inner(name)").in("category_id", catIds).eq("is_active", true).order("sort_order");
-          if (items) {
-            const mappedItems: ServiceData[] = items.map((item: Record<string, unknown>) => {
-              const cat = item.service_categories as { name: string } | null;
-              const catObj = mapped.find((c: { name: string }) => c.name === cat?.name);
-              return {
-                id: item.id as string, name: item.name as string, category: catObj?.slug ?? "", rating: Number(item.rating) || 0, reviews: Number(item.reviews) || 0, price: Number(item.price),
-                priceMin: item.price_min != null ? Number(item.price_min) : undefined, priceMax: item.price_max != null ? Number(item.price_max) : undefined, originalPrice: item.original_price != null ? Number(item.original_price) : undefined,
-                duration: (item.duration as string) || "", image: (item.image_url as string) || "", included: (item.included as string[]) || [], warranty_days: Number(item.warranty_days) || 7, badge: (item.badge as string) || undefined, description: (item.description as string) || "",
-              };
-            });
-            setDbServices(mappedItems);
+      try {
+        const { data: cats } = await supabase.from("service_categories").select("id, name, slug, icon").eq("is_active", true).order("display_order");
+        if (cats) {
+          const colors = ["text-blue-600", "text-emerald-600", "text-cyan-600", "text-amber-600", "text-pink-600", "text-red-600", "text-purple-600", "text-orange-600", "text-indigo-600", "text-teal-600"];
+          const bgs = ["bg-blue-50", "bg-emerald-50", "bg-cyan-50", "bg-amber-50", "bg-pink-50", "bg-red-50", "bg-purple-50", "bg-orange-50", "bg-indigo-50", "bg-teal-50"];
+          const mapped = cats.map((c: { id: string; name: string; slug: string | null; icon: string }, i: number) => ({
+            id: c.id, name: c.name, slug: c.slug || c.name.toLowerCase().replace(/\s+/g, "_").replace(/&/g, ""), icon: c.icon || "home_repair_service", color: colors[i % colors.length], bg: bgs[i % bgs.length],
+          }));
+          setDbCategories(mapped);
+          const catIds = cats.map((c: { id: string }) => c.id);
+          if (catIds.length > 0) {
+            const { data: items } = await supabase.from("service_items").select("*, service_categories!inner(name)").in("category_id", catIds).eq("is_active", true).order("sort_order");
+            if (items) {
+              const mappedItems: ServiceData[] = items.map((item: Record<string, unknown>) => {
+                const cat = item.service_categories as { name: string } | null;
+                const catObj = mapped.find((c: { name: string }) => c.name === cat?.name);
+                return {
+                  id: item.id as string, name: item.name as string, category: catObj?.slug ?? "", rating: Number(item.rating) || 0, reviews: Number(item.reviews) || 0, price: Number(item.price),
+                  priceMin: item.price_min != null ? Number(item.price_min) : undefined, priceMax: item.price_max != null ? Number(item.price_max) : undefined, originalPrice: item.original_price != null ? Number(item.original_price) : undefined,
+                  duration: (item.duration as string) || "", image: (item.image_url as string) || "", included: (item.included as string[]) || [], warranty_days: Number(item.warranty_days) || 7, badge: (item.badge as string) || undefined, description: (item.description as string) || "",
+                };
+              });
+              setDbServices(mappedItems);
+            }
           }
         }
+      } catch {
+        // Supabase query failed — show empty state
       }
       setLoadingServices(false);
     }
