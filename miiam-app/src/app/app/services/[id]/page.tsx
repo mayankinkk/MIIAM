@@ -74,19 +74,19 @@ function ServiceDetailContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!service) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-4 px-4">
-        <span className="material-symbols-outlined text-gray-300 text-5xl">search_off</span>
-        <h1 className="text-xl font-bold text-gray-900">{t.services.serviceNotFound || "Service not found"}</h1>
-        <p className="text-gray-400 text-sm text-center">{t.services.serviceNotFoundDesc || "The service you're looking for doesn't exist or has been removed."}</p>
-        <button onClick={() => router.push("/app/services")} className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm active:scale-95 transition-all">{t.services.browseServices || "Browse Services"}</button>
+      <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-4 px-4">
+        <span className="material-symbols-outlined text-on-surface-variant/30 text-5xl">search_off</span>
+        <h1 className="text-xl font-bold text-on-surface">{t.services.serviceNotFound || "Service not found"}</h1>
+        <p className="text-on-surface-variant text-sm text-center">{t.services.serviceNotFoundDesc || "The service you're looking for doesn't exist or has been removed."}</p>
+        <button onClick={() => router.push("/app/services")} className="mt-4 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm active:scale-95 transition-all">{t.services.browseServices || "Browse Services"}</button>
       </div>
     );
   }
@@ -97,11 +97,11 @@ function ServiceDetailContent() {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-28">
+    <div className="min-h-screen bg-surface pb-28">
       {/* Hero */}
       <div className="relative h-72 overflow-hidden">
         <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80" />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-gray-900/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/10" />
         {/* Nav */}
         <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 pt-12 pb-3">
           <button onClick={() => router.back()} aria-label="Go back" className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-90 transition-transform">
@@ -113,7 +113,7 @@ function ServiceDetailContent() {
         {/* Info */}
         <div className="absolute bottom-0 left-0 right-0 p-5">
           {service.badge && (
-            <span className="inline-block bg-blue-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide mb-2 shadow-md">
+            <span className="inline-block bg-primary text-on-primary text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide mb-2 shadow-md">
               {t.services[service.badge as keyof typeof t.services] || service.badge}
             </span>
           )}
@@ -138,41 +138,41 @@ function ServiceDetailContent() {
       <div className="px-4 -mt-4 relative z-10 space-y-4">
         {/* Description */}
         {service.description && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-            <h3 className="font-bold text-gray-900 text-sm mb-2 flex items-center gap-2">
-              <span className="material-symbols-outlined text-blue-500 text-lg">info</span> About
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
+            <h3 className="font-bold text-on-surface text-sm mb-2 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-lg">info</span> About
             </h3>
-            <p className="text-sm text-gray-500 leading-relaxed">{service.description}</p>
+            <p className="text-sm text-on-surface-variant leading-relaxed">{service.description}</p>
           </motion.div>
         )}
 
         {/* What's Included */}
         {service.included.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-            <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
-              <span className="material-symbols-outlined text-blue-500 text-lg">checklist</span> {t.services.whatIncluded}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
+            <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-lg">checklist</span> {t.services.whatIncluded}
             </h3>
             <div className="space-y-2.5">
               {service.included.map((item, i) => (
                 <div key={i} className="flex items-center gap-2.5">
-                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-blue-600 text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+                  <div className="w-5 h-5 bg-primary-container rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="material-symbols-outlined text-on-primary-container text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
                   </div>
-                  <span className="text-sm text-gray-600">{item}</span>
+                  <span className="text-sm text-on-surface">{item}</span>
                 </div>
               ))}
             </div>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="material-symbols-outlined text-blue-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-              <span className="text-xs text-gray-400">{t.services.warrantyDays?.replace("{days}", String(service.warranty_days)) || `${service.warranty_days}-day warranty`}</span>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-outline/20">
+              <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+              <span className="text-xs text-on-surface-variant">{t.services.warrantyDays?.replace("{days}", String(service.warranty_days)) || `${service.warranty_days}-day warranty`}</span>
             </div>
           </motion.div>
         )}
 
         {/* Date & Time Selection */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-blue-500 text-lg">calendar_today</span> {t.services.selectDate}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
+          <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-lg">calendar_today</span> {t.services.selectDate}
           </h3>
 
           {/* Date Chips */}
@@ -181,8 +181,8 @@ function ServiceDetailContent() {
               <button key={i} onClick={() => { setSelectedDate(d.iso); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
                   selectedDate === d.iso
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-primary text-on-primary shadow-md shadow-primary/20"
+                    : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
                 }`}>
                 <div className="text-center">
                   <div>{d.full.toLocaleDateString("en-IN", { weekday: "short" })}</div>
@@ -192,8 +192,8 @@ function ServiceDetailContent() {
             ))}
           </div>
 
-          <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-blue-500 text-lg">schedule</span> {t.services.selectTimeSlot}
+          <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-lg">schedule</span> {t.services.selectTimeSlot}
           </h3>
 
           {/* Time Slots */}
@@ -202,8 +202,8 @@ function ServiceDetailContent() {
               <button key={slot} onClick={() => { setSelectedTime(slot); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`p-3 rounded-xl text-xs font-bold transition-all text-left active:scale-[0.98] ${
                   selectedTime === slot
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    ? "bg-primary text-on-primary shadow-md shadow-primary/20"
+                    : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
                 }`}>
                 {slot}
               </button>
@@ -212,24 +212,24 @@ function ServiceDetailContent() {
         </motion.div>
 
         {/* Address & Phone */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-          <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-blue-500 text-lg">location_on</span> Service Address
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
+          <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-lg">location_on</span> Service Address
           </h3>
           <textarea
-            className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none mb-3"
+            className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-3 text-on-surface bg-surface"
             rows={2}
             placeholder="Enter your full address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             aria-label="Service address"
           />
-          <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-blue-500 text-lg">phone</span> Phone Number
+          <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-lg">phone</span> Phone Number
           </h3>
           <input
             type="tel"
-            className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none"
+            className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none text-on-surface bg-surface"
             placeholder="Enter your phone number"
             value={phone}
             onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}

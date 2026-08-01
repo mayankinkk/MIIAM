@@ -320,16 +320,16 @@ function ServicesContent() {
   }, [selectedCategory, dbServices, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-screen bg-surface pb-24">
       {/* Blue Header */}
-      <header className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 px-4 pt-12 pb-6 sticky top-0 z-30">
+      <header className="bg-gradient-to-br from-primary via-primary-hover to-primary px-4 pt-12 pb-6 sticky top-0 z-30">
         <div className="flex items-center gap-3 mb-4">
           <Link href="/app/home" aria-label="Back" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20 active:scale-90 transition-transform">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1">
             <h1 className="text-xl font-black text-white">{t.services.title}</h1>
-            <p className="text-blue-100 text-xs mt-0.5">{t.services.subtitle}</p>
+            <p className="text-white/70 text-xs mt-0.5">{t.services.subtitle}</p>
           </div>
           <Link href="/app/cart" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20">
             <span className="material-symbols-outlined">shopping_cart</span>
@@ -369,11 +369,11 @@ function ServicesContent() {
 
         {/* Hero Banner */}
         <div className="px-4 mt-4">
-          <div className="rounded-2xl overflow-hidden relative h-40 shadow-lg shadow-blue-600/10">
+          <div className="rounded-2xl overflow-hidden relative h-40 shadow-lg shadow-primary/10">
             <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="w-full h-full" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80" />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 via-blue-800/50 to-transparent flex flex-col justify-end p-5">
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent flex flex-col justify-end p-5">
               <h2 className="text-white text-xl font-black leading-tight">{t.services.expertProfessionals}</h2>
-              <p className="text-blue-100 text-xs mt-1">{t.services.expertDesc}</p>
+              <p className="text-white/70 text-xs mt-1">{t.services.expertDesc}</p>
               <div className="flex items-center gap-1.5 mt-2">
                 <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Verified Pros</span>
                 <span className="bg-emerald-500/80 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Top Rated</span>
@@ -409,10 +409,10 @@ function ServicesContent() {
         {/* Services List */}
         <main className="px-4 space-y-4 pb-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-black text-gray-900">
+            <h2 className="text-base font-black text-on-surface">
               {selectedCategory === "all" ? "All Services" : dbCategories.find(c => c.slug === selectedCategory)?.name || "Services"}
             </h2>
-            <span className="text-xs font-bold text-gray-400">{filteredServices.length} services</span>
+            <span className="text-xs font-bold text-on-surface-variant">{filteredServices.length} services</span>
           </div>
 
           {loadingServices ? (
@@ -429,11 +429,11 @@ function ServicesContent() {
               ))}
             </div>
           ) : filteredServices.length === 0 ? (
-            <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
-              <span className="material-symbols-outlined text-gray-300 text-5xl mb-3">search_off</span>
-              <p className="font-bold text-gray-900 text-lg mb-1">{t.services.noServices || "No services found"}</p>
-              <p className="text-sm text-gray-400 mb-4">{t.services.tryDifferentCategory || "Try selecting a different category"}</p>
-              <button onClick={() => setSelectedCategory("all")} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm active:scale-95 transition-all">
+            <div className="bg-surface-container-lowest rounded-2xl p-10 text-center border border-outline/20 shadow-sm">
+              <span className="material-symbols-outlined text-on-surface-variant/30 text-5xl mb-3">search_off</span>
+              <p className="font-bold text-on-surface text-lg mb-1">{t.services.noServices || "No services found"}</p>
+              <p className="text-sm text-on-surface-variant mb-4">{t.services.tryDifferentCategory || "Try selecting a different category"}</p>
+              <button onClick={() => setSelectedCategory("all")} className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm active:scale-95 transition-all">
                 {t.services.showAll || "Show All Services"}
               </button>
             </div>
@@ -591,8 +591,8 @@ function ServicesContent() {
 export default function ServicesPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-surface">
+        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
       </div>
     }>
       <ServicesContent />
