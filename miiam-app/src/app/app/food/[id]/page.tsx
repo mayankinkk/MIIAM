@@ -660,20 +660,22 @@ export default function RestaurantProfilePage() {
         </div>
 
         {/* Category tabs */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 pb-2">
-          {availableCategories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
-              className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm transition-all active:scale-95 ${
-                activeCategory === cat
-                  ? "bg-primary text-white"
-                  : "bg-surface-container-lowest text-on-surface-variant border border-outline"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="sticky top-0 z-20 bg-surface pt-2 pb-1 -mx-4 px-4">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            {availableCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
+                className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm transition-all active:scale-95 ${
+                  activeCategory === cat
+                    ? "bg-primary text-white"
+                    : "bg-surface-container-lowest text-on-surface-variant border border-outline"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Sort tabs */}
