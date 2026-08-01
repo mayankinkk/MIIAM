@@ -670,9 +670,13 @@ export default function FoodPageContent() {
 
       {/* Circular Category Icons - Photo Style */}
       <div className="px-4 py-4">
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide" role="tablist" aria-label="Food categories">
           <button
             onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedCategory("all"); }}}
+            role="tab"
+            aria-selected={selectedCategory === "all"}
+            tabIndex={selectedCategory === "all" ? 0 : -1}
             className="flex flex-col items-center gap-1.5 flex-shrink-0"
           >
             <div className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${selectedCategory === "all" ? "border-primary shadow-lg shadow-primary/30" : "border-surface-container-high"}`}>
@@ -686,6 +690,10 @@ export default function FoodPageContent() {
             <button
               key={cat.id}
               onClick={() => { setSelectedCategory(cat.id); if (navigator.vibrate) navigator.vibrate(10); }}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedCategory(cat.id); }}}
+              role="tab"
+              aria-selected={selectedCategory === cat.id}
+              tabIndex={selectedCategory === cat.id ? 0 : -1}
               className="flex flex-col items-center gap-1.5 flex-shrink-0"
             >
               <div className={`w-16 h-16 rounded-full overflow-hidden border-2 transition-all ${selectedCategory === cat.id ? "border-primary shadow-lg shadow-primary/30" : "border-surface-container-high"}`}>
