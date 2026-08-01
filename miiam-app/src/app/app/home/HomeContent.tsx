@@ -10,6 +10,7 @@ import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
 import { reverseGeocode, geocodePincode } from "@/lib/geocoding";
+import { multiShotDetectWithFallback } from "@/lib/location-detection";
 import { useRecentlyViewed } from "@/lib/hooks/useRecentlyViewed";
 
 import HomeHeader from "@/components/home/HomeHeader";
@@ -388,53 +389,45 @@ export default function HomePage() {
     setManualPincode("");
   };
 
-  const getCurrentLocation = () => {
+  const getCurrentLocation = async () => {
     if (!navigator.geolocation) {
       setPincodeError(t.home.locationNotSupported);
       return;
     }
 
     setIsLoadingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          const geo = await reverseGeocode(latitude, longitude);
-          const state = geo.state || undefined;
-          const displayName = state ? `${geo.displayAddress}, ${state}` : geo.displayAddress;
+    try {
+      const result = await multiShotDetectWithFallback(3);
+      const { lat, lng, accuracy } = result;
+      try {
+        const geo = await reverseGeocode(lat, lng, accuracy);
+        const state = geo.state || undefined;
+        const displayName = state ? `${geo.displayAddress}, ${state}` : geo.displayAddress;
 
-          setLocation(displayName);
-          locationStore.setLocation({
-            pincode: geo.postalCode,
-            lat: latitude,
-            lng: longitude,
-            city: geo.city || undefined,
-            state,
-            displayAddress: displayName,
-          });
-          setShowLocationModal(false);
-        } catch {
-          const fallback = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-          setLocation(fallback);
-          locationStore.setLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            displayAddress: fallback,
-          });
-          setShowLocationModal(false);
-        }
-        setIsLoadingLocation(false);
-      },
-      (error) => {
-        setIsLoadingLocation(false);
-        if (error.code === error.PERMISSION_DENIED) {
-          setPincodeError(t.home.locationDenied);
-        } else {
-          setPincodeError(t.home.unableToDetect);
-        }
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-    );
+        setLocation(displayName);
+        locationStore.setLocation({
+          pincode: geo.postalCode,
+          lat,
+          lng,
+          city: geo.city || undefined,
+          state,
+          displayAddress: displayName,
+        });
+        setShowLocationModal(false);
+      } catch {
+        const fallback = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        setLocation(fallback);
+        locationStore.setLocation({
+          lat,
+          lng,
+          displayAddress: fallback,
+        });
+        setShowLocationModal(false);
+      }
+    } catch {
+      setPincodeError(t.home.unableToDetect);
+    }
+    setIsLoadingLocation(false);
   };
 
   const userName = user?.profile_name || user?.email?.split("@")[0] || "User";

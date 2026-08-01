@@ -43,7 +43,7 @@ function parseIsOpen(hours: string | null | undefined): boolean {
 export default function CheckoutPage() {
   const { t } = useTranslation();
   const [vendorHours, setVendorHours] = useState<Record<string, string>>({});
-  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const [scheduledDate, setScheduledDate] = useState<string>("");
   const [specialInstructions, setSpecialInstructions] = useState("");
   const [scheduledTime, setScheduledTime] = useState<string>("");
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
                     phone: deliveryAddress.phone || "",
                   };
 
-                  if (paymentMethod === "upi" || paymentMethod === "card") {
+                  if (paymentMethod === "card") {
                     pay({
                       amount: grand,
                       description: `${items.length} item(s) from MIIAM`,

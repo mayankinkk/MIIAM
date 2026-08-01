@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { filterLocation, TRACKING_POSITION_OPTIONS, SINGLESHOT_POSITION_OPTIONS } from "@/lib/location-detection";
 import logger from "@/lib/logger";
 
 export interface SharedLocation {
@@ -64,12 +65,13 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
     const write = async (pos: GeolocationPosition) => {
       if (stoppedRef.current) return;
       const { latitude, longitude, accuracy, heading, speed } = pos.coords;
+      const filtered = filterLocation(latitude, longitude, accuracy ?? 0);
       const payload = {
         order_id: orderId,
         user_id: userId,
-        lat: latitude,
-        lng: longitude,
-        accuracy,
+        lat: filtered.lat,
+        lng: filtered.lng,
+        accuracy: filtered.accuracy,
         heading: heading ?? null,
         speed: speed ?? null,
         is_sharing: true,
@@ -78,9 +80,9 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
       try {
         await supabase.from("customer_locations").upsert(payload, { onConflict: "order_id" });
         setLastSent({
-          lat: latitude,
-          lng: longitude,
-          accuracy,
+          lat: filtered.lat,
+          lng: filtered.lng,
+          accuracy: filtered.accuracy,
           heading: heading ?? undefined,
           speed: speed ?? undefined,
           updatedAt: payload.updated_at,
@@ -96,17 +98,9 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
       stop();
     };
 
-    navigator.geolocation.getCurrentPosition(write, onError, {
-      enableHighAccuracy: true,
-      maximumAge: 5000,
-      timeout: 8000,
-    });
+    navigator.geolocation.getCurrentPosition(write, onError, SINGLESHOT_POSITION_OPTIONS);
 
-    watchIdRef.current = navigator.geolocation.watchPosition(write, onError, {
-      enableHighAccuracy: true,
-      maximumAge: 2000,
-      timeout: 10000,
-    });
+    watchIdRef.current = navigator.geolocation.watchPosition(write, onError, TRACKING_POSITION_OPTIONS);
     return true;
   }, [orderId, userId, supabase, stop]);
 

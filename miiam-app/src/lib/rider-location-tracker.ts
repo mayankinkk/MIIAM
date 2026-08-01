@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { filterLocation, TRACKING_POSITION_OPTIONS, ACCURACY_BAD_M } from "@/lib/location-detection";
 import logger from "@/lib/logger";
 
 const log = logger.child({ module: "rider-location-tracker" });
@@ -84,26 +85,32 @@ export class RiderLocationTracker {
 
     // Get initial position
     navigator.geolocation.getCurrentPosition(
-      updateLocation,
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        if (latitude === 0 && longitude === 0) return;
+        const filtered = filterLocation(latitude, longitude, pos.coords.accuracy ?? ACCURACY_BAD_M);
+        updateLocation({ ...pos, coords: { ...pos.coords, latitude: filtered.lat, longitude: filtered.lng } });
+      },
       (error) => {
         log.error({ err: error }, "Initial location error");
         this.onError?.(error);
       },
-      { enableHighAccuracy: true }
+      TRACKING_POSITION_OPTIONS,
     );
 
-    // Watch position and update every 3 seconds
+    // Watch position and update
     this.watchId = navigator.geolocation.watchPosition(
-      updateLocation,
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        if (latitude === 0 && longitude === 0) return;
+        const filtered = filterLocation(latitude, longitude, pos.coords.accuracy ?? ACCURACY_BAD_M);
+        updateLocation({ ...pos, coords: { ...pos.coords, latitude: filtered.lat, longitude: filtered.lng } });
+      },
       (error) => {
         log.error({ err: error }, "Location watch error");
         this.onError?.(error);
       },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 2000,
-        timeout: 5000,
-      }
+      TRACKING_POSITION_OPTIONS,
     );
 
     log.info({ orderId: this.currentOrderId }, "Location tracking started");
@@ -129,20 +136,21 @@ export class RiderLocationTracker {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
+          const filtered = filterLocation(latitude, longitude, position.coords.accuracy ?? ACCURACY_BAD_M);
 
           try {
             if (this.currentOrderId && this.currentRiderId) {
               await this.supabase.from("rider_locations").upsert({
                 order_id: this.currentOrderId,
                 rider_id: this.currentRiderId,
-                lat: latitude,
-                lng: longitude,
+                lat: filtered.lat,
+                lng: filtered.lng,
                 created_at: new Date().toISOString(),
               }, {
                 onConflict: 'order_id'
               });
             }
-            resolve({ lat: latitude, lng: longitude });
+            resolve({ lat: filtered.lat, lng: filtered.lng });
           } catch (error) {
             log.error({ err: error }, "Failed to update location");
             resolve(null);
@@ -153,7 +161,7 @@ export class RiderLocationTracker {
           this.onError?.(error);
           resolve(null);
         },
-        { enableHighAccuracy: true }
+        TRACKING_POSITION_OPTIONS,
       );
     });
   }
@@ -215,6 +223,7 @@ export async function startLocationTracking(
     if (!_legacyOrderId || !_legacyRiderId || !_legacySupabase) return;
 
     const { latitude, longitude } = position.coords;
+    const filtered = filterLocation(latitude, longitude, position.coords.accuracy ?? ACCURACY_BAD_M);
 
     try {
       await _legacySupabase.from("rider_locations").upsert({
@@ -222,8 +231,8 @@ export async function startLocationTracking(
         rider_id: _legacyRiderId,
         rider_name: riderName || "Rider",
         rider_phone: riderPhone || "",
-        lat: latitude,
-        lng: longitude,
+        lat: filtered.lat,
+        lng: filtered.lng,
         created_at: new Date().toISOString(),
       }, {
         onConflict: 'order_id'
@@ -236,17 +245,13 @@ export async function startLocationTracking(
   navigator.geolocation.getCurrentPosition(
     updateLocation,
     (error) => log.error({ err: error }, "Initial location error"),
-    { enableHighAccuracy: true }
+    TRACKING_POSITION_OPTIONS,
   );
 
   _legacyWatchId = navigator.geolocation.watchPosition(
     updateLocation,
     (error) => log.error({ err: error }, "Location watch error"),
-    {
-      enableHighAccuracy: true,
-      maximumAge: 2000,
-      timeout: 5000,
-    }
+    TRACKING_POSITION_OPTIONS,
   );
 
   log.info({ orderId }, "Location tracking started");
@@ -272,20 +277,21 @@ export async function updateRiderLocation(orderId: string, riderId: string) {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        const filtered = filterLocation(latitude, longitude, position.coords.accuracy ?? ACCURACY_BAD_M);
 
         try {
           if (_legacySupabase) {
             await _legacySupabase.from("rider_locations").upsert({
               order_id: orderId,
               rider_id: riderId,
-              lat: latitude,
-              lng: longitude,
+              lat: filtered.lat,
+              lng: filtered.lng,
               created_at: new Date().toISOString(),
             }, {
               onConflict: 'order_id'
             });
           }
-          resolve({ lat: latitude, lng: longitude });
+          resolve({ lat: filtered.lat, lng: filtered.lng });
         } catch (error) {
           log.error({ err: error }, "Failed to update location");
           resolve(null);
@@ -295,7 +301,7 @@ export async function updateRiderLocation(orderId: string, riderId: string) {
         log.error({ err: error }, "Failed to get location");
         resolve(null);
       },
-      { enableHighAccuracy: true }
+      TRACKING_POSITION_OPTIONS,
     );
   });
 }

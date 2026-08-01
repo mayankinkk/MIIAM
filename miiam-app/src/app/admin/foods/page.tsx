@@ -333,7 +333,6 @@ export default function AdminFoodsDashboard() {
                   className="w-full px-3 py-2 border border-[var(--color-border-subtle)] rounded-lg text-sm bg-[var(--color-surface-container-lowest)]"
                 >
                   <option value="all">All Methods</option>
-                  <option value="upi">UPI</option>
                   <option value="card">Card</option>
                   <option value="cash">Cash</option>
                   <option value="wallet">Wallet</option>

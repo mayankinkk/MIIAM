@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { reverseGeocode, searchLocation, buildDisplayAddress } from "@/lib/geocoding";
+import { reverseGeocode, searchLocation } from "@/lib/geocoding";
+import { multiShotDetectWithFallback } from "@/lib/location-detection";
 
 export interface SelectedAddress {
   label: string;
@@ -77,7 +78,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
   const mapInstanceRef = useRef<LeafletMapInstance | null>(null);
   const markerRef = useRef<LeafletMarkerInstance | null>(null);
 
-  // GPS detection + reverse geocode
+  // GPS detection + reverse geocode with multi-shot accuracy
   async function detectGPS() {
     setGpsStatus("detecting");
     setGpsError("");
@@ -86,42 +87,38 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       setGpsStatus("error");
       return;
     }
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude: lat, longitude: lng } = pos.coords;
-        try {
-          const geo = await reverseGeocode(lat, lng);
-          setGpsAddress({
-            label: "Current Location",
-            street: geo.displayAddress,
-            city: geo.city || "Unknown",
-            state: geo.state,
-            postal_code: geo.postalCode,
-            lat,
-            lng,
-            type: "other",
-          });
-          setGpsStatus("detected");
-        } catch {
-          setGpsAddress({
-            label: "Current Location",
-            street: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
-            city: "Unknown",
-            state: "",
-            postal_code: "000000",
-            lat,
-            lng,
-            type: "other",
-          });
-          setGpsStatus("detected");
-        }
-      },
-      (err) => {
-        setGpsError("Could not detect location. Please allow location access.");
-        setGpsStatus("error");
-      },
-      { enableHighAccuracy: true, timeout: 12000 }
-    );
+    try {
+      const result = await multiShotDetectWithFallback(3);
+      const { lat, lng, accuracy } = result;
+      try {
+        const geo = await reverseGeocode(lat, lng, accuracy);
+        setGpsAddress({
+          label: "Current Location",
+          street: geo.displayAddress,
+          city: geo.city || "Unknown",
+          state: geo.state,
+          postal_code: geo.postalCode,
+          lat,
+          lng,
+          type: "other",
+        });
+      } catch {
+        setGpsAddress({
+          label: "Current Location",
+          street: `${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+          city: "Unknown",
+          state: "",
+          postal_code: "000000",
+          lat,
+          lng,
+          type: "other",
+        });
+      }
+      setGpsStatus("detected");
+    } catch {
+      setGpsError("Could not detect location. Please allow location access.");
+      setGpsStatus("error");
+    }
   }
 
   // Nominatim search autocomplete

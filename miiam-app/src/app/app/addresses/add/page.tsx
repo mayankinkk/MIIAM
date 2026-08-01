@@ -7,6 +7,7 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useToastStore } from "@/lib/store/toastStore";
 import { reverseGeocode as sharedReverseGeocode, searchLocation } from "@/lib/geocoding";
+import { multiShotDetectWithFallback, classifyAccuracy, SINGLESHOT_POSITION_OPTIONS } from "@/lib/location-detection";
 import type * as L from "leaflet";
 
 interface DetectedLocation {
@@ -142,19 +143,14 @@ export default function AddressPickerPage() {
       setLocationStatus("detecting");
 
       try {
-        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(
-            resolve,
-            reject,
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
-          );
-        });
+        const result = await multiShotDetectWithFallback(3);
+        const { lat, lng, accuracy } = result;
 
-        const { latitude, longitude, accuracy } = position.coords;
         setLocationAccuracy(accuracy);
-        setLocationStatus(accuracy <= 10 ? "good" : accuracy <= 30 ? "improving" : "detecting");
+        const level = classifyAccuracy(accuracy);
+        setLocationStatus(level === "excellent" || level === "good" ? "good" : level === "acceptable" ? "improving" : "detecting");
 
-        await initMap(latitude, longitude);
+        await initMap(lat, lng);
         setDetecting(false);
 
       } catch {
@@ -223,7 +219,7 @@ export default function AddressPickerPage() {
     setSearchResults([]);
   };
 
-  const handleDetectLocation = (showLoading = true) => {
+  const handleDetectLocation = async (showLoading = true) => {
     if (showLoading) {
       setDetecting(true);
       setLocationError("");
@@ -237,32 +233,25 @@ export default function AddressPickerPage() {
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
-        setLocationAccuracy(accuracy);
-        setLocationStatus(accuracy <= 10 ? "good" : accuracy <= 30 ? "improving" : "detecting");
+    try {
+      const result = await multiShotDetectWithFallback(3);
+      const { lat, lng, accuracy } = result;
+      setLocationAccuracy(accuracy);
+      const level = classifyAccuracy(accuracy);
+      setLocationStatus(level === "excellent" || level === "good" ? "good" : level === "acceptable" ? "improving" : "detecting");
 
-        if (mapInstanceRef.current && markerRef.current) {
-          mapInstanceRef.current.setView([latitude, longitude], 19);
-          markerRef.current.setLatLng([latitude, longitude]);
-        }
+      if (mapInstanceRef.current && markerRef.current) {
+        mapInstanceRef.current.setView([lat, lng], 19);
+        markerRef.current.setLatLng([lat, lng]);
+      }
 
-        await reverseGeocode(latitude, longitude);
-        setDetecting(false);
-      },
-      (error) => {
-        setDetecting(false);
-        setLocationStatus("error");
-        switch (error.code) {
-          case 1: setLocationError("Location permission denied"); break;
-          case 2: setLocationError("Location unavailable"); break;
-          case 3: setLocationError("Location timed out"); break;
-          default: setLocationError("Could not get location");
-        }
-      },
-      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
-    );
+      await reverseGeocode(lat, lng);
+      setDetecting(false);
+    } catch {
+      setDetecting(false);
+      setLocationStatus("error");
+      setLocationError("Could not get location");
+    }
   };
 
   const handleSave = async () => {

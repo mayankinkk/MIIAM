@@ -1,4 +1,5 @@
 import { NOMINATIM_REVERSE_URL, NOMINATIM_SEARCH_URL } from "./constants";
+import { withRetry } from "./retry";
 
 const HEADERS = { "Accept-Language": "en", "User-Agent": "MIIAM/1.0" };
 
@@ -10,6 +11,8 @@ export interface GeocodedAddress {
   displayAddress: string;
   lat: number;
   lng: number;
+  /** Accuracy of the GPS reading in meters (if available). */
+  gpsAccuracy?: number;
 }
 
 export function buildDisplayAddress(address: Record<string, string>): string {
@@ -33,12 +36,33 @@ export function buildDisplayAddress(address: Record<string, string>): string {
   return parts.join(", ");
 }
 
-export async function reverseGeocode(lat: number, lng: number): Promise<GeocodedAddress> {
-  const res = await fetch(
-    `${NOMINATIM_REVERSE_URL}&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
-    { headers: HEADERS }
-  );
-  const data = await res.json();
+/**
+ * Pick the best Nominatim zoom level based on GPS accuracy.
+ * Lower zoom = more detail. Nominatim range: 0-19.
+ */
+function accuracyToZoom(accuracyMeters?: number): number {
+  if (!accuracyMeters || accuracyMeters <= 10) return 18;
+  if (accuracyMeters <= 30) return 17;
+  if (accuracyMeters <= 100) return 16;
+  return 15;
+}
+
+export async function reverseGeocode(
+  lat: number,
+  lng: number,
+  gpsAccuracyMeters?: number,
+): Promise<GeocodedAddress> {
+  const zoom = accuracyToZoom(gpsAccuracyMeters);
+
+  const data = await withRetry(async () => {
+    const res = await fetch(
+      `${NOMINATIM_REVERSE_URL}&lat=${lat}&lon=${lng}&zoom=${zoom}&addressdetails=1&extratags=1`,
+      { headers: HEADERS },
+    );
+    if (!res.ok) throw new Error(`Nominatim ${res.status}`);
+    return res.json();
+  }, 2, 800);
+
   const addr = data.address || {};
   const displayAddress = buildDisplayAddress(addr) ||
     data.display_name?.split(",").slice(0, 3).join(", ") ||
@@ -52,6 +76,7 @@ export async function reverseGeocode(lat: number, lng: number): Promise<Geocoded
     displayAddress,
     lat,
     lng,
+    gpsAccuracy: gpsAccuracyMeters,
   };
 }
 

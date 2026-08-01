@@ -11,7 +11,6 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
   const { t } = useTranslation();
 
   const methods = [
-    { id: "upi", label: "UPI Payment", sub: "Google Pay, PhonePe, Paytm, BHIM", icon: "qr_code_scanner" },
     { id: "cod", label: "Cash on Delivery", sub: "Pay when you receive the order", icon: "payments" },
   ];
 

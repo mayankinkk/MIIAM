@@ -67,7 +67,7 @@ function PaymentStatusContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const orderId = searchParams.get("orderId");
-  const paymentMethod = searchParams.get("method") || "upi";
+  const paymentMethod = searchParams.get("method") || "cod";
   
   const [status, setStatus] = useState<PaymentStatus>("processing");
   const [progress, setProgress] = useState(0);
