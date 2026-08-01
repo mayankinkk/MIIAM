@@ -440,14 +440,14 @@ export default function RestaurantProfilePage() {
   return (
     <div className="min-h-screen bg-surface pb-32">
       {/* Hero Cover */}
-      <div className="relative h-48 sm:h-64 overflow-hidden">
+      <div className="relative h-52 sm:h-72 overflow-hidden">
         <BlurImage
           src={coverImage}
           alt={vendor.shop_name}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-105"
           fill
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
 
         {/* Floating top nav */}
         <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 pt-12 sm:pt-4">
@@ -481,17 +481,17 @@ export default function RestaurantProfilePage() {
           <div className="flex items-end justify-between gap-3">
             <div>
               {vendor.is_featured && (
-                <span className="bg-amber-400 text-amber-900 text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider mb-2 inline-block">
-                  ⭐ Featured
+                <span className="bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-flex items-center gap-1">
+                  <span className="text-xs">⭐</span> Featured
                 </span>
               )}
-              <h1 className="text-white font-black text-2xl sm:text-3xl leading-tight">{vendor.shop_name}</h1>
+              <h1 className="text-white font-black text-2xl sm:text-3xl leading-tight drop-shadow-lg">{vendor.shop_name}</h1>
               <p className="text-white/80 text-sm mt-1 font-medium">{vendor.cuisine}</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)]/20 backdrop-blur-sm rounded-2xl px-4 py-2 text-center flex-shrink-0">
+            <div className="bg-white/15 backdrop-blur-md rounded-2xl px-4 py-3 text-center flex-shrink-0 border border-white/20">
               <p className="text-white font-black text-xl">{avgRating}</p>
-              <div className="flex text-amber-400 text-xs">{'★'.repeat(5)}</div>
-              <p className="text-white/70 text-[10px] mt-0.5">{reviews.length || vendor.review_count || 0} reviews</p>
+              <div className="flex text-amber-400 text-xs gap-0.5">{'★'.repeat(5)}</div>
+              <p className="text-white/70 text-[10px] mt-1">{reviews.length || vendor.review_count || 0} reviews</p>
             </div>
           </div>
         </div>
