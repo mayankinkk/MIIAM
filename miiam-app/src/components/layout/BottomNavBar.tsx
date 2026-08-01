@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
+import { useNotificationStore } from "@/lib/store/notificationStore";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { motion } from "framer-motion";
 
 export default function BottomNavBar() {
   const pathname = usePathname();
   const totalItems = useCartStore((s) => Array.isArray(s.items) ? s.items.reduce((sum, i) => sum + i.quantity, 0) : 0);
+  const unreadCount = useNotificationStore((s) => s.unreadCount());
   const { t } = useTranslation();
 
   const hideOnRoutes = ["/app/checkout", "/app/payment", "/app/vendor-failure", "/app/support/chat"];
@@ -65,6 +67,19 @@ export default function BottomNavBar() {
                       className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-primary rounded-full text-white text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface-container-lowest px-1"
                     >
                       {totalItems > 9 ? "9+" : totalItems}
+                    </motion.span>
+                  )}
+
+                  {item.href === "/app/profile" && unreadCount > 0 && (
+                    <motion.span
+                      key={unreadCount}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 20 }}
+                      suppressHydrationWarning
+                      className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-error rounded-full text-white text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface-container-lowest px-1"
+                    >
+                      {unreadCount > 9 ? "9+" : unreadCount}
                     </motion.span>
                   )}
                 </div>
