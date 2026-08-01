@@ -280,6 +280,11 @@ function ServicesContent() {
   const [bookingService, setBookingService] = useState<ServiceData | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  useEffect(() => {
+    const mapped = categoryIdMap[rawCategory];
+    if (mapped) setSelectedCategory(mapped);
+  }, [categoryIdMap, rawCategory]);
+
   const checkServiceability = useCallback(async () => { setIsServiceable(true); }, []);
 
   if (mappedCategory) {
