@@ -444,7 +444,7 @@ function ServicesContent() {
                 <div className="mb-2">
                   <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
                     {filteredServices.filter(s => s.badge).map((service) => (
-                      <div key={service.id} className="flex-shrink-0 w-64 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5 card-lift">
+                      <div key={service.id} className="flex-shrink-0 w-64 bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5 card-hover">
                         <div className="relative h-36 overflow-hidden">
                           <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="256px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -504,7 +504,7 @@ function ServicesContent() {
               {filteredServices.map((service, index) => (
                 <Link key={service.id} href={`/app/services/${service.id}`}>
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                  className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5 active:scale-[0.98] transition-transform">
+                  className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5 card-hover">
                   {/* Image */}
                   <div className="relative h-36 overflow-hidden">
                     <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
