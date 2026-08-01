@@ -77,8 +77,8 @@ export default function NotificationsPage() {
 
   return (
     <PullToRefresh onRefresh={fetchNotifications}>
-    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
-      <header className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] shadow-sm">
+    <div className="min-h-screen bg-surface pb-24">
+      <header className="fixed top-0 w-full z-50 bg-surface-container-lowest shadow-sm">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Link href="/app/home" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
@@ -103,26 +103,26 @@ export default function NotificationsPage() {
         </section>
 
         {/* Push Notification Settings */}
-        <section className="bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-6 shadow-sm mb-8">
+        <section className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-8">
           <h2 className="text-lg font-bold text-on-surface mb-4">Push Notifications</h2>
           
           {permission === "denied" ? (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-              <p className="text-sm text-red-700 font-medium">
+            <div className="bg-error/10 border border-error/20 rounded-xl p-4">
+              <p className="text-sm text-error font-medium">
                 Notifications are blocked. Please enable them in your browser settings.
               </p>
             </div>
           ) : permission === "granted" ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-4">
-                <span className="material-symbols-outlined text-green-600">notifications_active</span>
+              <div className="flex items-center gap-3 bg-status-success/10 border border-status-success/20 rounded-xl p-4">
+                <span className="material-symbols-outlined text-status-success">notifications_active</span>
                 <div>
-                  <p className="font-bold text-green-700">Notifications Enabled</p>
-                  <p className="text-xs text-green-600">You'll receive updates about your orders</p>
+                  <p className="font-bold text-status-success">Notifications Enabled</p>
+                  <p className="text-xs text-on-surface-variant">You'll receive updates about your orders</p>
                 </div>
               </div>
               <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
                   <div>
                     <p className="font-bold text-on-surface">Order Updates</p>
                     <p className="text-xs text-on-surface-variant">Get notified when order status changes</p>
@@ -134,7 +134,7 @@ export default function NotificationsPage() {
                     className="w-5 h-5 accent-primary"
                   />
                 </label>
-                <label className="flex items-center justify-between p-4 bg-[var(--color-surface-subtle)] rounded-xl cursor-pointer">
+                <label className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
                   <div>
                     <p className="font-bold text-on-surface">Promotions & Offers</p>
                     <p className="text-xs text-on-surface-variant">Receive deals and discounts</p>
@@ -169,14 +169,14 @@ export default function NotificationsPage() {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-4 animate-pulse">
+                <div key={i} className="bg-surface-container-lowest rounded-2xl p-4 animate-pulse">
                   <div className="h-4 bg-surface-container-high rounded w-3/4 mb-2"></div>
                   <div className="h-3 bg-surface-container-high rounded w-1/2"></div>
                 </div>
               ))}
             </div>
           ) : notifications.length === 0 ? (
-            <div className="text-center py-12 bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl">
+            <div className="text-center py-12 bg-surface-container-lowest rounded-2xl">
               <span className="text-5xl">🔔</span>
               <p className="text-on-surface-variant mt-4">No notifications yet</p>
             </div>
@@ -197,12 +197,12 @@ export default function NotificationsPage() {
                   }}
                 >
                   <div
-                    className={`bg-surface-container-lowest dark:bg-[var(--color-surface-container)] rounded-2xl p-4 ${notification.is_read ? "opacity-70" : "border-l-4 border-primary"}`}
+                    className={`bg-surface-container-lowest rounded-2xl p-4 ${notification.is_read ? "opacity-70" : "border-l-4 border-primary"}`}
                   >
                     <div className="flex items-start gap-3">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        notification.type === "order" ? "bg-surface-container" :
-                        notification.type === "promo" ? "bg-amber-100" : "bg-surface-container-high"
+                        notification.type === "order" ? "bg-surface-container-high" :
+                        notification.type === "promo" ? "bg-amber-100 dark:bg-amber-900/30" : "bg-surface-container"
                       }`}>
                         <span className="material-symbols-outlined text-lg text-primary">
                           {notification.type === "order" ? "restaurant" :
@@ -212,7 +212,7 @@ export default function NotificationsPage() {
                       <div className="flex-1">
                         <p className="font-bold text-on-surface">{notification.title}</p>
                         <p className="text-sm text-on-surface-variant mt-1">{notification.body}</p>
-                        <p className="text-xs text-[var(--color-outline-variant)] mt-2">
+                        <p className="text-xs text-on-surface-variant/60 mt-2">
                           {new Date(notification.created_at).toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "short",
