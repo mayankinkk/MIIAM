@@ -268,6 +268,8 @@ const as: Translations = {
     itemsSubtotal: "আইটেমৰ উপমূল্য",
     deliveryFee: "ডেলিভাৰী মাচুল",
     serviceCharge: "সেৱা মাচুল",
+    gstOtherFees: "GST আৰু অন্যান্য মাচুল",
+    included: "অন্তৰ্ভুক্ত",
     totalBalance: "মুঠ বালেন্স",
     reorderFromPast: "অতীতৰ পৰা পুনৰ অৰ্ডাৰ",
     noPastOrders: "কোনো অতীতৰ অৰ্ডাৰ পোৱা নগ'ল",
@@ -282,6 +284,8 @@ const as: Translations = {
     emptyCartDesc: "চেকআউটৰ আগত আপোনাৰ কাৰ্টত কিছু আইটেম যোগ কৰক।",
     browseMenu: "মেনু চাওক",
     remove: "আঁতৰাওক",
+    vendor: "বিক্ৰেতা",
+    restaurant: "ৰেস্তোৰাঁ",
   },
   checkout: {
     title: "নিৰাপদ চেকআউট",

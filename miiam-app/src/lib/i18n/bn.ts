@@ -268,6 +268,8 @@ const bn: Translations = {
     itemsSubtotal: "আইটেমের উপমূল্য",
     deliveryFee: "ডেলিভারি ফি",
     serviceCharge: "সেবা ফি",
+    gstOtherFees: "GST এবং অন্যান্য ফি",
+    included: "অন্তর্ভুক্ত",
     totalBalance: "মোট ব্যালেন্স",
     reorderFromPast: "অতীত থেকে পুনরায় অর্ডার",
     noPastOrders: "কোনো অতীতের অর্ডার পাওয়া যায়নি",
@@ -282,6 +284,8 @@ const bn: Translations = {
     emptyCartDesc: "চেকআউটের আগে আপনার কার্টে কিছু আইটেম যোগ করুন।",
     browseMenu: "মেনু দেখুন",
     remove: "সরিয়ে দিন",
+    vendor: "বিক্রেতা",
+    restaurant: "রেস্তোরাঁ",
   },
   checkout: {
     title: "নিরাপদ চেকআউট",

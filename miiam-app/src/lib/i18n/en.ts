@@ -266,6 +266,8 @@ const en = {
     itemsSubtotal: "Items Subtotal",
     deliveryFee: "Delivery Fee",
     serviceCharge: "Service Charge",
+    gstOtherFees: "GST & Other Fees",
+    included: "Included",
     totalBalance: "Total Balance",
     reorderFromPast: "Reorder from Past",
     noPastOrders: "No past orders found",
@@ -280,6 +282,8 @@ const en = {
     emptyCartDesc: "Add some items to your cart before checking out.",
     browseMenu: "Browse Menu",
     remove: "Remove",
+    vendor: "Vendor",
+    restaurant: "Restaurant",
   },
   checkout: {
     title: "Secure Checkout",

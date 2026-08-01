@@ -133,7 +133,7 @@ export default function CartPage() {
         .select("*, menu_items(*)")
         .eq("order_id", orderId);
       if (orderItems) {
-        let vendorName = "Vendor";
+        let vendorName = t.cart.vendor;
         if (orderItems.length > 0 && orderItems[0].menu_items?.vendor_id) {
           const { data: vendor } = await supabase.from("vendors").select("shop_name").eq("id", orderItems[0].menu_items.vendor_id).maybeSingle();
           if (vendor) vendorName = vendor.shop_name;
@@ -417,7 +417,7 @@ export default function CartPage() {
                       <div key={order.id} className="border border-outline-variant dark:border-[var(--color-border-subtle)] rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm">{order.vendors?.shop_name || "Restaurant"}</p>
+                            <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm">{order.vendors?.shop_name || t.cart.restaurant}</p>
                             <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                           </div>
                           <p className="font-bold text-primary text-sm">₹{order.total_amount?.toFixed(2)}</p>

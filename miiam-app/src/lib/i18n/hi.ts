@@ -268,6 +268,8 @@ const hi: Translations = {
     itemsSubtotal: "आइटम उपकुल",
     deliveryFee: "डिलीवरी शुल्क",
     serviceCharge: "सेवा शुल्क",
+    gstOtherFees: "GST और अन्य शुल्क",
+    included: "शामिल है",
     totalBalance: "कुल बैलेंस",
     reorderFromPast: "पिछले ऑर्डर से फिर से ऑर्डर",
     noPastOrders: "कोई पिछला ऑर्डर नहीं मिला",
@@ -282,6 +284,8 @@ const hi: Translations = {
     emptyCartDesc: "चेकआउट से पहले अपने कार्ट में कुछ आइटम जोड़ें।",
     browseMenu: "मेनू देखें",
     remove: "हटाएं",
+    vendor: "विक्रेता",
+    restaurant: "रेस्तरां",
   },
   checkout: {
     title: "सुरक्षित चेकआउट",
