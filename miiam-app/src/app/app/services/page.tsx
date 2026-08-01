@@ -14,7 +14,7 @@ import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
 import { SERVICE_TIME_SLOTS, type ServiceData } from "@/lib/data/services";
 import BookingStepper from "@/components/BookingStepper";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 // ---------- Booking Modal ----------
 function BookingModal({ service, onClose }: { service: ServiceData; onClose: () => void }) {

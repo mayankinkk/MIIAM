@@ -4,19 +4,6 @@ export function safeMenuItemId(id: string) {
   return UUID_RE.test(id) ? id : crypto.randomUUID();
 }
 
-export interface PromoCode {
-  code: string;
-  discount_value: number;
-  min_order_amount: number;
-  discount_type: string;
-  is_active: boolean;
-  vendor_id?: string;
-  max_discount?: number;
-  usage_limit?: number;
-  used_count?: number;
-  valid_until?: string;
-}
-
 export function calculateOrderTotals({
   subtotal,
   tipAmount,
