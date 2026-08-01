@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import logger from "@/lib/logger";
 
 interface Combo {
   id: string;
@@ -41,8 +42,6 @@ export default function ComboDetailPage() {
 
   const cartVendorId = items.length > 0 ? items[0].vendor_id : null;
 
-  console.log("[ComboDetail] Rendering with comboId:", comboId);
-
   const [combo, setCombo] = useState<Combo | null>(null);
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,7 +50,6 @@ export default function ComboDetailPage() {
   useEffect(() => {
     async function fetchCombo() {
       setLoading(true);
-      console.log("[ComboDetail] Fetching combo:", comboId);
       
       const { data: comboData, error: comboError } = await supabase
         .from("combos")
@@ -59,10 +57,8 @@ export default function ComboDetailPage() {
         .eq("id", comboId)
         .single();
 
-      console.log("[ComboDetail] Combo result:", { comboData, comboError });
-
       if (comboError || !comboData) {
-        console.error("[ComboDetail] Combo fetch failed:", comboError);
+        logger.error({ err: comboError }, "Combo fetch failed");
         setError(comboError?.message || "Combo not found.");
         setLoading(false);
         return;
@@ -71,14 +67,12 @@ export default function ComboDetailPage() {
       setCombo(comboData);
 
       if (comboData.vendor_id) {
-        console.log("[ComboDetail] Fetching vendor:", comboData.vendor_id);
-        const { data: vendorData, error: vendorError } = await supabase
+        const { data: vendorData } = await supabase
           .from("vendors")
           .select("id, shop_name, cuisine, address, image_url")
           .eq("id", comboData.vendor_id)
           .single();
         
-        console.log("[ComboDetail] Vendor result:", { vendorData, vendorError });
         if (vendorData) setVendor(vendorData);
       }
 
