@@ -1,18 +1,23 @@
 "use client";
 
-import { use, useState, useMemo } from "react";
+import { use, useState, useMemo, Suspense } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
-import RiderMap from "@/components/rider/RiderMap";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import OrderHeader from "@/components/order/OrderHeader";
 import OrderJourney from "@/components/order/OrderJourney";
 import OrderItemsList from "@/components/order/OrderItemsList";
 import OrderActions from "@/components/order/OrderActions";
 import OrderCancelModal from "@/components/order/OrderCancelModal";
+
+const RiderMap = dynamic(() => import("@/components/rider/RiderMap"), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-surface-container rounded-2xl animate-pulse" />,
+});
 import RiderContactCard from "@/components/order/RiderContactCard";
 import OrderStatusBanner from "@/components/order/OrderStatusBanner";
 import PendingOrderCard from "@/components/order/PendingOrderCard";
