@@ -9,6 +9,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { parseIsOpen } from "@/lib/vendor-hours";
+import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
@@ -427,6 +428,8 @@ export default function RestaurantProfilePage() {
     (cat) => cat === "All" || menuItems.some((item) => item.category === cat)
   );
 
+  const { visibleItems: visibleMenuItems, hasMore, sentinelRef } = useInfiniteScroll({ items: filteredMenu, pageSize: 10 });
+
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : (vendor.rating || 0).toFixed(1);
@@ -708,61 +711,68 @@ export default function RestaurantProfilePage() {
               {menuSearch ? `${t.food.noResults} "${menuSearch}"` : t.food.noItemsInCategory}
             </div>
           ) : (
-            filteredMenu.map((item) => (
-              <div key={item.id} className={`bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3 transition-opacity ${item.is_available === false ? "opacity-60" : ""}`}>
-                <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
-                  <BlurImage
-                    src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                    fill
-                    fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
-                  />
-                  {item.is_available === false && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <span className="text-white text-[10px] font-black bg-red-500 px-2 py-0.5 rounded-full">SOLD OUT</span>
-                    </div>
-                  )}
-                  {item.is_featured && (
-                    <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
-                      ⭐ {t.food.chefsSpecial}
-                    </span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5 mb-0.5">
-                    <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
-                      <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
-                    </span>
-                    <p className="font-bold text-on-surface text-sm line-clamp-2">{item.name}</p>
-                    {item.is_featured && (
-                      <span className="text-amber-500 text-xs flex-shrink-0">⭐</span>
+            <>
+              {visibleMenuItems.map((item) => (
+                <div key={item.id} className={`bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3 transition-opacity ${item.is_available === false ? "opacity-60" : ""}`}>
+                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
+                    <BlurImage
+                      src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                      fill
+                      fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                    />
+                    {item.is_available === false && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="text-white text-[10px] font-black bg-red-500 px-2 py-0.5 rounded-full">SOLD OUT</span>
+                      </div>
                     )}
-                    {item.order_count > 0 && (
-                      <span className="text-[9px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full flex-shrink-0">
-                        🔥 {item.order_count}+ orders
+                    {item.is_featured && (
+                      <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
+                        ⭐ {t.food.chefsSpecial}
                       </span>
                     )}
                   </div>
-                  {/* Dietary badges */}
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    {item.is_vegan && (
-                      <span className="text-[9px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-full">🌱 Vegan</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
+                        <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                      </span>
+                      <p className="font-bold text-on-surface text-sm line-clamp-2">{item.name}</p>
+                      {item.is_featured && (
+                        <span className="text-amber-500 text-xs flex-shrink-0">⭐</span>
+                      )}
+                      {item.order_count > 0 && (
+                        <span className="text-[9px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full flex-shrink-0">
+                          🔥 {item.order_count}+ orders
+                        </span>
+                      )}
+                    </div>
+                    {/* Dietary badges */}
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {item.is_vegan && (
+                        <span className="text-[9px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-full">🌱 Vegan</span>
+                      )}
+                      {item.is_gluten_free && (
+                        <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">🌾 Gluten-Free</span>
+                      )}
+                    </div>
+                    {item.description && (
+                      <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
                     )}
-                    {item.is_gluten_free && (
-                      <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">🌾 Gluten-Free</span>
-                    )}
-                  </div>
-                  {item.description && (
-                    <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
-                  )}
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-primary text-base">₹{item.price}</span>
-                    <AddToCartButton item={item} vendor={vendor} isOpen={isOpen} />
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="font-black text-primary text-base">₹{item.price}</span>
+                      <AddToCartButton item={item} vendor={vendor} isOpen={isOpen} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {hasMore && (
+                <div ref={sentinelRef} className="py-4 flex justify-center">
+                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
