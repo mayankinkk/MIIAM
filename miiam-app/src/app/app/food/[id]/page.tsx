@@ -7,32 +7,12 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
+import { parseIsOpen } from "@/lib/vendor-hours";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 
 const MENU_CATEGORIES = ["All", "Starters", "Main Course", "Desserts", "Beverages"];
-
-function parseIsOpen(hours: string | null | undefined): boolean {
-  if (!hours) return true; // assume open if not set
-  try {
-    const to24 = (t: string) => {
-      const [time, mod] = t.trim().split(" ");
-      let [h, m] = time.split(":").map(Number);
-      if (!m) m = 0;
-      if (mod?.toUpperCase() === "PM" && h !== 12) h += 12;
-      if (mod?.toUpperCase() === "AM" && h === 12) h = 0;
-      return h * 60 + m;
-    };
-    const parts = hours.replace("–", "-").split("-");
-    if (parts.length < 2) return true;
-    const open = to24(parts[0]);
-    const close = to24(parts[1]);
-    const now = new Date();
-    const cur = now.getHours() * 60 + now.getMinutes();
-    return cur >= open && cur < close;
-  } catch { return true; }
-}
 
 interface Vendor {
   id: string;

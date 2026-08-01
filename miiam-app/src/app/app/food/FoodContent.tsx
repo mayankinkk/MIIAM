@@ -10,6 +10,7 @@ import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { motion } from "framer-motion";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useServiceSettingsStore } from "@/lib/store/serviceSettingsStore";
+import { parseIsOpen } from "@/lib/vendor-hours";
 import ServiceUnavailable from "@/components/ServiceUnavailable";
 import PullToRefresh from "@/components/PullToRefresh";
 import QuickActionsFAB from "@/components/QuickActionsFAB";
@@ -86,25 +87,6 @@ interface StoreItem {
   is_veg: boolean;
   is_active: boolean;
   sort_order: number;
-}
-
-function parseIsOpen(hours: string | null | undefined): boolean {
-  if (!hours) return true;
-  try {
-    const to24 = (t: string) => {
-      const [time, mod] = t.trim().split(" ");
-      let [h, m] = time.split(":").map(Number);
-      if (!m) m = 0;
-      if (mod?.toUpperCase() === "PM" && h !== 12) h += 12;
-      if (mod?.toUpperCase() === "AM" && h === 12) h = 0;
-      return h * 60 + m;
-    };
-    const parts = hours.replace("–", "-").split("-");
-    if (parts.length < 2) return true;
-    const now = new Date();
-    const cur = now.getHours() * 60 + now.getMinutes();
-    return cur >= to24(parts[0]) && cur < to24(parts[1]);
-  } catch { return true; }
 }
 
 type SortOption = "rating" | "delivery_time" | "price_low" | "price_high";
