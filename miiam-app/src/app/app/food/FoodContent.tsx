@@ -1034,7 +1034,7 @@ export default function FoodPageContent() {
                         </span>
                       </div>
                       <p className={`text-[10px] font-bold mt-1 ${!restaurant.delivery_charge ? "text-green-600" : "text-on-surface-variant"}`}>
-                        {restaurant.delivery_charge ? `₹${restaurant.delivery_charge} delivery` : "免费配送 • Free delivery"}
+                        {restaurant.delivery_charge ? `₹${restaurant.delivery_charge} delivery` : "Free delivery"}
                       </p>
                     </div>
                   </Link>
