@@ -12,6 +12,7 @@ import logger from "@/lib/logger";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import ThemeToggle from "@/components/ThemeToggle";
+import { ProfileSkeleton } from "@/components/Skeleton";
 
 export default function EnhancedProfilePage() {
   const supabase = useMemo(() => createClient(), []);
@@ -20,6 +21,7 @@ export default function EnhancedProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState({ orders: 0, reviews: 0, saved: 0 });
+  const [loading, setLoading] = useState(true);
   const [showHapticSettings, setShowHapticSettings] = useState(false);
   const { settings, updateSetting, triggerHaptic } = useHapticStore();
 
@@ -69,6 +71,8 @@ export default function EnhancedProfilePage() {
         }
       } catch (err) {
         logger.error({ err }, "Failed to load profile");
+      } finally {
+        setLoading(false);
       }
     }
     loadUserAndProfile();
@@ -80,6 +84,14 @@ export default function EnhancedProfilePage() {
     await supabase.auth.signOut();
     router.push("/");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
+        <ProfileSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
