@@ -43,24 +43,24 @@ function ServiceDetailContent() {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState("");
 
   const handleBook = useCallback(async () => {
     if (!service) return;
     if (!selectedDate || !selectedTime) { setError("Please select both date and time"); return; }
+    if (!address.trim()) { setError("Please enter your address"); return; }
+    if (phone.length < 10) { setError("Please enter a valid phone number"); return; }
     setAdding(true);
     setError("");
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setError("Please login to book"); setAdding(false); return; }
-      const dateObj = new Date(selectedDate);
-      const isoDate = dateObj.toISOString().split("T")[0];
       const res = await fetch("/api/bookings", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ service_type: service.category, sub_service: service.name, user_name: user.user_metadata?.full_name || "", user_phone: user.user_metadata?.phone || "", address: "", scheduled_date: isoDate, scheduled_time: selectedTime, amount: service.price, notes: null, provider_id: null }),
+        body: JSON.stringify({ service_type: service.category, sub_service: service.name, user_name: user.user_metadata?.full_name || "", user_phone: phone, address, scheduled_date: selectedDate, scheduled_time: selectedTime, amount: service.price, notes: null, provider_id: null }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Booking failed");
@@ -68,7 +68,7 @@ function ServiceDetailContent() {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Booking failed");
     } finally { setAdding(false); }
-  }, [service, selectedDate, selectedTime, supabase, router]);
+  }, [service, selectedDate, selectedTime, address, phone, supabase, router]);
 
   const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => { const date = new Date(); date.setDate(date.getDate() + i); return date; }), []);
 
@@ -92,7 +92,7 @@ function ServiceDetailContent() {
   }
 
   const datesDisplay = dates.map(d => ({
-    full: d, label: d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }),
+    full: d, iso: d.toISOString().split("T")[0], label: d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }),
     short: d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric" }),
   }));
 
@@ -178,9 +178,9 @@ function ServiceDetailContent() {
           {/* Date Chips */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1">
             {datesDisplay.map((d, i) => (
-              <button key={i} onClick={() => { setSelectedDate(d.label); if (navigator.vibrate) navigator.vibrate(10); }}
+              <button key={i} onClick={() => { setSelectedDate(d.iso); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
-                  selectedDate === d.label
+                  selectedDate === d.iso
                     ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
                     : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}>
@@ -209,6 +209,34 @@ function ServiceDetailContent() {
               </button>
             ))}
           </div>
+        </motion.div>
+
+        {/* Address & Phone */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-blue-500 text-lg">location_on</span> Service Address
+          </h3>
+          <textarea
+            className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none mb-3"
+            rows={2}
+            placeholder="Enter your full address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            aria-label="Service address"
+          />
+          <h3 className="font-bold text-gray-900 text-sm mb-3 flex items-center gap-2">
+            <span className="material-symbols-outlined text-blue-500 text-lg">phone</span> Phone Number
+          </h3>
+          <input
+            type="tel"
+            className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none"
+            placeholder="Enter your phone number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+            inputMode="numeric"
+            maxLength={10}
+            aria-label="Phone number"
+          />
         </motion.div>
 
         {/* Price Card */}
@@ -284,7 +312,7 @@ function ServiceDetailContent() {
           ) : (
             <span className="material-symbols-outlined text-[20px]">calendar_today</span>
           )}
-          {adding ? t.common.loading : (!selectedDate || !selectedTime ? "Select date & time" : t.services.bookNow)}
+          {adding ? t.common.loading : (!selectedDate || !selectedTime || !address.trim() || phone.length < 10 ? "Fill all details to book" : t.services.bookNow)}
         </button>
       </div>
     </div>
