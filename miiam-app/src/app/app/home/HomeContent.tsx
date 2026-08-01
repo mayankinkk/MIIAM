@@ -523,7 +523,7 @@ export default function HomePage() {
         checkingPincode={checkingPincode}
       />
 
-      <PullToRefresh onRefresh={async () => { window.location.reload(); }}>
+      <PullToRefresh onRefresh={async () => { setRetryKey((k) => k + 1); }}>
         <HomeCategories categories={categories} />
       </PullToRefresh>
 
