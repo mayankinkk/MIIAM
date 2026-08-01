@@ -386,6 +386,7 @@ function ServicesContent() {
         <div className="px-4 py-5">
           <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
             <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
+              aria-label={t.services.all}
               className="flex flex-col items-center gap-1.5 flex-shrink-0">
               <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-white text-gray-600 border border-gray-200"}`}>
                 <span className="material-symbols-outlined text-xl">apps</span>
@@ -394,6 +395,7 @@ function ServicesContent() {
             </button>
             {dbCategories.map((cat) => (
               <button key={cat.id} onClick={() => { setSelectedCategory(cat.slug as ServiceCategory); if (navigator.vibrate) navigator.vibrate(10); }}
+                aria-label={cat.name}
                 className="flex flex-col items-center gap-1.5 flex-shrink-0">
                 <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.slug ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-white text-gray-600 border border-gray-200"}`}>
                   <span className="material-symbols-outlined text-xl">{cat.icon}</span>
