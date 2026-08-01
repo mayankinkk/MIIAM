@@ -396,7 +396,7 @@ export default function CartPage() {
         )}
 
         {showReorderModal && (
-          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title" onKeyDown={(e) => { if (e.key === "Escape") setShowReorderModal(false); }}>
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title" onClick={(e) => { if (e.target === e.currentTarget) setShowReorderModal(false); }} onKeyDown={(e) => { if (e.key === "Escape") setShowReorderModal(false); }}>
             <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="p-4 border-b border-outline-variant dark:border-[var(--color-border-subtle)] flex items-center justify-between">
                 <h3 id="reorder-modal-title" className="text-base font-bold text-on-surface dark:text-[var(--color-on-surface)]">{t.cart.reorderFromPast}</h3>
