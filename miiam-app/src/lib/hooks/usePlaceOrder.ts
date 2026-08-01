@@ -319,7 +319,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
         } else if (msg.includes("miiam_food")) {
           errorMessage = "Cart error: Please remove items and add again from Food page.";
         } else {
-          errorMessage = `Error: ${msg}`;
+          errorMessage = "Something went wrong. Please try again.";
         }
       }
       addToast(errorMessage, "error");
