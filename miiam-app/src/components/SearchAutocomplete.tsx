@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -47,7 +47,7 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listboxId = useRef(`search-listbox-${Math.random().toString(36).slice(2, 9)}`);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const stored = localStorage.getItem("miiam-recent-searches");
