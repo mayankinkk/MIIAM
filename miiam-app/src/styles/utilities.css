@@ -235,3 +235,80 @@
     transition: transform 0.1s ease-out;
   }
 }
+
+/* ==========================================================================
+   CONSISTENT SPACING UTILITIES
+   Use these classes for uniform spacing across the app
+   ========================================================================== */
+@layer components {
+  /* Page containers */
+  .page-container {
+    padding-left: var(--page-padding-x);
+    padding-right: var(--page-padding-x);
+    padding-top: var(--page-padding-y);
+    padding-bottom: var(--page-padding-y);
+  }
+
+  .page-section {
+    margin-bottom: var(--section-gap);
+  }
+
+  .page-section-header {
+    margin-bottom: var(--space-4);
+  }
+
+  /* Card containers */
+  .card-container {
+    padding: var(--card-padding);
+    border-radius: var(--card-radius);
+  }
+
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+  }
+
+  .card-grid {
+    display: grid;
+    gap: var(--card-gap);
+  }
+
+  /* List containers */
+  .list-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--list-gap);
+  }
+
+  .list-item {
+    padding: var(--list-item-padding);
+  }
+
+  /* Horizontal scroll containers */
+  .h-scroll {
+    display: flex;
+    gap: var(--space-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-2);
+  }
+
+  .h-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .h-scroll-item {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Section dividers */
+  .section-divider {
+    height: 1px;
+    background: var(--color-border-subtle);
+    margin: var(--section-gap) 0;
+  }
+}
