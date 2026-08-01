@@ -67,8 +67,11 @@ export default function CartPage() {
   }, [supabase]);
 
   const handleRefresh = useCallback(async () => {
-    await new Promise((r) => setTimeout(r, 500));
-  }, []);
+    try {
+      const { data } = await supabase.from("site_settings").select("value").eq("key", "service_charge").maybeSingle();
+      if (data?.value) setServiceCharge(Number(data.value));
+    } catch { /* use existing */ }
+  }, [supabase]);
 
   if (!hydrated) {
     return (
