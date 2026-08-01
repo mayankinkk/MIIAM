@@ -289,7 +289,13 @@ function ServicesContent() {
     if (mapped) setSelectedCategory(mapped);
   }, [categoryIdMap, rawCategory]);
 
-  const checkServiceability = useCallback(async () => { setIsServiceable(true); }, []);
+  const checkServiceability = useCallback(async () => {
+    if (userPincode || userCity) {
+      setIsServiceable(true);
+    } else {
+      setIsServiceable(false);
+    }
+  }, [userPincode, userCity]);
 
   if (mappedCategory) {
     const setting = getSetting(mappedCategory as ServiceCategory);
