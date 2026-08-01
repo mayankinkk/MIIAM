@@ -380,3 +380,31 @@
     padding: 0.75rem 1.5rem;
   }
 }
+
+/* ==========================================================================
+   CARD HOVER EFFECTS
+   Subtle lift and shadow on interactive cards
+   ========================================================================== */
+@layer components {
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .dark .card-hover:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-hover:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .card-hover:active {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
