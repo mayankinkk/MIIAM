@@ -240,59 +240,59 @@ function ServiceDetailContent() {
         </motion.div>
 
         {/* Price Card */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
           <div className="flex items-center justify-between">
             <div>
               {service.priceMin && service.priceMax ? (
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xs text-gray-400">Starting at</span>
-                  <span className="text-2xl font-black text-gray-900">₹{service.priceMin}</span>
-                  <span className="text-sm text-gray-400">– ₹{service.priceMax}</span>
+                  <span className="text-xs text-on-surface-variant">Starting at</span>
+                  <span className="text-2xl font-black text-on-surface">₹{service.priceMin}</span>
+                  <span className="text-sm text-on-surface-variant">– ₹{service.priceMax}</span>
                 </div>
               ) : (
-                <span className="text-2xl font-black text-gray-900">₹{service.price}</span>
+                <span className="text-2xl font-black text-on-surface">₹{service.price}</span>
               )}
               {service.originalPrice && (
-                <span className="text-sm text-gray-400 line-through ml-2">₹{service.originalPrice}</span>
+                <span className="text-sm text-on-surface-variant line-through ml-2">₹{service.originalPrice}</span>
               )}
             </div>
-            <span className="text-xs text-gray-400">{t.checkout.incTaxes}</span>
+            <span className="text-xs text-on-surface-variant">{t.checkout.incTaxes}</span>
           </div>
         </motion.div>
 
         {/* Rating Card */}
         {service.rating > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
             <div className="flex items-center gap-4">
               <div className="text-center">
-                <p className="text-4xl font-black text-gray-900">{service.rating}</p>
+                <p className="text-4xl font-black text-on-surface">{service.rating}</p>
                 <div className="flex justify-center gap-0.5 mt-1">
                   {[1,2,3,4,5].map((s) => (
-                    <span key={s} className={`text-sm ${s <= Math.round(service.rating) ? "text-amber-400" : "text-gray-200"}`}>★</span>
+                    <span key={s} className={`text-sm ${s <= Math.round(service.rating) ? "text-amber-400" : "text-outline-variant/30"}`}>★</span>
                   ))}
                 </div>
-                <p className="text-[10px] text-gray-400 mt-1">{service.reviews} reviews</p>
+                <p className="text-[10px] text-on-surface-variant mt-1">{service.reviews} reviews</p>
               </div>
               <div className="flex-1 space-y-1">
                 {[5,4,3,2,1].map((star) => {
                   const count = Math.round((service.reviews || 0) * (star === Math.round(service.rating) ? 0.6 : star === Math.round(service.rating) - 1 ? 0.25 : star === Math.round(service.rating) + 1 ? 0.15 : 0));
                   return (
                     <div key={star} className="flex items-center gap-2">
-                      <span className="text-xs text-gray-400 w-3">{star}</span>
+                      <span className="text-xs text-on-surface-variant w-3">{star}</span>
                       <span className="text-amber-400 text-[10px]">★</span>
-                      <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
                         <div className="h-full bg-amber-400 rounded-full" style={{ width: `${Math.min((count / Math.max(service.reviews || 1, 1)) * 100 * 5, 100)}%` }} />
                       </div>
-                      <span className="text-[10px] text-gray-400 w-5 text-right">{count}</span>
+                      <span className="text-[10px] text-on-surface-variant w-5 text-right">{count}</span>
                     </div>
                   );
                 })}
               </div>
             </div>
             {service.badge && (
-              <div className="mt-3 pt-3 border-t border-gray-100 flex gap-2">
-                {service.badge === "mostPopular" && <span className="text-[10px] font-bold bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full border border-blue-200">Most Popular</span>}
-                {service.badge === "bestSeller" && <span className="text-[10px] font-bold bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full border border-emerald-200">Best Seller</span>}
+              <div className="mt-3 pt-3 border-t border-outline-variant/10 flex gap-2">
+                {service.badge === "mostPopular" && <span className="text-[10px] font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-full border border-primary/20">Most Popular</span>}
+                {service.badge === "bestSeller" && <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200">Best Seller</span>}
               </div>
             )}
           </motion.div>
@@ -304,9 +304,9 @@ function ServiceDetailContent() {
       </div>
 
       {/* Fixed CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-gradient-to-t from-gray-50 via-gray-50 to-transparent pt-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-gradient-to-t from-surface via-surface to-transparent pt-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}>
         <button onClick={handleBook} disabled={adding || !selectedDate || !selectedTime}
-          className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-lg shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2">
+          className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2">
           {adding ? (
             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
@@ -322,8 +322,8 @@ function ServiceDetailContent() {
 export default function ServiceDetailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface flex items-center justify-center px-4">
+        <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
       </div>
     }>
       <ServiceDetailContent />
