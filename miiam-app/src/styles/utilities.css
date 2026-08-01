@@ -312,3 +312,71 @@
     margin: var(--section-gap) 0;
   }
 }
+
+/* ==========================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   Focus styles, skip link, touch targets
+   ========================================================================== */
+
+/* Focus visible styles - clear keyboard focus indicator */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip to content link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  font-weight: 700;
+  z-index: 9999;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Touch target minimum size (44px) */
+@layer components {
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ensure all buttons meet minimum touch target */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+
+  /* Small buttons can have smaller visual size but need padding */
+  .btn-sm {
+    min-height: 36px;
+    padding: 0.5rem 1rem;
+  }
+
+  .btn-md {
+    min-height: 44px;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .btn-lg {
+    min-height: 52px;
+    padding: 0.75rem 1.5rem;
+  }
+}
