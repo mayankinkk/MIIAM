@@ -108,8 +108,8 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
-      <div className="bg-white w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
-        <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5" aria-hidden="true" />
+      <div className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl shadow-2xl p-6 pb-10 max-h-[90vh] overflow-y-auto animate-slide-reveal">
+        <div className="w-12 h-1.5 bg-outline/30 rounded-full mx-auto mb-5" aria-hidden="true" />
 
         {step !== "done" && (
           <BookingStepper steps={[t.services.selectDate || "Details", t.services.confirmBooking || "Confirm", t.services.bookingConfirmed || "Done"]} current={step === "pick" ? 0 : 1} />
@@ -118,52 +118,52 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
         {step === "pick" && (
           <>
             <div className="flex items-center gap-3 mb-6">
-              <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-blue-50 flex-shrink-0">
+              <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
                 <BlurImage src={service.image} alt={service.name} fill className="w-full h-full" sizes="56px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
               </div>
               <div>
-                <h2 id="booking-modal-title" className="font-black text-gray-900 text-lg">{service.name}</h2>
-                <p className="text-blue-600 font-bold text-sm">
+                <h2 id="booking-modal-title" className="font-black text-on-surface text-lg">{service.name}</h2>
+                <p className="text-primary font-bold text-sm">
                   {service.priceMin && service.priceMax ? `₹${service.priceMin} – ₹${service.priceMax}` : `₹${service.price}`} • {service.duration}
                 </p>
               </div>
             </div>
 
-            <p className="font-bold text-gray-900 mb-3 text-sm">{t.services.selectDate}</p>
+            <p className="font-bold text-on-surface mb-3 text-sm">{t.services.selectDate}</p>
             <div className="flex gap-2 flex-wrap mb-5" role="radiogroup" aria-label="Select date">
               {dateOptions.map((d) => (
                 <button key={d.value} role="radio" aria-checked={selectedDate === d.value}
                   onClick={() => { setSelectedDate(d.value); if (navigator.vibrate) navigator.vibrate(10); }}
                   className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 ${
                     selectedDate === d.value
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20"
-                      : "border-gray-200 text-gray-600 hover:border-blue-300"
+                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                      : "border-outline text-on-surface-variant hover:border-primary/40"
                   }`}>
                   {d.label}
                 </button>
               ))}
             </div>
 
-            <p className="font-bold text-gray-900 mb-3 text-sm">{t.services.selectTimeSlot}</p>
+            <p className="font-bold text-on-surface mb-3 text-sm">{t.services.selectTimeSlot}</p>
             <div className="grid grid-cols-2 gap-2 mb-5" role="radiogroup" aria-label="Select time slot">
               {SERVICE_TIME_SLOTS.map((slot) => (
                 <button key={slot} role="radio" aria-checked={selectedSlot === slot}
                   onClick={() => { setSelectedSlot(slot); if (navigator.vibrate) navigator.vibrate(10); }}
                   className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left active:scale-[0.98] ${
                     selectedSlot === slot
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20"
-                      : "border-gray-200 text-gray-600 hover:border-blue-300"
+                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                      : "border-outline text-on-surface-variant hover:border-primary/40"
                   }`}>
                   {slot}
                 </button>
               ))}
             </div>
 
-            <p className="font-bold text-gray-900 mb-2 text-sm">{t.services.serviceAddress}</p>
-            <textarea className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none resize-none mb-4" rows={2} placeholder={t.services.addressPlaceholder} value={address} onChange={(e) => setAddress(e.target.value)} aria-label={t.services.serviceAddress} />
+            <p className="font-bold text-on-surface mb-2 text-sm">{t.services.serviceAddress}</p>
+            <textarea className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-4 text-on-surface bg-surface" rows={2} placeholder={t.services.addressPlaceholder} value={address} onChange={(e) => setAddress(e.target.value)} aria-label={t.services.serviceAddress} />
 
-            <p className="font-bold text-gray-900 mb-2 text-sm">{t.services.phoneNumber || "Phone Number"}</p>
-            <input type="tel" className="w-full border-2 border-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none mb-5" placeholder={t.services.phonePlaceholder || "Enter your phone number"} value={phone} onChange={(e) => setPhone(e.target.value)} aria-label={t.services.phoneNumber || "Phone Number"} inputMode="numeric" maxLength={15} />
+            <p className="font-bold text-on-surface mb-2 text-sm">{t.services.phoneNumber || "Phone Number"}</p>
+            <input type="tel" className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none mb-5 text-on-surface bg-surface" placeholder={t.services.phonePlaceholder || "Enter your phone number"} value={phone} onChange={(e) => setPhone(e.target.value)} aria-label={t.services.phoneNumber || "Phone Number"} inputMode="numeric" maxLength={15} />
 
             <button disabled={!canProceed} onClick={() => {
               if (!selectedDate) { addToast(t.services.pleaseSelectDate, "error"); return; }
@@ -171,10 +171,10 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               if (!address.trim()) { addToast(t.services.pleaseEnterAddress, "error"); return; }
               setStep("confirm");
               if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-            }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-blue-700 transition-all active:scale-[0.98]">
+            }} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-primary-hover transition-all active:scale-[0.98]">
               {t.services.reviewBooking}
             </button>
-            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-gray-400 font-semibold text-sm hover:text-gray-600 transition-colors">
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
               {t.common.cancel}
             </button>
           </>
@@ -182,36 +182,36 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
 
         {step === "confirm" && (
           <>
-            <h2 id="booking-modal-title" className="font-black text-xl text-gray-900 mb-6">{t.services.confirmBooking}</h2>
-            <div className="bg-gray-50 rounded-2xl p-4 space-y-3 mb-6 border border-gray-100">
-              <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.service}</span><span className="font-bold text-gray-900 text-sm text-right">{service.name}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.date}</span><span className="font-bold text-gray-900 text-sm">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</span></div>
-              <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.time}</span><span className="font-bold text-gray-900 text-sm">{selectedSlot}</span></div>
-              {address && <div className="flex justify-between"><span className="text-gray-500 text-sm">{t.services.address}</span><span className="font-bold text-gray-900 text-sm text-right max-w-[60%]">{address}</span></div>}
-              <div className="border-t border-gray-200 pt-3 flex justify-between"><span className="font-bold text-gray-900">{t.services.total}</span><span className="font-black text-blue-600 text-lg">₹{service.price}</span></div>
+            <h2 id="booking-modal-title" className="font-black text-xl text-on-surface mb-6">{t.services.confirmBooking}</h2>
+            <div className="bg-surface-container rounded-2xl p-4 space-y-3 mb-6 border border-outline/20">
+              <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.service}</span><span className="font-bold text-on-surface text-sm text-right">{service.name}</span></div>
+              <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.date}</span><span className="font-bold text-on-surface text-sm">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</span></div>
+              <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.time}</span><span className="font-bold text-on-surface text-sm">{selectedSlot}</span></div>
+              {address && <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.address}</span><span className="font-bold text-on-surface text-sm text-right max-w-[60%]">{address}</span></div>}
+              <div className="border-t border-outline/20 pt-3 flex justify-between"><span className="font-bold text-on-surface">{t.services.total}</span><span className="font-black text-primary text-lg">₹{service.price}</span></div>
             </div>
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 flex gap-2 mb-5">
-              <span className="material-symbols-outlined text-blue-600 text-sm mt-0.5">info</span>
-              <p className="text-xs text-blue-700">{t.services.paymentAfterService}</p>
+            <div className="bg-primary-container/30 border border-primary/20 rounded-xl p-3 flex gap-2 mb-5">
+              <span className="material-symbols-outlined text-primary text-sm mt-0.5">info</span>
+              <p className="text-xs text-on-primary-container">{t.services.paymentAfterService}</p>
             </div>
-            <button onClick={handleConfirmBooking} disabled={booking} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-base hover:bg-blue-700 transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2">
-              {booking ? (<><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />{t.services.booking}</>) : t.services.confirmAndBook}
+            <button onClick={handleConfirmBooking} disabled={booking} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base hover:bg-primary-hover transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2">
+              {booking ? (<><span className="w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />{t.services.booking}</>) : t.services.confirmAndBook}
             </button>
-            <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-gray-400 font-semibold text-sm hover:text-gray-600 transition-colors">{t.services.goBack}</button>
+            <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">{t.services.goBack}</button>
           </>
         )}
 
         {step === "done" && (
           <div className="text-center py-8 animate-pop-in">
-            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="material-symbols-outlined text-blue-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            <div className="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-on-primary-container text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
             </div>
-            <h2 className="font-black text-2xl text-gray-900 mb-2">{t.services.bookingConfirmed}</h2>
-            <p className="text-gray-500 mb-1">{service.name}</p>
-            <p className="font-bold text-blue-600 mb-1">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
-            <p className="text-gray-500 font-semibold mb-6">{selectedSlot}</p>
-            <p className="text-sm text-gray-400 mb-8">{t.services.bookingConfirmedDesc}</p>
-            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold text-base hover:bg-blue-700 transition-all active:scale-[0.98]">{t.common.done}</button>
+            <h2 className="font-black text-2xl text-on-surface mb-2">{t.services.bookingConfirmed}</h2>
+            <p className="text-on-surface-variant mb-1">{service.name}</p>
+            <p className="font-bold text-primary mb-1">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
+            <p className="text-on-surface-variant font-semibold mb-6">{selectedSlot}</p>
+            <p className="text-sm text-on-surface-variant/60 mb-8">{t.services.bookingConfirmedDesc}</p>
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base hover:bg-primary-hover transition-all active:scale-[0.98]">{t.common.done}</button>
           </div>
         )}
       </div>
@@ -384,23 +384,23 @@ function ServicesContent() {
 
         {/* Category Circles - GKB Style */}
         <div className="px-4 py-5">
-          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory">
             <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
               aria-label={t.services.all}
-              className="flex flex-col items-center gap-1.5 flex-shrink-0">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-white text-gray-600 border border-gray-200"}`}>
+              className="flex flex-col items-center gap-1.5 flex-shrink-0 snap-start">
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-primary text-on-primary shadow-lg shadow-primary/30" : "bg-surface text-on-surface-variant border border-outline"}`}>
                 <span className="material-symbols-outlined text-xl">apps</span>
               </div>
-              <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-blue-600" : "text-gray-500"}`}>{t.services.all}</span>
+              <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-primary" : "text-on-surface-variant"}`}>{t.services.all}</span>
             </button>
             {dbCategories.map((cat) => (
               <button key={cat.id} onClick={() => { setSelectedCategory(cat.slug as ServiceCategory); if (navigator.vibrate) navigator.vibrate(10); }}
                 aria-label={cat.name}
-                className="flex flex-col items-center gap-1.5 flex-shrink-0">
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.slug ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-white text-gray-600 border border-gray-200"}`}>
+                className="flex flex-col items-center gap-1.5 flex-shrink-0 snap-start">
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.slug ? "bg-primary text-on-primary shadow-lg shadow-primary/30" : "bg-surface text-on-surface-variant border border-outline"}`}>
                   <span className="material-symbols-outlined text-xl">{cat.icon}</span>
                 </div>
-                <span className={`text-[10px] font-bold text-center max-w-[56px] truncate ${selectedCategory === cat.slug ? "text-blue-600" : "text-gray-500"}`}>{cat.name}</span>
+                <span className={`text-[10px] font-bold text-center max-w-[56px] truncate ${selectedCategory === cat.slug ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
               </button>
             ))}
           </div>
