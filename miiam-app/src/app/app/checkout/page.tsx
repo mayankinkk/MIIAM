@@ -16,7 +16,6 @@ import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
 import { calculateOrderTotals } from "@/lib/checkout-utils";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
-import { useRazorpay } from "@/lib/hooks/useRazorpay";
 import logger from "@/lib/logger";
 
 function parseIsOpen(hours: string | null | undefined): boolean {
@@ -119,7 +118,6 @@ export default function CheckoutPage() {
   });
 
   const { placeOrder } = usePlaceOrder(supabase);
-  const { pay, loading: razorpayLoading } = useRazorpay();
 
   useEffect(() => {
     const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
@@ -281,24 +279,12 @@ export default function CheckoutPage() {
                     phone: deliveryAddress.phone || "",
                   };
 
-                  if (paymentMethod === "card") {
-                    pay({
-                      amount: grand,
-                      description: `${items.length} item(s) from MIIAM`,
-                      onSuccess: (paymentId, razorpayOrderId) => {
-                        placeOrder({ ...orderArgs, paymentDetails: { paymentId, razorpayOrderId } })
-                          .finally(() => setPlacing(false));
-                      },
-                      onFailure: () => setPlacing(false),
-                    });
-                  } else {
-                    placeOrder(orderArgs).finally(() => setPlacing(false));
-                  }
+                  placeOrder(orderArgs).finally(() => setPlacing(false));
                 }}
-                disabled={placing || razorpayLoading || items.length === 0 || !deliveryAddress || hasClosedVendor}
+                disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
-                {(placing || razorpayLoading) ? (
+                {placing ? (
                   <>
                     <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     {t.checkout.placingOrder}
