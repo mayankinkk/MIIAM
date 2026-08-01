@@ -124,6 +124,7 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
         <button
           onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
           className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform text-[10px]"
+          aria-label={`Decrease quantity of ${item.name}`}
         >
           −
         </button>
@@ -131,6 +132,7 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
         <button
           onClick={handleAdd}
           className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform text-[10px]"
+          aria-label={`Increase quantity of ${item.name}`}
         >
           +
         </button>
@@ -143,6 +145,7 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
       <button
         onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
         className="text-white font-bold w-7 h-7 flex items-center justify-center active:scale-75 transition-transform text-sm"
+        aria-label={`Decrease quantity of ${item.name}`}
       >
         −
       </button>
@@ -150,6 +153,7 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
       <button
         onClick={handleAdd}
         className="text-white font-bold w-7 h-7 flex items-center justify-center active:scale-125 transition-transform text-sm"
+        aria-label={`Increase quantity of ${item.name}`}
       >
         +
       </button>
@@ -458,12 +462,14 @@ export default function RestaurantProfilePage() {
             <button
               onClick={handleToggleFavorite}
               className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
               <span className={`material-symbols-outlined ${isFavorite ? "text-red-500" : "text-white"}`} style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
             </button>
             <Link
               href="/app/cart"
               className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
+              aria-label="Go to cart"
             >
               <span className="material-symbols-outlined">shopping_cart</span>
             </Link>
@@ -646,7 +652,7 @@ export default function RestaurantProfilePage() {
               className="w-full pl-9 pr-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl text-sm focus:outline-none focus:border-primary shadow-sm"
             />
             {menuSearch && (
-              <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant">
+              <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant" aria-label="Clear search">
                 <span className="material-symbols-outlined text-base">close</span>
               </button>
             )}

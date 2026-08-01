@@ -649,7 +649,7 @@ export default function FoodPageContent() {
               {activeFilter === "combos" && "Combos"}
               {activeFilter === "bakery" && "Bakery"}
             </span>
-            <button onClick={() => setActiveFilter("all")} className="ml-1 hover:bg-primary/20 rounded-full p-0.5">
+            <button onClick={() => setActiveFilter("all")} className="ml-1 hover:bg-primary/20 rounded-full p-0.5" aria-label="Clear filter">
               <span className="material-symbols-outlined text-sm">close</span>
             </button>
           </div>
