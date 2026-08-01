@@ -33,6 +33,20 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
         return;
       }
 
+      // Check for existing review
+      const { data: existingReview } = await supabase
+        .from("reviews")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("vendor_id", vendorId)
+        .maybeSingle();
+
+      if (existingReview) {
+        addToast("You have already reviewed this vendor", "warning");
+        setLoading(false);
+        return;
+      }
+
       const { error } = await supabase.from("reviews").insert({
         user_id: user.id,
         vendor_id: vendorId,
