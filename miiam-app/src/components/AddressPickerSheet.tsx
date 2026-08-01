@@ -359,7 +359,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Flat / House No. / Building *"
                     aria-label="Flat / House number"
                     value={flat}
-                    onChange={e => setFlat(e.target.value)}
+                    onChange={e => setFlat(e.target.value.slice(0, 100))}
+                    maxLength={100}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
                   />
                   <input
@@ -367,7 +368,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Nearby Landmark (optional)"
                     aria-label="Nearby landmark"
                     value={landmark}
-                    onChange={e => setLandmark(e.target.value)}
+                    onChange={e => setLandmark(e.target.value.slice(0, 100))}
+                    maxLength={100}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
                   />
                   <input
@@ -467,7 +469,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Flat / House No. / Building *"
                     aria-label="Flat / House number"
                     value={flat}
-                    onChange={e => setFlat(e.target.value)}
+                    onChange={e => setFlat(e.target.value.slice(0, 100))}
+                    maxLength={100}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
                   />
                   <input
@@ -475,7 +478,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Nearby Landmark (optional)"
                     aria-label="Nearby landmark"
                     value={landmark}
-                    onChange={e => setLandmark(e.target.value)}
+                    onChange={e => setLandmark(e.target.value.slice(0, 100))}
+                    maxLength={100}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
                   />
                   <input
@@ -492,7 +496,8 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Delivery instructions (e.g. Ring bell, 2nd floor)"
                     aria-label="Delivery instructions"
                     value={instructions}
-                    onChange={e => setInstructions(e.target.value)}
+                    onChange={e => setInstructions(e.target.value.slice(0, 200))}
+                    maxLength={200}
                     className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm resize-none h-20"
                   />
 
