@@ -2,8 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getClientIp, checkIpRateLimit, checkCsrf } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
+import { z } from "zod";
 
 const logger = createRouteLogger("addresses");
+
+const addressSchema = z.object({
+  user_id: z.string().uuid(),
+  label: z.string().min(1).max(50),
+  address: z.string().min(5).max(200),
+  city: z.string().min(2).max(100),
+  state: z.string().max(100).optional().default(""),
+  pincode: z.string().regex(/^\d{6}$/, "Pincode must be exactly 6 digits"),
+  lat: z.number().min(-90).max(90).optional().nullable(),
+  lng: z.number().min(-180).max(180).optional().nullable(),
+  is_default: z.boolean().optional().default(false),
+  phone: z.string().max(15).optional().nullable(),
+});
+
+type AddressInput = z.infer<typeof addressSchema>;
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
@@ -49,11 +65,14 @@ export async function POST(request: NextRequest) {
   }
   try {
     const body = await request.json();
-    const { user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = body;
+    const parsed = addressSchema.safeParse(body);
 
-    if (!user_id || !label || !address || !city || !pincode) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (!parsed.success) {
+      const errors = parsed.error.flatten().fieldErrors;
+      return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
     }
+
+    const { user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = parsed.data;
 
     if (user_id !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -73,11 +92,11 @@ export async function POST(request: NextRequest) {
         label,
         address_line1: address,
         city,
-        state: state || "",
+        state,
         pincode,
         lat: lat || null,
         lng: lng || null,
-        is_default: is_default || false,
+        is_default,
         phone: phone || null,
       })
       .select()
@@ -104,11 +123,15 @@ export async function PUT(request: NextRequest) {
   }
   try {
     const body = await request.json();
-    const { id, user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = body;
+    const updateSchema = addressSchema.extend({ id: z.string().uuid() });
+    const parsed = updateSchema.safeParse(body);
 
-    if (!id) {
-      return NextResponse.json({ error: "Address ID required" }, { status: 400 });
+    if (!parsed.success) {
+      const errors = parsed.error.flatten().fieldErrors;
+      return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
     }
+
+    const { id, user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = parsed.data;
 
     // Verify the address belongs to the authenticated user
     const { data: existingAddress } = await supabase
@@ -136,11 +159,11 @@ export async function PUT(request: NextRequest) {
         label,
         address_line1: address,
         city,
-        state: state || "",
+        state,
         pincode,
         lat: lat || null,
         lng: lng || null,
-        is_default: is_default || false,
+        is_default,
         phone: phone || null,
       })
       .eq("id", id)
