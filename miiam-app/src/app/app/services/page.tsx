@@ -494,8 +494,9 @@ function ServicesContent() {
 
               {/* All Services - Vertical Cards */}
               {filteredServices.map((service, index) => (
-                <motion.div key={service.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                  className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5">
+                <Link key={service.id} href={`/app/services/${service.id}`}>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: Math.min(index * 0.05, 0.3) }}
+                  className="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-editorial-sm border border-outline/5 active:scale-[0.98] transition-transform">
                   {/* Image */}
                   <div className="relative h-36 overflow-hidden">
                     <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
@@ -552,7 +553,9 @@ function ServicesContent() {
                         )}
                         <span className="font-black text-xl text-on-surface">{"₹"}{service.price}</span>
                       </div>
-                      <button onClick={() => {
+                      <button onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         if (!isServiceable) { addToast(t.services.cannotBook, "error"); } else { setBookingService(service); }
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                       }} className={`px-5 py-2 rounded-xl font-bold text-xs active:scale-95 transition-all ${
@@ -565,6 +568,7 @@ function ServicesContent() {
                     </div>
                   </div>
                 </motion.div>
+                </Link>
               ))}
             </>
           )}
