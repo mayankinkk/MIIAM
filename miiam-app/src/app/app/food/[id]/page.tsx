@@ -7,6 +7,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
+import { useToastStore } from "@/lib/store/toastStore";
 import { parseIsOpen } from "@/lib/vendor-hours";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -321,10 +322,12 @@ export default function RestaurantProfilePage() {
           : await supabase.from("favorites").insert({ user_id: user.id, vendor_id: vendorId });
         if (error) {
           toggle(vendorId);
+          useToastStore.getState().addToast(t.common.error, "error");
         }
       }
     } catch {
       toggle(vendorId);
+      useToastStore.getState().addToast(t.common.error, "error");
     }
   };
 
