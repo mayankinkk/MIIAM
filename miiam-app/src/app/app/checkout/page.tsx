@@ -235,6 +235,19 @@ export default function CheckoutPage() {
                 onEditTip={() => setShowTipSelector(true)}
               />
 
+              {/* Special Instructions */}
+              <div className="mb-3">
+                <label className="text-xs font-bold text-on-surface-variant mb-1.5 block">Special Instructions (optional)</label>
+                <textarea
+                  className="w-full px-4 py-3 bg-surface-subtle rounded-xl border border-outline/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm resize-none"
+                  rows={2}
+                  placeholder="E.g. Ring bell, leave at door, no onions..."
+                  value={specialInstructions}
+                  onChange={(e) => setSpecialInstructions(e.target.value)}
+                  aria-label="Special instructions"
+                />
+              </div>
+
               {hasClosedVendor && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-3 flex items-center gap-2">
                   <span className="material-symbols-outlined text-red-500 text-lg">schedule</span>
