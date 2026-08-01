@@ -38,7 +38,7 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
-  const [serviceCharge, setServiceCharge] = useState(15);
+  const [serviceCharge, setServiceCharge] = useState<number | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [showAddressWarning, setShowAddressWarning] = useState(false);
   const { items, totalPrice } = useCartStore();
@@ -95,7 +95,7 @@ export default function CheckoutPage() {
   const { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
     tipAmount,
-    serviceCharge,
+    serviceCharge: serviceCharge ?? 0,
   });
 
   const { placeOrder } = usePlaceOrder(supabase);
