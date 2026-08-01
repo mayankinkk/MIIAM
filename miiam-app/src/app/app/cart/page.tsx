@@ -381,7 +381,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between">
                   <span>GST & Other Fees</span>
-                  <span className="text-green-600 font-semibold">FREE</span>
+                  <span className="text-green-600 font-semibold">Included</span>
                 </div>
 
                 <div className="pt-4 border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 flex justify-between items-center gap-2">
