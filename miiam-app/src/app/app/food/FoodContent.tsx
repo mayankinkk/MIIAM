@@ -538,10 +538,11 @@ export default function FoodPageContent() {
   }, [supabase, userPincode, userCity, fetchData]);
 
   const toggleFavorite = async (id: string) => {
+    const wasFavorited = favoriteIds.includes(id);
     toggle(id);
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      if (favorites.has(id)) {
+      if (wasFavorited) {
         await supabase.from("favorites").delete().eq("user_id", user.id).eq("vendor_id", id);
       } else {
         await supabase.from("favorites").insert({ user_id: user.id, vendor_id: id });
