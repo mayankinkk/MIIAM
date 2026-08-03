@@ -511,7 +511,9 @@ export default function FoodPageContent() {
             color: colors[i % colors.length],
           })));
         }
-      } catch {}
+      } catch (e) {
+        logger.error({ err: e }, "Failed to load cuisines");
+      }
     }
     loadCuisines();
   }, [supabase]);
