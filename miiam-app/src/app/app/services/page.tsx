@@ -224,7 +224,7 @@ function ServicesContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const { getSetting } = useServiceSettingsStore();
-  const [isServiceable, setIsServiceable] = useState(true);
+  const [isServiceable, setIsServiceable] = useState(false);
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
   const userCity = locationStore.city;
@@ -289,12 +289,12 @@ function ServicesContent() {
     if (mapped) setSelectedCategory(mapped);
   }, [categoryIdMap, rawCategory]);
 
+  useEffect(() => {
+    setIsServiceable(Boolean(userPincode || userCity));
+  }, [userPincode, userCity]);
+
   const checkServiceability = useCallback(async () => {
-    if (userPincode || userCity) {
-      setIsServiceable(true);
-    } else {
-      setIsServiceable(false);
-    }
+    setIsServiceable(Boolean(userPincode || userCity));
   }, [userPincode, userCity]);
 
   if (mappedCategory) {
