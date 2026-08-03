@@ -181,9 +181,15 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
     setError("");
 
     const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setError("Please log in to submit a review");
+      setSubmitting(false);
+      return;
+    }
+
     const { error: insertError } = await supabase.from("reviews").insert({
       vendor_id: vendorId,
-      user_id: user?.id || null,
+      user_id: user.id,
       user_name: name,
       rating,
       comment,
