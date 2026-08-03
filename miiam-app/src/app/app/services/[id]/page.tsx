@@ -176,9 +176,10 @@ function ServiceDetailContent() {
           </h3>
 
           {/* Date Chips */}
-          <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar mb-4 pb-1" role="radiogroup" aria-label="Select date">
             {datesDisplay.map((d, i) => (
-              <button key={i} onClick={() => { setSelectedDate(d.iso); if (navigator.vibrate) navigator.vibrate(10); }}
+              <button key={i} role="radio" aria-checked={selectedDate === d.iso}
+                onClick={() => { setSelectedDate(d.iso); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
                   selectedDate === d.iso
                     ? "bg-primary text-on-primary shadow-md shadow-primary/20"
