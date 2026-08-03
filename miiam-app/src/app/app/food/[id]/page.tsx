@@ -203,10 +203,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
     }
     setSubmitting(false);
     
-    // Show success toast
-    import('@/lib/store/toastStore').then(({ useToastStore }) => {
-      useToastStore.getState().addToast("Review submitted successfully!", "success");
-    });
+    useToastStore.getState().addToast("Review submitted successfully!", "success");
     
     onSubmitted();
     onClose();
