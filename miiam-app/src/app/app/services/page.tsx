@@ -343,6 +343,7 @@ function ServicesContent() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for services..."
+            aria-label="Search services"
             className="bg-transparent text-white text-sm placeholder-white/50 outline-none flex-1"
           />
           {searchQuery && (
