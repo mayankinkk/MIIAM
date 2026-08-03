@@ -560,10 +560,12 @@ export default function FoodPageContent() {
     }
   });
 
-  const filteredRestaurants =
-    selectedCategory === "all"
-      ? sortedRestaurants
-      : sortedRestaurants.filter((r) => r.cuisine?.toLowerCase().includes(selectedCategory));
+  const filteredRestaurants = sortedRestaurants
+    .filter((r) => selectedCategory === "all" || r.cuisine?.toLowerCase().includes(selectedCategory))
+    .filter((r) => {
+      const price = parseFloat(String(r.price_for_two || r.avg_price || 0));
+      return price >= priceMin && price <= priceMax;
+    });
 
   const searchedRestaurants = searchQuery
     ? filteredRestaurants.filter((r) => r.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || r.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()))
