@@ -565,6 +565,9 @@ export default function RestaurantProfilePage() {
               </div>
             </div>
             <button
+              role="switch"
+              aria-checked={scheduleDelivery}
+              aria-label="Schedule delivery for later"
               onClick={() => setScheduleDelivery(!scheduleDelivery)}
               className={`relative w-12 h-7 rounded-full transition-colors ${scheduleDelivery ? "bg-primary" : "bg-surface-container-high"}`}
             >
