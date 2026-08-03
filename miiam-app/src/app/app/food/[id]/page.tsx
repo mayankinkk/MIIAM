@@ -645,7 +645,7 @@ export default function RestaurantProfilePage() {
           <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-xs font-bold transition-all ${
             vegOnly ? "bg-green-600 text-white" : "bg-surface-container-low text-green-700 border border-green-200"
           }`}>
-            <input type="checkbox" checked={vegOnly} onChange={(e) => setVegOnly(e.target.checked)} className="hidden" />
+            <input type="checkbox" checked={vegOnly} onChange={(e) => setVegOnly(e.target.checked)} className="sr-only" aria-label={t.food.vegOnly} />
             <span className="w-3 h-3 border-2 border-current rounded-sm flex items-center justify-center flex-shrink-0">
               <span className="w-1.5 h-1.5 bg-current rounded-full" />
             </span>
