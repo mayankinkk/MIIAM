@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useFavoritesStore } from "@/lib/store/favoritesStore";
 import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 import { parseIsOpen } from "@/lib/vendor-hours";
 import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
@@ -352,10 +353,13 @@ export default function RestaurantProfilePage() {
         supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
       ]);
       if (vendorRes.error) {
-        console.error("Vendor query error:", vendorRes.error);
+        logger.error({ err: vendorRes.error }, "Vendor query error");
         setError("Failed to load restaurant details.");
       }
-      if (menuRes.error) console.error("Menu query error:", menuRes.error);
+      if (menuRes.error) {
+        logger.error({ err: menuRes.error }, "Menu query error");
+        setError("Failed to load menu. Please try again.");
+      }
       if (vendorRes.data) setVendor(vendorRes.data);
       if (menuRes.data) setMenuItems(menuRes.data);
       if (reviewsRes.data) setReviews(reviewsRes.data);
