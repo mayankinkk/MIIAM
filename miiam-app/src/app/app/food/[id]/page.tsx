@@ -221,10 +221,13 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
 
         {/* Star selector */}
         <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">{t.food.yourRating}</p>
-        <div className="flex gap-2 mb-5">
+        <div className="flex gap-2 mb-5" role="radiogroup" aria-label="Rating">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
+              role="radio"
+              aria-checked={rating === star}
+              aria-label={`${star} star${star > 1 ? "s" : ""}`}
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
               onClick={() => setRating(star)}
