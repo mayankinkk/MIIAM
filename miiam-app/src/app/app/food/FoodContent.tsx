@@ -487,9 +487,9 @@ export default function FoodPageContent() {
       if (user) {
         supabase.from("favorites").select("vendor_id").eq("user_id", user.id).then(({ data }: { data: { vendor_id: string }[] | null }) => {
           if (data) setFavorites(data.map((f: { vendor_id: string }) => f.vendor_id));
-        });
+        }).catch(() => {});
       }
-    });
+    }).catch(() => {});
   }, [userPincode, userCity, fetchData, setFavorites]);
 
   useEffect(() => {
