@@ -331,7 +331,7 @@ function ServicesContent() {
             <h1 className="text-xl font-black text-white">{t.services.title}</h1>
             <p className="text-white/70 text-xs mt-0.5">{t.services.subtitle}</p>
           </div>
-          <Link href="/app/cart" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20">
+          <Link href="/app/cart" aria-label="View cart" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20">
             <span className="material-symbols-outlined">shopping_cart</span>
           </Link>
         </div>
