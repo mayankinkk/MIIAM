@@ -197,9 +197,10 @@ function ServiceDetailContent() {
           </h3>
 
           {/* Time Slots */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Select time slot">
             {SERVICE_TIME_SLOTS.map((slot) => (
-              <button key={slot} onClick={() => { setSelectedTime(slot); if (navigator.vibrate) navigator.vibrate(10); }}
+              <button key={slot} role="radio" aria-checked={selectedTime === slot}
+                onClick={() => { setSelectedTime(slot); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`p-3 rounded-xl text-xs font-bold transition-all text-left active:scale-[0.98] ${
                   selectedTime === slot
                     ? "bg-primary text-on-primary shadow-md shadow-primary/20"
