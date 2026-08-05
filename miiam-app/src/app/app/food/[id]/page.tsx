@@ -14,6 +14,7 @@ import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import ClosingCountdown from "@/components/ClosingCountdown";
 
 const MENU_CATEGORIES = ["All", "Starters", "Main Course", "Desserts", "Beverages"];
 
@@ -533,6 +534,7 @@ export default function RestaurantProfilePage() {
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
           <span className="material-symbols-outlined text-primary text-base">storefront</span>
           <span className="text-sm font-semibold">{vendor.opening_hours || "10 AM – 11 PM"}</span>
+          <ClosingCountdown openingHours={vendor.opening_hours} />
         </div>
         {vendor.address && (
           <>
