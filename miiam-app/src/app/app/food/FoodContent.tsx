@@ -557,7 +557,7 @@ export default function FoodPageContent() {
     }
   };
 
-  const sortedRestaurants = [...restaurants].sort((a, b) => {
+  const sortedRestaurants = useMemo(() => [...restaurants].sort((a, b) => {
     switch (sortBy) {
       case "rating": return parseFloat(String(b.rating || "0")) - parseFloat(String(a.rating || "0"));
       case "delivery_time": return (a.delivery_time_min || 999) - (b.delivery_time_min || 999);
@@ -565,14 +565,14 @@ export default function FoodPageContent() {
       case "price_high": return parseFloat(String(b.min_order_amount || "0")) - parseFloat(String(a.min_order_amount || "0"));
       default: return 0;
     }
-  });
+  }), [restaurants, sortBy]);
 
-  const filteredRestaurants = sortedRestaurants
+  const filteredRestaurants = useMemo(() => sortedRestaurants
     .filter((r) => selectedCategory === "all" || r.cuisine?.toLowerCase().includes(selectedCategory))
     .filter((r) => {
       const price = parseFloat(String(r.price_for_two || r.avg_price || 0));
       return price >= priceMin && price <= priceMax;
-    });
+    }), [sortedRestaurants, selectedCategory, priceMin, priceMax]);
 
   const searchedRestaurants = searchQuery
     ? filteredRestaurants.filter((r) => r.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || r.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()))

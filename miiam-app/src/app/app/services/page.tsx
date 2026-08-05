@@ -12,6 +12,7 @@ import { createClient } from "@/lib/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
+import { SearchAutocomplete } from "@/components/SearchAutocomplete";
 import { SERVICE_TIME_SLOTS, type ServiceData } from "@/lib/data/services";
 import BookingStepper from "@/components/BookingStepper";
 import { motion } from "framer-motion";
@@ -336,21 +337,12 @@ function ServicesContent() {
           </Link>
         </div>
         {/* Search */}
-        <div className="bg-white/15 backdrop-blur-sm rounded-xl px-4 py-3 flex items-center gap-3 border border-white/10 focus-within:border-white/30 transition-colors">
-          <span className="material-symbols-outlined text-white/70">search</span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for services..."
-            aria-label="Search services"
-            className="bg-transparent text-white text-sm placeholder-white/50 outline-none flex-1"
+        <div className="w-full">
+          <SearchAutocomplete
+            onSelect={(term) => setSearchQuery(term)}
+            preventNavigation
+            className="w-full"
           />
-          {searchQuery && (
-            <button onClick={() => setSearchQuery("")} className="text-white/50 hover:text-white/80">
-              <span className="material-symbols-outlined text-lg">close</span>
-            </button>
-          )}
         </div>
       </header>
 
