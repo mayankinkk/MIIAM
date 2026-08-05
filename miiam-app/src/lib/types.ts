@@ -46,7 +46,7 @@ export interface Vendor {
 
 export interface MenuItem {
   id: string;
-  vendor_id: string;
+  vendor_id?: string | null;
   name: string;
   price: number;
   category: string;

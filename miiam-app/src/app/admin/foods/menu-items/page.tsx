@@ -13,7 +13,7 @@ interface MenuItem {
   price: number;
   category: string;
   image_url?: string;
-  vendor_id: string;
+  vendor_id?: string | null;
   vendor?: {
     shop_name: string;
     name: string;
@@ -60,7 +60,7 @@ export default function AdminMenuItemsPage() {
   }
 
   const handleAddItem = async () => {
-    if (!newItem.name || !newItem.price || !newItem.vendor_id) {
+    if (!newItem.name || !newItem.price) {
       useToastStore.getState().addToast("Please fill all required fields", "error");
       return;
     }
@@ -70,7 +70,7 @@ export default function AdminMenuItemsPage() {
         name: newItem.name,
         price: parseFloat(newItem.price),
         category: newItem.category,
-        vendor_id: newItem.vendor_id,
+        vendor_id: newItem.vendor_id || null,
         image_url: newItem.image_url || null,
         is_available: true,
       });
@@ -96,6 +96,7 @@ export default function AdminMenuItemsPage() {
           name: editingItem.name,
           price: editingItem.price,
           category: editingItem.category,
+          vendor_id: editingItem.vendor_id || null,
           image_url: editingItem.image_url || null,
           is_available: editingItem.is_available,
         })
@@ -137,8 +138,8 @@ export default function AdminMenuItemsPage() {
       if (lines.length < 2) { useToastStore.getState().addToast("CSV must have a header + data rows", "error"); setCsvUploading(false); return; }
 
       const header = lines[0].toLowerCase().split(",").map((h) => h.trim());
-      if (!header.includes("name") || !header.includes("price") || !header.includes("vendor_id")) {
-        useToastStore.getState().addToast("CSV must have: name, price, vendor_id columns", "error");
+      if (!header.includes("name") || !header.includes("price")) {
+        useToastStore.getState().addToast("CSV must have: name, price columns (vendor_id optional)", "error");
         setCsvUploading(false);
         return;
       }
@@ -148,7 +149,7 @@ export default function AdminMenuItemsPage() {
         const row: Record<string, string> = {};
         header.forEach((h, i) => { row[h] = values[i] || ""; });
         return row;
-      }).filter((r) => r.name && r.price && r.vendor_id);
+      }).filter((r) => r.name && r.price);
 
       if (rows.length === 0) { useToastStore.getState().addToast("No valid rows found", "error"); setCsvUploading(false); return; }
 
@@ -156,7 +157,7 @@ export default function AdminMenuItemsPage() {
         name: r.name,
         price: parseFloat(r.price) || 0,
         category: r.category || "Main Course",
-        vendor_id: r.vendor_id,
+        vendor_id: r.vendor_id || null,
         image_url: r.image_url || null,
         is_available: true,
       }));
@@ -415,7 +416,7 @@ export default function AdminMenuItemsPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Vendor *</label>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Vendor</label>
                 <select
                   value={newItem.vendor_id}
                   onChange={(e) => setNewItem({ ...newItem, vendor_id: e.target.value })}
@@ -495,6 +496,19 @@ export default function AdminMenuItemsPage() {
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
                   className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
                 />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Vendor</label>
+                <select
+                  value={editingItem.vendor_id || ""}
+                  onChange={(e) => setEditingItem({ ...editingItem, vendor_id: e.target.value || null })}
+                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
+                >
+                  <option value="">No Vendor</option>
+                  {vendors.map(v => (
+                    <option key={v.id} value={v.id}>{v.shop_name || v.name}</option>
+                  ))}
+                </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
