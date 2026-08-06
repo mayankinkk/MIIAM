@@ -776,7 +776,12 @@ export default function FoodPageContent() {
                       <span className="text-lg">{bucket.emoji}</span>
                       <h2 className="text-lg font-bold text-on-surface">{bucket.label}</h2>
                     </div>
-                    <span className="text-xs font-bold text-primary">{items.length} items</span>
+                    <button
+                      onClick={() => { setActiveFilter(bucket.filter); if (navigator.vibrate) navigator.vibrate(10); }}
+                      className="text-xs font-bold text-primary hover:underline active:scale-95 transition-transform"
+                    >
+                      View More
+                    </button>
                   </div>
                   <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                     {items.map((item) => {
