@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
-import { safeMenuItemId } from "@/lib/checkout-utils";
+import { safeMenuItemId, FLAT_SERVICE_CHARGE } from "@/lib/checkout-utils";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { isVendorOpen } from "@/lib/vendor-hours";
 import { checkStock } from "@/lib/stock";
@@ -207,7 +207,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           user_id: user.id,
           vendor_id: vendorId,
           status: scheduledIso ? "scheduled" : "pending",
-          total_amount: vendorTotal,
+          total_amount: +(vendorTotal + (subtotal > 0 ? FLAT_SERVICE_CHARGE * (vendorTotal / subtotal) : 0)).toFixed(2),
           delivery_fee: subtotal > 0 ? +(deliveryFee * (vendorTotal / subtotal)).toFixed(2) : 0,
           discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
           tip_amount: subtotal > 0 ? +(tipAmount * (vendorTotal / subtotal)).toFixed(2) : 0,

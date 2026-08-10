@@ -38,7 +38,7 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
-  const [serviceCharge, setServiceCharge] = useState<number | null>(null);
+
   const [hydrated, setHydrated] = useState(false);
   const [showAddressWarning, setShowAddressWarning] = useState(false);
   const { items, totalPrice } = useCartStore();
@@ -54,13 +54,6 @@ export default function CheckoutPage() {
       try { setSavedAddresses(JSON.parse(allSaved)); } catch { /* corrupted data, ignore */ }
     }
 
-    async function loadServiceCharge() {
-      try {
-        const { data } = await supabase.from("site_settings").select("value").eq("key", "service_charge").maybeSingle();
-        if (data?.value) setServiceCharge(Number(data.value));
-      } catch { /* use default */ }
-    }
-    loadServiceCharge();
 
     async function loadVendorDetails() {
       try {
@@ -95,7 +88,6 @@ export default function CheckoutPage() {
   const { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
     tipAmount,
-    serviceCharge: serviceCharge ?? 0,
   });
 
   const { placeOrder } = usePlaceOrder(supabase);
