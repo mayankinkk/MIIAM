@@ -42,12 +42,13 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
     const results = items.map(item => {
       const menuData = stockMap.get(item.menu_item_id) as { stock: number | null; is_available: boolean; name: string } | undefined;
       if (!menuData) {
+        // Item not found in DB → no stock tracking, treat as always available
         return {
           menu_item_id: item.menu_item_id,
           name: item.name,
           requested: item.quantity,
-          available: 0,
-          in_stock: false,
+          available: 999,
+          in_stock: true,
         };
       }
 
