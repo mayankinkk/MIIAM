@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Order, OrderStatus, Profile, Address } from "@/lib/types";
+import type { Order, OrderStatus } from "@/lib/types";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 
@@ -40,8 +40,8 @@ export default function OrderManagement() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [orderItems, setOrderItems] = useState<Record<string, { name: string; quantity: number; unit_price: number }[]>>({});
-  const [customerProfile, setCustomerProfile] = useState<Profile | null>(null);
-  const [customerAddress, setCustomerAddress] = useState<Address | null>(null);
+  const [customerProfile, setCustomerProfile] = useState<{ full_name: string | null; phone: string | null } | null>(null);
+  const [customerAddress, setCustomerAddress] = useState<{ street: string; city: string; state: string; postal_code: string; label?: string } | null>(null);
 
   // Derived state for selected order items
   const selectedOrderItems = selectedOrder ? (orderItems[selectedOrder.id] || []) : [];
@@ -63,37 +63,17 @@ export default function OrderManagement() {
   useEffect(() => {
     if (selectedOrder) {
       loadAvailableRiders();
-      loadCustomerDetails();
       setSelectedRiderId("");
+      // Use pre-fetched enriched data
+      const cp = (selectedOrder as Order & { customer_profile?: { full_name: string | null; phone: string | null } | null }).customer_profile;
+      const ca = (selectedOrder as Order & { customer_address?: { street: string; city: string; state: string; postal_code: string; label?: string } | null }).customer_address;
+      setCustomerProfile(cp || null);
+      setCustomerAddress(ca || null);
     } else {
       setCustomerProfile(null);
       setCustomerAddress(null);
     }
   }, [selectedOrder?.id]);
-
-  async function loadCustomerDetails() {
-    if (!selectedOrder) return;
-    
-    // Fetch user profile for phone
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id, full_name, phone")
-      .eq("id", selectedOrder.user_id)
-      .single();
-    setCustomerProfile(profile);
-
-    // Fetch delivery address
-    if (selectedOrder.delivery_address_id) {
-      const { data: address } = await supabase
-        .from("addresses")
-        .select("*")
-        .eq("id", selectedOrder.delivery_address_id)
-        .single();
-      setCustomerAddress(address);
-    } else {
-      setCustomerAddress(null);
-    }
-  }
 
   async function loadAvailableRiders() {
     const { data } = await supabase
@@ -124,26 +104,57 @@ export default function OrderManagement() {
   }
 
   async function loadOrders() {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("orders")
-      .select("*, vendor:vendors(name), rider:riders(*), user:user_id(*)")
+      .select("*, vendor:vendors(name, shop_name), rider:riders(name, phone)")
       .order("placed_at", { ascending: false });
+    
+    if (error) {
+      logger.error({ err: error }, "Failed to load orders");
+      setLoading(false);
+      return;
+    }
+    
     if (data) {
-      setOrders(data);
+      const ordersData = data as (Order & { delivery_address_id?: string | null })[];
+      // Fetch customer profiles and addresses
+      const userIds = [...new Set(ordersData.map((o) => o.user_id).filter(Boolean))] as string[];
+      const profileMap: Record<string, { full_name: string | null; phone: string | null }> = {};
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase.from("profiles").select("id, full_name, phone").in("id", userIds);
+        if (profiles) profiles.forEach((p: { id: string; full_name: string | null; phone: string | null }) => { profileMap[p.id] = { full_name: p.full_name, phone: p.phone }; });
+      }
+
+      const addressIds = ordersData.map((o) => o.delivery_address_id).filter(Boolean) as string[];
+      const addressMap: Record<string, { street: string; city: string; state: string; postal_code: string; label?: string }> = {};
+      if (addressIds.length > 0) {
+        const { data: addresses } = await supabase.from("addresses").select("id, street, city, state, postal_code, label").in("id", addressIds);
+        if (addresses) addresses.forEach((a: { id: string; street: string; city: string; state: string; postal_code: string; label?: string }) => { addressMap[a.id] = a; });
+      }
+
+      // Fetch items for all orders in one query
+      const orderIds = ordersData.map((o) => o.id);
       const itemsMap: Record<string, { name: string; quantity: number; unit_price: number }[]> = {};
-      for (const o of data) {
-        const { data: items } = await supabase
+      if (orderIds.length > 0) {
+        const { data: allItems } = await supabase
           .from("order_items")
-          .select("quantity, unit_price, menu_item:menu_items(name)")
-          .eq("order_id", o.id);
-        if (items) {
-          itemsMap[o.id] = items.map((i: { quantity: number; unit_price: number; menu_item?: { name: string } }) => ({
-            name: i.menu_item?.name || "Item",
-            quantity: i.quantity,
-            unit_price: i.unit_price,
-          }));
+          .select("order_id, quantity, unit_price, menu_item:menu_items(name)")
+          .in("order_id", orderIds);
+        if (allItems) {
+          allItems.forEach((i: { order_id: string; quantity: number; unit_price: number; menu_item?: { name: string } }) => {
+            if (!itemsMap[i.order_id]) itemsMap[i.order_id] = [];
+            itemsMap[i.order_id].push({ name: i.menu_item?.name || "Item", quantity: i.quantity, unit_price: i.unit_price });
+          });
         }
       }
+
+      const enriched = ordersData.map((o) => ({
+        ...o,
+        customer_profile: o.user_id ? profileMap[o.user_id] || null : null,
+        customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id] || null : null,
+      }));
+
+      setOrders(enriched);
       setOrderItems(itemsMap);
     }
     setLoading(false);
@@ -404,15 +415,20 @@ export default function OrderManagement() {
                   />
                 </th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order ID</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Customer</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Vendor</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Items</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
                 <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Total</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Placed</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Actions</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Placed</th>
+                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--color-border-subtle)]">
-              {filteredOrders.map((order) => (
+              {filteredOrders.map((order) => {
+                const items = orderItems[order.id] || [];
+                const cp = (order as Order & { customer_profile?: { full_name: string | null; phone: string | null } | null }).customer_profile;
+                return (
                 <tr key={order.id} className="hover:bg-[var(--color-surface-subtle)]/50 transition-colors">
                   <td className="p-4">
                     <input
@@ -427,7 +443,14 @@ export default function OrderManagement() {
                       #{order.id.slice(0, 8)}
                     </button>
                   </td>
+                  <td className="p-4">
+                    <p className="text-sm font-bold text-[var(--color-on-surface)]">{cp?.full_name || order.customer_name || "Guest"}</p>
+                    {cp?.phone && <p className="text-[10px] text-[var(--color-outline-variant)]">{cp.phone}</p>}
+                  </td>
                   <td className="p-4 text-sm font-medium text-[var(--color-on-surface-variant)]">{order.vendor?.name || "Unknown"}</td>
+                  <td className="p-4 text-xs text-[var(--color-outline)] max-w-[180px] truncate">
+                    {items.map(i => `${i.quantity}x ${i.name}`).join(", ") || "—"}
+                  </td>
                   <td className="p-4">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase ${STATUS_COLORS[order.status]}`}>
                       {order.status.replaceAll("_", " ")}
@@ -437,17 +460,31 @@ export default function OrderManagement() {
                   <td className="p-4 text-right text-xs text-[var(--color-outline-variant)]">
                     {new Date(order.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                   </td>
-                  <td className="p-4 text-right">
-                    <button
-                      onClick={() => setSelectedOrder(order)}
-                      className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] p-2"
-                      aria-label={`View order ${order.id.slice(0, 8)}`}
-                    >
-                      <span className="material-symbols-outlined">visibility</span>
-                    </button>
+                  <td className="p-4">
+                    <div className="flex items-center gap-1 flex-wrap">
+                      {order.status === "pending" && (
+                        <>
+                          <button onClick={() => updateStatus(order.id, "accepted")} className="px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold hover:bg-green-100">Accept</button>
+                          <button onClick={() => updateStatus(order.id, "cancelled")} className="px-2 py-1 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold hover:bg-red-100">Decline</button>
+                        </>
+                      )}
+                      {order.status === "accepted" && (
+                        <button onClick={() => updateStatus(order.id, "preparing")} className="px-2 py-1 bg-purple-50 text-purple-600 rounded-lg text-[10px] font-bold hover:bg-purple-100">Prepare</button>
+                      )}
+                      {order.status === "preparing" && (
+                        <button onClick={() => updateStatus(order.id, "ready_for_pickup")} className="px-2 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold hover:bg-orange-100">Ready</button>
+                      )}
+                      {(order.status === "ready_for_pickup" || order.status === "on_the_way" || order.status === "arrived") && (
+                        <button onClick={() => updateStatus(order.id, "delivered")} className="px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold hover:bg-green-100">Delivered</button>
+                      )}
+                      <button onClick={() => setSelectedOrder(order)} className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] p-1" aria-label={`View order ${order.id.slice(0, 8)}`}>
+                        <span className="material-symbols-outlined text-sm">visibility</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

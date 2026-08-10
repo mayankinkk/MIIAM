@@ -45,7 +45,7 @@ export default function AdminFoodsDashboard() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [vendorFilter, setVendorFilter] = useState<string>("all");
   const [paymentFilter, setPaymentFilter] = useState<string>("all");
-  const [dateFilter, setDateFilter] = useState<string>("today");
+  const [dateFilter, setDateFilter] = useState<string>("all");
   const [amountMin, setAmountMin] = useState<string>("");
   const [amountMax, setAmountMax] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
@@ -57,7 +57,15 @@ export default function AdminFoodsDashboard() {
 
   useEffect(() => {
     loadData();
-  }, []);
+
+    const channel = supabase.channel("admin-foods-orders")
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+        loadData();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [dateFilter]);
 
   async function loadData() {
     setLoading(true);
@@ -190,13 +198,13 @@ export default function AdminFoodsDashboard() {
     setStatusFilter("all");
     setVendorFilter("all");
     setPaymentFilter("all");
-    setDateFilter("today");
+    setDateFilter("all");
     setAmountMin("");
     setAmountMax("");
   };
 
   const hasActiveFilters = searchQuery || statusFilter !== "all" || vendorFilter !== "all" || 
-    paymentFilter !== "all" || dateFilter !== "today" || amountMin || amountMax;
+    paymentFilter !== "all" || dateFilter !== "all" || amountMin || amountMax;
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = !searchQuery || 
@@ -519,12 +527,24 @@ export default function AdminFoodsDashboard() {
                     <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{(order.total_amount || 0).toFixed(0)}</td>
                     <td className="p-4 text-[var(--color-outline-variant)]">{order.placed_at ? new Date(order.placed_at).toLocaleDateString() : "-"}</td>
                     <td className="p-4">
-                      <button
-                        onClick={() => setSelectedOrder(order)}
-                        className="text-[var(--color-primary)] font-bold hover:underline"
-                      >
-                        View
-                      </button>
+                      <div className="flex items-center gap-1 flex-wrap">
+                        {order.status === "pending" && (
+                          <>
+                            <button onClick={() => updateOrderStatus(order.id!, "accepted")} className="px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold hover:bg-green-100">Accept</button>
+                            <button onClick={() => updateOrderStatus(order.id!, "cancelled")} className="px-2 py-1 bg-red-50 text-red-600 rounded-lg text-[10px] font-bold hover:bg-red-100">Decline</button>
+                          </>
+                        )}
+                        {order.status === "accepted" && (
+                          <button onClick={() => updateOrderStatus(order.id!, "preparing")} className="px-2 py-1 bg-purple-50 text-purple-600 rounded-lg text-[10px] font-bold hover:bg-purple-100">Prepare</button>
+                        )}
+                        {order.status === "preparing" && (
+                          <button onClick={() => updateOrderStatus(order.id!, "ready_for_pickup")} className="px-2 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold hover:bg-orange-100">Ready</button>
+                        )}
+                        {(order.status === "ready_for_pickup" || order.status === "on_the_way" || order.status === "arrived") && (
+                          <button onClick={() => updateOrderStatus(order.id!, "delivered")} className="px-2 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-bold hover:bg-green-100">Delivered</button>
+                        )}
+                        <button onClick={() => setSelectedOrder(order)} className="text-[var(--color-primary)] font-bold hover:underline text-xs">View</button>
+                      </div>
                     </td>
                   </tr>
                 ))
