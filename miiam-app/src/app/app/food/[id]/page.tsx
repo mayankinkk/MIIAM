@@ -79,10 +79,9 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
   const { addItem, items, updateQuantity } = useCartStore();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
   const qty = cartItem?.quantity ?? 0;
-  const isAvailable = item.is_available !== false;
 
   const handleAdd = () => {
-    if (!isOpen || !isAvailable) return;
+    if (!isOpen) return;
     addItem({
       id: item.id,
       menu_item_id: item.id,
@@ -96,13 +95,13 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
     if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
   };
 
-  if (!isOpen || !isAvailable) {
+  if (!isOpen) {
     return (
       <span className={compact
         ? "px-2 py-0.5 bg-gray-200 text-gray-500 text-[9px] font-bold rounded-full cursor-not-allowed"
         : "px-4 py-1.5 bg-gray-200 text-gray-500 text-xs font-bold rounded-full cursor-not-allowed"
       }>
-        {!isAvailable ? "Sold Out" : "Closed"}
+        Closed
       </span>
     );
   }
@@ -432,7 +431,7 @@ export default function RestaurantProfilePage() {
         case "price_low": return a.price - b.price;
         case "price_high": return b.price - a.price;
         case "rating": return (b.order_count || 0) - (a.order_count || 0);
-        default: return (b.is_available !== false ? 1 : 0) - (a.is_available !== false ? 1 : 0) || a.name.localeCompare(b.name);
+        default: return a.name.localeCompare(b.name);
       }
     });
   const availableCategories = MENU_CATEGORIES.filter(
@@ -728,7 +727,7 @@ export default function RestaurantProfilePage() {
           ) : (
             <>
               {visibleMenuItems.map((item) => (
-                <div key={item.id} className={`bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3 transition-opacity ${item.is_available === false ? "opacity-60" : ""}`}>
+                <div key={item.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3">
                   <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
                     <BlurImage
                       src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
@@ -737,11 +736,6 @@ export default function RestaurantProfilePage() {
                       fill
                       fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                     />
-                    {item.is_available === false && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <span className="text-white text-[10px] font-black bg-red-500 px-2 py-0.5 rounded-full">SOLD OUT</span>
-                      </div>
-                    )}
                     {item.is_featured && (
                       <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
                         ⭐ {t.food.chefsSpecial}
@@ -793,7 +787,7 @@ export default function RestaurantProfilePage() {
       </section>
 
       {/* Frequently Ordered Together */}
-      {menuItems.filter(i => i.is_available !== false).length > 2 && (
+      {menuItems.length > 2 && (
         <section className="mt-6 px-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-lg">🤝</span>
@@ -802,7 +796,6 @@ export default function RestaurantProfilePage() {
           <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
             {(() => {
               const popular = [...menuItems]
-                .filter(i => i.is_available !== false)
                 .sort((a, b) => (b.order_count || 0) - (a.order_count || 0))
                 .slice(0, 3);
               const totalComboPrice = popular.reduce((sum, i) => sum + i.price, 0);

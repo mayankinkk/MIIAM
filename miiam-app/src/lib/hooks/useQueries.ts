@@ -12,9 +12,7 @@ export function useServices(category?: string) {
     queryFn: async () => {
       let query = supabase
         .from("menu_items")
-        .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description, preparation_time, vendors!inner(shop_name, status, delivery_charge, delivery_time_min, delivery_time_max)")
-        .eq("is_available", true)
-        .eq("vendors.status", "active");
+        .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, description, preparation_time, vendors!inner(shop_name, status, delivery_charge, delivery_time_min, delivery_time_max)");
 
       if (category && category !== "all") {
         query = query.eq("category", category);
