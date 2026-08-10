@@ -188,6 +188,13 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       for (const vendorId of vendorIds) {
         if (!vendorId) continue;
 
+        // Verify vendor exists in DB (guard against stale cart items with invalid vendor_id)
+        const { data: vendorExists } = await supabase.from("vendors").select("id").eq("id", vendorId).maybeSingle();
+        if (!vendorExists) {
+          addToast("Some items in your cart are no longer available. Please clear your cart and add items again.", "error");
+          return false;
+        }
+
         const vendorItems = items.filter((i) => i.vendor_id === vendorId);
         const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
 
