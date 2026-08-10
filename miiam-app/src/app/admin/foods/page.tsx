@@ -14,8 +14,13 @@ interface FoodOrder {
   payment_method?: string;
   delivery_fee?: number;
   special_instructions?: string;
+  delivery_address?: string | null;
+  delivery_address_id?: string | null;
   vendor?: { id?: string; name?: string; shop_name?: string; rating?: number } | null;
   items?: FoodOrderItem[];
+  customer_name?: string;
+  customer_profile?: { full_name: string | null; phone: string | null } | null;
+  customer_address?: { street: string; city: string; state: string; postal_code: string; label?: string } | null;
 }
 
 interface FoodOrderItem {
@@ -61,7 +66,7 @@ export default function AdminFoodsDashboard() {
 
     let query = supabase
       .from("orders")
-      .select("*, vendor:vendors(id, name, shop_name), items:order_items(*)")
+      .select("*, vendor:vendors(id, name, shop_name), items:order_items(*, menu_item:menu_items(name))")
       .order("placed_at", { ascending: false });
 
     if (dateFilter === "today") {
@@ -79,7 +84,42 @@ export default function AdminFoodsDashboard() {
     }
 
     const { data } = await query;
-    if (data) setOrders(data);
+    if (!data) { setLoading(false); return; }
+
+    // Fetch customer profiles and addresses
+    const userIds = [...new Set(data.map((o: FoodOrder) => o.user_id).filter(Boolean))] as string[];
+    const profileMap: Record<string, { full_name: string | null; phone: string | null }> = {};
+
+    if (userIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, phone")
+        .in("id", userIds);
+      if (profiles) {
+        profiles.forEach((p: { id: string; full_name: string | null; phone: string | null }) => { profileMap[p.id] = { full_name: p.full_name, phone: p.phone }; });
+      }
+    }
+
+    const addressIds = data.map((o: FoodOrder) => o.delivery_address_id).filter(Boolean) as string[];
+    const addressMap: Record<string, { street: string; city: string; state: string; postal_code: string; label?: string }> = {};
+
+    if (addressIds.length > 0) {
+      const { data: addresses } = await supabase
+        .from("addresses")
+        .select("id, street, city, state, postal_code, label")
+        .in("id", addressIds);
+      if (addresses) {
+        addresses.forEach((a: { id: string; street: string; city: string; state: string; postal_code: string; label?: string }) => { addressMap[a.id] = a; });
+      }
+    }
+
+    const enriched = data.map((o: FoodOrder & { user_id?: string; delivery_address_id?: string | null }) => ({
+      ...o,
+      customer_profile: o.user_id ? profileMap[o.user_id] || null : null,
+      customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id] || null : null,
+    }));
+
+    setOrders(enriched);
     setLoading(false);
   }
 
@@ -445,7 +485,14 @@ export default function AdminFoodsDashboard() {
                       <span className="font-black text-[var(--color-on-surface)]">#{order.id?.slice(0, 8).toUpperCase()}</span>
                     </td>
                     <td className="p-4 text-[var(--color-on-surface-variant)]">{order.vendor?.name || order.vendor?.shop_name || "Unknown"}</td>
-                    <td className="p-4 text-[var(--color-outline)]">{order.user_id?.slice(0, 8) || "Guest"}</td>
+                    <td className="p-4">
+                      <span className="font-bold text-[var(--color-on-surface)]">
+                        {order.customer_profile?.full_name || order.customer_name || "Guest"}
+                      </span>
+                      {order.customer_profile?.phone && (
+                        <p className="text-[10px] text-[var(--color-outline-variant)]">{order.customer_profile.phone}</p>
+                      )}
+                    </td>
                     <td className="p-4">
                       <select
                         value={order.status}
@@ -462,7 +509,13 @@ export default function AdminFoodsDashboard() {
                         <option value="cancelled">Cancelled</option>
                       </select>
                     </td>
-                    <td className="p-4 text-[var(--color-outline)]">{order.items?.length || 0}</td>
+                    <td className="p-4">
+                      <div className="max-w-[180px] truncate text-[var(--color-outline)]">
+                        {order.items && order.items.length > 0
+                          ? order.items.map(item => `${item.quantity}x ${item.menu_item?.name || "Item"}`).join(", ")
+                          : "0 items"}
+                      </div>
+                    </td>
                     <td className="p-4 text-right font-black text-[var(--color-on-surface)]">₹{(order.total_amount || 0).toFixed(0)}</td>
                     <td className="p-4 text-[var(--color-outline-variant)]">{order.placed_at ? new Date(order.placed_at).toLocaleDateString() : "-"}</td>
                     <td className="p-4">
@@ -491,10 +544,38 @@ export default function AdminFoodsDashboard() {
               </button>
             </div>
             <div className="p-6 space-y-4">
+              {/* Customer Details */}
+              <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl space-y-3">
+                <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Customer</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Name</p>
+                    <p className="font-bold">{selectedOrder.customer_profile?.full_name || selectedOrder.customer_name || "Guest"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Phone</p>
+                    <p className="font-bold">{selectedOrder.customer_profile?.phone || "—"}</p>
+                  </div>
+                  {selectedOrder.customer_address && (
+                    <div className="col-span-2">
+                      <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Delivery Address</p>
+                      <p className="font-bold">{selectedOrder.customer_address.street}, {selectedOrder.customer_address.city}, {selectedOrder.customer_address.state} - {selectedOrder.customer_address.postal_code}</p>
+                      {selectedOrder.customer_address.label && <p className="text-[10px] text-[var(--color-outline-variant)]">{selectedOrder.customer_address.label}</p>}
+                    </div>
+                  )}
+                  {!selectedOrder.customer_address && selectedOrder.delivery_address && (
+                    <div className="col-span-2">
+                      <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Delivery Address</p>
+                      <p className="font-bold">{selectedOrder.delivery_address}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Vendor</p>
-                  <p className="font-bold">{selectedOrder.vendor?.name || "Unknown"}</p>
+                  <p className="font-bold">{selectedOrder.vendor?.name || selectedOrder.vendor?.shop_name || "Unknown"}</p>
                 </div>
                 <div>
                   <p className="text-[10px] text-[var(--color-outline-variant)] uppercase">Status</p>

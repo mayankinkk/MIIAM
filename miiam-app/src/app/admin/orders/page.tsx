@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { Order, OrderStatus } from "@/lib/types";
+import type { Order, OrderStatus, Profile, Address } from "@/lib/types";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 
@@ -40,6 +40,11 @@ export default function OrderManagement() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [orderItems, setOrderItems] = useState<Record<string, { name: string; quantity: number; unit_price: number }[]>>({});
+  const [customerProfile, setCustomerProfile] = useState<Profile | null>(null);
+  const [customerAddress, setCustomerAddress] = useState<Address | null>(null);
+
+  // Derived state for selected order items
+  const selectedOrderItems = selectedOrder ? (orderItems[selectedOrder.id] || []) : [];
 
   useEffect(() => {
     loadOrders();
@@ -58,9 +63,37 @@ export default function OrderManagement() {
   useEffect(() => {
     if (selectedOrder) {
       loadAvailableRiders();
+      loadCustomerDetails();
       setSelectedRiderId("");
+    } else {
+      setCustomerProfile(null);
+      setCustomerAddress(null);
     }
   }, [selectedOrder?.id]);
+
+  async function loadCustomerDetails() {
+    if (!selectedOrder) return;
+    
+    // Fetch user profile for phone
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id, full_name, phone")
+      .eq("id", selectedOrder.user_id)
+      .single();
+    setCustomerProfile(profile);
+
+    // Fetch delivery address
+    if (selectedOrder.delivery_address_id) {
+      const { data: address } = await supabase
+        .from("addresses")
+        .select("*")
+        .eq("id", selectedOrder.delivery_address_id)
+        .single();
+      setCustomerAddress(address);
+    } else {
+      setCustomerAddress(null);
+    }
+  }
 
   async function loadAvailableRiders() {
     const { data } = await supabase
@@ -437,6 +470,39 @@ export default function OrderManagement() {
               </button>
             </div>
             <div className="p-6 space-y-6">
+                <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Customer Details</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-[var(--color-outline-variant)]">Name</p>
+                    <p className="font-bold text-[var(--color-on-surface)]">
+                      {customerProfile?.full_name || selectedOrder.customer_name || "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-[var(--color-outline-variant)]">Phone</p>
+                    <p className="font-bold text-[var(--color-on-surface)]">
+                      {customerProfile?.phone || "—"}
+                    </p>
+                  </div>
+                  <div className="col-span-2" style={{ display: customerAddress ? 'block' : 'none' }}>
+                    <p className="text-xs text-[var(--color-outline-variant)]">Delivery Address</p>
+                    <p className="font-bold text-[var(--color-on-surface)]">
+                      {customerAddress?.street}, {customerAddress?.city}, {customerAddress?.state} - {customerAddress?.postal_code}
+                    </p>
+                    {customerAddress?.label && (
+                      <p className="text-xs text-[var(--color-outline-variant)] mt-1">{customerAddress.label}</p>
+                    )}
+                  </div>
+                  <div className="col-span-2" style={{ display: !customerAddress && selectedOrder.delivery_address ? 'block' : 'none' }}>
+                    <p className="text-xs text-[var(--color-outline-variant)]">Delivery Address</p>
+                    <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.delivery_address}</p>
+                  </div>
+                  <div className="col-span-2" style={{ display: !customerAddress && !selectedOrder.delivery_address ? 'block' : 'none' }}>
+                    <p className="text-xs text-[var(--color-outline-variant)]">Delivery Address</p>
+                    <p className="text-[var(--color-outline-variant)]">—</p>
+                  </div>
+                </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
                   <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Vendor</p>
@@ -448,8 +514,28 @@ export default function OrderManagement() {
                   {selectedOrder.rider?.phone && <p className="text-xs text-[var(--color-outline)]">{selectedOrder.rider.phone}</p>}
                 </div>
               </div>
+
+              {/* Order Items */}
               <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl space-y-2">
-                <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Order Summary</p>
+                <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-2">Items Ordered</p>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {selectedOrderItems.map((i) => (
+                    <div key={i.name} className="flex items-center justify-between py-2 border-b border-[var(--color-border-subtle)]">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-[var(--color-on-surface-variant)] text-sm">×{i.quantity}</span>
+                        <span className="text-[var(--color-on-surface)]">{i.name}</span>
+                      </div>
+                      <span className="font-bold text-[var(--color-on-surface)]">₹{i.unit_price * i.quantity}</span>
+                    </div>
+                  ))}
+                  {selectedOrderItems.length === 0 && (
+                    <p className="text-[var(--color-outline-variant)] text-center py-4">No items found</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl space-y-2">
                 <div className="flex justify-between">
                   <span className="text-sm text-[var(--color-on-surface-variant)]">Subtotal</span>
                   <span className="text-sm font-bold">₹{selectedOrder.total_amount - selectedOrder.delivery_fee}</span>
