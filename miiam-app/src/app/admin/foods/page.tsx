@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
@@ -55,6 +55,32 @@ export default function AdminFoodsDashboard() {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [bulkStatus, setBulkStatus] = useState<string>("");
 
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/food-orders?dateFilter=${dateFilter}`);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        logger.error({ err: new Error(err.error || `HTTP ${res.status}`) }, "Failed to load food orders");
+        useToastStore.getState().addToast(`Failed to load orders: ${err.error || res.statusText}`, "error");
+        setOrders([]);
+        setVendors([]);
+        setLoading(false);
+        return;
+      }
+      const { orders: fetchedOrders, vendors: fetchedVendors } = await res.json();
+      setOrders(fetchedOrders || []);
+      setVendors(fetchedVendors || []);
+    } catch (error) {
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to load food orders");
+      useToastStore.getState().addToast("Failed to load orders", "error");
+      setOrders([]);
+      setVendors([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [dateFilter]);
+
   useEffect(() => {
     loadData();
 
@@ -65,80 +91,19 @@ export default function AdminFoodsDashboard() {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
-  }, [dateFilter]);
-
-  async function loadData() {
-    setLoading(true);
-    const { data: vendorsData } = await supabase.from("vendors").select("id, shop_name");
-    if (vendorsData) setVendors(vendorsData);
-
-    let query = supabase
-      .from("orders")
-      .select("*, vendor:vendors(id, name, shop_name), items:order_items(*, menu_item:menu_items(name))")
-      .order("placed_at", { ascending: false });
-
-    if (dateFilter === "today") {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      query = query.gte("placed_at", today.toISOString());
-    } else if (dateFilter === "week") {
-      const week = new Date();
-      week.setDate(week.getDate() - 7);
-      query = query.gte("placed_at", week.toISOString());
-    } else if (dateFilter === "month") {
-      const month = new Date();
-      month.setDate(month.getDate() - 30);
-      query = query.gte("placed_at", month.toISOString());
-    }
-
-    const { data } = await query;
-    if (!data) { setLoading(false); return; }
-
-    // Fetch customer profiles and addresses
-    const userIds = [...new Set(data.map((o: FoodOrder) => o.user_id).filter(Boolean))] as string[];
-    const profileMap: Record<string, { full_name: string | null; phone: string | null }> = {};
-
-    if (userIds.length > 0) {
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, full_name, phone")
-        .in("id", userIds);
-      if (profiles) {
-        profiles.forEach((p: { id: string; full_name: string | null; phone: string | null }) => { profileMap[p.id] = { full_name: p.full_name, phone: p.phone }; });
-      }
-    }
-
-    const addressIds = data.map((o: FoodOrder) => o.delivery_address_id).filter(Boolean) as string[];
-    const addressMap: Record<string, { street: string; city: string; state: string; postal_code: string; label?: string }> = {};
-
-    if (addressIds.length > 0) {
-      const { data: addresses } = await supabase
-        .from("addresses")
-        .select("id, street, city, state, postal_code, label")
-        .in("id", addressIds);
-      if (addresses) {
-        addresses.forEach((a: { id: string; street: string; city: string; state: string; postal_code: string; label?: string }) => { addressMap[a.id] = a; });
-      }
-    }
-
-    const enriched = data.map((o: FoodOrder & { user_id?: string; delivery_address_id?: string | null }) => ({
-      ...o,
-      customer_profile: o.user_id ? profileMap[o.user_id] || null : null,
-      customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id] || null : null,
-    }));
-
-    setOrders(enriched);
-    setLoading(false);
-  }
+  }, [loadData, supabase]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
-      const { error } = await supabase
-        .from("orders")
-        .update({ status: newStatus })
-        .eq("id", orderId);
-
-      if (error) throw error;
+      const res = await fetch("/api/admin/food-orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId, status: newStatus }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
 
       setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       useToastStore.getState().addToast(`Order status updated to ${newStatus}`, "success");
@@ -172,12 +137,15 @@ export default function AdminFoodsDashboard() {
     
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from("orders")
-        .update({ status: bulkStatus })
-        .in("id", selectedOrders);
-
-      if (error) throw error;
+      const res = await fetch("/api/admin/food-orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderIds: selectedOrders, status: bulkStatus }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
 
       setOrders(orders.map(o => 
         selectedOrders.includes(o.id) ? { ...o, status: bulkStatus } : o
