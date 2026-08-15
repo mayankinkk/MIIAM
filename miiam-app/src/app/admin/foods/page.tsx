@@ -216,6 +216,18 @@ export default function AdminFoodsDashboard() {
     refunded: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
   };
 
+  const statusBgColors: Record<string, string> = {
+    pending: "#fef3c7",
+    accepted: "#dbeafe",
+    preparing: "#ede9fe",
+    shopping: "#ffedd5",
+    picked_up: "#e0e7ff",
+    on_the_way: "#cffafe",
+    delivered: "#dcfce7",
+    cancelled: "#fee2e2",
+    refunded: "#f3f4f6",
+  };
+
   if (loading) return <div className="px-8">Loading foods dashboard...</div>;
 
   return (
@@ -475,7 +487,8 @@ export default function AdminFoodsDashboard() {
                       <select
                         value={order.status}
                         onChange={(e) => updateOrderStatus(order.id!, e.target.value)}
-                        className={`text-[10px] font-black px-2 py-1 rounded-full border-0 cursor-pointer ${statusColors[order.status] || "bg-[var(--color-surface-container)]"}`}
+                        className="text-[10px] font-black px-2 py-1 rounded-full border-0 cursor-pointer bg-transparent text-[var(--color-on-surface)]"
+                        style={{ backgroundColor: statusBgColors[order.status] || "var(--color-surface-container)" }}
                       >
                         <option value="pending">Pending</option>
                         <option value="accepted">Accepted</option>
