@@ -156,9 +156,13 @@ export default function StoreItemsAdmin() {
   };
 
   const handleToggleActive = async (item: StoreItem) => {
+    setItems(items.map(i => i.id === item.id ? { ...i, is_active: !i.is_active } : i));
     const { error } = await supabase.from("store_items").update({ is_active: !item.is_active }).eq("id", item.id);
-    if (error) { addToast("Toggle failed", "error"); return; }
-    loadItems();
+    if (error) {
+      addToast(`Toggle failed: ${error.message}`, "error");
+      setItems(items.map(i => i.id === item.id ? { ...i, is_active: item.is_active } : i));
+      return;
+    }
   };
 
   const handleCsvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
