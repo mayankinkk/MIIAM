@@ -27,7 +27,7 @@ export async function GET(request: Request) {
 
     let query = admin
       .from("orders")
-      .select("*, vendor:vendors(id, name, shop_name), items:order_items(*, menu_item:menu_items(name))")
+      .select("*, vendor:vendors(id, shop_name), items:order_items(*, menu_item:menu_items(name))")
       .order("placed_at", { ascending: false });
 
     if (dateFilter === "today") {
