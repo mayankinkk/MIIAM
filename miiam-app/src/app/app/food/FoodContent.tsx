@@ -460,8 +460,7 @@ export default function FoodPageContent() {
           .from("combos")
           .select("id, name, description, image_url, original_price, combo_price, items")
           .eq("is_active", true)
-          .order("display_order", { ascending: true })
-          .limit(10);
+          .order("display_order", { ascending: true });
         if (comboData) setCombos(comboData);
         
         if (heroRes?.data) setHeroAsset(heroRes.data);
@@ -749,6 +748,11 @@ export default function FoodPageContent() {
       </div>
 
       <main className="p-6 space-y-4">
+        {/* Combos Section - show when filter is combos */}
+        {activeFilter === "combos" && !loading && (
+          <CombosSection combos={combos} />
+        )}
+
         {/* Price Bucket Sections - Under 99/149/199/249 */}
         {!loading && hasLocation && !noLocalVendors && (storeItems.length > 0 || menuItems.length > 0) && (
           <div className="space-y-5">
@@ -832,11 +836,6 @@ export default function FoodPageContent() {
               );
             })}
           </div>
-        )}
-
-        {/* Combos Section - show when filter is combos */}
-        {activeFilter === "combos" && !loading && (
-          <CombosSection combos={combos} />
         )}
 
         {/* Bakery Section - show when filter is bakery */}
