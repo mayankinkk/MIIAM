@@ -324,6 +324,27 @@ export default function RestaurantProfilePage() {
   const { favoriteIds, toggle } = useFavoritesStore();
   const isFavorite = favoriteIds.includes(vendorId);
 
+  const coverImage = vendor?.cover_image_url || vendor?.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
+  const isOpen = vendor ? parseIsOpen(vendor.opening_hours) : false;
+  const specials = menuItems.filter((item) => item.is_featured);
+  const filteredMenu = menuItems
+    .filter((item) => activeCategory === "All" || item.category === activeCategory)
+    .filter((item) => !vegOnly || item.is_veg)
+    .filter((item) => !menuSearch || item.name.toLowerCase().includes(menuSearch.toLowerCase()) || item.description?.toLowerCase().includes(menuSearch.toLowerCase()))
+    .sort((a, b) => {
+      switch (menuSort) {
+        case "price_low": return a.price - b.price;
+        case "price_high": return b.price - a.price;
+        case "rating": return (b.order_count || 0) - (a.order_count || 0);
+        default: return a.name.localeCompare(b.name);
+      }
+    });
+  const availableCategories = MENU_CATEGORIES.filter(
+    (cat) => cat === "All" || menuItems.some((item) => item.category === cat)
+  );
+
+  const { visibleItems: visibleMenuItems, hasMore, sentinelRef } = useInfiniteScroll({ items: filteredMenu, pageSize: 10 });
+
   const handleToggleFavorite = async () => {
     toggle(vendorId);
     try {
@@ -418,27 +439,6 @@ export default function RestaurantProfilePage() {
       </div>
     );
   }
-
-  const coverImage = vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
-  const isOpen = parseIsOpen(vendor.opening_hours);
-  const specials = menuItems.filter((item) => item.is_featured);
-  const filteredMenu = menuItems
-    .filter((item) => activeCategory === "All" || item.category === activeCategory)
-    .filter((item) => !vegOnly || item.is_veg)
-    .filter((item) => !menuSearch || item.name.toLowerCase().includes(menuSearch.toLowerCase()) || item.description?.toLowerCase().includes(menuSearch.toLowerCase()))
-    .sort((a, b) => {
-      switch (menuSort) {
-        case "price_low": return a.price - b.price;
-        case "price_high": return b.price - a.price;
-        case "rating": return (b.order_count || 0) - (a.order_count || 0);
-        default: return a.name.localeCompare(b.name);
-      }
-    });
-  const availableCategories = MENU_CATEGORIES.filter(
-    (cat) => cat === "All" || menuItems.some((item) => item.category === cat)
-  );
-
-  const { visibleItems: visibleMenuItems, hasMore, sentinelRef } = useInfiniteScroll({ items: filteredMenu, pageSize: 10 });
 
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
