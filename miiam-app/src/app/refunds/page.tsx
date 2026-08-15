@@ -227,7 +227,7 @@ export default function RefundsPage() {
                     <p className="text-[var(--color-on-surface-variant)] mb-4">For any questions about refunds, please contact us:</p>
                     <div className="space-y-2 text-[var(--color-on-surface)]">
                       <p><strong>MIIAM Technologies Pvt. Ltd.</strong></p>
-                      <p>Gauripur, Dhubri — 781352</p>
+                      <p>Gauripur, Dhubri — 783331</p>
                       <p>Email: support@miiam.in</p>
                       <p>Grievance: grievance@miiam.in</p>
                     </div>
