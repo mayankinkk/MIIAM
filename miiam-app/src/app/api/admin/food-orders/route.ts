@@ -87,11 +87,17 @@ export async function GET(request: Request) {
       }
     }
 
-    const enriched = orders.map((o: Record<string, unknown>) => ({
-      ...o,
-      customer_profile: o.user_id ? profileMap[o.user_id as string] || null : null,
-      customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id as string] || null : null,
-    }));
+    const enriched = orders.map((o: Record<string, unknown>) => {
+      const profile = o.user_id ? profileMap[o.user_id as string] || null : null;
+      return {
+        ...o,
+        customer_profile: profile ? {
+          full_name: profile.full_name,
+          phone: profile.phone || (o.customer_phone as string) || null,
+        } : (o.customer_phone ? { full_name: null, phone: o.customer_phone as string } : null),
+        customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id as string] || null : null,
+      };
+    });
 
     const { data: vendorsData } = await admin.from("vendors").select("id, shop_name");
 
