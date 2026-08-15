@@ -437,7 +437,7 @@ export default function CartPage() {
       </main>
 
       {safeItems.length > 0 && (
-        <div className="fixed bottom-16 left-0 right-0 z-40 bg-surface/95 dark:bg-[var(--color-surface)]/95 backdrop-blur-xl border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
+        <div className="fixed bottom-20 left-0 right-0 z-40 bg-surface/95 dark:bg-[var(--color-surface)]/95 backdrop-blur-xl border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 shadow-[0px_-10px_30px_rgba(77,33,42,0.08)]"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
