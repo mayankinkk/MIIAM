@@ -763,13 +763,14 @@ export default function FoodPageContent() {
               { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500", dbCategory: "under_249", filter: "under_249" },
             ].filter((bucket) => activeFilter === "all" || activeFilter === bucket.filter).map((bucket) => {
               // Prefer store_items from DB, fall back to filtering menu_items
+              const isViewingBucket = activeFilter === bucket.filter;
               const dbItems = storeItems
                 .filter((item) => item.category === bucket.dbCategory)
-                .slice(0, 10);
+                .slice(0, isViewingBucket ? undefined : 10);
               const fallbackItems = dbItems.length === 0
                 ? menuItems
                     .filter((item) => item.price > 0 && item.price <= bucket.max)
-                    .slice(0, 10)
+                    .slice(0, isViewingBucket ? undefined : 10)
                 : [];
               const items = dbItems.length > 0 ? dbItems : fallbackItems;
               if (items.length === 0) return null;
