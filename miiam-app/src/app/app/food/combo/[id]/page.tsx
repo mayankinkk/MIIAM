@@ -11,6 +11,23 @@ import { useConfirm } from "@/components/ui/ConfirmDialog";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import logger from "@/lib/logger";
 
+interface Review {
+  id: string;
+  user_id: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
+interface MenuItem {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string | null;
+  is_veg: boolean;
+  category: string;
+}
+
 interface Combo {
   id: string;
   name: string;
@@ -29,6 +46,8 @@ interface Vendor {
   cuisine: string;
   address: string;
   image_url: string | null;
+  rating: number | null;
+  rating_count: number | null;
 }
 
 export default function ComboDetailPage() {
@@ -44,6 +63,8 @@ export default function ComboDetailPage() {
 
   const [combo, setCombo] = useState<Combo | null>(null);
   const [vendor, setVendor] = useState<Vendor | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,11 +90,30 @@ export default function ComboDetailPage() {
       if (comboData.vendor_id) {
         const { data: vendorData } = await supabase
           .from("vendors")
-          .select("id, shop_name, cuisine, address, image_url")
+          .select("id, shop_name, cuisine, address, image_url, rating, rating_count")
           .eq("id", comboData.vendor_id)
           .single();
         
         if (vendorData) setVendor(vendorData);
+
+        const [reviewsRes, menuRes] = await Promise.all([
+          supabase
+            .from("reviews")
+            .select("id, user_id, rating, comment, created_at")
+            .eq("vendor_id", comboData.vendor_id)
+            .order("created_at", { ascending: false })
+            .limit(10),
+          supabase
+            .from("menu_items")
+            .select("id, name, price, image_url, is_veg, category")
+            .eq("vendor_id", comboData.vendor_id)
+            .eq("is_available", true)
+            .order("name")
+            .limit(10),
+        ]);
+
+        if (reviewsRes.data) setReviews(reviewsRes.data);
+        if (menuRes.data) setMenuItems(menuRes.data);
       }
 
       setLoading(false);
@@ -255,6 +295,93 @@ export default function ComboDetailPage() {
           </div>
         </Link>
       )}
+
+      {/* Restaurant Menu Preview */}
+      {menuItems.length > 0 && (
+        <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-black text-on-surface">Menu from {vendor?.shop_name}</h2>
+            {vendor && (
+              <Link href={`/app/food/${vendor.id}`} className="text-xs font-bold text-primary hover:underline">
+                View All
+              </Link>
+            )}
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {menuItems.map((item) => (
+              <Link
+                key={item.id}
+                href={vendor ? `/app/food/${vendor.id}` : "#"}
+                className="flex-shrink-0 w-32 bg-surface-container-low rounded-xl overflow-hidden shadow-sm active:scale-[0.98] transition-transform"
+              >
+                <div className="relative h-20 bg-surface-container overflow-hidden">
+                  <Image
+                    src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80"}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                    sizes="128px"
+                  />
+                  {item.is_veg && (
+                    <span className="absolute top-1 left-1 w-4 h-4 bg-white rounded-sm flex items-center justify-center">
+                      <span className="w-2 h-2 bg-green-600 rounded-full" />
+                    </span>
+                  )}
+                </div>
+                <div className="p-2">
+                  <p className="text-xs font-bold text-on-surface truncate">{item.name}</p>
+                  <p className="text-xs font-bold text-primary mt-0.5">₹{item.price}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Reviews Section */}
+      <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-black text-on-surface">Ratings & Reviews</h2>
+          {vendor?.rating && (
+            <div className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-full">
+              <span className="material-symbols-outlined text-sm text-primary">star</span>
+              <span className="text-sm font-bold text-primary">{vendor.rating}</span>
+              {vendor.rating_count != null && (
+                <span className="text-xs text-on-surface-variant">({vendor.rating_count})</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {reviews.length === 0 ? (
+          <p className="text-sm text-on-surface-variant text-center py-4">No reviews yet. Be the first to review!</p>
+        ) : (
+          <div className="space-y-3">
+            {reviews.map((review) => (
+              <div key={review.id} className="border-b border-outline-variant/10 pb-3 last:border-0 last:pb-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="flex">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <span
+                        key={i}
+                        className={`material-symbols-outlined text-sm ${i < review.rating ? "text-primary" : "text-outline-variant"}`}
+                      >
+                        star
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-xs text-on-surface-variant">
+                    {new Date(review.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                  </span>
+                </div>
+                {review.comment && (
+                  <p className="text-sm text-on-surface leading-relaxed">{review.comment}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
