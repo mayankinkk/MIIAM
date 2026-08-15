@@ -95,6 +95,8 @@ export default function AdminFoodsDashboard() {
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
     try {
+      setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+
       const res = await fetch("/api/admin/food-orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -105,12 +107,12 @@ export default function AdminFoodsDashboard() {
         throw new Error(err.error || `HTTP ${res.status}`);
       }
 
-      setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
       useToastStore.getState().addToast(`Order status updated to ${newStatus}`, "success");
     } catch (error: unknown) {
       logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error updating order");
       const msg = error instanceof Error ? error.message : "Unknown error";
       useToastStore.getState().addToast(`Failed to update: ${msg}`, "error");
+      loadData();
     }
   };
 
