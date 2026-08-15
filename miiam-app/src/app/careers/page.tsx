@@ -12,7 +12,7 @@ const jobOpenings = [
     id: "rider-1",
     title: "Delivery Rider",
     department: "Delivery",
-    location: "Guwahati, Assam",
+    location: "Gauripur, Dhubri",
     type: "Full-time",
     description: "Deliver food orders to customers on time with a smile. Must have own bike and valid license.",
     requirements: ["Own bike with valid registration", "Valid driving license", "Smartphone with data", "Age 18+"],
@@ -23,7 +23,7 @@ const jobOpenings = [
     id: "rider-2",
     title: "Part-Time Delivery Rider",
     department: "Delivery",
-    location: "Guwahati, Assam",
+    location: "Gauripur, Dhubri",
     type: "Part-time",
     description: "Flexible hours. Earn extra income on weekends and evenings. Perfect for students.",
     requirements: ["Own bike (optional)", "Flexible schedule", "Age 16+", "Smartphone required"],
@@ -69,7 +69,7 @@ export default function CareersPage() {
     gender: "",
     // Address
     currentAddress: "",
-    city: "Guwahati",
+    city: "Gauripur",
     pincode: "",
     landmark: "",
     // Vehicle
@@ -80,7 +80,7 @@ export default function CareersPage() {
     rcUrl: null as File | null,
     // Work Preferences
     workType: "",
-    preferredArea: "Guwahati",
+    preferredArea: "Gauripur",
     availableMorning: false,
     availableAfternoon: false,
     availableNight: false,
@@ -206,9 +206,9 @@ export default function CareersPage() {
     setShowApplyForm(false);
     setFormData({
       fullName: "", phoneNumber: "", email: "", passportPicture: null,
-      ageOrDob: "", gender: "", currentAddress: "", city: "Guwahati", pincode: "", landmark: "",
+      ageOrDob: "", gender: "", currentAddress: "", city: "Gauripur", pincode: "", landmark: "",
       vehicleType: "", vehicleNumber: "", drivingLicenseNumber: "", drivingLicenseUrl: null, rcUrl: null,
-      workType: "", preferredArea: "Guwahati", availableMorning: false, availableAfternoon: false, availableNight: false,
+      workType: "", preferredArea: "Gauripur", availableMorning: false, availableAfternoon: false, availableNight: false,
       workMonday: false, workTuesday: false, workWednesday: false, workThursday: false, workFriday: false, workSaturday: false, workSunday: false,
       hasDeliveryExperience: null, previousPlatform: "", hasSmartphone: null, comfortableGoogleMaps: null, aadhaarCardUrl: null,
     });
@@ -408,7 +408,7 @@ export default function CareersPage() {
           <Link href="/refunds" className="text-[var(--color-outline)] text-sm hover:text-white transition-colors">Refund Policy</Link>
         </div>
         <p className="text-[var(--color-outline)] text-sm">
-          © 2026 MIIAM. All rights reserved. Guwahati, Assam.
+          © 2026 MIIAM. All rights reserved. Gauripur, Dhubri.
         </p>
       </footer>
 
@@ -571,7 +571,7 @@ export default function CareersPage() {
                     </div>
                     <div>
                       <label className="text-sm font-semibold text-[var(--color-on-surface)]">Preferred Area *</label>
-                      <input type="text" required placeholder="e.g., Guwahati" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.preferredArea} onChange={(e) => setFormData({ ...formData, preferredArea: e.target.value })} />
+                      <input type="text" required placeholder="e.g., Gauripur" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.preferredArea} onChange={(e) => setFormData({ ...formData, preferredArea: e.target.value })} />
                     </div>
                   </div>
                   <div>

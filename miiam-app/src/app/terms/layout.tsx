@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Terms of Service — MIIAM",
   description:
-    "Read the Terms of Service for using MIIAM — Guwahati's platform for food delivery, grocery, beauty, and home services.",
+    "Read the Terms of Service for using MIIAM — Gauripur's platform for food delivery, grocery, beauty, and home services.",
   openGraph: {
     title: "Terms of Service — MIIAM",
-    description: "Terms of Service for using MIIAM in Guwahati.",
+    description: "Terms of Service for using MIIAM in Gauripur, Dhubri.",
     url: "https://miiam.in/terms",
     siteName: "MIIAM",
     type: "website",

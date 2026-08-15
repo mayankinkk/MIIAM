@@ -101,7 +101,7 @@ export default function AboutUsPage() {
             <Link href="/privacy" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Privacy</Link>
             <Link href="/refunds" className="text-[var(--color-outline-variant)] text-sm hover:text-[var(--color-primary)] transition-colors">Refund Policy</Link>
           </div>
-          <p className="text-[var(--color-outline-variant)] font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Guwahati.</p>
+          <p className="text-[var(--color-outline-variant)] font-bold text-sm">© 2026 MIIAM. Built with ❤️ in Gauripur, Dhubri.</p>
         </div>
       </footer>
     </div>

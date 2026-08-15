@@ -89,7 +89,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
           {/* Coordinates badge */}
           <div className="absolute top-2 right-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-[var(--color-on-surface-variant)] flex items-center gap-1">
             <span className="material-symbols-outlined text-xs">pin_drop</span>
-            Guwahati
+            Gauripur
           </div>
         </div>
 
@@ -167,7 +167,7 @@ const defaultAddresses = [
     icon: "home",
     name: "Priya Sharma",
     street: "456, ABC Apartments, Ring Road",
-    city: "Guwahati",
+    city: "Gauripur",
     state: "Assam",
     postal_code: "781001",
     is_default: true,
@@ -180,7 +180,7 @@ const defaultAddresses = [
     icon: "business",
     name: "Priya Sharma",
     street: "789, Tech Park, GS Road",
-    city: "Guwahati",
+    city: "Gauripur",
     state: "Assam",
     postal_code: "781005",
     is_default: false,
@@ -227,7 +227,7 @@ export default function AddressBookPage() {
     label: "home",
     name: "",
     street: "",
-    city: "Guwahati",
+    city: "Gauripur",
     state: "Assam",
     postal_code: "",
     phone: "",
@@ -441,7 +441,7 @@ export default function AddressBookPage() {
       label: "home",
       name: "",
       street: "",
-      city: "Guwahati",
+      city: "Gauripur",
       state: "Assam",
       postal_code: "",
       phone: "",
