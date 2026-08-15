@@ -379,11 +379,6 @@ export default function CartPage() {
                   <span>{t.cart.serviceCharge}</span>
                   <span className="text-on-surface font-semibold truncate">₹{serviceCharge.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span>GST & Other Fees</span>
-                  <span className="text-green-600 font-semibold">Included</span>
-                </div>
-
                 <div className="pt-4 border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 flex justify-between items-center gap-2">
                   <div className="min-w-0">
                     <p className="text-xs uppercase tracking-widest font-bold text-on-surface dark:text-[var(--color-on-surface)]">{t.cart.totalBalance}</p>
