@@ -183,13 +183,8 @@ export default function ComboDetailPage() {
             <button
               onClick={async () => {
                 const vendorId = vendor?.id || combo.vendor_id;
-                if (!vendorId) {
-                  addToast("Vendor information unavailable", "error");
-                  return;
-                }
-
-                const vendorName = vendor?.shop_name || "Restaurant";
-                const isDifferentVendor = cartVendorId && cartVendorId !== vendorId;
+                const vendorName = vendor?.shop_name || "Combo";
+                const isDifferentVendor = vendorId && cartVendorId && cartVendorId !== vendorId;
 
                 if (isDifferentVendor) {
                   const confirmed = await confirm({
@@ -204,7 +199,7 @@ export default function ComboDetailPage() {
                 addItem({
                   id: `combo-${combo.id}`,
                   menu_item_id: `combo-${combo.id}`,
-                  vendor_id: vendorId,
+                  vendor_id: vendorId || "",
                   vendor_name: vendorName,
                   name: combo.name,
                   price: combo.combo_price,
