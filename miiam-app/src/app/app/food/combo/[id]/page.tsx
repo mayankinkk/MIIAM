@@ -183,34 +183,35 @@ export default function ComboDetailPage() {
             <button
               onClick={async () => {
                 const vendorId = vendor?.id || combo.vendor_id;
-                const vendorName = vendor?.shop_name || "Restaurant";
-                const isDifferentVendor = cartVendorId && vendorId && cartVendorId !== vendorId;
-                
-                if (isDifferentVendor && await confirm({ title: "Change Restaurant?", message: "Your cart has items from another restaurant. Add this combo and clear the cart?", variant: "danger" })) {
-                  addItem({
-                    id: `combo-${combo.id}`,
-                    menu_item_id: `combo-${combo.id}`,
-                    vendor_id: vendorId,
-                    vendor_name: vendorName,
-                    name: combo.name,
-                    price: combo.combo_price,
-                    image_url: combo.image_url,
-                    is_veg: true,
-                  }, 1);
-                  addToast(`${combo.name} added to cart`, "success");
-                } else if (!isDifferentVendor && vendorId) {
-                  addItem({
-                    id: `combo-${combo.id}`,
-                    menu_item_id: `combo-${combo.id}`,
-                    vendor_id: vendorId,
-                    vendor_name: vendorName,
-                    name: combo.name,
-                    price: combo.combo_price,
-                    image_url: combo.image_url,
-                    is_veg: true,
-                  }, 1);
-                  addToast(`${combo.name} added to cart`, "success");
+                if (!vendorId) {
+                  addToast("Vendor information unavailable", "error");
+                  return;
                 }
+
+                const vendorName = vendor?.shop_name || "Restaurant";
+                const isDifferentVendor = cartVendorId && cartVendorId !== vendorId;
+
+                if (isDifferentVendor) {
+                  const confirmed = await confirm({
+                    title: "Change Restaurant?",
+                    message: "Your cart has items from another restaurant. Add this combo and clear the cart?",
+                    variant: "danger",
+                  });
+                  if (!confirmed) return;
+                  items.forEach((item) => useCartStore.getState().removeItem(item.id));
+                }
+
+                addItem({
+                  id: `combo-${combo.id}`,
+                  menu_item_id: `combo-${combo.id}`,
+                  vendor_id: vendorId,
+                  vendor_name: vendorName,
+                  name: combo.name,
+                  price: combo.combo_price,
+                  image_url: combo.image_url,
+                  is_veg: true,
+                }, 1);
+                addToast(`${combo.name} added to cart`, "success");
               }}
               className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
             >
