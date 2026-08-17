@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -59,19 +59,25 @@ export default function ComboDetailPage() {
   const { addToast } = useToastStore();
   const { confirm } = useConfirm();
 
+  const heroRef = useRef<HTMLDivElement>(null);
+  const addBtnRef = useRef<HTMLButtonElement>(null);
+  const [flyingItems, setFlyingItems] = useState<Array<{ id: number; x: number; y: number; img: string }>>([]);
+  const flyIdRef = useRef(0);
+
   const cartVendorId = items.length > 0 ? items[0].vendor_id : null;
 
   const [combo, setCombo] = useState<Combo | null>(null);
   const [vendor, setVendor] = useState<Vendor | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [similarCombos, setSimilarCombos] = useState<Combo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCombo() {
       setLoading(true);
-      
+
       const { data: comboData, error: comboError } = await supabase
         .from("combos")
         .select("*")
@@ -93,10 +99,10 @@ export default function ComboDetailPage() {
           .select("id, shop_name, cuisine, address, image_url, rating, rating_count")
           .eq("id", comboData.vendor_id)
           .single();
-        
+
         if (vendorData) setVendor(vendorData);
 
-        const [reviewsRes, menuRes] = await Promise.all([
+        const [reviewsRes, menuRes, similarRes] = await Promise.all([
           supabase
             .from("reviews")
             .select("id, user_id, rating, comment, created_at")
@@ -110,16 +116,80 @@ export default function ComboDetailPage() {
             .eq("is_available", true)
             .order("name")
             .limit(10),
+          comboData.category
+            ? supabase
+                .from("combos")
+                .select("id, name, description, image_url, original_price, combo_price, items, vendor_id, category")
+                .eq("is_active", true)
+                .eq("category", comboData.category)
+                .neq("id", comboId)
+                .limit(6)
+            : { data: [] },
         ]);
 
         if (reviewsRes.data) setReviews(reviewsRes.data);
         if (menuRes.data) setMenuItems(menuRes.data);
+        if (similarRes.data) setSimilarCombos(similarRes.data);
       }
 
       setLoading(false);
     }
     fetchCombo();
   }, [supabase, comboId]);
+
+  const triggerFlyAnimation = useCallback(() => {
+    if (!heroRef.current || !addBtnRef.current) return;
+    const heroRect = heroRef.current.getBoundingClientRect();
+    const btnRect = addBtnRef.current.getBoundingClientRect();
+    const id = ++flyIdRef.current;
+    const startX = heroRect.left + heroRect.width / 2 - 24;
+    const startY = heroRect.top + heroRect.height / 2 - 24;
+    setFlyingItems((prev) => [...prev, { id, x: startX, y: startY, img: combo?.image_url || "" }]);
+    requestAnimationFrame(() => {
+      const endX = btnRect.left + btnRect.width / 2 - 24;
+      const endY = btnRect.top + btnRect.height / 2 - 24;
+      setFlyingItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, x: endX, y: endY } : item
+        )
+      );
+    });
+    setTimeout(() => {
+      setFlyingItems((prev) => prev.filter((item) => item.id !== id));
+    }, 700);
+  }, [combo?.image_url]);
+
+  const handleAddToCart = useCallback(async () => {
+    const vendorId = vendor?.id || combo?.vendor_id;
+    const vendorName = vendor?.shop_name || "Combo";
+    const isDifferentVendor = vendorId && cartVendorId && cartVendorId !== vendorId;
+
+    if (isDifferentVendor) {
+      const confirmed = await confirm({
+        title: "Change Restaurant?",
+        message: "Your cart has items from another restaurant. Add this combo and clear the cart?",
+        variant: "danger",
+      });
+      if (!confirmed) return;
+      items.forEach((item) => useCartStore.getState().removeItem(item.id));
+    }
+
+    triggerFlyAnimation();
+
+    setTimeout(() => {
+      addItem({
+        id: `combo-${combo!.id}`,
+        menu_item_id: `combo-${combo!.id}`,
+        vendor_id: vendorId || "",
+        vendor_name: vendorName,
+        name: combo!.name,
+        price: combo!.combo_price,
+        image_url: combo!.image_url,
+        is_veg: true,
+      }, 1);
+      addToast(`${combo!.name} added to cart`, "success");
+    }, 400);
+  }, [combo, vendor, cartVendorId, items, addItem, addToast, confirm, triggerFlyAnimation]);
 
   if (loading) {
     return (
@@ -145,10 +215,36 @@ export default function ComboDetailPage() {
 
   return (
     <div className="min-h-screen bg-surface pb-8">
+      {/* Flying item animations */}
+      {flyingItems.map((item) => (
+        <div
+          key={item.id}
+          className="fixed z-[9999] pointer-events-none transition-all duration-700 ease-in-out"
+          style={{
+            left: item.x,
+            top: item.y,
+            width: 48,
+            height: 48,
+            opacity: flyingItems.find((f) => f.id === item.id && item.y !== flyingItems.find((f2) => f2.id === item.id)?.y) ? 0.3 : 1,
+            transform: item.y !== (heroRef.current?.getBoundingClientRect().top ?? 0) ? "scale(0.2)" : "scale(1)",
+            borderRadius: "50%",
+            overflow: "hidden",
+          }}
+        >
+          <Image
+            src={item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=80"}
+            alt=""
+            width={48}
+            height={48}
+            className="w-full h-full object-cover shadow-lg"
+          />
+        </div>
+      ))}
+
       <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Food", href: "/app/food" }, { label: "Combo", href: "/app/food?filter=combos" }, { label: combo.name }]} />
-      
+
       {/* Hero Image */}
-      <div className="relative h-64 sm:h-80 overflow-hidden">
+      <div ref={heroRef} className="relative h-64 sm:h-80 overflow-hidden">
         {combo.image_url ? (
           <Image src={combo.image_url} alt={combo.name} fill className="object-cover" sizes="100vw" />
         ) : (
@@ -211,48 +307,23 @@ export default function ComboDetailPage() {
             </div>
             <p className="text-sm text-green-600 font-bold mt-1">You save ₹{savings.toFixed(0)}</p>
           </div>
-          <>
+          <div className="flex gap-2">
             {vendor && (
               <Link
                 href={`/app/food/${vendor.id}`}
-                className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
+                className="bg-surface-container-high text-on-surface px-4 py-3 rounded-xl font-bold text-sm active:scale-95 transition-all"
               >
                 View Menu
               </Link>
             )}
             <button
-              onClick={async () => {
-                const vendorId = vendor?.id || combo.vendor_id;
-                const vendorName = vendor?.shop_name || "Combo";
-                const isDifferentVendor = vendorId && cartVendorId && cartVendorId !== vendorId;
-
-                if (isDifferentVendor) {
-                  const confirmed = await confirm({
-                    title: "Change Restaurant?",
-                    message: "Your cart has items from another restaurant. Add this combo and clear the cart?",
-                    variant: "danger",
-                  });
-                  if (!confirmed) return;
-                  items.forEach((item) => useCartStore.getState().removeItem(item.id));
-                }
-
-                addItem({
-                  id: `combo-${combo.id}`,
-                  menu_item_id: `combo-${combo.id}`,
-                  vendor_id: vendorId || "",
-                  vendor_name: vendorName,
-                  name: combo.name,
-                  price: combo.combo_price,
-                  image_url: combo.image_url,
-                  is_veg: true,
-                }, 1);
-                addToast(`${combo.name} added to cart`, "success");
-              }}
+              ref={addBtnRef}
+              onClick={handleAddToCart}
               className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
             >
               Add to Cart
             </button>
-          </>
+          </div>
         </div>
       </div>
 
@@ -334,6 +405,53 @@ export default function ComboDetailPage() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Similar Combos */}
+      {similarCombos.length > 0 && (
+        <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-base font-black text-on-surface">You Might Also Like</h2>
+            <Link href="/app/food?filter=combos" className="text-xs font-bold text-primary hover:underline">
+              View All
+            </Link>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {similarCombos.map((sc) => {
+              const scSavings = sc.original_price - sc.combo_price;
+              const scDiscount = Math.round((scSavings / sc.original_price) * 100);
+              return (
+                <Link
+                  key={sc.id}
+                  href={`/app/food/combo/${sc.id}`}
+                  className="flex-shrink-0 w-40 bg-surface-container-low rounded-xl overflow-hidden shadow-sm active:scale-[0.98] transition-transform"
+                >
+                  <div className="relative h-24 bg-surface-container overflow-hidden">
+                    <Image
+                      src={sc.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80"}
+                      alt={sc.name}
+                      fill
+                      className="object-cover"
+                      sizes="160px"
+                    />
+                    {scDiscount > 0 && (
+                      <span className="absolute top-1 right-1 bg-status-error text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">
+                        {scDiscount}% OFF
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-2.5">
+                    <p className="text-xs font-bold text-on-surface truncate">{sc.name}</p>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <span className="text-xs font-black text-primary">₹{sc.combo_price}</span>
+                      <span className="text-[10px] text-on-surface-variant line-through">₹{sc.original_price}</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}
