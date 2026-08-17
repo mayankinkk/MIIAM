@@ -571,7 +571,13 @@ export default function FoodPageContent() {
     .filter((r) => {
       const price = parseFloat(String(r.price_for_two || r.avg_price || 0));
       return price >= priceMin && price <= priceMax;
-    }), [sortedRestaurants, selectedCategory, priceMin, priceMax]);
+    })
+    .filter((r) => {
+      if (vegFilter === "all") return true;
+      const vendorItems = menuItems.filter((item) => item.vendor_id === r.id);
+      if (vendorItems.length === 0) return true;
+      return vendorItems.some((item) => item.is_veg === (vegFilter === "veg"));
+    }), [sortedRestaurants, selectedCategory, priceMin, priceMax, vegFilter, menuItems]);
 
   const searchedRestaurants = searchQuery
     ? filteredRestaurants.filter((r) => r.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || r.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -764,12 +770,13 @@ export default function FoodPageContent() {
             ].filter((bucket) => activeFilter === "all" || activeFilter === bucket.filter).map((bucket) => {
               // Prefer store_items from DB, fall back to filtering menu_items
               const isViewingBucket = activeFilter === bucket.filter;
+              const vegMatch = (item: StoreItem | FoodMenuItem) => vegFilter === "all" || item.is_veg === (vegFilter === "veg");
               const dbItems = storeItems
-                .filter((item) => item.category === bucket.dbCategory)
+                .filter((item) => item.category === bucket.dbCategory && vegMatch(item))
                 .slice(0, isViewingBucket ? undefined : 10);
               const fallbackItems = dbItems.length === 0
                 ? menuItems
-                    .filter((item) => item.price > 0 && item.price <= bucket.max)
+                    .filter((item) => item.price > 0 && item.price <= bucket.max && vegMatch(item))
                     .slice(0, isViewingBucket ? undefined : 10)
                 : [];
               const items = dbItems.length > 0 ? dbItems : fallbackItems;
