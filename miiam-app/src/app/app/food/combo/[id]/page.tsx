@@ -62,7 +62,9 @@ export default function ComboDetailPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const addBtnRef = useRef<HTMLButtonElement>(null);
   const [flyingItems, setFlyingItems] = useState<Array<{ id: number; x: number; y: number; img: string }>>([]);
+  const [confetti, setConfetti] = useState<Array<{ id: number; x: number; y: number; color: string; rotation: number; delay: number; size: number }>>([]);
   const flyIdRef = useRef(0);
+  const confettiIdRef = useRef(0);
 
   const cartVendorId = items.length > 0 ? items[0].vendor_id : null;
 
@@ -159,6 +161,25 @@ export default function ComboDetailPage() {
     }, 700);
   }, [combo?.image_url]);
 
+  const triggerConfetti = useCallback(() => {
+    if (!addBtnRef.current) return;
+    const btnRect = addBtnRef.current.getBoundingClientRect();
+    const cx = btnRect.left + btnRect.width / 2;
+    const cy = btnRect.top;
+    const colors = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#a855f7", "#ec4899", "#f43f5e"];
+    const particles = Array.from({ length: 30 }, () => ({
+      id: ++confettiIdRef.current,
+      x: cx + (Math.random() - 0.5) * 120,
+      y: cy,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360,
+      delay: Math.random() * 0.3,
+      size: 6 + Math.random() * 6,
+    }));
+    setConfetti(particles);
+    setTimeout(() => setConfetti([]), 1200);
+  }, []);
+
   const handleAddToCart = useCallback(async () => {
     const vendorId = vendor?.id || combo?.vendor_id;
     const vendorName = vendor?.shop_name || "Combo";
@@ -175,6 +196,7 @@ export default function ComboDetailPage() {
     }
 
     triggerFlyAnimation();
+    triggerConfetti();
 
     setTimeout(() => {
       addItem({
@@ -189,7 +211,7 @@ export default function ComboDetailPage() {
       }, 1);
       addToast(`${combo!.name} added to cart`, "success");
     }, 400);
-  }, [combo, vendor, cartVendorId, items, addItem, addToast, confirm, triggerFlyAnimation]);
+  }, [combo, vendor, cartVendorId, items, addItem, addToast, confirm, triggerFlyAnimation, triggerConfetti]);
 
   if (loading) {
     return (
@@ -239,6 +261,24 @@ export default function ComboDetailPage() {
             className="w-full h-full object-cover shadow-lg"
           />
         </div>
+      ))}
+
+      {/* Confetti */}
+      {confetti.map((p) => (
+        <div
+          key={p.id}
+          className="fixed z-[9999] pointer-events-none"
+          style={{
+            left: p.x,
+            top: p.y,
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+            borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+            transform: `rotate(${p.rotation}deg)`,
+            animation: `confetti-fall 1s ${p.delay}s ease-out forwards`,
+          }}
+        />
       ))}
 
       <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Food", href: "/app/food" }, { label: "Combo", href: "/app/food?filter=combos" }, { label: combo.name }]} />
