@@ -514,7 +514,6 @@ function ServicesContent() {
                   <div className="p-4">
                     {/* Title & Reviews */}
                     <h3 className="font-bold text-on-surface text-base leading-tight">{service.name}</h3>
-                    <p className="text-[10px] text-on-surface-variant mt-0.5">{service.reviews > 0 ? `${service.reviews.toLocaleString()} ${t.services.reviews}` : ""}</p>
 
                     {/* What's Included */}
                     {service.included.length > 0 && (

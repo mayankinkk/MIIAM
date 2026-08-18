@@ -124,8 +124,6 @@ function ServiceDetailContent() {
                 <span style={{ fontVariationSettings: "'FILL' 1" }}>★</span> {service.rating}
               </span>
             )}
-            {service.reviews > 0 && <span className="text-white/70 text-xs">{service.reviews.toLocaleString()} {t.services.reviews}</span>}
-            {service.rating > 0 && service.reviews > 0 && <span className="text-white/40">•</span>}
             <span className="text-white/70 text-xs flex items-center gap-1">
               <span className="material-symbols-outlined text-[12px]">schedule</span> {service.duration}
             </span>
@@ -261,44 +259,6 @@ function ServiceDetailContent() {
             <span className="text-xs text-on-surface-variant">{t.checkout.incTaxes}</span>
           </div>
         </motion.div>
-
-        {/* Rating Card */}
-        {service.rating > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
-            <div className="flex items-center gap-4">
-              <div className="text-center">
-                <p className="text-4xl font-black text-on-surface">{service.rating}</p>
-                <div className="flex justify-center gap-0.5 mt-1">
-                  {[1,2,3,4,5].map((s) => (
-                    <span key={s} className={`text-sm ${s <= Math.round(service.rating) ? "text-amber-400" : "text-outline-variant/30"}`}>★</span>
-                  ))}
-                </div>
-                <p className="text-[10px] text-on-surface-variant mt-1">{service.reviews} reviews</p>
-              </div>
-              <div className="flex-1 space-y-1">
-                {[5,4,3,2,1].map((star) => {
-                  const count = Math.round((service.reviews || 0) * (star === Math.round(service.rating) ? 0.6 : star === Math.round(service.rating) - 1 ? 0.25 : star === Math.round(service.rating) + 1 ? 0.15 : 0));
-                  return (
-                    <div key={star} className="flex items-center gap-2">
-                      <span className="text-xs text-on-surface-variant w-3">{star}</span>
-                      <span className="text-amber-400 text-[10px]">★</span>
-                      <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
-                        <div className="h-full bg-amber-400 rounded-full" style={{ width: `${Math.min((count / Math.max(service.reviews || 1, 1)) * 100 * 5, 100)}%` }} />
-                      </div>
-                      <span className="text-[10px] text-on-surface-variant w-5 text-right">{count}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            {service.badge && (
-              <div className="mt-3 pt-3 border-t border-outline-variant/10 flex gap-2">
-                {service.badge === "mostPopular" && <span className="text-[10px] font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-full border border-primary/20">Most Popular</span>}
-                {service.badge === "bestSeller" && <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full border border-emerald-200">Best Seller</span>}
-              </div>
-            )}
-          </motion.div>
-        )}
 
         {error && (
           <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600" role="alert">{error}</div>
