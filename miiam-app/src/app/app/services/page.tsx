@@ -360,21 +360,6 @@ function ServicesContent() {
           </div>
         )}
 
-        {/* Hero Banner */}
-        <div className="px-4 mt-4">
-          <div className="rounded-2xl overflow-hidden relative h-40 shadow-lg shadow-primary/10">
-            <BlurImage src="/images/services_hero.png" alt="Professional Services" fill className="w-full h-full" sizes="100vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&q=80" />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent flex flex-col justify-end p-5">
-              <h2 className="text-white text-xl font-black leading-tight">{t.services.expertProfessionals}</h2>
-              <p className="text-white/70 text-xs mt-1">{t.services.expertDesc}</p>
-              <div className="flex items-center gap-1.5 mt-2">
-                <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Verified Pros</span>
-                <span className="bg-emerald-500/80 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full">Top Rated</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Category Circles - GKB Style */}
         <div className="px-4 py-5">
           <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory">
