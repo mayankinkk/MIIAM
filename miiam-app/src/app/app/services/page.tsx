@@ -323,7 +323,7 @@ function ServicesContent() {
   return (
     <div className="min-h-screen bg-surface pb-24">
       {/* Blue Header */}
-      <header className="bg-gradient-to-br from-primary via-primary-hover to-primary px-4 pt-12 pb-6 sticky top-0 z-30">
+      <header className="bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 px-4 pt-12 pb-6 sticky top-0 z-30">
         <div className="flex items-center gap-3 mb-4">
           <Link href="/app/home" aria-label="Back" className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/20 active:scale-90 transition-transform">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -381,19 +381,19 @@ function ServicesContent() {
             <button onClick={() => { setSelectedCategory("all"); if (navigator.vibrate) navigator.vibrate(10); }}
               aria-label={t.services.all}
               className="flex flex-col items-center gap-1.5 flex-shrink-0 snap-start">
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-primary text-on-primary shadow-lg shadow-primary/30" : "bg-surface text-on-surface-variant border border-outline"}`}>
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === "all" ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-surface text-on-surface-variant border border-outline"}`}>
                 <span className="material-symbols-outlined text-xl">apps</span>
               </div>
-              <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-primary" : "text-on-surface-variant"}`}>{t.services.all}</span>
+              <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-blue-600" : "text-on-surface-variant"}`}>{t.services.all}</span>
             </button>
             {dbCategories.map((cat) => (
               <button key={cat.id} onClick={() => { setSelectedCategory(cat.slug as ServiceCategory); if (navigator.vibrate) navigator.vibrate(10); }}
                 aria-label={cat.name}
                 className="flex flex-col items-center gap-1.5 flex-shrink-0 snap-start">
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.slug ? "bg-primary text-on-primary shadow-lg shadow-primary/30" : "bg-surface text-on-surface-variant border border-outline"}`}>
+                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${selectedCategory === cat.slug ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30" : "bg-surface text-on-surface-variant border border-outline"}`}>
                   <span className="material-symbols-outlined text-xl">{cat.icon}</span>
                 </div>
-                <span className={`text-[10px] font-bold text-center max-w-[56px] truncate ${selectedCategory === cat.slug ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
+                <span className={`text-[10px] font-bold text-center max-w-[56px] truncate ${selectedCategory === cat.slug ? "text-blue-600" : "text-on-surface-variant"}`}>{cat.name}</span>
               </button>
             ))}
           </div>
@@ -426,7 +426,7 @@ function ServicesContent() {
               <span className="material-symbols-outlined text-on-surface-variant/30 text-5xl mb-3">search_off</span>
               <p className="font-bold text-on-surface text-lg mb-1">{t.services.noServices || "No services found"}</p>
               <p className="text-sm text-on-surface-variant mb-4">{t.services.tryDifferentCategory || "Try selecting a different category"}</p>
-              <button onClick={() => setSelectedCategory("all")} className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm active:scale-95 transition-all">
+              <button onClick={() => setSelectedCategory("all")} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm active:scale-95 transition-all">
                 {t.services.showAll || "Show All Services"}
               </button>
             </div>
@@ -478,7 +478,7 @@ function ServicesContent() {
                         <Link key={`top-${service.id}`} href={`/app/services/${service.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-editorial-sm border border-outline/5 active:scale-[0.97] transition-transform">
                           <div className="relative h-24 overflow-hidden">
                             <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="144px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
-                            <span className="absolute top-1.5 right-1.5 bg-primary text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
+                            <span className="absolute top-1.5 right-1.5 bg-blue-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-md">
                               <span className="text-[8px]">★</span> {service.rating}
                             </span>
                           </div>
@@ -503,7 +503,7 @@ function ServicesContent() {
                     <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
                     {service.badge && (
-                      <span className="absolute top-2 left-2 bg-primary text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide shadow-md">
+                      <span className="absolute top-2 left-2 bg-blue-600 text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide shadow-md">
                         {t.services[service.badge as keyof typeof t.services] || service.badge}
                       </span>
                     )}
@@ -518,7 +518,7 @@ function ServicesContent() {
                         {service.duration}
                       </span>
                       {service.rating > 0 && (
-                        <span className="bg-primary text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                        <span className="bg-blue-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
                           <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                           {service.rating}
                         </span>
@@ -534,7 +534,7 @@ function ServicesContent() {
                     {/* What's Included */}
                     {service.included.length > 0 && (
                       <div className="mt-3 bg-surface-container-low rounded-xl p-3">
-                        <p className="text-[9px] font-black text-primary uppercase tracking-widest mb-2">{t.services.whatIncluded}</p>
+                        <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-2">{t.services.whatIncluded}</p>
                         <div className="flex flex-wrap gap-x-3 gap-y-1">
                           {service.included.map((item, idx) => (
                             <div key={idx} className="flex items-center gap-1">
@@ -561,7 +561,7 @@ function ServicesContent() {
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                       }} className={`px-5 py-2 rounded-xl font-bold text-xs active:scale-95 transition-all ${
                         isServiceable
-                          ? "bg-primary text-white hover:bg-primary-dim shadow-md shadow-primary/20"
+                          ? "bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20"
                           : "bg-surface-container text-on-surface-variant cursor-not-allowed"
                       }`}>
                         {isServiceable ? t.services.bookNow : t.services.unavailable}
