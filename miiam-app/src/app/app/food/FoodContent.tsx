@@ -176,22 +176,94 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(1000);
   const [open, setOpen] = useState(false);
+  const MIN = 0;
+  const MAX = 1000;
+  const STEP = 50;
+
+  const handleMinChange = (val: number) => {
+    const clamped = Math.min(val, max - STEP);
+    setMin(clamped);
+  };
+
+  const handleMaxChange = (val: number) => {
+    const clamped = Math.max(val, min + STEP);
+    setMax(clamped);
+  };
+
+  const minPercent = ((min - MIN) / (MAX - MIN)) * 100;
+  const maxPercent = ((max - MIN) / (MAX - MIN)) * 100;
+
   return (
     <div className="relative">
       <button onClick={() => { setOpen(!open); if (navigator.vibrate) navigator.vibrate(10); }} className="flex items-center gap-2 px-3 py-2 bg-surface-container rounded-full text-sm font-medium active:scale-95 transition-transform">
         <span className="material-symbols-outlined text-sm">attach_money</span>
-        ₹{min}-{max}
+        ₹{min}–{max}
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <div className="absolute top-full left-0 mt-2 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant z-20 p-4 w-72 animate-pop-in">
-            <p className="text-xs font-bold text-on-surface-variant mb-2">{t.food.priceRange}</p>
-            <div className="flex gap-2 items-center">
-              <input type="number" value={min} onChange={(e) => setMin(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.min} />
-              <span className="text-outline">-</span>
-              <input type="number" value={max} onChange={(e) => setMax(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg text-sm" placeholder={t.food.max} />
+            <p className="text-xs font-bold text-on-surface-variant mb-4">{t.food.priceRange}</p>
+
+            {/* Dual range slider */}
+            <div className="relative h-6 flex items-center">
+              {/* Track background */}
+              <div className="absolute w-full h-1.5 bg-surface-container rounded-full" />
+              {/* Active range */}
+              <div
+                className="absolute h-1.5 bg-primary rounded-full"
+                style={{ left: `${minPercent}%`, width: `${maxPercent - minPercent}%` }}
+              />
+              {/* Min thumb */}
+              <input
+                type="range"
+                min={MIN}
+                max={MAX}
+                step={STEP}
+                value={min}
+                onChange={(e) => handleMinChange(Number(e.target.value))}
+                className="absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white z-20"
+              />
+              {/* Max thumb */}
+              <input
+                type="range"
+                min={MIN}
+                max={MAX}
+                step={STEP}
+                value={max}
+                onChange={(e) => handleMaxChange(Number(e.target.value))}
+                className="absolute w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:bg-primary [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white z-30"
+              />
             </div>
+
+            {/* Price labels */}
+            <div className="flex justify-between mt-2 text-xs text-on-surface-variant">
+              <span className="font-bold text-primary">₹{min}</span>
+              <span className="font-bold text-primary">₹{max}</span>
+            </div>
+
+            {/* Quick presets */}
+            <div className="flex gap-1.5 mt-3">
+              {[
+                { label: "Under ₹100", min: 0, max: 100 },
+                { label: "₹100–₹300", min: 100, max: 300 },
+                { label: "₹300–₹500", min: 300, max: 500 },
+                { label: "₹500+", min: 500, max: 1000 },
+              ].map((preset) => (
+                <button
+                  key={preset.label}
+                  onClick={() => { setMin(preset.min); setMax(preset.max); }}
+                  className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${
+                    min === preset.min && max === preset.max
+                      ? "bg-primary text-white"
+                      : "bg-surface-container text-on-surface-variant"
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+
             <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">{t.food.apply}</button>
           </div>
         </>
