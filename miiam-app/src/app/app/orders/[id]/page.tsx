@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useMemo, Suspense } from "react";
+import { use, useState, useMemo, Suspense, useEffect, useCallback } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { createClient } from "@/lib/supabase/client";
@@ -52,6 +52,56 @@ interface OrderPageData {
   processing_at?: string | null;
   riders?: { name?: string; profile_image?: string; rating?: number; phone?: string } | null;
   vendor?: { shop_name?: string; image_url?: string; logo_url?: string; address?: string } | null;
+}
+
+function EtaCountdown({ etaMinutes }: { etaMinutes: number }) {
+  const [remaining, setRemaining] = useState(etaMinutes * 60);
+
+  useEffect(() => {
+    setRemaining(etaMinutes * 60);
+  }, [etaMinutes]);
+
+  useEffect(() => {
+    if (remaining <= 0) return;
+    const timer = setInterval(() => setRemaining((r) => Math.max(0, r - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [remaining]);
+
+  const mins = Math.floor(remaining / 60);
+  const secs = remaining % 60;
+
+  return (
+    <p className="text-xl font-black text-primary leading-none tabular-nums">
+      {mins > 0 && <>{mins}<span className="text-xs font-bold">m</span> </>}
+      <span className="text-xs font-bold">{secs}s</span>
+    </p>
+  );
+}
+
+function ShareOrderButton({ orderId, vendorName }: { orderId: string; vendorName?: string }) {
+  const handleShare = useCallback(async () => {
+    const url = `${typeof window !== "undefined" ? window.location.origin : ""}/app/orders/${orderId}`;
+    const text = `Track my order from ${vendorName || "MIIAM"}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "MIIAM Order", text, url });
+      } catch { /* user cancelled */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch { /* silent */ }
+    }
+  }, [orderId, vendorName]);
+
+  return (
+    <button
+      onClick={handleShare}
+      className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all"
+      aria-label="Share order"
+    >
+      <span className="material-symbols-outlined text-on-surface">share</span>
+    </button>
+  );
 }
 
 function formatTimestamp(ts: string | null | undefined): string {
@@ -188,19 +238,38 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] overflow-x-hidden">
-      <OrderHeader orderId={id} isRefreshing={isRefreshing} onRefresh={refreshOrder} />
+      <OrderHeader
+        orderId={id}
+        isRefreshing={isRefreshing}
+        onRefresh={refreshOrder}
+        extraActions={<ShareOrderButton orderId={id} vendorName={pageOrder?.vendor?.shop_name} />}
+      />
       <div className="bg-gradient-to-b from-surface-container to-transparent h-2 mt-16" />
 
       <main className="pt-6 pb-12 min-h-screen">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-10 items-start">
           <div className="lg:col-span-7 space-y-4 sm:space-y-6">
-            <div className="relative w-full h-[260px] sm:h-[420px] rounded-2xl overflow-hidden shadow-sm">
+            <div className="relative w-full h-[300px] sm:h-[420px] rounded-2xl overflow-hidden shadow-sm">
+                {/* Live status bar */}
                 {trackingInfo && (
-                  <div className="absolute top-4 right-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur rounded-full px-4 py-3 shadow-lg flex items-center gap-2" style={{ zIndex: 10 }}>
-                    <div className="text-center">
-                      <p className="text-[10px] text-[var(--color-on-surface)] font-bold uppercase tracking-wider">{t.orders.eta}</p>
-                      <p className="text-xl font-black text-primary leading-none">{trackingInfo.eta} <span className="text-xs">{t.orders.minsUnit}</span></p>
-                      <p className="text-[10px] text-[var(--color-on-surface)] font-medium">{trackingInfo.distance} km · {trackingInfo.leg === "to_pickup" ? t.orders.toPickup : t.orders.toYou}</p>
+                  <div className="absolute top-3 left-3 right-3 z-[10] flex items-center justify-between">
+                    <div className="bg-[var(--color-surface-container-lowest)]/95 backdrop-blur rounded-full px-4 py-2.5 shadow-lg flex items-center gap-2">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                      </span>
+                      <span className="text-xs font-bold text-green-700 dark:text-green-400 uppercase tracking-wider">Live</span>
+                    </div>
+                    <div className="bg-[var(--color-surface-container-lowest)]/95 backdrop-blur rounded-2xl px-4 py-2.5 shadow-lg flex items-center gap-3">
+                      <div className="text-center">
+                        <p className="text-[10px] text-[var(--color-on-surface-variant)] font-bold uppercase tracking-wider">{t.orders.eta}</p>
+                        <EtaCountdown etaMinutes={trackingInfo.eta} />
+                      </div>
+                      <div className="w-px h-8 bg-[var(--color-outline)]/20" />
+                      <div className="text-center">
+                        <p className="text-[10px] text-[var(--color-on-surface-variant)] font-bold uppercase tracking-wider">Distance</p>
+                        <p className="text-sm font-black text-on-surface leading-none">{trackingInfo.distance} km</p>
+                      </div>
                     </div>
                   </div>
                 )}

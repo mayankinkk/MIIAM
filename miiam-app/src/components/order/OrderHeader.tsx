@@ -7,9 +7,10 @@ interface OrderHeaderProps {
   orderId: string;
   isRefreshing: boolean;
   onRefresh: () => void;
+  extraActions?: React.ReactNode;
 }
 
-export default function OrderHeader({ orderId, isRefreshing, onRefresh }: OrderHeaderProps) {
+export default function OrderHeader({ orderId, isRefreshing, onRefresh, extraActions }: OrderHeaderProps) {
   return (
     <>
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
@@ -19,14 +20,14 @@ export default function OrderHeader({ orderId, isRefreshing, onRefresh }: OrderH
           </Link>
           <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {extraActions}
           <button onClick={onRefresh} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all" title="Refresh Order" aria-label="Refresh order">
             <span className={`material-symbols-outlined text-on-surface ${isRefreshing ? "animate-spin" : ""}`}>refresh</span>
           </button>
           <Link href="/app/notifications" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all">
             <span className="material-symbols-outlined text-on-surface">notifications</span>
           </Link>
-          <span className="material-symbols-outlined text-on-surface cursor-pointer hover:opacity-80 transition-opacity">account_circle</span>
         </div>
       </nav>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders', href: '/app/orders' }, { label: `Order #${orderId.slice(0, 8).toUpperCase()}` }]} />
