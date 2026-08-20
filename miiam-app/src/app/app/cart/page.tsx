@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import CartCrossSell from "@/components/CartCrossSell";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { ListSkeleton } from "@/components/Skeleton";
 import logger from "@/lib/logger";
@@ -362,6 +363,9 @@ export default function CartPage() {
                 </div>
               </div>
             )}
+
+            {/* Cross-sell suggestions */}
+            <CartCrossSell />
 
             {/* Order Summary */}
             <section className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10">
