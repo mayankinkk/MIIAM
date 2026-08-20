@@ -10,6 +10,7 @@ import { useRecentlyViewed } from "@/lib/hooks/useRecentlyViewed";
 import CustomizationModal from "@/components/food/CustomizationModal";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import VegFilterPill from "@/components/VegFilterPill";
 import { getCurrentMenuSlot } from "@/lib/menuSlots";
 import { Skeleton, ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
 import logger from "@/lib/logger";
@@ -426,18 +427,8 @@ export default function VendorPage() {
           </div>
         </div>
         {vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine ? (
-          <div className="flex gap-2 px-4 pb-3">
-            <button onClick={() => setVegFilter("all")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${vegFilter === "all" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`}>
-              {t.food.all}
-            </button>
-            <button onClick={() => setVegFilter("veg")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${vegFilter === "veg" ? "bg-emerald-600 text-white" : "bg-emerald-50 text-emerald-700 border border-emerald-200"}`}>
-              <span className="w-2.5 h-2.5 border-[1.5px] border-current rounded-sm flex items-center justify-center"><span className="w-1 h-1 bg-current rounded-full" /></span>
-              {t.food.veg}
-            </button>
-            <button onClick={() => setVegFilter("non_veg")} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-50 text-red-600 border border-red-200"}`}>
-              <span className="w-2.5 h-2.5 border-[1.5px] border-current rounded-sm flex items-center justify-center"><span className="w-1 h-1 bg-current rounded-full" /></span>
-              {t.food.nonVeg}
-            </button>
+          <div className="px-4 pb-3">
+            <VegFilterPill value={vegFilter} onChange={setVegFilter} size="sm" />
           </div>
         ) : null}
       </div>

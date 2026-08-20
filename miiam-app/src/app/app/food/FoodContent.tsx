@@ -23,6 +23,7 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import { EmptyState } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import VegFilterPill from "@/components/VegFilterPill";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
@@ -740,15 +741,7 @@ export default function FoodPageContent() {
 
       {/* Veg/Non-veg Filter + Sort — Sticky */}
       <div className="sticky top-0 z-20 bg-surface/95 backdrop-blur-lg px-4 py-3 flex flex-wrap gap-2 border-b border-outline/5">
-        <button onClick={() => setVegFilter("all")} className={`px-4 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-inverse-surface text-white" : "bg-surface-container text-on-surface-variant"}`}>
-          {t.food.all}
-        </button>
-        <button onClick={() => setVegFilter("veg")} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 text-green-700"}`}>
-          <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> {t.food.veg}
-        </button>
-        <button onClick={() => setVegFilter("non_veg")} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 text-red-700"}`}>
-          <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> {t.food.nonVeg}
-        </button>
+        <VegFilterPill value={vegFilter} onChange={setVegFilter} />
         <SortDropdown sort={sortBy} setSort={setSortBy} />
         <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
       </div>

@@ -12,6 +12,7 @@ import logger from "@/lib/logger";
 import { EmptySearch } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
+import VegFilterPill from "@/components/VegFilterPill";
 
 function RecentSearches({ onSelect }: { onSelect: (term: string) => void }) {
   const [recent, setRecent] = useState<string[]>([]);
@@ -251,17 +252,7 @@ function SearchContent() {
               ))}
             </div>
             {activeTab !== "vendors" && (
-              <div className="flex gap-2">
-                <button onClick={() => setVegFilter("all")} className={`px-3 py-2 rounded-full text-xs font-bold ${vegFilter === "all" ? "bg-on-surface text-white" : "bg-surface-container-high dark:bg-[var(--color-surface-container-high)] text-on-surface-variant"}`}>
-                  All
-                </button>
-                <button onClick={() => setVegFilter("veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "veg" ? "bg-green-600 text-white" : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"}`}>
-                  <span className="w-3 h-3 border-2 border-green-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-green-600 rounded-full"></span></span> Veg
-                </button>
-                <button onClick={() => setVegFilter("non_veg")} className={`px-3 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${vegFilter === "non_veg" ? "bg-red-600 text-white" : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"}`}>
-                  <span className="w-3 h-3 border-2 border-red-600 rounded-sm flex items-center justify-center"><span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span></span> Non-Veg
-                </button>
-              </div>
+              <VegFilterPill value={vegFilter} onChange={setVegFilter} size="sm" />
             )}
           </div>
         )}
