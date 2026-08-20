@@ -1052,6 +1052,46 @@ export default function FoodPageContent() {
               </div>
             )}
 
+            {/* Cuisine Collections */}
+            {searchedRestaurants.length > 0 && (
+              <div className="px-4 mb-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-lg">🍽️</span>
+                  <h2 className="text-lg font-bold text-on-surface">Cuisine Collections</h2>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { name: "Biryani Lovers", emoji: "🍛", gradient: "from-amber-500 to-orange-600", filter: "biryani" },
+                    { name: "Pizza & Pasta", emoji: "🍕", gradient: "from-red-500 to-rose-600", filter: "pizza" },
+                    { name: "Chinese Cravings", emoji: "🥡", gradient: "from-yellow-500 to-amber-600", filter: "chinese" },
+                    { name: "South Indian", emoji: "🥘", gradient: "from-green-500 to-emerald-600", filter: "south indian" },
+                    { name: "Dessert Heaven", emoji: "🍰", gradient: "from-pink-500 to-rose-500", filter: "dessert" },
+                    { name: "Street Food", emoji: "🌮", gradient: "from-purple-500 to-violet-600", filter: "street" },
+                  ].map((collection) => {
+                    const count = searchedRestaurants.filter(
+                      (r) => r.cuisine?.toLowerCase().includes(collection.filter)
+                    ).length;
+                    return (
+                      <button
+                        key={collection.name}
+                        onClick={() => {
+                          setSelectedCategory(collection.filter);
+                          if (navigator.vibrate) navigator.vibrate(10);
+                        }}
+                        className={`relative overflow-hidden rounded-2xl p-4 text-left bg-gradient-to-br ${collection.gradient} text-white shadow-sm active:scale-[0.97] transition-transform`}
+                      >
+                        <span className="text-2xl mb-1 block">{collection.emoji}</span>
+                        <p className="text-sm font-bold leading-tight">{collection.name}</p>
+                        {count > 0 && (
+                          <p className="text-[10px] font-medium text-white/80 mt-0.5">{count} restaurant{count !== 1 ? "s" : ""}</p>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Horizontal Scroll Cards - GKB Style */}
             <div className="px-4 mb-6">
               <div className="flex items-center justify-between mb-3">
