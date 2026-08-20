@@ -5,6 +5,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 import { ConfirmProvider } from "@/components/ui/ConfirmDialog";
 import PageTransition from "@/components/PageTransition";
 import Toaster from "@/components/ui/Toaster";
+import CartSnackbar from "@/components/CartSnackbar";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AnalyticsTracker } from "@/lib/analytics";
 import SplashScreen from "@/components/SplashScreen";
@@ -129,6 +130,7 @@ export default function RootLayout({
                 </div>
               </ErrorBoundary>
               <Toaster />
+              <CartSnackbar />
               <CookieConsent />
             </QueryProvider>
           </ConfirmProvider>

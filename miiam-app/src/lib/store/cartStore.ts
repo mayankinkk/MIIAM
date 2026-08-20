@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useToastStore } from "./toastStore";
+import { useCartSnackbarStore } from "./cartSnackbarStore";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -76,7 +77,7 @@ export const useCartStore = create<CartStore>()(
         import("@/lib/haptics").then(({ hapticFeedback }) => hapticFeedback("success"));
 
         if (!suppressToast) {
-          useToastStore.getState().addToast(`Added ${item.name} to cart`, "success");
+          useCartSnackbarStore.getState().showSnackbar(item.name);
         }
       },
 

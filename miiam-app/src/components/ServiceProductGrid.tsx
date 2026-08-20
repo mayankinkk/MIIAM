@@ -237,7 +237,6 @@ export default function ServiceProductGrid({
       vendor_id: vendor?.id || vendorType,
       vendor_name: vendor?.shop_name || vendorNameDefault,
     });
-    addToast(`${product.name} added to cart!`, "success");
   };
 
   const getItemQuantity = (productId: string) => {

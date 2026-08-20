@@ -209,9 +209,8 @@ export default function ComboDetailPage() {
         image_url: combo!.image_url,
         is_veg: true,
       }, 1);
-      addToast(`${combo!.name} added to cart`, "success");
     }, 400);
-  }, [combo, vendor, cartVendorId, items, addItem, addToast, confirm, triggerFlyAnimation, triggerConfetti]);
+  }, [combo, vendor, cartVendorId, items, addItem, confirm, triggerFlyAnimation, triggerConfetti]);
 
   if (loading) {
     return (
