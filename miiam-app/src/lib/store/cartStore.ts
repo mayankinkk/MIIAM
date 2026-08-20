@@ -77,7 +77,7 @@ export const useCartStore = create<CartStore>()(
         import("@/lib/haptics").then(({ hapticFeedback }) => hapticFeedback("success"));
 
         if (!suppressToast) {
-          useCartSnackbarStore.getState().showSnackbar(item.name);
+          useCartSnackbarStore.getState().showSnackbar(item.name, item.image_url, item.price);
         }
       },
 
