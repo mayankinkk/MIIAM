@@ -66,17 +66,10 @@ export function SearchResultSkeleton() {
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden border border-[var(--color-border-subtle)]">
             <Skeleton className="h-32 w-full" />
-            <div className="p-4 space-y-3">
-              <div className="flex justify-between">
-                <Skeleton className="h-5 w-28" />
-                <Skeleton className="h-5 w-10 rounded-full" />
-              </div>
-              <Skeleton className="h-4 w-20" />
-              <div className="flex gap-2">
-                <Skeleton className="h-6 w-14 rounded-full" />
-                <Skeleton className="h-6 w-12 rounded-full" />
-                <Skeleton className="h-6 w-14 rounded-full" />
-              </div>
+            <div className="p-4 space-y-2">
+              <Skeleton className="h-5 w-36" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-40" />
             </div>
           </div>
         ))}
@@ -90,13 +83,17 @@ export function SearchResultSkeleton() {
       
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex gap-4 p-4 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)]">
-            <Skeleton className="h-16 w-16 rounded-lg flex-shrink-0" />
+          <div key={i} className="flex items-center gap-4 p-4 bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)]">
+            <Skeleton className="h-20 w-20 rounded-lg flex-shrink-0" />
             <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-36" />
-              <Skeleton className="h-3 w-48" />
+              <div className="flex items-center gap-2">
+                <Skeleton className="w-3.5 h-3.5 rounded-sm flex-shrink-0" />
+                <Skeleton className="h-4 w-36" />
+              </div>
+              <Skeleton className="h-3.5 w-28" />
               <Skeleton className="h-4 w-14" />
             </div>
+            <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" />
           </div>
         ))}
       </div>
