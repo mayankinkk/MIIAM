@@ -41,13 +41,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email required" }, { status: 400 });
     }
 
-    // Find or create user by email
-    const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1000,
-    });
+    // Find or create user by email via profiles table
+    const { data: existingProfile } = await supabaseAdmin
+      .from("profiles")
+      .select("id")
+      .eq("email", email.toLowerCase())
+      .maybeSingle();
     
-    const userRecord = users?.find(u => u.email?.toLowerCase() === email.toLowerCase());
+    const userRecord = existingProfile ? { id: existingProfile.id, email: email.toLowerCase() } : null;
 
     if (!userRecord) {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({

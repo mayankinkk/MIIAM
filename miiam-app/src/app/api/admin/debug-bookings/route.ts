@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 
 // Debug endpoint: diagnoses exactly why bookings are failing
-// GET /api/admin/debug-bookings — returns diagnostic info (admin only)
+// GET /api/admin/debug-bookings — returns diagnostic info (admin only, non-production only)
 export async function GET(request: NextRequest) {
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json({ error: "Not available in production" }, { status: 404 });
+  }
+
   const diagnostics: Record<string, unknown> = {};
 
   try {

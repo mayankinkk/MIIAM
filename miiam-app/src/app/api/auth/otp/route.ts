@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { randomInt } from "crypto";
-import { checkVerifyRateLimit, incrementVerifyAttempts } from "@/lib/security";
+import { checkVerifyRateLimit, incrementVerifyAttempts, checkIpRateLimit, getClientIp } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const RATE_LIMIT_MAX = 5;
@@ -81,6 +81,11 @@ export async function POST(request: NextRequest) {
   const supabase = createAdminClient();
 
   try {
+    const ip = getClientIp(request);
+    if (!await checkIpRateLimit(ip, 10, 60_000)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const { phoneNumber, purpose } = await request.json();
 
     if (!phoneNumber) {

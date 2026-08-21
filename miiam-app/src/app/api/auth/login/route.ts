@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { checkIpRateLimit, getClientIp } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const LOGIN_RATE_LIMIT_MAX = 5;
@@ -25,6 +26,11 @@ async function checkLoginRateLimit(supabase: ReturnType<typeof createAdminClient
 export async function POST(request: NextRequest) {
   const logger = createRouteLogger("auth/login");
   try {
+    const ip = getClientIp(request);
+    if (!await checkIpRateLimit(ip, 10, 60_000)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const { email, password } = await request.json();
 
     if (!email || !password) {

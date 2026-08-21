@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { randomInt } from "crypto";
-import { checkVerifyRateLimit, incrementVerifyAttempts } from "@/lib/security";
+import { checkVerifyRateLimit, incrementVerifyAttempts, checkIpRateLimit, getClientIp } from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -64,6 +64,11 @@ export async function POST(request: NextRequest) {
   const supabase = createAdminClient();
 
   try {
+    const ip = getClientIp(request);
+    if (!await checkIpRateLimit(ip, 10, 60_000)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const { email, purpose } = await request.json();
 
     if (!email) {
@@ -90,13 +95,12 @@ export async function POST(request: NextRequest) {
     // For password_reset, check if user exists
     if (purpose === "password_reset") {
       try {
-        const { data, error: listError } = await supabase.auth.admin.listUsers();
-        if (listError) {
-          logger.error({ err: listError }, "Failed to list users");
-        }
-        const userList = (data as unknown as { users: { email?: string }[] })?.users ?? [];
-        const user = userList.find((u) => u.email?.toLowerCase() === cleanEmail);
-        if (!user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", cleanEmail)
+          .maybeSingle();
+        if (!profile) {
           return NextResponse.json({ error: "No account found with this email" }, { status: 404 });
         }
       } catch (e) {

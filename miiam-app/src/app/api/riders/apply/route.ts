@@ -70,10 +70,13 @@ export async function POST(request: NextRequest) {
 
     if (authError) {
       if (authError.message.toLowerCase().includes("email") || authError.message.toLowerCase().includes("phone") || authError.code === "email_exists" || authError.code === "phone_exists") {
-        const { data: users } = await adminClient.auth.admin.listUsers();
-        const existingUser = users.users.find(u => u.email === email || u.phone === phone);
-        if (existingUser) {
-          userId = existingUser.id;
+        const { data: existingProfile } = await adminClient
+          .from("profiles")
+          .select("id")
+          .or(`email.eq.${email},phone.eq.${phone}`)
+          .maybeSingle();
+        if (existingProfile) {
+          userId = existingProfile.id;
         } else {
           return NextResponse.json({ error: "User already exists" }, { status: 400 });
         }

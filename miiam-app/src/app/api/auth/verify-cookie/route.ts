@@ -46,11 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cookieStore = await cookies();
-    
-    const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!secret) {
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-    }
+
     const randomToken = crypto.randomUUID();
     const hmac = signHmac(cleanEmail, randomToken);
     const verifiedToken = `${randomToken}.${hmac}`;
