@@ -155,8 +155,8 @@ function SignupContent() {
         <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)', border: '1px solid rgba(255, 255, 255, 0.3)' }}>
           <div className="space-y-6">
             <span className="inline-block bg-[var(--color-primary)] text-white px-4 py-1 rounded-full text-[10px] tracking-[0.3em] font-bold">PREMIUM SERVICES</span>
-            <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]" style={{ fontFamily: 'Plus Jakarta Sans' }}>Expert care for your urban lifestyle.</h2>
-            <p className="text-[1.25rem] leading-[1.6] font-semibold text-[#00497d]">From artisan meal prep to high-end home maintenance, MIIAM connects you with the city's finest professionals instantly.</p>
+            <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-on-surface" style={{ fontFamily: 'Plus Jakarta Sans' }}>Expert care for your urban lifestyle.</h2>
+            <p className="text-[1.25rem] leading-[1.6] font-semibold text-on-surface-variant">From artisan meal prep to high-end home maintenance, MIIAM connects you with the city's finest professionals instantly.</p>
             <div className="flex items-center gap-6 pt-4">
               <div className="flex -space-x-4">
                 <BlurImage alt="User" className="w-12 h-12 rounded-full border-4 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdlq3gI79VpGIBuc6jzvcnJdRRWwFoWA8sjBVe8pUkHBcdftNBTXILgrBj6CaJydUbFmxNcVB-2k9tWhgC6tJX66AsqjRNcYwNnUgAdUTg2iuqPbE5HxfuEEdLUI3H322Z6q-JNs4B5jrxq-m37tJgOeHuWDk-EOFuDHqgoX3EXOqjIKX3iZJrXE6EAbQjxdKR8oAuPoIlsJytSVqWKxwxFhx9hj7IK4i2qbhheEhTvBW8b-3aELPtlklFVRU7kU2juTyK8Z3_0cM" />
@@ -164,7 +164,7 @@ function SignupContent() {
                 <BlurImage alt="User" className="w-12 h-12 rounded-full border-4 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcYRQW-ha-2JtG7yj0lWOcFmVw51PXe-dqPWmQiq4FcXwNNtoQpXIcQGDd9QBC3M3kx9gGer6mS7BBPeCKfNxSRkx6c5vo4u9WL-TrLRf2U2ShsRzheTmu-8ld2MdwwjeG-nWPOat9XBSmrR9Xeejz3idDjeqm5yt1-cMmqS0z8YCc-k-gVrCftINTAI8YntgUrB-0XoMlAHKYeR7GPZ_ahZ-k1of-1PCe4a3MB0HQPLt9hGXG10DEGtnKbOT-_DaIrinpuAvq26Y" />
                 <div className="w-12 h-12 rounded-full border-4 border-white bg-[#00497d] flex items-center justify-center text-white text-xs font-bold">+2k</div>
               </div>
-              <span className="text-[10px] tracking-[0.3em] font-bold text-[#00174c]">TRUSTED BY PROFESSIONALS</span>
+              <span className="text-[10px] tracking-[0.3em] font-bold text-on-surface">TRUSTED BY PROFESSIONALS</span>
             </div>
           </div>
         </div>

@@ -52,7 +52,7 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
               <div className="flex">
                 <div className="w-28 h-28 flex-shrink-0 bg-surface-container relative overflow-hidden">
                   {restaurant.cover_image_url || restaurant.image_url ? (
-                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" />
+                    <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={restaurant.name || restaurant.shop_name} fill className="w-full h-full" sizes="112px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-orange-100 to-amber-50">🍽️</div>
                   )}

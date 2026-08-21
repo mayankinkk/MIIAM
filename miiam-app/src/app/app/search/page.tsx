@@ -200,7 +200,7 @@ function SearchContent() {
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex-1 relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
             <input
               type="text"
               value={inputValue}

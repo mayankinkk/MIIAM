@@ -42,6 +42,7 @@ export default function NewArrivalsSection({ items }: NewArrivalsSectionProps) {
                 fill
                 className="object-cover"
                 sizes="160px"
+                fallbackSrc="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
               />
               <div className="absolute top-2 left-2 bg-green-500 text-white text-[9px] font-black px-2 py-1 rounded-full">
                 NEW

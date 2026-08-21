@@ -43,6 +43,7 @@ export default function TrendingSection({ items }: TrendingSectionProps) {
                 fill
                 className="object-cover"
                 sizes="160px"
+                fallbackSrc="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
               />
               <div className="absolute top-2 left-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-black px-2 py-1 rounded-full flex items-center gap-1">
                 <span className="text-[8px]">🔥</span>

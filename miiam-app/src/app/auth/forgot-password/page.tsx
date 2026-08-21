@@ -103,7 +103,7 @@ export default function ForgotPasswordPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#00174c]/80 via-transparent to-transparent" />
         </div>
         <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg">
-          <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-[#00174c]">Forgot Password?</h2>
+          <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-on-surface">Forgot Password?</h2>
           <p className="text-[var(--color-on-surface)] mt-4">No worries, we'll help you recover your account.</p>
         </div>
       </section>

@@ -39,6 +39,7 @@ export default memo(function ServiceCard({ service, index = 0 }: ServiceCardProp
             fill
             className="w-full h-full"
             sizes="(max-width: 640px) 50vw, 25vw"
+            fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
           />
           {service.badge && (
             <span className="absolute top-2 left-2 bg-primary text-on-primary text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm">

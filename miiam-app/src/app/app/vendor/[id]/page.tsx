@@ -205,7 +205,7 @@ export default function VendorPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] p-4 space-y-4" aria-label="Loading...">
+      <div className="min-h-screen bg-surface p-4 space-y-4" aria-label="Loading...">
         <Skeleton className="h-56 w-full rounded-2xl" />
         <ProfileSkeleton />
         <div className="space-y-3">
@@ -220,7 +220,7 @@ export default function VendorPage() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <p className="text-[var(--color-on-surface-variant)]">Vendor not found</p>
           <Link href="/app/food" className="text-primary font-bold mt-4 block">Go Back</Link>
@@ -233,7 +233,7 @@ export default function VendorPage() {
   const cartTotal = totalPrice();
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] pb-28">
+    <div className="min-h-screen bg-surface pb-28">
       {/* Hero Section */}
       <div className="relative h-64 overflow-hidden">
         <BlurImage
@@ -299,26 +299,26 @@ export default function VendorPage() {
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: vendor.shop_name }]} />
 
       {/* Info Chips */}
-      <div className="bg-white px-4 py-3 border-b border-gray-100">
+      <div className="bg-surface-container-lowest px-4 py-3 border-b border-outline-variant/20">
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${isOpen ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-red-50 text-red-600 border border-red-200"}`}>
+          <span className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${isOpen ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800" : "bg-red-50 text-red-600 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"}`}>
             <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500" : "bg-red-500"} ${isOpen ? "animate-pulse" : ""}`} />
             {isOpen ? "Open Now" : "Closed"}
           </span>
-          <div className="w-px h-4 bg-gray-200 flex-shrink-0" />
-          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200">
+          <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
+          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
             <span className="material-symbols-outlined text-[14px]">schedule</span>
             {vendor.delivery_time_min || 30}\u2013{vendor.delivery_time_max || 45} min
           </span>
-          <div className="w-px h-4 bg-gray-200 flex-shrink-0" />
-          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200">
+          <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
+          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
             <span className="material-symbols-outlined text-[14px]">delivery_dining</span>
             {vendor.delivery_charge ? `\u20B9${vendor.delivery_charge}` : "Free delivery"}
           </span>
           {vendor.min_order_amount ? (
             <>
-              <div className="w-px h-4 bg-gray-200 flex-shrink-0" />
-              <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-700 border border-gray-200">
+              <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
+              <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
                 <span className="material-symbols-outlined text-[14px]">receipt</span>
                 min order: ₹{vendor.min_order_amount}
               </span>
@@ -339,54 +339,54 @@ export default function VendorPage() {
       )}
 
       {/* Address & Hours */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+      <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20">
         <div className="flex items-start gap-3 mb-3">
           <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
             <span className="material-symbols-outlined text-primary text-lg">location_on</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 text-sm">{vendor.address || "Address not available"}</p>
-            <p className="text-xs text-gray-400 mt-0.5">Live tracking not available</p>
+            <p className="font-semibold text-on-surface text-sm">{vendor.address || "Address not available"}</p>
+            <p className="text-xs text-on-surface-variant mt-0.5">Live tracking not available</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-amber-600 text-lg">access_time</span>
+          <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0 dark:bg-amber-900/30">
+            <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-lg">access_time</span>
           </div>
           <div>
-            <p className="font-semibold text-gray-900 text-sm">{vendor.opening_hours || "9:00 AM - 10:00 PM"}</p>
-            <p className="text-xs text-gray-400 mt-0.5">Today</p>
+            <p className="font-semibold text-on-surface text-sm">{vendor.opening_hours || "9:00 AM - 10:00 PM"}</p>
+            <p className="text-xs text-on-surface-variant mt-0.5">Today</p>
           </div>
         </div>
       </div>
 
       {/* Reviews Summary */}
       {reviews.length > 0 && (
-        <div className="mx-4 mt-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+        <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-gray-900">Reviews</h2>
+            <h2 className="text-base font-bold text-on-surface">Reviews</h2>
             <Link href={`/app/vendor/${vendorId}/reviews`} className="text-xs font-bold text-primary">
               See All →
             </Link>
           </div>
           <div className="flex gap-3 overflow-x-auto no-scrollbar">
             {reviews.slice(0, 4).map((review: Review) => (
-              <div key={review.id} className="flex-shrink-0 w-56 bg-gray-50 rounded-xl p-3 border border-gray-100">
+              <div key={review.id} className="flex-shrink-0 w-56 bg-surface-container-low rounded-xl p-3 border border-outline-variant/20">
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-container text-white rounded-full flex items-center justify-center text-[10px] font-bold">
                     {review.profile?.full_name?.[0] || "U"}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-gray-900 truncate">{review.profile?.full_name || "User"}</p>
+                    <p className="text-xs font-bold text-on-surface truncate">{review.profile?.full_name || "User"}</p>
                     <div className="flex items-center gap-0.5">
                       {[1,2,3,4,5].map((star) => (
-                        <span key={star} className={`text-[10px] ${star <= review.rating ? "text-amber-400" : "text-gray-300"}`}>★</span>
+                        <span key={star} className={`text-[10px] ${star <= review.rating ? "text-amber-400" : "text-outline"}`}>★</span>
                       ))}
                     </div>
                   </div>
                 </div>
                 {review.review_text && (
-                  <p className="text-[11px] text-gray-600 line-clamp-2 leading-relaxed">{review.review_text}</p>
+                  <p className="text-[11px] text-on-surface-variant line-clamp-2 leading-relaxed">{review.review_text}</p>
                 )}
                 {review.tags && review.tags.length > 0 && (
                   <div className="flex gap-1 mt-2 flex-wrap">
@@ -404,11 +404,11 @@ export default function VendorPage() {
       )}
 
       {/* Sticky Menu Filter */}
-      <div className="sticky top-0 z-20 bg-white border-b border-gray-100">
+      <div className="sticky top-0 z-20 bg-surface-container-lowest border-b border-outline-variant/20">
         <div className="px-4 pt-3 pb-2">
           <div className="flex items-center justify-between mb-2.5">
-            <h2 className="text-lg font-black text-gray-900">Menu</h2>
-            <span className="text-xs font-bold text-gray-400">{sortedItems.length} items</span>
+            <h2 className="text-lg font-black text-on-surface">Menu</h2>
+            <span className="text-xs font-bold text-on-surface-variant">{sortedItems.length} items</span>
           </div>
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {categories.map((cat) => (
@@ -418,7 +418,7 @@ export default function VendorPage() {
                 className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
                   activeCategory === cat
                     ? "bg-primary text-white shadow-sm shadow-primary/20"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
                 }`}
               >
                 {cat}
@@ -436,10 +436,10 @@ export default function VendorPage() {
       {/* Menu Items */}
       <div className="p-4 space-y-3">
         {filteredItems.length === 0 ? (
-          <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
-            <span className="material-symbols-outlined text-4xl text-gray-300 mb-2">restaurant_menu</span>
-            <p className="text-gray-400 font-medium text-sm">No items found</p>
-            <p className="text-gray-300 text-xs mt-1">Try a different category or filter</p>
+          <div className="bg-surface-container-lowest rounded-2xl p-10 text-center border border-outline-variant/20 shadow-sm">
+            <span className="material-symbols-outlined text-4xl text-outline mb-2">restaurant_menu</span>
+            <p className="text-on-surface-variant font-medium text-sm">No items found</p>
+            <p className="text-outline text-xs mt-1">Try a different category or filter</p>
           </div>
         ) : (
           sortedItems.map((item, index) => {
@@ -451,12 +451,12 @@ export default function VendorPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100"
+                className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/20"
               >
                 <div className="flex p-3 gap-3">
                   {/* Image */}
                   <div
-                    className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 relative cursor-pointer"
+                    className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative cursor-pointer"
                     onClick={() => {
                       const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
                       if (imgs.length > 1) {

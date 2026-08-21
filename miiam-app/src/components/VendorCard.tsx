@@ -58,6 +58,7 @@ export default memo(function VendorCard({ vendor, index = 0 }: VendorCardProps) 
             fill
             className="w-full h-full"
             sizes="(max-width: 640px) 50vw, 25vw"
+            fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
           />
           {/* Badges */}
           <div className="absolute top-2 left-2 flex gap-1.5">
