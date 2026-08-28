@@ -61,11 +61,15 @@ export const useCartStore = create<CartStore>()(
         if (!Array.isArray(currentItems)) {
           set({ items: [{ ...item, quantity }] });
         } else {
-          const existing = currentItems.find((i) => i.id === item.id);
+          const existing = currentItems.find(
+            (i) => i.menu_item_id === item.menu_item_id && i.name === item.name
+          );
           if (existing) {
             set({
               items: currentItems.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
+                i.menu_item_id === item.menu_item_id && i.name === item.name
+                  ? { ...i, quantity: i.quantity + quantity }
+                  : i
               ),
             });
           } else {
