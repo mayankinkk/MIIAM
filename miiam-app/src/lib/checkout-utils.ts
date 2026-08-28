@@ -17,7 +17,7 @@ export function calculateOrderTotals({
 }) {
   const discount = 0;
   const totalDeliveryFee = 0;
-  const totalServiceCharge = FLAT_SERVICE_CHARGE;
+  const totalServiceCharge = subtotal > 0 ? FLAT_SERVICE_CHARGE : 0;
   const gstAmount = 0;
   const packagingFee = 0;
   const platformFee = 0;
