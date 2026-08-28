@@ -7,6 +7,19 @@ import { useCartSnackbarStore } from "./cartSnackbarStore";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+function isValidCartItem(i: unknown): i is CartItem {
+  return (
+    !!i &&
+    typeof i === "object" &&
+    "menu_item_id" in i && typeof (i as { menu_item_id: unknown }).menu_item_id === "string" &&
+    "vendor_id" in i && typeof (i as { vendor_id: unknown }).vendor_id === "string" &&
+    (i as { vendor_id: string }).vendor_id.length > 0 &&
+    "name" in i && typeof (i as { name: unknown }).name === "string" &&
+    "price" in i && typeof (i as { price: unknown }).price === "number" &&
+    "quantity" in i && typeof (i as { quantity: unknown }).quantity === "number"
+  );
+}
+
 export interface CartItem {
   id: string;
   menu_item_id: string;
@@ -38,16 +51,7 @@ interface CartStore {
 
 function isCartItemArray(value: unknown): value is CartItem[] {
   if (!Array.isArray(value)) return false;
-  return value.every(
-    (i) =>
-      i &&
-      typeof i === "object" &&
-      typeof i.menu_item_id === "string" &&
-      typeof i.vendor_id === "string" &&
-      typeof i.name === "string" &&
-      typeof i.price === "number" &&
-      typeof i.quantity === "number"
-  );
+  return value.every(isValidCartItem);
 }
 
 export const useCartStore = create<CartStore>()(
@@ -194,11 +198,11 @@ export const useCartStore = create<CartStore>()(
       merge: (persisted, current) => {
         const p = persisted as { items?: unknown; savedItems?: unknown };
         const result = { ...current };
-        if (p && isCartItemArray(p.items)) {
-          result.items = p.items;
+        if (p && Array.isArray(p.items)) {
+          result.items = (p.items as unknown[]).filter(isValidCartItem);
         }
-        if (p && isCartItemArray(p.savedItems)) {
-          result.savedItems = p.savedItems;
+        if (p && Array.isArray(p.savedItems)) {
+          result.savedItems = (p.savedItems as unknown[]).filter(isValidCartItem);
         }
         return result;
       },
