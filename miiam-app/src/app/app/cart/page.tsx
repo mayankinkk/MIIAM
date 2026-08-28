@@ -442,7 +442,7 @@ export default function CartPage() {
           <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
             <div className="flex-1 min-w-0">
               <p className="text-[10px] text-[var(--color-on-surface-variant)] dark:text-[var(--color-outline)] font-semibold uppercase tracking-wider">{t.cart.total}</p>
-              <p className="text-xl sm:text-2xl font-extrabold text-primary truncate">₹{grandTotal.toFixed(2)}</p>
+              <p className="text-lg sm:text-xl font-extrabold text-primary truncate">₹{grandTotal.toFixed(2)}</p>
             </div>
             <Link
               href="/app/checkout"
