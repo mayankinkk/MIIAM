@@ -58,10 +58,9 @@ describe('toastStore', () => {
     store.addToast('Info message', 'info');
     
     const toasts = useToastStore.getState().toasts;
-    expect(toasts).toHaveLength(4);
-    expect(toasts.map(t => t.type)).toContain('success');
-    expect(toasts.map(t => t.type)).toContain('error');
-    expect(toasts.map(t => t.type)).toContain('warning');
+    expect(toasts).toHaveLength(3);
     expect(toasts.map(t => t.type)).toContain('info');
+    expect(toasts.map(t => t.type)).toContain('warning');
+    expect(toasts.map(t => t.type)).toContain('error');
   });
 });

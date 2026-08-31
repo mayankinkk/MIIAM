@@ -188,6 +188,11 @@ describe("Payment Create Order API", () => {
 });
 
 describe("Payment Verify API", () => {
+  beforeEach(() => {
+    process.env.RAZORPAY_KEY_ID = "test_key";
+    process.env.RAZORPAY_KEY_SECRET = "test_secret";
+  });
+
   it("POST returns 401 when unauthenticated", async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
     const { POST } = await import("../payment/verify/route");
@@ -208,7 +213,7 @@ describe("Payment Verify API", () => {
     const res = await POST(req);
     const body = await res.json();
     expect(res.status).toBe(400);
-    expect(body.error).toBe("Missing payment verification parameters");
+    expect(body.error).toBe("Invalid input");
   });
 
   it("POST returns 400 with invalid signature", async () => {

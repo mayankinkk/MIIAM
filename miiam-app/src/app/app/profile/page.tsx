@@ -93,6 +93,41 @@ export default function EnhancedProfilePage() {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24 flex flex-col">
+        <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
+          <h1 className="text-xl font-black">{t.profile.title}</h1>
+        </header>
+        <main className="flex-1 flex items-center justify-center px-6 -mt-6">
+          <div className="text-center space-y-5 max-w-sm">
+            <div className="flex items-center justify-center w-20 h-20 mx-auto bg-primary/10 rounded-full">
+              <span className="material-symbols-outlined text-primary text-4xl">person</span>
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Sign in to your account</h2>
+              <p className="text-sm text-[var(--color-on-surface)]/70">Access your orders, saved addresses, favorites, and more.</p>
+            </div>
+            <div className="space-y-3">
+              <a
+                href="/auth/login?redirect=/app/profile"
+                className="block w-full bg-[var(--color-primary)] text-white py-3.5 rounded-xl font-bold text-sm text-center hover:scale-[1.02] active:scale-95 transition-all"
+              >
+                Sign In
+              </a>
+              <a
+                href="/auth/signup?redirect=/app/profile"
+                className="block w-full border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] py-3.5 rounded-xl font-bold text-sm text-center hover:bg-[var(--color-surface-container)] transition-colors"
+              >
+                Create Account
+              </a>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
       {/* Header */}

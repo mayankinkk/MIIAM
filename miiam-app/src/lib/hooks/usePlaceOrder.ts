@@ -180,7 +180,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
         const { data: { session } } = await supabase.auth.getSession();
         user = session?.user ?? null;
       }
-      if (!user) { router.push("/auth/login"); return false; }
+      if (!user) { router.push("/auth/login?redirect=" + encodeURIComponent("/app/checkout")); return false; }
 
       const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
       let firstOrderId = "";

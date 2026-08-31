@@ -41,6 +41,8 @@ export default function CheckoutPage() {
 
   const [hydrated, setHydrated] = useState(false);
   const [showAddressWarning, setShowAddressWarning] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
 
@@ -54,6 +56,11 @@ export default function CheckoutPage() {
       try { setSavedAddresses(JSON.parse(allSaved)); } catch { /* corrupted data, ignore */ }
     }
 
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    }
+    checkAuth();
 
     async function loadVendorDetails() {
       try {
@@ -233,6 +240,10 @@ export default function CheckoutPage() {
                     setTimeout(() => setShowAddressWarning(false), 3000);
                     return;
                   }
+                  if (isAuthenticated === false) {
+                    setShowLoginPrompt(true);
+                    return;
+                  }
                   setPlacing(true);
 
                   const orderArgs = {
@@ -297,6 +308,40 @@ export default function CheckoutPage() {
           }}
           onClose={() => setShowAddressPicker(false)}
         />
+      )}
+
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="login-prompt-title">
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-sm p-6 space-y-5 shadow-xl">
+            <div className="flex items-center justify-center w-16 h-16 mx-auto bg-primary/10 rounded-full">
+              <span className="material-symbols-outlined text-primary text-3xl">person</span>
+            </div>
+            <div className="text-center space-y-1">
+              <h2 id="login-prompt-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Login Required</h2>
+              <p className="text-sm text-[var(--color-on-surface)]/70">Sign in to place your order and track it in real-time.</p>
+            </div>
+            <div className="space-y-3">
+              <a
+                href={`/auth/login?redirect=${encodeURIComponent('/app/checkout')}`}
+                className="block w-full text-center bg-[var(--color-primary)] text-white py-3.5 rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all"
+              >
+                Sign In
+              </a>
+              <a
+                href={`/auth/signup?redirect=${encodeURIComponent('/app/checkout')}`}
+                className="block w-full text-center border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] py-3.5 rounded-xl font-bold text-sm hover:bg-[var(--color-surface-container)] transition-colors"
+              >
+                Create Account
+              </a>
+              <button
+                onClick={() => setShowLoginPrompt(false)}
+                className="block w-full text-center text-[var(--color-on-surface)]/60 py-2 text-xs font-medium hover:text-[var(--color-on-surface)] transition-colors"
+              >
+                Continue Browsing
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
