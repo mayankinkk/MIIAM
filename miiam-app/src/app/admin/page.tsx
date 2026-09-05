@@ -107,17 +107,13 @@ export default function AdminDashboard() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const [ordersRes, vendorsRes, ridersRes, usersRes] = await Promise.all([
-        supabase.from("orders").select("id, total_amount, status, placed_at, vendor_id").order("placed_at", { ascending: false }).limit(500),
-        supabase.from("vendors").select("id, shop_name, owner_name, type, status, created_at").order("created_at", { ascending: false }).limit(8),
-        supabase.from("riders").select("id, status").limit(200),
-        supabase.from("profiles").select("id, created_at").limit(1000),
-      ]);
-
-      const orders = ordersRes.data || [];
-      const vendors = vendorsRes.data || [];
-      const riders = ridersRes.data || [];
-      const users = usersRes.data || [];
+      const res = await fetch("/api/admin/dashboard");
+      if (!res.ok) {
+        logger.error({ err: new Error(`HTTP ${res.status}`) }, "Failed to load dashboard data");
+        setLoading(false);
+        return;
+      }
+      const { orders, vendors, riders, users } = await res.json();
 
       const totalRevenue = orders.filter((o: { status: string; total_amount: number | null }) => o.status === "delivered").reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0);
       const ordersToday = orders.filter((o: { placed_at: string }) => new Date(o.placed_at) >= today).length;

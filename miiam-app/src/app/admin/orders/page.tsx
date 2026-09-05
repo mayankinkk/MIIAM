@@ -104,60 +104,22 @@ export default function OrderManagement() {
   }
 
   async function loadOrders() {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*, vendor:vendors(name, shop_name), rider:riders(name, phone)")
-      .order("placed_at", { ascending: false });
-    
-    if (error) {
-      logger.error({ err: error }, "Failed to load orders");
+    try {
+      const res = await fetch("/api/admin/orders");
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Unknown error" }));
+        logger.error({ err: new Error(err.error || `HTTP ${res.status}`) }, "Failed to load admin orders");
+        setLoading(false);
+        return;
+      }
+      const { orders: fetchedOrders, orderItems: fetchedItems } = await res.json();
+      setOrders(fetchedOrders || []);
+      setOrderItems(fetchedItems || {});
+    } catch (error) {
+      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to load admin orders");
+    } finally {
       setLoading(false);
-      return;
     }
-    
-    if (data) {
-      const ordersData = data as (Order & { delivery_address_id?: string | null })[];
-      // Fetch customer profiles and addresses
-      const userIds = [...new Set(ordersData.map((o) => o.user_id).filter(Boolean))] as string[];
-      const profileMap: Record<string, { full_name: string | null; phone: string | null }> = {};
-      if (userIds.length > 0) {
-        const { data: profiles } = await supabase.from("profiles").select("id, full_name, phone").in("id", userIds);
-        if (profiles) profiles.forEach((p: { id: string; full_name: string | null; phone: string | null }) => { profileMap[p.id] = { full_name: p.full_name, phone: p.phone }; });
-      }
-
-      const addressIds = ordersData.map((o) => o.delivery_address_id).filter(Boolean) as string[];
-      const addressMap: Record<string, { street: string; city: string; state: string; postal_code: string; label?: string }> = {};
-      if (addressIds.length > 0) {
-        const { data: addresses } = await supabase.from("addresses").select("id, street, city, state, postal_code, label").in("id", addressIds);
-        if (addresses) addresses.forEach((a: { id: string; street: string; city: string; state: string; postal_code: string; label?: string }) => { addressMap[a.id] = a; });
-      }
-
-      // Fetch items for all orders in one query
-      const orderIds = ordersData.map((o) => o.id);
-      const itemsMap: Record<string, { name: string; quantity: number; unit_price: number }[]> = {};
-      if (orderIds.length > 0) {
-        const { data: allItems } = await supabase
-          .from("order_items")
-          .select("order_id, quantity, unit_price, menu_item:menu_items(name)")
-          .in("order_id", orderIds);
-        if (allItems) {
-          allItems.forEach((i: { order_id: string; quantity: number; unit_price: number; menu_item?: { name: string } }) => {
-            if (!itemsMap[i.order_id]) itemsMap[i.order_id] = [];
-            itemsMap[i.order_id].push({ name: i.menu_item?.name || "Item", quantity: i.quantity, unit_price: i.unit_price });
-          });
-        }
-      }
-
-      const enriched = ordersData.map((o) => ({
-        ...o,
-        customer_profile: o.user_id ? profileMap[o.user_id] || null : null,
-        customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id] || null : null,
-      }));
-
-      setOrders(enriched);
-      setOrderItems(itemsMap);
-    }
-    setLoading(false);
   }
 
   async function updateStatus(orderId: string, status: OrderStatus) {
