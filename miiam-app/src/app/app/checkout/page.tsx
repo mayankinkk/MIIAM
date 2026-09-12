@@ -18,7 +18,7 @@ import { calculateOrderTotals } from "@/lib/checkout-utils";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
 import logger from "@/lib/logger";
 
-import { parseIsOpen } from "@/lib/vendor-hours";
+import { isVendorOpen } from "@/lib/vendor-hours";
 
 export default function CheckoutPage() {
   const { t } = useTranslation();
@@ -38,6 +38,7 @@ export default function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState<SelectedAddress | null>(null);
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
+  const [serviceCharge, setServiceCharge] = useState(15);
 
   const [hydrated, setHydrated] = useState(false);
   const [showAddressWarning, setShowAddressWarning] = useState(false);
@@ -82,6 +83,14 @@ export default function CheckoutPage() {
       }
     }
     loadVendorDetails();
+
+    async function loadServiceCharge() {
+      try {
+        const { data } = await supabase.from("site_settings").select("value").eq("key", "service_charge").maybeSingle();
+        if (data?.value) setServiceCharge(Number(data.value));
+      } catch { /* use default */ }
+    }
+    loadServiceCharge();
   }, [items, supabase]);
 
   const subtotal = totalPrice();
@@ -89,12 +98,13 @@ export default function CheckoutPage() {
   const serviceVendorIds = vendorIds.filter((id) => id !== SERVICES_VENDOR_ID);
 
   const hasClosedVendor = useMemo(() => {
-    return serviceVendorIds.some((id) => vendorHours[id] && !parseIsOpen(vendorHours[id]));
+    return serviceVendorIds.some((id) => vendorHours[id] && !isVendorOpen(vendorHours[id]).open);
   }, [serviceVendorIds, vendorHours]);
 
   const { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
     tipAmount,
+    serviceCharge,
   });
 
   const { placeOrder } = usePlaceOrder(supabase);
@@ -261,6 +271,7 @@ export default function CheckoutPage() {
                     recurringFrequency,
                     recurringDayOfWeek,
                     phone: deliveryAddress.phone || "",
+                    serviceCharge,
                   };
 
                   placeOrder(orderArgs).finally(() => setPlacing(false));

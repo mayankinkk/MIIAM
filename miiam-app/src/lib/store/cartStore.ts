@@ -92,8 +92,8 @@ export const useCartStore = create<CartStore>()(
       removeItem: (id) => {
         const currentItems = get().items;
         if (!Array.isArray(currentItems)) return;
-        const item = currentItems.find((i) => i.id === id);
-        set({ items: currentItems.filter((i) => i.id !== id) });
+        const item = currentItems.find((i) => i.id === id || i.menu_item_id === id);
+        set({ items: currentItems.filter((i) => i.id !== id && i.menu_item_id !== id) });
 
         // Haptic feedback on remove
         try { navigator.vibrate?.(15); } catch {}
@@ -112,7 +112,7 @@ export const useCartStore = create<CartStore>()(
         const clamped = Math.min(quantity, 99);
         set({
           items: currentItems.map((i) =>
-            i.id === id ? { ...i, quantity: clamped } : i
+            i.id === id || i.menu_item_id === id ? { ...i, quantity: clamped } : i
           ),
         });
       },

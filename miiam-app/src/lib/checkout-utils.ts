@@ -10,14 +10,15 @@ export function safeMenuItemId(id: string) {
 export function calculateOrderTotals({
   subtotal,
   tipAmount,
+  serviceCharge,
 }: {
   subtotal: number;
   tipAmount: number;
-  serviceCharge?: number; // kept for API compat but ignored — use FLAT_SERVICE_CHARGE
+  serviceCharge?: number;
 }) {
   const discount = 0;
   const totalDeliveryFee = 0;
-  const totalServiceCharge = subtotal > 0 ? FLAT_SERVICE_CHARGE : 0;
+  const totalServiceCharge = subtotal > 0 ? (serviceCharge ?? FLAT_SERVICE_CHARGE) : 0;
   const gstAmount = 0;
   const packagingFee = 0;
   const platformFee = 0;

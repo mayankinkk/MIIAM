@@ -6,6 +6,7 @@ import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
 import { safeMenuItemId, FLAT_SERVICE_CHARGE } from "@/lib/checkout-utils";
+import { decrementStock } from "@/lib/stock";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { isVendorOpen } from "@/lib/vendor-hours";
 import { checkStock } from "@/lib/stock";
@@ -18,6 +19,8 @@ interface DeliveryAddress {
   state?: string;
   postal_code?: string;
   flat?: string;
+  lat?: number;
+  lng?: number;
 }
 
 interface OrderInsert {
@@ -30,6 +33,8 @@ interface OrderInsert {
   tip_amount: number;
   payment_method: string;
   delivery_address: string;
+  delivery_lat: number | null;
+  delivery_lng: number | null;
   scheduled_delivery: string | null;
   special_instructions: string | null;
   placed_at: string;
@@ -83,6 +88,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     recurringDayOfWeek,
     phone,
     paymentDetails,
+    serviceCharge,
   }: {
     deliveryAddress: DeliveryAddress | null;
     paymentMethod: string;
@@ -99,6 +105,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     recurringDayOfWeek: number;
     phone: string;
     paymentDetails?: PaymentDetails;
+    serviceCharge?: number;
   }) => {
     if (!validateCheckout(deliveryAddress)) return false;
 
@@ -210,12 +217,14 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           user_id: user.id,
           vendor_id: vendorId,
           status: scheduledIso ? "scheduled" : "pending",
-          total_amount: +(vendorTotal + (subtotal > 0 ? FLAT_SERVICE_CHARGE * (vendorTotal / subtotal) : 0)).toFixed(2),
+          total_amount: +(vendorTotal + (subtotal > 0 ? (serviceCharge ?? FLAT_SERVICE_CHARGE) * (vendorTotal / subtotal) : 0)).toFixed(2),
           delivery_fee: subtotal > 0 ? +(deliveryFee * (vendorTotal / subtotal)).toFixed(2) : 0,
           discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
           tip_amount: subtotal > 0 ? +(tipAmount * (vendorTotal / subtotal)).toFixed(2) : 0,
           payment_method: paymentMethod,
           delivery_address: finalAddress,
+          delivery_lat: deliveryAddress?.lat ?? null,
+          delivery_lng: deliveryAddress?.lng ?? null,
           scheduled_delivery: scheduledIso,
           special_instructions: specialInstructions || null,
           placed_at: new Date().toISOString(),
@@ -246,6 +255,18 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           if (itemsError) {
             await supabase.from("orders").delete().eq("id", order.id);
             throw itemsError;
+          }
+
+          if (!scheduledDate) {
+            const stockItems = vendorItems
+              .filter(i => i.vendor_id !== SERVICES_VENDOR_ID)
+              .map(i => ({ menu_item_id: i.menu_item_id || i.id, quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || vendorId }));
+            if (stockItems.length > 0) {
+              const stockResult = await decrementStock(stockItems, order.id);
+              if (!stockResult.success) {
+                logger.warn({ error: stockResult.error }, "Stock decrement failed — order placed but stock may be inconsistent");
+              }
+            }
           }
 
           try {
