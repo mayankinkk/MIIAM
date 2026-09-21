@@ -152,10 +152,14 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
   }, [order?.status]);
 
   const fetchOrderData = useCallback(async (id: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
     const { data: orderData, error: orderError } = await supabase
       .from("orders")
       .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, discount_amount, payment_method, delivery_address, special_instructions, placed_at, delivered_at")
       .eq("id", id)
+      .eq("user_id", user.id)
       .maybeSingle();
 
     if (orderError || !orderData) return null;

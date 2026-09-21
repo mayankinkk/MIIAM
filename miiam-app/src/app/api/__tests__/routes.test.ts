@@ -166,7 +166,7 @@ describe("Addresses API", () => {
 });
 
 describe("Settings API", () => {
-  const ctx = {};
+  const ctx = { params: Promise.resolve({}) };
   it("GET returns 403 when not admin", async () => {
     profileQueryResult = { data: { role: "user" }, error: null };
     const { GET } = await import("../settings/route");
@@ -213,7 +213,7 @@ describe("Settings API", () => {
 });
 
 describe("Rider Cancel Order API", () => {
-  const ctx = {};
+  const ctx = { params: Promise.resolve({}) };
   it("POST returns 401 when unauthenticated", async () => {
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
     const { POST } = await import("../rider/cancel-order/route");
