@@ -2,8 +2,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
   transpilePackages: ["firebase"],
+  serverExternalPackages: ["@supabase/ssr"],
   images: {
     contentDispositionType: "attachment",
     formats: ['image/avif', 'image/webp'],
