@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkIpRateLimit, getClientIp } from "@/lib/security";
 
-export interface RouteContext {
-  params?: Promise<Record<string, string>>;
-}
+export type RouteContext = { params: Promise<Record<string, string>> };
 
 type RouteHandler = (request: NextRequest, context: RouteContext) => Promise<NextResponse | Response>;
 
