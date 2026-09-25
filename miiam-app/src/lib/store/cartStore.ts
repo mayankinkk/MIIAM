@@ -16,7 +16,10 @@ function isValidCartItem(i: unknown): i is CartItem {
     (i as { vendor_id: string }).vendor_id.length > 0 &&
     "name" in i && typeof (i as { name: unknown }).name === "string" &&
     "price" in i && typeof (i as { price: unknown }).price === "number" &&
-    "quantity" in i && typeof (i as { quantity: unknown }).quantity === "number"
+    Number.isFinite((i as { price: number }).price) &&
+    "quantity" in i && typeof (i as { quantity: unknown }).quantity === "number" &&
+    Number.isFinite((i as { quantity: number }).quantity) &&
+    (i as { quantity: number }).quantity > 0
   );
 }
 
@@ -61,9 +64,11 @@ export const useCartStore = create<CartStore>()(
       savedItems: [],
 
       addItem: (item, quantity = 1, suppressToast = false) => {
+        const safeQuantity =
+          Number.isFinite(quantity) && quantity > 0 ? Math.min(Math.floor(quantity), 99) : 1;
         const currentItems = get().items;
         if (!Array.isArray(currentItems)) {
-          set({ items: [{ ...item, quantity }] });
+          set({ items: [{ ...item, quantity: safeQuantity }] });
         } else {
           const existing = currentItems.find(
             (i) => i.menu_item_id === item.menu_item_id && i.name === item.name
@@ -72,12 +77,12 @@ export const useCartStore = create<CartStore>()(
             set({
               items: currentItems.map((i) =>
                 i.menu_item_id === item.menu_item_id && i.name === item.name
-                  ? { ...i, quantity: i.quantity + quantity }
+                  ? { ...i, quantity: Math.min(i.quantity + safeQuantity, 99) }
                   : i
               ),
             });
           } else {
-            set({ items: [...currentItems, { ...item, quantity }] });
+            set({ items: [...currentItems, { ...item, quantity: safeQuantity }] });
           }
         }
 
@@ -103,13 +108,14 @@ export const useCartStore = create<CartStore>()(
       },
 
       updateQuantity: (id, quantity) => {
-        if (quantity <= 0) {
+        const safeQuantity = Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
+        if (safeQuantity <= 0) {
           get().removeItem(id);
           return;
         }
         const currentItems = get().items;
         if (!Array.isArray(currentItems)) return;
-        const clamped = Math.min(quantity, 99);
+        const clamped = Math.min(safeQuantity, 99);
         set({
           items: currentItems.map((i) =>
             i.id === id || i.menu_item_id === id ? { ...i, quantity: clamped } : i
@@ -118,14 +124,15 @@ export const useCartStore = create<CartStore>()(
       },
 
       updateQuantityByMenuItem: (menuItemId, quantity) => {
-        if (quantity <= 0) {
+        const safeQuantity = Number.isFinite(quantity) && quantity > 0 ? Math.floor(quantity) : 0;
+        if (safeQuantity <= 0) {
           const item = get().items.find((i) => i.menu_item_id === menuItemId);
           if (item) get().removeItem(item.id);
           return;
         }
         const currentItems = get().items;
         if (!Array.isArray(currentItems)) return;
-        const clamped = Math.min(quantity, 99);
+        const clamped = Math.min(safeQuantity, 99);
         set({
           items: currentItems.map((i) =>
             i.menu_item_id === menuItemId ? { ...i, quantity: clamped } : i
@@ -174,13 +181,19 @@ export const useCartStore = create<CartStore>()(
 
       totalItems: () => {
         const items = get().items;
-        return Array.isArray(items) ? items.reduce((sum, i) => sum + i.quantity, 0) : 0;
+        return Array.isArray(items)
+          ? items.reduce((sum, i) => sum + (Number.isFinite(i.quantity) ? i.quantity : 0), 0)
+          : 0;
       },
 
       totalPrice: () => {
         const items = get().items;
         return Array.isArray(items)
-          ? items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+          ? items.reduce((sum, i) => {
+              const price = Number.isFinite(i.price) ? i.price : 0;
+              const qty = Number.isFinite(i.quantity) ? i.quantity : 0;
+              return sum + price * qty;
+            }, 0)
           : 0;
       },
 
@@ -189,7 +202,11 @@ export const useCartStore = create<CartStore>()(
         if (!Array.isArray(items)) return 0;
         return items
           .filter((i) => i.vendor_id === vendor_id)
-          .reduce((sum, i) => sum + i.price * i.quantity, 0);
+          .reduce((sum, i) => {
+            const price = Number.isFinite(i.price) ? i.price : 0;
+            const qty = Number.isFinite(i.quantity) ? i.quantity : 0;
+            return sum + price * qty;
+          }, 0);
       },
     }),
     {
