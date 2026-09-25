@@ -175,6 +175,12 @@ export function usePlaceOrder(supabase: SupabaseClient) {
           addToast(`Some items are out of stock: ${outItems.map(i => i.name).join(", ")}. Please remove them from your cart.`, "error");
           return false;
         }
+        if (!stockResult.checked) {
+          // Lookup failed — don't block the order, but warn: final stock is
+          // enforced atomically by decrementStock after the order is created.
+          logger.warn({ err: stockResult.error }, "Stock check unavailable — proceeding with atomic decrement");
+          addToast("Couldn't verify stock right now — we'll confirm availability when your order is placed.", "info");
+        }
       }
     }
 

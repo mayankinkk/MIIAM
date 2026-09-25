@@ -18,6 +18,9 @@ export interface StockCheckItem {
 
 export interface StockResult {
   available: boolean;
+  /** false when the stock lookup itself failed (DB error) — availability is unverified */
+  checked: boolean;
+  error?: string;
   items: Array<{
     menu_item_id: string;
     name: string;
@@ -38,7 +41,12 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
 
     if (error) {
       logger.error({ err: error }, "Failed to check stock");
-      return { available: true, items: [] };
+      return {
+        available: true,
+        checked: false,
+        error: "Could not verify stock",
+        items: [],
+      };
     }
 
     const stockMap = new Map(
@@ -71,10 +79,15 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
     });
 
     const allAvailable = results.every(r => r.in_stock);
-    return { available: allAvailable, items: results };
+    return { available: allAvailable, checked: true, items: results };
   } catch (err) {
     logger.error({ err }, "Stock check failed");
-    return { available: true, items: [] };
+    return {
+      available: true,
+      checked: false,
+      error: "Could not verify stock",
+      items: [],
+    };
   }
 }
 
