@@ -39,6 +39,11 @@ export default function CheckoutPage() {
   const [savedAddresses, setSavedAddresses] = useState<SelectedAddress[]>([]);
   const [showAddressPicker, setShowAddressPicker] = useState(false);
   const [serviceCharge, setServiceCharge] = useState(15);
+  const [promoInput, setPromoInput] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [applyingPromo, setApplyingPromo] = useState(false);
 
   const [hydrated, setHydrated] = useState(false);
   const [showAddressWarning, setShowAddressWarning] = useState(false);
@@ -101,11 +106,76 @@ export default function CheckoutPage() {
     return serviceVendorIds.some((id) => vendorHours[id] && !isVendorOpen(vendorHours[id]).open);
   }, [serviceVendorIds, vendorHours]);
 
-  const { discount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
+  const { discount: computedDiscount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
     tipAmount,
     serviceCharge,
+    discount,
   });
+
+  const applyPromo = async () => {
+    const code = promoInput.trim();
+    if (!code) return;
+    setApplyingPromo(true);
+    setPromoError(null);
+    try {
+      const res = await fetch("/api/promo/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, subtotal, vendorIds }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setPromoCode(data.code);
+        setDiscount(Number(data.discount) || 0);
+        setPromoError(null);
+      } else {
+        setPromoCode("");
+        setDiscount(0);
+        setPromoError(data.error || "Invalid promo code");
+      }
+    } catch {
+      setPromoCode("");
+      setDiscount(0);
+      setPromoError("Could not validate promo code. Please try again.");
+    }
+    setApplyingPromo(false);
+  };
+
+  const removePromo = () => {
+    setPromoInput("");
+    setPromoCode("");
+    setDiscount(0);
+    setPromoError(null);
+  };
+
+  // Re-validate the applied promo when the subtotal changes so the discount never goes stale
+  useEffect(() => {
+    if (!promoCode) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/promo/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: promoCode, subtotal, vendorIds }),
+        });
+        const data = await res.json();
+        if (cancelled) return;
+        if (data.valid) {
+          setDiscount(Number(data.discount) || 0);
+        } else {
+          setPromoCode("");
+          setDiscount(0);
+          setPromoError(data.error || "Promo code no longer applies");
+        }
+      } catch {
+        /* keep last known discount; server re-validates at order time */
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal, promoCode]);
 
   const { placeOrder } = usePlaceOrder(supabase);
 
@@ -209,7 +279,7 @@ export default function CheckoutPage() {
               <CheckoutOrderSummary
                 items={items}
                 subtotal={subtotal}
-                discount={discount}
+                discount={computedDiscount}
                 totalDeliveryFee={totalDeliveryFee}
                 totalServiceCharge={totalServiceCharge}
                 gstAmount={gstAmount}
@@ -222,6 +292,45 @@ export default function CheckoutPage() {
                 onSkipTip={() => { setTipAmount(0); setShowTipSelector(false); }}
                 onEditTip={() => setShowTipSelector(true)}
               />
+
+              {/* Promo Code */}
+              <div className="mb-3">
+                <label htmlFor="promo-code" className="text-xs font-bold text-on-surface-variant mb-1.5 block">Promo Code</label>
+                {promoCode ? (
+                  <div className="flex items-center justify-between gap-2 px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="material-symbols-outlined text-green-600 text-lg">verified</span>
+                      <span className="text-sm font-bold text-green-700 dark:text-green-400 truncate">{promoCode}</span>
+                      <span className="text-xs font-semibold text-green-600">-₹{computedDiscount.toFixed(2)}</span>
+                    </div>
+                    <button onClick={removePromo} className="text-xs font-semibold text-on-surface-variant hover:text-on-surface shrink-0" aria-label="Remove promo code">
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      id="promo-code"
+                      type="text"
+                      className="flex-1 min-w-0 px-4 py-3 bg-surface-subtle rounded-xl border border-outline/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm uppercase"
+                      placeholder="Enter code"
+                      value={promoInput}
+                      onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
+                      autoComplete="off"
+                    />
+                    <button
+                      onClick={applyPromo}
+                      disabled={applyingPromo || !promoInput.trim()}
+                      className="px-4 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 shrink-0"
+                    >
+                      {applyingPromo ? "..." : "Apply"}
+                    </button>
+                  </div>
+                )}
+                {promoError && (
+                  <p className="mt-1.5 text-xs text-red-500 font-semibold" role="alert">{promoError}</p>
+                )}
+              </div>
 
               {/* Special Instructions */}
               <div className="mb-3">
@@ -259,10 +368,10 @@ export default function CheckoutPage() {
                   const orderArgs = {
                     deliveryAddress,
                     paymentMethod,
-                    discount,
+                    discount: computedDiscount,
                     subtotal,
                     deliveryFee: totalDeliveryFee,
-                    promoCode: "",
+                    promoCode,
                     scheduledDate,
                     scheduledTime,
                     specialInstructions,
