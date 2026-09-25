@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
+import { restoreStock } from "@/lib/stock";
 import logger from "@/lib/logger";
 import type { Order, OrderStatus } from "@/lib/types";
 
@@ -152,6 +153,10 @@ export default function PartnerPOS() {
     if (error) {
       useToastStore.getState().addToast("Error: " + error.message, "error");
       return;
+    }
+
+    if (newStatus === "cancelled") {
+      await restoreStock(orderId);
     }
 
     if (["accepted", "preparing", "ready_for_pickup"].includes(newStatus)) {

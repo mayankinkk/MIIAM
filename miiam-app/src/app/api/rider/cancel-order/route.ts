@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkCsrf } from "@/lib/security";
 import { withRateLimit } from "@/lib/api-utils";
+import { restoreStock } from "@/lib/stock";
 
 export const POST = withRateLimit(async function POST(req: NextRequest) {
   if (!checkCsrf(req)) {
@@ -34,6 +35,7 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
 
     const { error } = await supabase.from("orders").update({ status: "cancelled", rider_id: null }).eq("id", order_id).eq("rider_id", rider_id);
     if (error) throw error;
+    await restoreStock(order_id, supabase);
     await supabase.from("rider_incidents").insert({
       rider_id,
       order_id,

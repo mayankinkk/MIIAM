@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { getVendorForUser, getVendorMenuItems } from "@/lib/vendor";
+import { restoreStock } from "@/lib/stock";
 import { VendorDashboardSkeleton } from "@/components/vendor/VendorSkeleton";
 import type { Order } from "@/lib/types";
 import logger from "@/lib/logger";
@@ -164,6 +165,7 @@ export default function VendorDashboard() {
         .from("orders")
         .update({ status: "cancelled", cancellation_reason: reason || "Cancelled by vendor", cancelled_by: "vendor" })
         .eq("id", orderId);
+      await restoreStock(orderId);
       setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o)));
     } catch (err) {
       logger.error({ err }, "Failed to cancel order");

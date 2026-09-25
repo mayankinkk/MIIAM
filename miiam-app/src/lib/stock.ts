@@ -1,7 +1,13 @@
 import { createClient } from "@/lib/supabase/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import logger from "@/lib/logger";
 
-const supabase = createClient();
+type StockClient = Pick<SupabaseClient, "from">;
+
+// Lazy default client: stock.ts is imported by server routes, so the
+// browser client must not be constructed at module-evaluation time.
+let cachedClient: StockClient | null = null;
+const supabase = (): StockClient => (cachedClient ??= createClient());
 
 export interface StockCheckItem {
   menu_item_id: string;
@@ -25,7 +31,7 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
   const menuItemIds = items.map(i => i.menu_item_id);
 
   try {
-    const { data: menuItems, error } = await supabase
+    const { data: menuItems, error } = await supabase()
       .from("menu_items")
       .select("id, name, stock, is_available")
       .in("id", menuItemIds);
@@ -79,7 +85,7 @@ export async function decrementStock(
   try {
     // Atomic decrement per item: check stock >= quantity in WHERE clause to prevent race
     for (const item of items) {
-      const { data: current } = await supabase
+      const { data: current } = await supabase()
         .from("menu_items")
         .select("stock")
         .eq("id", item.menu_item_id)
@@ -97,7 +103,7 @@ export async function decrementStock(
       const newStock = current.stock - item.quantity;
       // The .gte("stock", item.quantity) in WHERE prevents race condition:
       // if another order decremented first, this UPDATE affects 0 rows
-      const { data: updated, error: updateErr } = await supabase
+      const { data: updated, error: updateErr } = await supabase()
         .from("menu_items")
         .update({
           stock: newStock,
@@ -115,7 +121,7 @@ export async function decrementStock(
       }
     }
 
-    await supabase.from("stock_movements").insert(
+    await supabase().from("stock_movements").insert(
       items.map(item => ({
         menu_item_id: item.menu_item_id,
         order_id: orderId,
@@ -131,9 +137,13 @@ export async function decrementStock(
   }
 }
 
-export async function restoreStock(orderId: string): Promise<void> {
+export async function restoreStock(
+  orderId: string,
+  client?: StockClient,
+): Promise<void> {
+  const db = client ?? supabase();
   try {
-    const { data: movements } = await supabase
+    const { data: movements } = await db
       .from("stock_movements")
       .select("menu_item_id, quantity")
       .eq("order_id", orderId)
@@ -142,21 +152,21 @@ export async function restoreStock(orderId: string): Promise<void> {
     if (!movements || movements.length === 0) return;
 
     for (const movement of movements) {
-      const { data: current } = await supabase
+      const { data: current } = await db
         .from("menu_items")
         .select("stock")
         .eq("id", movement.menu_item_id)
         .single();
 
       if (current?.stock !== null && current?.stock !== undefined) {
-        await supabase
+        await db
           .from("menu_items")
           .update({ stock: current.stock + Math.abs(movement.quantity), is_available: true })
           .eq("id", movement.menu_item_id);
       }
     }
 
-    await supabase
+    await db
       .from("stock_movements")
       .update({ type: "restored" })
       .eq("order_id", orderId)

@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Order, OrderStatus } from "@/lib/types";
 import { useToastStore } from "@/lib/store/toastStore";
+import { restoreStock } from "@/lib/stock";
 import logger from "@/lib/logger";
 
 const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "processing", "preparing", "ready_for_pickup", "shopping", "picked_up", "picking_up", "on_the_way", "arrived", "delivered", "cancelled", "refunded", "no_rider_available"];
@@ -127,6 +128,10 @@ export default function OrderManagement() {
     const { data: order } = await supabase.from("orders").select("user_id, vendor_id").eq("id", orderId).single();
     
     await supabase.from("orders").update({ status }).eq("id", orderId);
+
+    if (status === "cancelled") {
+      await restoreStock(orderId);
+    }
     
     // Send notification to customer
     if (order?.user_id) {

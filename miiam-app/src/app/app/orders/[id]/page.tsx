@@ -22,6 +22,7 @@ import RiderContactCard from "@/components/order/RiderContactCard";
 import OrderStatusBanner from "@/components/order/OrderStatusBanner";
 import PendingOrderCard from "@/components/order/PendingOrderCard";
 import { useOrderTracking } from "@/lib/hooks/useOrderTracking";
+import { restoreStock } from "@/lib/stock";
 import { useUnreadMessages } from "@/lib/hooks/useUnreadMessages";
 import { OrderSkeleton } from "@/components/Skeleton";
 
@@ -187,6 +188,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
       if (reason) updates.cancel_reason = reason;
       const { error } = await supabase.from("orders").update(updates).eq("id", id).eq("user_id", currentUserId);
       if (error) throw error;
+      await restoreStock(id);
       setOrder((prev) => prev ? { ...prev, ...updates } : prev);
       addToast(t.orders.orderCancelledSuccess, "success");
     } catch (error) {

@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getVendorIdForUser, getVendorMenuItems } from "@/lib/vendor";
+import { restoreStock } from "@/lib/stock";
 import { VendorTableSkeleton } from "@/components/vendor/VendorSkeleton";
 import type { Order, OrderStatus } from "@/lib/types";
 import OrderChatOverlay from "@/components/order/OrderChatOverlay";
@@ -90,6 +91,9 @@ export default function VendorOrders() {
     if (error) {
       logger.error({ err: error }, "Failed to update order status");
       return;
+    }
+    if (status === "cancelled") {
+      await restoreStock(orderId);
     }
     setOrders(orders.map((o) => (o.id === orderId ? { ...o, status } : o)));
     if (selectedOrder?.id === orderId) setSelectedOrder({ ...selectedOrder, status });
