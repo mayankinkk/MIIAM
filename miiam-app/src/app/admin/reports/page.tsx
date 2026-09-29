@@ -59,19 +59,26 @@ export default function ReportsPage() {
       if (reportType === "orders") {
         const { data } = await supabase
           .from("orders")
-          .select("id, status, total_amount, placed_at, vendor:vendors(name), user:profiles(full_name, phone)")
+          .select("id, status, total_amount, placed_at, user_id, customer_phone, vendor:vendors(shop_name)")
           .gte("placed_at", startIso)
           .lte("placed_at", endIso)
           .order("placed_at", { ascending: false })
           .limit(100);
         if (data) {
+          const userIds = [...new Set(data.map((o: Record<string, unknown>) => o.user_id).filter(Boolean))] as string[];
+          const { data: profiles } = userIds.length > 0
+            ? await supabase.from("profiles").select("id, full_name, phone").in("id", userIds)
+            : { data: null };
+          const profileMap = new Map<string, Record<string, unknown>>(
+            (profiles || []).map((p: Record<string, unknown>) => [p.id as string, p])
+          );
           setOrders(data.map((o: Record<string, unknown>) => {
             const vendor = o.vendor as Record<string, unknown> | null;
-            const user = o.user as Record<string, unknown> | null;
+            const user = o.user_id ? profileMap.get(o.user_id as string) || null : null;
             return {
               id: (o.id as string).slice(0, 8).toUpperCase(),
-              vendor_name: (vendor?.shop_name as string) || (vendor?.name as string) || "—",
-              customer_name: (user?.full_name as string) || (user?.phone as string) || "—",
+              vendor_name: (vendor?.shop_name as string) || "—",
+              customer_name: (user?.full_name as string) || (user?.phone as string) || (o.customer_phone as string) || "—",
               status: o.status as string,
               total_amount: (o.total_amount as number) || 0,
               placed_at: o.placed_at as string,
@@ -116,16 +123,22 @@ export default function ReportsPage() {
       } else if (reportType === "riders") {
         const { data } = await supabase
           .from("orders")
-          .select("rider_id, delivery_fee, total_amount, status, rider:riders(id, full_name, phone)")
+          .select("rider_id, delivery_fee, total_amount, status")
           .eq("status", "delivered")
           .gte("placed_at", startIso)
           .lte("placed_at", endIso);
         if (data) {
+          const riderIds = [...new Set(data.map((o: Record<string, unknown>) => o.rider_id as string).filter(Boolean))];
+          const { data: ridersData } = riderIds.length > 0
+            ? await supabase.from("riders").select("id, name, phone").in("id", riderIds)
+            : { data: null };
+          const riderLookup = new Map((ridersData || []).map((r: Record<string, unknown>) => [r.id as string, r]));
           const riderMap = new Map<string, { name: string; deliveries: number; earnings: number }>();
           for (const o of data) {
             const rid = o.rider_id;
             if (!rid) continue;
-            const rName = (o.rider as Record<string, unknown> | null)?.full_name as string || (o.rider as Record<string, unknown> | null)?.phone as string || "Unknown";
+            const rider = riderLookup.get(rid) as Record<string, unknown> | undefined;
+            const rName = (rider?.name as string) || (rider?.phone as string) || "Unknown";
             const cur = riderMap.get(rid) || { name: rName, deliveries: 0, earnings: 0 };
             cur.deliveries++;
             cur.earnings += o.delivery_fee || 0;
