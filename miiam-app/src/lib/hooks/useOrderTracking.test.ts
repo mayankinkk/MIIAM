@@ -58,7 +58,7 @@ vi.mock("@/lib/logger", () => ({
 
 import { useOrderTracking } from "./useOrderTracking";
 
-function eqChain(resolveValue: unknown) {
+function eqChain(resolveValue: unknown): ReturnType<typeof createDefaultFromMock> {
   const chain: Record<string, unknown> = {
     maybeSingle: vi.fn().mockResolvedValue(resolveValue),
     single: vi.fn().mockResolvedValue(resolveValue),
@@ -70,7 +70,7 @@ function eqChain(resolveValue: unknown) {
   };
   chain.eq = vi.fn(() => chain);
   chain.select = vi.fn(() => chain);
-  return chain;
+  return chain as ReturnType<typeof createDefaultFromMock>;
 }
 
 describe("useOrderTracking", () => {
