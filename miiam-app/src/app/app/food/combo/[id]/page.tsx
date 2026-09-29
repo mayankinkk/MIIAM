@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { canOptimizeImage } from "@/lib/image-urls";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
@@ -258,6 +259,7 @@ export default function ComboDetailPage() {
             width={48}
             height={48}
             className="w-full h-full object-cover shadow-lg"
+            unoptimized={!canOptimizeImage(item.img || "")}
           />
         </div>
       ))}
@@ -285,7 +287,7 @@ export default function ComboDetailPage() {
       {/* Hero Image */}
       <div ref={heroRef} className="relative h-64 sm:h-80 overflow-hidden">
         {combo.image_url ? (
-          <Image src={combo.image_url} alt={combo.name} fill className="object-cover" sizes="100vw" />
+          <Image src={combo.image_url} alt={combo.name} fill className="object-cover" sizes="100vw" unoptimized={!canOptimizeImage(combo.image_url)} />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-orange-100 to-amber-50">🎉</div>
         )}
@@ -395,7 +397,7 @@ export default function ComboDetailPage() {
         <Link href={`/app/food/${vendor.id}`} className="mx-4 mt-4 block bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10 active:scale-[0.98] transition-transform">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
-              <Image src={vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80"} alt={vendor.shop_name} fill className="object-cover" sizes="48px" />
+              <Image src={vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80"} alt={vendor.shop_name} fill className="object-cover" sizes="48px" unoptimized={!canOptimizeImage(vendor.image_url || "")} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-on-surface text-sm truncate">{vendor.shop_name}</p>
@@ -431,6 +433,7 @@ export default function ComboDetailPage() {
                     fill
                     className="object-cover"
                     sizes="128px"
+                    unoptimized={!canOptimizeImage(item.image_url || "")}
                   />
                   {item.is_veg && (
                     <span className="absolute top-1 left-1 w-4 h-4 bg-white rounded-sm flex items-center justify-center">
@@ -474,6 +477,7 @@ export default function ComboDetailPage() {
                       fill
                       className="object-cover"
                       sizes="160px"
+                      unoptimized={!canOptimizeImage(sc.image_url || "")}
                     />
                     {scDiscount > 0 && (
                       <span className="absolute top-1 right-1 bg-status-error text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">

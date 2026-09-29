@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { canOptimizeImage } from "@/lib/image-urls";
 import { createClient } from "@/lib/supabase/client";
 import ImageUpload from "@/components/ImageUpload";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
@@ -227,7 +228,7 @@ export default function FlowersItemsPage() {
             <div key={item.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden hover:shadow-lg transition-shadow">
               <div className="h-40 bg-[var(--color-surface-container)] relative">
                 {item.image_url ? (
-                  <Image src={item.image_url} alt={item.name} fill className="object-cover" />
+                  <Image src={item.image_url} alt={item.name} fill className="object-cover" unoptimized={!canOptimizeImage(item.image_url)} />
                 ) : (
                   <div className="flex items-center justify-center h-full">
                     <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60">local_florist</span>
