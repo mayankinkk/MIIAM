@@ -298,13 +298,6 @@ function ServicesContent() {
     setIsServiceable(Boolean(userPincode || userCity));
   }, [userPincode, userCity]);
 
-  if (mappedCategory) {
-    const setting = getSetting(mappedCategory as ServiceCategory);
-    if (setting && !setting.isEnabled) {
-      return <ServiceUnavailable serviceName={setting.name} message={setting.message} icon={setting.icon} />;
-    }
-  }
-
   const filteredServices = useMemo(() => {
     let results = selectedCategory === "all" ? dbServices : dbServices.filter((s) => s.category === selectedCategory);
     if (searchQuery.trim()) {
@@ -319,6 +312,15 @@ function ServicesContent() {
     }
     return results;
   }, [selectedCategory, dbServices, searchQuery]);
+
+  // Must come after every hook: returning early here used to skip useMemo and
+  // crash React ("rendered fewer hooks") once categories loaded.
+  if (mappedCategory) {
+    const setting = getSetting(mappedCategory as ServiceCategory);
+    if (setting && !setting.isEnabled) {
+      return <ServiceUnavailable serviceName={setting.name} message={setting.message} icon={setting.icon} />;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-surface pb-24">
