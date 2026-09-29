@@ -49,6 +49,7 @@ export default function CheckoutPage() {
   const [showAddressWarning, setShowAddressWarning] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
 
@@ -65,6 +66,7 @@ export default function CheckoutPage() {
     async function checkAuth() {
       const { data: { user } } = await supabase.auth.getUser();
       setIsAuthenticated(!!user);
+      setAuthChecked(true);
     }
     checkAuth();
 
@@ -359,7 +361,7 @@ export default function CheckoutPage() {
                     setTimeout(() => setShowAddressWarning(false), 3000);
                     return;
                   }
-                  if (isAuthenticated === false) {
+                  if (isAuthenticated !== true) {
                     setShowLoginPrompt(true);
                     return;
                   }
@@ -385,7 +387,7 @@ export default function CheckoutPage() {
 
                   placeOrder(orderArgs).finally(() => setPlacing(false));
                 }}
-                disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
+                disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor || !authChecked}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
                 {placing ? (

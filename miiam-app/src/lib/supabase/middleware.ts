@@ -24,18 +24,36 @@ export async function updateSession(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
+  const pathname = request.nextUrl.pathname
 
   const publicPartnerPaths = ['/partner', '/partner/register', '/partner/dashboard']
-  const isPublicPartner = publicPartnerPaths.some(p =>
-    request.nextUrl.pathname === p
-  )
+  const isPublicPartner = publicPartnerPaths.some(p => pathname === p)
   const publicAuthPaths = ['/rider/login', '/rider/apply']
-  const isPublicAuth = publicAuthPaths.some(p =>
-    request.nextUrl.pathname === p
-  )
+  const isPublicAuth = publicAuthPaths.some(p => pathname === p)
+
+  // Browse-first: catalog, item detail and cart are open to everyone.
+  // Sign-in is demanded only when the user places an order (client-side gate in
+  // /app/checkout) or opens an account surface (orders, wallet, addresses, ...).
+  const publicAppPaths = [
+    '/app/home',
+    '/app/food',
+    '/app/services',
+    '/app/store',
+    '/app/search',
+    '/app/explore',
+    '/app/cart',
+    '/app/checkout',
+    '/app/vendor',
+    '/app/vendor-failure',
+    '/app/flowers',
+  ]
+  const isPublicApp =
+    pathname === '/app' ||
+    publicAppPaths.some(p => pathname === p || pathname.startsWith(`${p}/`))
+
   const protectedPaths = ['/app', '/admin', '/rider', '/partner']
-  const isProtected = !isPublicPartner && !isPublicAuth && protectedPaths.some(p =>
-    request.nextUrl.pathname.startsWith(p)
+  const isProtected = !isPublicApp && !isPublicPartner && !isPublicAuth && protectedPaths.some(p =>
+    pathname.startsWith(p)
   )
 
   if (isProtected && !user) {

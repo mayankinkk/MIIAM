@@ -4,8 +4,6 @@ test.describe("Customer App Auth Guards", () => {
   const authGuardPages = [
     { path: "/app/orders", pattern: /login|auth/i },
     { path: "/app/orders/track/test-123", pattern: /login|auth/i },
-    { path: "/app/cart", pattern: /login|auth/i },
-    { path: "/app/checkout", pattern: /login|auth/i },
     { path: "/app/addresses", pattern: /login|auth/i },
     { path: "/app/profile/edit", pattern: /login|auth/i },
     { path: "/app/bookings", pattern: /login|auth/i },
@@ -17,6 +15,18 @@ test.describe("Customer App Auth Guards", () => {
       await page.goto(path);
       await page.waitForURL(pattern, { timeout: 10000 });
       await expect(page).toHaveURL(pattern);
+    });
+  }
+});
+
+test.describe("Browse First (Zomato/Swiggy style)", () => {
+  const browsePages = ["/app/cart", "/app/checkout"];
+
+  for (const path of browsePages) {
+    test(`should load ${path} without auth`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page).not.toHaveURL(/\/auth\/login/, { timeout: 10000 });
+      await expect(page.locator("body")).toBeVisible();
     });
   }
 });
