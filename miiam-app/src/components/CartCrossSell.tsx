@@ -43,7 +43,8 @@ export default function CartCrossSell() {
           .in("vendor_id", vendorIds)
           .eq("is_available", true)
           .not("id", "in", `(${Array.from(existingItemIds).join(",")})`)
-          .order("popularity", { ascending: false })
+          .order("is_featured", { ascending: false })
+          .order("created_at", { ascending: false })
           .limit(10);
 
         if (menuItems) {
