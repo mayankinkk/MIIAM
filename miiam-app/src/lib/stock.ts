@@ -94,11 +94,13 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
 export async function decrementStock(
   items: StockCheckItem[],
   orderId: string,
+  client?: StockClient,
 ): Promise<{ success: boolean; error?: string }> {
+  const db = client ?? supabase();
   try {
     // Atomic decrement per item: check stock >= quantity in WHERE clause to prevent race
     for (const item of items) {
-      const { data: current } = await supabase()
+      const { data: current } = await db
         .from("menu_items")
         .select("stock")
         .eq("id", item.menu_item_id)
@@ -116,7 +118,7 @@ export async function decrementStock(
       const newStock = current.stock - item.quantity;
       // The .gte("stock", item.quantity) in WHERE prevents race condition:
       // if another order decremented first, this UPDATE affects 0 rows
-      const { data: updated, error: updateErr } = await supabase()
+      const { data: updated, error: updateErr } = await db
         .from("menu_items")
         .update({
           stock: newStock,
@@ -134,7 +136,7 @@ export async function decrementStock(
       }
     }
 
-    await supabase().from("stock_movements").insert(
+    await db.from("stock_movements").insert(
       items.map(item => ({
         menu_item_id: item.menu_item_id,
         order_id: orderId,

@@ -84,8 +84,9 @@ export type OrderStatus =
 
 export interface Order {
   id: string;
-  user_id: string;
+  user_id: string | null;
   customer_name?: string;
+  customer_phone?: string | null;
   vendor_id: string;
   rider_id: string | null;
   status: OrderStatus;
@@ -102,7 +103,7 @@ export interface Order {
   delay_minutes?: number | null;
   delay_reason?: string | null;
   estimated_prep_time?: number | null;
-  vendor?: Vendor;
+  vendor?: Vendor | null;
   items?: OrderItem[];
   address?: Address;
   rider?: Rider;

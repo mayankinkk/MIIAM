@@ -610,13 +610,14 @@ export default function VendorAnalytics() {
         const userItemOrders = new Map<string, Map<string, number>>();
         deliveredOrders.forEach((o) => {
           if (!o.user_id) return;
-          if (!userItemOrders.has(o.user_id)) userItemOrders.set(o.user_id, new Map());
+          const userId = o.user_id;
+          if (!userItemOrders.has(userId)) userItemOrders.set(userId, new Map());
           const seen = new Set<string>();
           o.items?.forEach((item) => {
             const name = menuItemNames.get(item.menu_item_id)?.name || "Unknown";
             if (seen.has(name)) return;
             seen.add(name);
-            const m = userItemOrders.get(o.user_id)!;
+            const m = userItemOrders.get(userId)!;
             m.set(name, (m.get(name) || 0) + 1);
           });
         });
