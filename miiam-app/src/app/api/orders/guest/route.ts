@@ -12,10 +12,6 @@ const refSchema = z.object({
   phone: z.string().min(1),
 });
 
-const listSchema = z.object({
-  refs: z.array(refSchema).min(1).max(50),
-});
-
 /**
  * Read-only view of orders this device placed without an account.
  * Auth = the order id (unguessable UUID) + the phone number captured at
@@ -40,12 +36,19 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "refs must be JSON" }, { status: 400 });
   }
 
-  const parsed = listSchema.safeParse(refsJson);
+  // Callers send a bare array (`?refs=[{id, phone}]`); also accept `{ refs: [...] }`.
+  const candidate = Array.isArray(refsJson)
+    ? refsJson
+    : refsJson && typeof refsJson === "object"
+      ? (refsJson as { refs?: unknown }).refs
+      : undefined;
+
+  const parsed = z.array(refSchema).min(1).max(50).safeParse(candidate);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid refs" }, { status: 400 });
   }
 
-  const refs = parsed.data.refs.map((r) => ({ id: r.id, phone: normalizePhone(r.phone) }));
+  const refs = parsed.data.map((r) => ({ id: r.id, phone: normalizePhone(r.phone) }));
   if (refs.some((r) => !r.phone)) {
     return NextResponse.json({ error: "Invalid phone number" }, { status: 400 });
   }

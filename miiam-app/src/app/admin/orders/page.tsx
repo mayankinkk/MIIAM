@@ -81,7 +81,7 @@ export default function OrderManagement() {
       .from("riders")
       .select("id, name, phone")
       .eq("is_online", true)
-      .eq("verification_status", "verified");
+      .eq("status", "active");
     setAvailableRiders(data || []);
   }
 
@@ -479,7 +479,7 @@ export default function OrderManagement() {
                   <div>
                     <p className="text-xs text-[var(--color-outline-variant)]">Name</p>
                     <p className="font-bold text-[var(--color-on-surface)]">
-                      {customerProfile?.full_name || selectedOrder.customer_name || "—"}
+                      {customerProfile?.full_name || selectedOrder.customer_name || "Guest"}
                     </p>
                   </div>
                   <div>
