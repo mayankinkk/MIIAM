@@ -31,28 +31,11 @@ export async function updateSession(request: NextRequest) {
   const publicAuthPaths = ['/rider/login', '/rider/apply']
   const isPublicAuth = publicAuthPaths.some(p => pathname === p)
 
-  // Browse-first: catalog, item detail and cart are open to everyone.
-  // Sign-in is demanded only when the user places an order (client-side gate in
-  // /app/checkout) or opens an account surface (orders, wallet, addresses, ...).
-  const publicAppPaths = [
-    '/app/home',
-    '/app/food',
-    '/app/services',
-    '/app/store',
-    '/app/search',
-    '/app/explore',
-    '/app/cart',
-    '/app/checkout',
-    '/app/vendor',
-    '/app/vendor-failure',
-    '/app/flowers',
-  ]
-  const isPublicApp =
-    pathname === '/app' ||
-    publicAppPaths.some(p => pathname === p || pathname.startsWith(`${p}/`))
-
-  const protectedPaths = ['/app', '/admin', '/rider', '/partner']
-  const isProtected = !isPublicApp && !isPublicPartner && !isPublicAuth && protectedPaths.some(p =>
+  // No sign-in wall in the customer app: catalog, cart, checkout, orders and
+  // profile all render for signed-out visitors (orders are identified by the
+  // phone number captured at checkout). Only staff portals need a session.
+  const protectedPaths = ['/admin', '/rider', '/partner']
+  const isProtected = !isPublicPartner && !isPublicAuth && protectedPaths.some(p =>
     pathname.startsWith(p)
   )
 

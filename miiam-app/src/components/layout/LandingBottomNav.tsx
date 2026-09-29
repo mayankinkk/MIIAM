@@ -8,7 +8,7 @@ const navItems = [
   { href: "/app/food", icon: "restaurant", label: "Food" },
   { href: "/services", icon: "handyman", label: "Services" },
   { href: "/app/cart", icon: "shopping_cart", label: "Cart" },
-  { href: "/onboarding", icon: "person", label: "Sign In" },
+  { href: "/app/orders", icon: "receipt_long", label: "Orders" },
 ];
 
 export default function LandingBottomNav() {

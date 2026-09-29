@@ -1,22 +1,59 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Customer App Auth Guards", () => {
-  const authGuardPages = [
-    { path: "/app/orders", pattern: /login|auth/i },
-    { path: "/app/orders/track/test-123", pattern: /login|auth/i },
-    { path: "/app/addresses", pattern: /login|auth/i },
-    { path: "/app/profile/edit", pattern: /login|auth/i },
-    { path: "/app/bookings", pattern: /login|auth/i },
-    { path: "/app/settings", pattern: /login|auth/i },
+test.describe("Guest app — no sign-in walls", () => {
+  const guestPages = [
+    "/app/orders",
+    "/app/addresses",
+    "/app/profile",
+    "/app/profile/edit",
+    "/app/bookings",
+    "/app/settings",
+    "/app/cart",
+    "/app/checkout",
   ];
 
-  for (const { path, pattern } of authGuardPages) {
-    test(`should redirect ${path} to login when unauthenticated`, async ({ page }) => {
+  for (const path of guestPages) {
+    test(`should load ${path} without a login redirect`, async ({ page }) => {
       await page.goto(path);
-      await page.waitForURL(pattern, { timeout: 10000 });
-      await expect(page).toHaveURL(pattern);
+      await expect(page).not.toHaveURL(/\/auth\/(login|signup)/, { timeout: 10000 });
+      await expect(page.locator("body")).toBeVisible();
     });
   }
+
+  test("checkout asks for a phone number instead of prompting a login", async ({ page }) => {
+    // The checkout form only renders once there is something to buy.
+    await page.addInitScript(() => {
+      window.localStorage.setItem(
+        "miiam-cart",
+        JSON.stringify({
+          state: {
+            items: [
+              {
+                id: "11111111-1111-4111-8111-111111111111",
+                menu_item_id: "22222222-2222-4222-8222-222222222222",
+                vendor_id: "33333333-3333-4333-8333-333333333333",
+                vendor_name: "Test Kitchen",
+                name: "Paneer Tikka",
+                price: 199,
+                quantity: 1,
+              },
+            ],
+            savedItems: [],
+          },
+          version: 0,
+        })
+      );
+    });
+    await page.goto("/app/checkout");
+    await expect(page.locator("#customer-phone")).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Login Required")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /sign in|create account/i })).toHaveCount(0);
+  });
+
+  test("landing page offers no login entry point", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("link", { name: /^login$/i })).toHaveCount(0);
+  });
 });
 
 test.describe("Browse First (Zomato/Swiggy style)", () => {
