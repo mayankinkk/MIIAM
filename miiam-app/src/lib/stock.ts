@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import logger from "@/lib/logger";
+import { isUuid } from "@/lib/checkout-utils";
 
 type StockClient = Pick<SupabaseClient, "from">;
 
@@ -31,26 +32,35 @@ export interface StockResult {
 }
 
 export async function checkStock(items: StockCheckItem[]): Promise<StockResult> {
-  const menuItemIds = items.map(i => i.menu_item_id);
+  // Combos/services/store lines carry ids that are not menu_items rows (or not
+  // even UUIDs). Sending those to PostgREST makes the whole `.in()` filter 400,
+  // which used to flag every line as "unverified". Only ask about real ids.
+  const trackedIds = Array.from(new Set(items.map((i) => i.menu_item_id).filter(isUuid)));
 
   try {
-    const { data: menuItems, error } = await supabase()
-      .from("menu_items")
-      .select("id, name, stock, is_available")
-      .in("id", menuItemIds);
+    let menuItems: Array<{ id: string; name: string; stock: number | null; is_available: boolean }> = [];
 
-    if (error) {
-      logger.error({ err: error }, "Failed to check stock");
-      return {
-        available: true,
-        checked: false,
-        error: "Could not verify stock",
-        items: [],
-      };
+    if (trackedIds.length > 0) {
+      const { data, error } = await supabase()
+        .from("menu_items")
+        .select("id, name, stock, is_available")
+        .in("id", trackedIds);
+
+      if (error) {
+        logger.error({ err: error }, "Failed to check stock");
+        return {
+          available: true,
+          checked: false,
+          error: "Could not verify stock",
+          items: [],
+        };
+      }
+
+      menuItems = (data ?? []) as typeof menuItems;
     }
 
     const stockMap = new Map(
-      (menuItems || []).map((m: { id: string; name: string; stock: number | null; is_available: boolean }) => [m.id, { stock: m.stock, is_available: m.is_available, name: m.name }])
+      menuItems.map((m) => [m.id, { stock: m.stock, is_available: m.is_available, name: m.name }])
     );
 
     const results = items.map(item => {
@@ -100,6 +110,8 @@ export async function decrementStock(
   try {
     // Atomic decrement per item: check stock >= quantity in WHERE clause to prevent race
     for (const item of items) {
+      if (!isUuid(item.menu_item_id)) continue;
+
       const { data: current } = await db
         .from("menu_items")
         .select("stock")
@@ -136,14 +148,25 @@ export async function decrementStock(
       }
     }
 
-    await db.from("stock_movements").insert(
-      items.map(item => ({
-        menu_item_id: item.menu_item_id,
-        order_id: orderId,
-        quantity: -item.quantity,
-        type: "order",
-      }))
-    );
+    const tracked = items.filter((item) => isUuid(item.menu_item_id));
+    if (tracked.length > 0) {
+      // Movement history is best-effort: stock itself is already decremented
+      // above, so a missing table must not fail the order.
+      const { error: movementErr } = await db.from("stock_movements").insert(
+        tracked.map((item) => ({
+          menu_item_id: item.menu_item_id,
+          order_id: orderId,
+          quantity: -item.quantity,
+          type: "order",
+        }))
+      );
+      if (movementErr) {
+        logger.warn(
+          { err: movementErr, orderId },
+          "stock_movements insert failed — run supabase/migrations/20260707_add_stock_movements.sql"
+        );
+      }
+    }
 
     return { success: true };
   } catch (err) {
@@ -158,11 +181,19 @@ export async function restoreStock(
 ): Promise<void> {
   const db = client ?? supabase();
   try {
-    const { data: movements } = await db
+    const { data: movements, error: movementsErr } = await db
       .from("stock_movements")
       .select("menu_item_id, quantity")
       .eq("order_id", orderId)
       .eq("type", "order");
+
+    if (movementsErr) {
+      logger.error(
+        { err: movementsErr, orderId },
+        "stock_movements unavailable — run supabase/migrations/20260707_add_stock_movements.sql to restore stock on cancel"
+      );
+      return;
+    }
 
     if (!movements || movements.length === 0) return;
 

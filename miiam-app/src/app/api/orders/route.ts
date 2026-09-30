@@ -6,6 +6,7 @@ import { createRouteLogger } from "@/lib/logger";
 import {
   FLAT_SERVICE_CHARGE,
   buildScheduledIso,
+  isUuid,
   normalizePhone,
 } from "@/lib/checkout-utils";
 import { decrementStock } from "@/lib/stock";
@@ -16,7 +17,10 @@ const logger = createRouteLogger("orders/create");
 const UUID = z.string().uuid();
 
 const itemSchema = z.object({
-  menu_item_id: UUID,
+  // Combos/services/store lines carry their own id (`combo-<uuid>`, service
+  // item, …). Existence in menu_items is resolved below — a non-menu id must
+  // be stored as NULL, never as a foreign key that cannot resolve.
+  menu_item_id: z.string().min(1).max(200),
   name: z.string().min(1).max(300),
   quantity: z.number().int().min(1).max(100),
   unit_price: z.number().min(0).max(1_000_000),
@@ -120,6 +124,30 @@ export async function POST(request: NextRequest) {
   const createdOrderIds: string[] = [];
   const stockWarnings: string[] = [];
 
+  // Only real menu_items rows may be referenced by order_items.menu_item_id
+  // (it is a foreign key). Everything else is stored as NULL — the same shape
+  // existing combos/store/service orders already have.
+  const candidateIds = Array.from(
+    new Set(
+      payload.groups.flatMap((group) => group.items.map((item) => item.menu_item_id)).filter(isUuid)
+    )
+  );
+  const knownMenuItemIds = new Set<string>(candidateIds);
+  if (candidateIds.length > 0) {
+    const { data: knownRows, error: knownErr } = await admin
+      .from("menu_items")
+      .select("id")
+      .in("id", candidateIds);
+    if (knownErr) {
+      logger.error({ err: knownErr }, "Failed to resolve menu item ids");
+      knownMenuItemIds.clear();
+    } else {
+      knownMenuItemIds.clear();
+      for (const row of (knownRows ?? []) as Array<{ id: string }>) knownMenuItemIds.add(row.id);
+    }
+  }
+  const menuItemIdFor = (id: string) => (knownMenuItemIds.has(id) ? id : null);
+
   try {
     for (const group of payload.groups) {
       const vendorTotal = group.items.reduce(
@@ -159,7 +187,7 @@ export async function POST(request: NextRequest) {
       const { error: itemsError } = await admin.from("order_items").insert(
         group.items.map((item) => ({
           order_id: order.id,
-          menu_item_id: item.menu_item_id,
+          menu_item_id: menuItemIdFor(item.menu_item_id),
           name: item.name,
           quantity: item.quantity,
           unit_price: item.unit_price,
@@ -176,7 +204,7 @@ export async function POST(request: NextRequest) {
 
       if (!payload.scheduledDate) {
         const stockItems = group.items
-          .filter((i) => group.vendor_id !== SERVICES_VENDOR_ID)
+          .filter((i) => group.vendor_id !== SERVICES_VENDOR_ID && knownMenuItemIds.has(i.menu_item_id))
           .map((i) => ({
             menu_item_id: i.menu_item_id,
             quantity: i.quantity,

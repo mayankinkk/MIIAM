@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
-import { safeMenuItemId, normalizePhone } from "@/lib/checkout-utils";
+import { isUuid, normalizePhone } from "@/lib/checkout-utils";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { isVendorOpen } from "@/lib/vendor-hours";
 import { checkStock } from "@/lib/stock";
@@ -154,7 +154,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     if (!scheduledDate) {
       const stockItems = items
         .filter(i => i.vendor_id !== SERVICES_VENDOR_ID)
-        .map(i => ({ menu_item_id: i.id || "", quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
+        .map(i => ({ menu_item_id: i.menu_item_id, quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
       if (stockItems.length > 0) {
         const stockResult = await checkStock(stockItems);
         if (!stockResult.available) {
@@ -177,18 +177,28 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       return false;
     }
 
-    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+
+    // Lines without a real vendor (e.g. store items with a null vendor_id)
+    // cannot be written to orders.vendor_id — say so instead of dropping them
+    // silently once the cart has already been cleared.
+    const skipped = items.filter((i) => !isUuid(i.vendor_id));
+    if (skipped.length > 0 && skipped.length < items.length) {
+      addToast(
+        `Not included in this order: ${skipped.map((i) => i.name).join(", ")} (no store assigned)`,
+        "info"
+      );
+    }
 
     // One order per vendor, created server-side so guests never need a session.
     const groups = vendorIds
-      .filter((vendorId) => UUID_RE.test(vendorId))
+      .filter((vendorId) => isUuid(vendorId))
       .map((vendorId) => ({
         vendor_id: vendorId,
         items: items
           .filter((i) => i.vendor_id === vendorId)
           .map((i) => ({
-            menu_item_id: safeMenuItemId(i.menu_item_id),
+            menu_item_id: i.menu_item_id,
             name: i.name,
             quantity: i.quantity,
             unit_price: i.price,

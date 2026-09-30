@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateOrderTotals, normalizePhone, isValidPhone, buildScheduledIso } from "./checkout-utils";
+import { calculateOrderTotals, normalizePhone, isValidPhone, buildScheduledIso, isUuid } from "./checkout-utils";
 
 describe("normalizePhone", () => {
   it("converts a 10-digit Indian mobile to E.164", () => {
@@ -107,5 +107,14 @@ describe("calculateOrderTotals", () => {
     expect(result.packagingFee).toBe(0);
     expect(result.platformFee).toBe(0);
     expect(result.grand).toBe(315);
+  });
+});
+
+describe("isUuid", () => {
+  it("accepts real uuids and rejects cart ids that are not menu_items rows", () => {
+    expect(isUuid("ccc2aa64-268d-47d6-aad7-c6a7dd076125")).toBe(true);
+    expect(isUuid("combo-3ff244f5-4196-4411-9f37-33cbe961de87")).toBe(false);
+    expect(isUuid("")).toBe(false);
+    expect(isUuid("store")).toBe(false);
   });
 });

@@ -3,8 +3,14 @@ const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 /** Flat ₹15 service charge applied to every cart, regardless of item count */
 export const FLAT_SERVICE_CHARGE = 15;
 
-export function safeMenuItemId(id: string) {
-  return UUID_RE.test(id) ? id : crypto.randomUUID();
+/**
+ * Cart lines that are not `menu_items` rows (combos, store items, services)
+ * keep their own id — the order API stores `order_items.menu_item_id = null`
+ * for them. Never invent a UUID: `menu_item_id` is a foreign key, so a made-up
+ * id makes the whole order insert fail.
+ */
+export function isUuid(value: string): boolean {
+  return UUID_RE.test(value);
 }
 
 /**
