@@ -9,7 +9,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict mode)
-- **Database**: PostgreSQL via Prisma ORM
+- **Database**: PostgreSQL via Supabase (`@supabase/supabase-js`, no ORM)
 - **Auth**: Supabase Auth
 - **State**: Zustand
 - **Styling**: Tailwind CSS v4
