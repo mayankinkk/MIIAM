@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useToastStore } from "@/lib/store/toastStore";
 import { useLocationStore } from "@/lib/store/locationStore";
-import { safeMenuItemId, FLAT_SERVICE_CHARGE } from "@/lib/checkout-utils";
-import { decrementStock } from "@/lib/stock";
+import { isUuid, normalizePhone } from "@/lib/checkout-utils";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { isVendorOpen } from "@/lib/vendor-hours";
 import { checkStock } from "@/lib/stock";
+import { rememberGuestOrder } from "@/lib/guestOrders";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import logger from "@/lib/logger";
 
@@ -21,23 +21,6 @@ interface DeliveryAddress {
   flat?: string;
   lat?: number;
   lng?: number;
-}
-
-interface OrderInsert {
-  user_id: string;
-  vendor_id: string;
-  status: string;
-  total_amount: number;
-  delivery_fee: number;
-  discount_amount: number;
-  tip_amount: number;
-  payment_method: string;
-  delivery_address: string;
-  delivery_lat: number | null;
-  delivery_lng: number | null;
-  scheduled_delivery: string | null;
-  special_instructions: string | null;
-  placed_at: string;
 }
 
 interface PaymentDetails {
@@ -52,7 +35,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
 
-  const validateCheckout = useCallback((deliveryAddress: DeliveryAddress | null, deliveryFee?: number, tipAmount?: number): boolean => {
+  const validateCheckout = useCallback((deliveryAddress: DeliveryAddress | null, phone: string): boolean => {
     if (items.length === 0) {
       addToast("Your cart is empty! Add items from the Food page first.", "error");
       return false;
@@ -67,6 +50,10 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     }
     if (!deliveryAddress.postal_code || deliveryAddress.postal_code.length < 4) {
       addToast("Please enter a valid pincode", "error");
+      return false;
+    }
+    if (!normalizePhone(phone)) {
+      addToast("Please enter a valid phone number", "error");
       return false;
     }
     return true;
@@ -107,7 +94,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     paymentDetails?: PaymentDetails;
     serviceCharge?: number;
   }) => {
-    if (!validateCheckout(deliveryAddress)) return false;
+    if (!validateCheckout(deliveryAddress, phone)) return false;
 
     if (promoCode && discount > 0) {
       try {
@@ -167,7 +154,7 @@ export function usePlaceOrder(supabase: SupabaseClient) {
     if (!scheduledDate) {
       const stockItems = items
         .filter(i => i.vendor_id !== SERVICES_VENDOR_ID)
-        .map(i => ({ menu_item_id: i.id || "", quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
+        .map(i => ({ menu_item_id: i.menu_item_id, quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
       if (stockItems.length > 0) {
         const stockResult = await checkStock(stockItems);
         if (!stockResult.available) {
@@ -184,6 +171,46 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       }
     }
 
+    const phoneE164 = normalizePhone(phone);
+    if (!phoneE164) {
+      addToast("Please enter a valid phone number", "error");
+      return false;
+    }
+
+    const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+
+    // Lines without a real vendor (e.g. store items with a null vendor_id)
+    // cannot be written to orders.vendor_id — say so instead of dropping them
+    // silently once the cart has already been cleared.
+    const skipped = items.filter((i) => !isUuid(i.vendor_id));
+    if (skipped.length > 0 && skipped.length < items.length) {
+      addToast(
+        `Not included in this order: ${skipped.map((i) => i.name).join(", ")} (no store assigned)`,
+        "info"
+      );
+    }
+
+    // One order per vendor, created server-side so guests never need a session.
+    const groups = vendorIds
+      .filter((vendorId) => isUuid(vendorId))
+      .map((vendorId) => ({
+        vendor_id: vendorId,
+        items: items
+          .filter((i) => i.vendor_id === vendorId)
+          .map((i) => ({
+            menu_item_id: i.menu_item_id,
+            name: i.name,
+            quantity: i.quantity,
+            unit_price: i.price,
+            special_notes: i.special_notes || undefined,
+          })),
+      }));
+
+    if (groups.length === 0) {
+      addToast("Some items in your cart can't be ordered right now. Please refresh and try again.", "error");
+      return false;
+    }
+
     try {
       let user = null;
       const { data: { user: fetchedUser }, error: authError } = await supabase.auth.getUser();
@@ -193,93 +220,65 @@ export function usePlaceOrder(supabase: SupabaseClient) {
         const { data: { session } } = await supabase.auth.getSession();
         user = session?.user ?? null;
       }
-      if (!user) { router.push("/auth/login?redirect=" + encodeURIComponent("/app/checkout")); return false; }
 
-      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-      let firstOrderId = "";
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: phoneE164,
+          address: {
+            flat: deliveryAddress?.flat ?? null,
+            street: deliveryAddress?.street ?? "",
+            city: deliveryAddress?.city ?? "",
+            state: deliveryAddress?.state ?? "",
+            postal_code: deliveryAddress?.postal_code ?? "",
+            lat: deliveryAddress?.lat ?? null,
+            lng: deliveryAddress?.lng ?? null,
+          },
+          paymentMethod,
+          subtotal,
+          serviceCharge,
+          deliveryFee,
+          discount,
+          tipAmount,
+          promoCode,
+          scheduledDate,
+          scheduledTime,
+          specialInstructions,
+          groups,
+        }),
+      });
 
-      const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        orderIds?: string[];
+        firstOrderId?: string;
+        stockWarnings?: string[];
+        error?: string;
+      };
 
-      for (const vendorId of vendorIds) {
-        // Skip items with missing or malformed vendor IDs
-        if (!vendorId || !UUID_RE.test(vendorId)) continue;
+      if (!res.ok || !data.ok) {
+        addToast(data.error || "Could not place your order. Please try again.", "error");
+        return false;
+      }
 
-        const vendorItems = items.filter((i) => i.vendor_id === vendorId);
-        const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
+      const orderIds = data.orderIds ?? [];
+      const firstOrderId = data.firstOrderId || orderIds[0] || "";
 
-        const scheduledIso = scheduledDate && scheduledTime
-          ? (() => {
-              const timePart = scheduledTime.split(" - ")[0].trim();
-              const [time, period] = timePart.split(/\s+/);
-              const [hours, minutes] = time.split(":").map(Number);
-              let h = hours;
-              if (period?.toUpperCase() === "PM" && h < 12) h += 12;
-              if (period?.toUpperCase() === "AM" && h === 12) h = 0;
-              return new Date(`${scheduledDate}T${String(h).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
-            })()
-          : null;
+      // Remember the order on this device so it can be tracked without an account.
+      for (const orderId of orderIds) rememberGuestOrder(orderId, phoneE164);
 
-        const orderData: OrderInsert = {
-          user_id: user.id,
-          vendor_id: vendorId,
-          status: scheduledIso ? "scheduled" : "pending",
-          total_amount: +(vendorTotal + (subtotal > 0 ? (serviceCharge ?? FLAT_SERVICE_CHARGE) * (vendorTotal / subtotal) : 0)).toFixed(2),
-          delivery_fee: subtotal > 0 ? +(deliveryFee * (vendorTotal / subtotal)).toFixed(2) : 0,
-          discount_amount: subtotal > 0 ? +(discount * (vendorTotal / subtotal)).toFixed(2) : 0,
-          tip_amount: subtotal > 0 ? +(tipAmount * (vendorTotal / subtotal)).toFixed(2) : 0,
-          payment_method: paymentMethod,
-          delivery_address: finalAddress,
-          delivery_lat: deliveryAddress?.lat ?? null,
-          delivery_lng: deliveryAddress?.lng ?? null,
-          scheduled_delivery: scheduledIso,
-          special_instructions: specialInstructions || null,
-          placed_at: new Date().toISOString(),
-        };
+      if (data.stockWarnings && data.stockWarnings.length > 0) {
+        addToast(data.stockWarnings[0], "info");
+      }
 
-        const { data: order, error: orderError } = await supabase
-          .from("orders")
-          .insert(orderData)
-          .select()
-          .single();
-
-        if (orderError) throw orderError;
-
-        if (order) {
-          if (!firstOrderId) firstOrderId = order.id;
-
-          const { error: itemsError } = await supabase.from("order_items").insert(
-            vendorItems.map((i) => ({
-              order_id: order.id,
-              menu_item_id: safeMenuItemId(i.menu_item_id),
-              name: i.name,
-              quantity: i.quantity,
-              unit_price: i.price,
-              price: i.price * i.quantity,
-              special_notes: i.special_notes || null,
-            }))
-          );
-          if (itemsError) {
-            await supabase.from("orders").delete().eq("id", order.id);
-            throw itemsError;
-          }
-
-          if (!scheduledDate) {
-            const stockItems = vendorItems
-              .filter(i => i.vendor_id !== SERVICES_VENDOR_ID)
-              .map(i => ({ menu_item_id: i.menu_item_id || i.id, quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || vendorId }));
-            if (stockItems.length > 0) {
-              const stockResult = await decrementStock(stockItems, order.id);
-              if (!stockResult.success) {
-                logger.warn({ error: stockResult.error }, "Stock decrement failed — order placed but stock may be inconsistent");
-              }
-            }
-          }
-
+      if (user) {
+        for (const orderId of orderIds) {
           try {
             await fetch("/api/emails/order-confirmation", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderId: order.id }),
+              body: JSON.stringify({ orderId }),
             });
           } catch (emailErr) {
             logger.warn({ err: emailErr }, "Failed to send confirmation email");
@@ -287,7 +286,9 @@ export function usePlaceOrder(supabase: SupabaseClient) {
         }
       }
 
-      if (isRecurring && vendorIds.length === 1 && scheduledDate && scheduledTime) {
+      if (isRecurring && !user) {
+        addToast("Recurring orders need an account — your first order went through as a one-time order.", "info");
+      } else if (isRecurring && vendorIds.length === 1 && scheduledDate && scheduledTime && user) {
         try {
           const { error: scheduleError } = await supabase
             .from("recurring_schedules")
@@ -325,7 +326,11 @@ export function usePlaceOrder(supabase: SupabaseClient) {
       }
 
       clearCart();
-      const msg = isRecurring ? "🎉 Recurring order set up! First order on its way." : "🎉 Order placed! Tracking your order...";
+      const msg = isRecurring && !user
+        ? "🎉 Order placed! Tracking your order..."
+        : isRecurring
+          ? "🎉 Recurring order set up! First order on its way."
+          : "🎉 Order placed! Tracking your order...";
       addToast(msg, "success");
       const targetPath = firstOrderId ? `/app/orders/${firstOrderId}` : "/app/orders";
       router.push(targetPath);

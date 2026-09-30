@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { canOptimizeImage } from "@/lib/image-urls";
 
 interface BlurImageProps {
   src: string;
@@ -43,7 +44,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
   if (fill) {
     return (
       <div className={`relative w-full h-full ${className}`}>
-        <Image {...commonProps} fill alt={alt} />
+        <Image {...commonProps} fill alt={alt} unoptimized={!canOptimizeImage(imgSrc)} />
         {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
       </div>
     );
@@ -51,7 +52,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
 
   return (
     <div className={`relative ${className}`}>
-      <Image {...commonProps} width={width ?? 400} height={height ?? 300} alt={alt} />
+      <Image {...commonProps} width={width ?? 400} height={height ?? 300} alt={alt} unoptimized={!canOptimizeImage(imgSrc)} />
       {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
     </div>
   );

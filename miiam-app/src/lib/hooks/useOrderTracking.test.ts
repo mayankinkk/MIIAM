@@ -2,16 +2,18 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 
 function createDefaultFromMock() {
-  return {
-    select: vi.fn().mockReturnValue({
-      eq: vi.fn().mockReturnValue({
-        single: vi.fn().mockResolvedValue({ data: null, error: null }),
-        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-        limit: vi.fn().mockReturnValue({
-          maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-        }),
-      }),
+  const eqChainObj: Record<string, unknown> = {
+    single: vi.fn().mockResolvedValue({ data: null, error: null }),
+    maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+    limit: vi.fn().mockReturnValue({
+      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+      single: vi.fn().mockResolvedValue({ data: null, error: null }),
     }),
+    in: vi.fn().mockResolvedValue({ data: [], error: null }),
+  };
+  eqChainObj.eq = vi.fn(() => eqChainObj);
+  return {
+    select: vi.fn().mockReturnValue(eqChainObj),
     in: vi.fn().mockResolvedValue({ data: [], error: null }),
   };
 }
@@ -56,16 +58,19 @@ vi.mock("@/lib/logger", () => ({
 
 import { useOrderTracking } from "./useOrderTracking";
 
-function eqChain(resolveValue: unknown) {
-  return {
-    select: vi.fn().mockReturnValue({
-      eq: vi.fn().mockReturnValue({
-        maybeSingle: vi.fn().mockResolvedValue(resolveValue),
-        single: vi.fn().mockResolvedValue(resolveValue),
-      }),
+function eqChain(resolveValue: unknown): ReturnType<typeof createDefaultFromMock> {
+  const chain: Record<string, unknown> = {
+    maybeSingle: vi.fn().mockResolvedValue(resolveValue),
+    single: vi.fn().mockResolvedValue(resolveValue),
+    limit: vi.fn().mockReturnValue({
+      maybeSingle: vi.fn().mockResolvedValue(resolveValue),
+      single: vi.fn().mockResolvedValue(resolveValue),
     }),
     in: vi.fn().mockResolvedValue({ data: [], error: null }),
   };
+  chain.eq = vi.fn(() => chain);
+  chain.select = vi.fn(() => chain);
+  return chain as ReturnType<typeof createDefaultFromMock>;
 }
 
 describe("useOrderTracking", () => {

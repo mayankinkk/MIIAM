@@ -147,7 +147,7 @@ function SearchContent() {
           .limit(20),
         supabase
           .from("menu_items")
-          .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, vendor:vendors(id, shop_name, name, image_url, cover_image_url)")
+          .select("id, vendor_id, name, price, category, image_url, is_veg, is_available, vendor:vendors(id, shop_name, image_url, cover_image_url)")
           .ilike("name", `%${searchQuery}%`)
           .limit(20),
       ]);

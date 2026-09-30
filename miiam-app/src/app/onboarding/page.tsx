@@ -73,13 +73,10 @@ export default function OnboardingPage() {
           {/* CTA */}
           <div className="flex flex-col items-center gap-4">
             <Link
-              href="/auth/signup"
+              href="/app/home"
               className="w-full md:w-80 text-center bento-gradient-red text-white font-bold py-5 rounded-xl shadow-lg shadow-[var(--color-primary)]/20 transform transition-transform active:scale-95 text-lg"
             >
               Get Started
-            </Link>
-            <Link href="/auth/login" className="text-[var(--color-on-surface-variant)] font-semibold text-sm hover:text-[var(--color-primary)] transition-colors">
-              Already have an account? Sign In
             </Link>
           </div>
         </div>
@@ -123,7 +120,7 @@ export default function OnboardingPage() {
             </div>
           </div>
           <div className="mt-16 flex justify-center">
-            <Link href="/auth/signup" className="px-12 py-5 bg-[var(--color-on-surface)] text-white rounded-xl font-bold text-lg hover:bg-[var(--color-primary)] transition-colors">
+            <Link href="/app/home" className="px-12 py-5 bg-[var(--color-on-surface)] text-white rounded-xl font-bold text-lg hover:bg-[var(--color-primary)] transition-colors">
               Explore Ecosystem
             </Link>
           </div>
@@ -156,14 +153,14 @@ export default function OnboardingPage() {
           </p>
           <div className="space-y-4">
             <Link
-              href="/auth/signup"
+              href="/app/home"
               className="w-full bento-gradient-blue text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-brand-secondary/20 transform transition-transform active:scale-95 text-lg"
             >
               <span className="material-symbols-outlined">near_me</span>
               Use current location
             </Link>
             <Link
-              href="/auth/signup"
+              href="/app/home"
               className="block w-full py-5 text-[var(--color-on-surface)] font-bold text-sm uppercase tracking-widest hover:bg-[var(--color-surface-container)] transition-colors rounded-xl"
             >
               Enter manually

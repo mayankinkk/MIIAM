@@ -47,15 +47,21 @@ export default function CartPage() {
   const router = useRouter();
   const { addToast } = useToastStore();
 
-  const [hydrated, setHydrated] = useState(() => useCartStore.persist?.hasHydrated() ?? false);
+  const [hydrated, setHydrated] = useState(false);
   const [serviceCharge, setServiceCharge] = useState(15);
 
   useEffect(() => {
-    if (hydrated) return;
-    if (!useCartStore.persist) return;
+    if (!useCartStore.persist) {
+      setHydrated(true);
+      return;
+    }
+    if (useCartStore.persist.hasHydrated()) {
+      setHydrated(true);
+      return;
+    }
     const unsub = useCartStore.persist.onFinishHydration(() => setHydrated(true));
     return unsub;
-  }, [hydrated]);
+  }, []);
 
   useEffect(() => {
     async function loadServiceCharge() {

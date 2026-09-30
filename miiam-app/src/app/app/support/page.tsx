@@ -129,7 +129,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
         setUserId(user.id);
         const { data: orders } = await supabase
           .from("orders")
-          .select("id, vendor:vendors(name), status, total_amount, placed_at")
+          .select("id, vendor:vendors(shop_name), status, total_amount, placed_at")
           .eq("user_id", user.id)
           .order("placed_at", { ascending: false })
           .limit(10);

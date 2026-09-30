@@ -34,7 +34,7 @@ export default function EditProfilePage() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-          router.push("/auth/login?redirect=" + encodeURIComponent("/app/profile/edit"));
+          router.push("/app/profile");
           return;
         }
         const { data: { user } } = await supabase.auth.getUser();

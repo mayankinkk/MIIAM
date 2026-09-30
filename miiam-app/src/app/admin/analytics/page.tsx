@@ -15,8 +15,7 @@ interface AnalyticsOrder {
   discount_amount: number;
   placed_at: string;
   delivered_at?: string;
-  vendor?: { name: string };
-  rider?: { name: string };
+  vendor?: { shop_name?: string };
 }
 
 interface AnalyticsUser {
@@ -26,9 +25,9 @@ interface AnalyticsUser {
 
 interface AnalyticsVendor {
   id: string;
-  name: string;
+  shop_name: string;
   category?: string;
-  is_active: boolean;
+  status?: string;
   created_at: string;
 }
 
@@ -48,8 +47,7 @@ interface OrderWithTimes {
   discount_amount: number;
   placed_at: string;
   delivered_at?: string;
-  vendor?: { name: string };
-  rider?: { name: string };
+  vendor?: { shop_name?: string };
 }
 
 export default function AdvancedAnalytics() {
@@ -73,7 +71,7 @@ export default function AdvancedAnalytics() {
       const [ordersRes, usersRes, vendorsRes, ridersRes, reviewsRes] = await Promise.all([
         supabase
           .from("orders")
-          .select("*, vendor:vendors(name), rider:riders(name, total_deliveries, total_earnings)")
+          .select("*, vendor:vendors(shop_name)")
           .gte("placed_at", startDate.toISOString())
           .order("placed_at", { ascending: true }),
         supabase
@@ -82,7 +80,7 @@ export default function AdvancedAnalytics() {
           .gte("created_at", startDate.toISOString()),
         supabase
           .from("vendors")
-          .select("id, name, category, is_active, created_at"),
+          .select("id, shop_name, category, status, created_at"),
         supabase
           .from("riders")
           .select("id, name, is_online, total_earnings, total_deliveries"),
@@ -108,7 +106,7 @@ export default function AdvancedAnalytics() {
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - days);
         supabase.from("orders")
-          .select("*, vendor:vendors(name), rider:riders(name, total_deliveries, total_earnings)")
+          .select("*, vendor:vendors(shop_name)")
           .gte("placed_at", startDate.toISOString())
           .order("placed_at", { ascending: true })
           .then((res: { data: AnalyticsOrder[] | null }) => { if (res.data) setOrders(res.data); });
@@ -164,7 +162,7 @@ export default function AdvancedAnalytics() {
 
   const vendorRevenue: Record<string, { revenue: number; orders: number }> = {};
   orders.forEach((o) => {
-    const vendor = o.vendor?.name || "Unknown";
+    const vendor = o.vendor?.shop_name || "Unknown";
     if (!vendorRevenue[vendor]) {
       vendorRevenue[vendor] = { revenue: 0, orders: 0 };
     }
@@ -181,7 +179,7 @@ export default function AdvancedAnalytics() {
     .map(([hour]) => `${hour}:00`);
 
   const newUsersCount = users.length;
-  const activeVendors = vendors.filter((v) => v.is_active).length;
+  const activeVendors = vendors.filter((v) => v.status === "active").length;
   const onlineRiders = riders.filter((r) => r.is_online).length;
 
   const statusDistribution = [
@@ -660,7 +658,7 @@ export default function AdvancedAnalytics() {
                 {orders.slice(0, 20).map((order) => (
                   <tr key={order.id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
                     <td className="py-3 font-bold text-[var(--color-on-surface)]">{order.id.slice(0, 8).toUpperCase()}</td>
-                    <td className="py-3 text-[var(--color-on-surface-variant)]">{order.vendor?.name || "Unknown"}</td>
+                    <td className="py-3 text-[var(--color-on-surface-variant)]">{order.vendor?.shop_name || "Unknown"}</td>
                     <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{order.total_amount?.toFixed(2)}</td>
                     <td className="py-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${

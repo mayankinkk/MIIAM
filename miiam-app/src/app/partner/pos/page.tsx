@@ -435,15 +435,17 @@ export default function PartnerPOS() {
                         <div className="flex items-center gap-2 mt-1">
                           <button
                             onClick={async () => {
+                              const customerId = order.user_id;
+                              if (!customerId) return;
                               const { data: pastOrders } = await supabase
                                 .from("orders")
                                 .select("id, status, total_amount, placed_at, items:order_items(menu_item_id, quantity, unit_price)")
-                                .eq("user_id", order.user_id)
+                                .eq("user_id", customerId)
                                 .eq("vendor_id", vendorId)
                                 .neq("id", order.id)
                                 .order("placed_at", { ascending: false })
                                 .limit(10);
-                              setCustHistoryModal({ userId: order.user_id, orders: pastOrders || [] });
+                              setCustHistoryModal({ userId: customerId, orders: pastOrders || [] });
                             }}
                             className="text-[10px] text-[var(--color-primary)] font-bold hover:underline"
                           >

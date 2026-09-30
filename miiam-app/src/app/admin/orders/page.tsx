@@ -81,7 +81,7 @@ export default function OrderManagement() {
       .from("riders")
       .select("id, name, phone")
       .eq("is_online", true)
-      .eq("verification_status", "verified");
+      .eq("status", "active");
     setAvailableRiders(data || []);
   }
 
@@ -178,7 +178,7 @@ export default function OrderManagement() {
     const headers = ["Order ID", "Vendor", "Status", "Total", "Delivery Fee", "Payment", "Placed At"];
     const rows = filteredOrders.map(o => [
       o.id.slice(0, 8),
-      o.vendor?.name || "Unknown",
+      o.vendor?.shop_name || "Unknown",
       o.status,
       o.total_amount,
       o.delivery_fee,
@@ -210,7 +210,7 @@ export default function OrderManagement() {
         <td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;text-align:right">₹${i.unit_price * i.quantity}</td>
       </tr>
     `).join("");
-    const html = `<!DOCTYPE html><html><head><title>Invoice #${order.id.slice(0,8)}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;margin:0;padding:40px;background:#fafafa;color:#1a1a1a}table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)}.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}.logo{font-size:24px;font-weight:800;color:#a40017}button{background:#a40017;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}button:hover{opacity:0.9}</style></head><body><div class="header"><div><div class="logo">MIIAM</div><p style="color:#666;margin:4px 0 0;font-size:13px">Order Invoice</p></div><button onclick="window.print()">Print Invoice</button></div><div style="display:flex;gap:24px;margin-bottom:24px"><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Order ID</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">#${order.id.slice(0,8)}</p></div><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Date</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">${new Date(order.placed_at).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</p></div><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Vendor</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">${order.vendor?.name || "N/A"}</p></div></div><table><thead><tr style="background:#f8f8f8"><th style="padding:12px 16px;text-align:left;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Item</th><th style="padding:12px 16px;text-align:center;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Qty</th><th style="padding:12px 16px;text-align:right;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Price</th><th style="padding:12px 16px;text-align:right;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Total</th></tr></thead><tbody>${itemsHtml}</tbody></table><div style="background:#fff;padding:20px;border-radius:8px;margin-top:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);max-width:320px;margin-left:auto"><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>Subtotal</span><span>₹${subtotal}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>Delivery Fee</span><span>₹${order.delivery_fee}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>GST (5%)</span><span>₹${gst}</span></div>${order.discount_amount>0?`<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#16a34a"><span>Discount</span><span>-₹${order.discount_amount}</span></div>`:""}<div style="display:flex;justify-content:space-between;padding-top:8px;border-top:2px solid #f0f0f0;font-size:16px;font-weight:800"><span>Total</span><span>₹${order.total_amount}</span></div></div><script>window.onafterprint=()=>window.close()</script></body></html>`;
+    const html = `<!DOCTYPE html><html><head><title>Invoice #${order.id.slice(0,8)}</title><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;margin:0;padding:40px;background:#fafafa;color:#1a1a1a}table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.08)}.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}.logo{font-size:24px;font-weight:800;color:#a40017}button{background:#a40017;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}button:hover{opacity:0.9}</style></head><body><div class="header"><div><div class="logo">MIIAM</div><p style="color:#666;margin:4px 0 0;font-size:13px">Order Invoice</p></div><button onclick="window.print()">Print Invoice</button></div><div style="display:flex;gap:24px;margin-bottom:24px"><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Order ID</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">#${order.id.slice(0,8)}</p></div><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Date</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">${new Date(order.placed_at).toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"})}</p></div><div style="background:#fff;padding:16px 20px;border-radius:8px;flex:1;box-shadow:0 1px 3px rgba(0,0,0,0.08)"><p style="margin:0;font-size:11px;color:#999;text-transform:uppercase;font-weight:700;letter-spacing:0.5px">Vendor</p><p style="margin:4px 0 0;font-size:15px;font-weight:700">${order.vendor?.shop_name || "N/A"}</p></div></div><table><thead><tr style="background:#f8f8f8"><th style="padding:12px 16px;text-align:left;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Item</th><th style="padding:12px 16px;text-align:center;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Qty</th><th style="padding:12px 16px;text-align:right;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Price</th><th style="padding:12px 16px;text-align:right;font-size:11px;text-transform:uppercase;font-weight:700;color:#999;letter-spacing:0.5px">Total</th></tr></thead><tbody>${itemsHtml}</tbody></table><div style="background:#fff;padding:20px;border-radius:8px;margin-top:16px;box-shadow:0 1px 3px rgba(0,0,0,0.08);max-width:320px;margin-left:auto"><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>Subtotal</span><span>₹${subtotal}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>Delivery Fee</span><span>₹${order.delivery_fee}</span></div><div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#666"><span>GST (5%)</span><span>₹${gst}</span></div>${order.discount_amount>0?`<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px;color:#16a34a"><span>Discount</span><span>-₹${order.discount_amount}</span></div>`:""}<div style="display:flex;justify-content:space-between;padding-top:8px;border-top:2px solid #f0f0f0;font-size:16px;font-weight:800"><span>Total</span><span>₹${order.total_amount}</span></div></div><script>window.onafterprint=()=>window.close()</script></body></html>`;
     const w = window.open("", "_blank");
     if (w) {
       w.document.write(html);
@@ -414,7 +414,7 @@ export default function OrderManagement() {
                     <p className="text-sm font-bold text-[var(--color-on-surface)]">{cp?.full_name || order.customer_name || "Guest"}</p>
                     {cp?.phone && <p className="text-[10px] text-[var(--color-outline-variant)]">{cp.phone}</p>}
                   </td>
-                  <td className="p-4 text-sm font-medium text-[var(--color-on-surface-variant)]">{order.vendor?.name || "Unknown"}</td>
+                  <td className="p-4 text-sm font-medium text-[var(--color-on-surface-variant)]">{order.vendor?.shop_name || "Unknown"}</td>
                   <td className="p-4 text-xs text-[var(--color-outline)] max-w-[180px] truncate">
                     {items.map(i => `${i.quantity}x ${i.name}`).join(", ") || "—"}
                   </td>
@@ -479,7 +479,7 @@ export default function OrderManagement() {
                   <div>
                     <p className="text-xs text-[var(--color-outline-variant)]">Name</p>
                     <p className="font-bold text-[var(--color-on-surface)]">
-                      {customerProfile?.full_name || selectedOrder.customer_name || "—"}
+                      {customerProfile?.full_name || selectedOrder.customer_name || "Guest"}
                     </p>
                   </div>
                   <div>
@@ -510,7 +510,7 @@ export default function OrderManagement() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
                   <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Vendor</p>
-                  <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.vendor?.name}</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">{selectedOrder.vendor?.shop_name}</p>
                 </div>
                 <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl">
                   <p className="text-[10px] font-black text-[var(--color-outline-variant)] uppercase mb-1">Rider</p>

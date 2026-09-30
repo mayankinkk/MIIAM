@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { canOptimizeImage } from "@/lib/image-urls";
 
 interface FoodImage {
   id: string;
@@ -33,6 +34,7 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, 50vw"
+            unoptimized={!canOptimizeImage(images[selectedIndex].url)}
           />
           {images.length > 1 && (
             <div className="absolute bottom-3 right-3 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
@@ -59,6 +61,7 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
                   fill
                   className="object-cover"
                   sizes="64px"
+                  unoptimized={!canOptimizeImage(img.url)}
                 />
               </button>
             ))}
@@ -83,6 +86,7 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
                 fill
                 className="object-contain"
                 sizes="100vw"
+                unoptimized={!canOptimizeImage(images[selectedIndex].url)}
               />
             </div>
             
@@ -102,6 +106,7 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
                       fill
                       className="object-cover"
                       sizes="80px"
+                      unoptimized={!canOptimizeImage(img.url)}
                     />
                   </button>
                 ))}

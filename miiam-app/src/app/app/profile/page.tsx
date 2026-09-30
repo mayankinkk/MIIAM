@@ -105,22 +105,22 @@ export default function EnhancedProfilePage() {
               <span className="material-symbols-outlined text-primary text-4xl">person</span>
             </div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Sign in to your account</h2>
-              <p className="text-sm text-[var(--color-on-surface)]/70">Access your orders, saved addresses, favorites, and more.</p>
+              <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)]">You're browsing as a guest</h2>
+              <p className="text-sm text-[var(--color-on-surface)]/70">Orders placed from this device show up under My Orders. Saved addresses stay on this device too.</p>
             </div>
             <div className="space-y-3">
-              <a
-                href="/auth/login?redirect=/app/profile"
+              <Link
+                href="/app/orders"
                 className="block w-full bg-[var(--color-primary)] text-white py-3.5 rounded-xl font-bold text-sm text-center hover:scale-[1.02] active:scale-95 transition-all"
               >
-                Sign In
-              </a>
-              <a
-                href="/auth/signup?redirect=/app/profile"
+                My Orders
+              </Link>
+              <Link
+                href="/app/home"
                 className="block w-full border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] py-3.5 rounded-xl font-bold text-sm text-center hover:bg-[var(--color-surface-container)] transition-colors"
               >
-                Create Account
-              </a>
+                Start Ordering
+              </Link>
             </div>
           </div>
         </main>

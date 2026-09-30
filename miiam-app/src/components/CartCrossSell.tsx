@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { canOptimizeImage } from "@/lib/image-urls";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import VegNonVegBadge from "@/components/VegNonVegBadge";
@@ -43,7 +44,8 @@ export default function CartCrossSell() {
           .in("vendor_id", vendorIds)
           .eq("is_available", true)
           .not("id", "in", `(${Array.from(existingItemIds).join(",")})`)
-          .order("popularity", { ascending: false })
+          .order("is_featured", { ascending: false })
+          .order("created_at", { ascending: false })
           .limit(10);
 
         if (menuItems) {
@@ -90,6 +92,7 @@ export default function CartCrossSell() {
                   fill
                   className="object-cover"
                   sizes="140px"
+                  unoptimized={!canOptimizeImage(item.image_url)}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">

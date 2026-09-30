@@ -25,7 +25,7 @@ export async function GET() {
 
     const { data: orders, error: ordersError } = await admin
       .from("orders")
-      .select("*, vendor:vendors(name, shop_name), rider:riders(name, phone)")
+      .select("*, vendor:vendors(shop_name, cover_image_url)")
       .order("placed_at", { ascending: false });
 
     if (ordersError) {
@@ -50,6 +50,16 @@ export async function GET() {
           profileMap[p.id] = { full_name: p.full_name, phone: p.phone };
         });
       }
+    }
+
+    // No FK between orders and riders, so riders are matched by id here.
+    const riderIds = [...new Set(orders.map((o: Record<string, unknown>) => o.rider_id).filter(Boolean))] as string[];
+    const riderMap: Record<string, { id: string; name: string | null; phone: string | null }> = {};
+    if (riderIds.length > 0) {
+      const { data: riders } = await admin.from("riders").select("id, name, phone").in("id", riderIds);
+      (riders || []).forEach((r: { id: string; name: string | null; phone: string | null }) => {
+        riderMap[r.id] = r;
+      });
     }
 
     const addressIds = orders
@@ -88,8 +98,10 @@ export async function GET() {
 
     const enriched = orders.map((o: Record<string, unknown>) => {
       const profile = o.user_id ? profileMap[o.user_id as string] || null : null;
+      const rider = o.rider_id ? riderMap[o.rider_id as string] || null : null;
       return {
         ...o,
+        rider,
         customer_profile: profile ? {
           full_name: profile.full_name,
           phone: profile.phone || (o.customer_phone as string) || null,

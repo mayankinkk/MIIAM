@@ -14,6 +14,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { fetchGuestOrders, guestOrderRefs } from "@/lib/guestOrders";
 import logger from "@/lib/logger";
 
 const statusColors: Record<string, string> = {
@@ -32,7 +33,6 @@ export default function OrdersPage() {
   const [reordering, setReordering] = useState<string | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // assume true until proven otherwise
   const router = useRouter();
   const { addItem } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
@@ -79,11 +79,23 @@ export default function OrdersPage() {
     try {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) {
-        setIsAuthenticated(false);
+        // No account: show the orders this device placed (matched by phone).
+        const refs = guestOrderRefs();
+        if (refs.length === 0) {
+          setOrders([]);
+          setLoading(false);
+          return;
+        }
+        const guestOrders = await fetchGuestOrders(refs);
+        setOrders(
+          guestOrders.map((o) => ({
+            ...(o as unknown as Order),
+            vendor: (o as { vendor?: Order["vendor"] }).vendor ?? null,
+          }))
+        );
         setLoading(false);
         return;
       }
-      setIsAuthenticated(true);
       setUserId(authUser.id);
 
       const { data: ordersData, error: ordersError } = await supabase
@@ -127,10 +139,17 @@ export default function OrdersPage() {
   const handleReorder = async (order: Order) => {
     setReordering(order.id);
     try {
-      const { data: orderItems } = await supabase
-        .from("order_items")
-        .select("id, order_id, menu_item_id, name, quantity, unit_price, price")
-        .eq("order_id", order.id);
+      type ReorderItem = { menu_item_id: string; name: string; quantity: number; unit_price: number };
+      // Guest orders already carry their items (anon clients can't read
+      // order_items), signed-in orders are read from the database.
+      let orderItems: ReorderItem[] = ((order.items as ReorderItem[] | undefined) || []).slice();
+      if (orderItems.length === 0) {
+        const { data } = await supabase
+          .from("order_items")
+          .select("id, order_id, menu_item_id, name, quantity, unit_price, price")
+          .eq("order_id", order.id);
+        orderItems = (data as ReorderItem[] | null) || [];
+      }
 
       if (orderItems && orderItems.length > 0) {
         const table = await getVendorMenuTable(order.vendor_id);
@@ -244,22 +263,12 @@ export default function OrdersPage() {
             <OrderSkeleton />
             <OrderSkeleton />
           </div>
-        ) : !isAuthenticated ? (
-          <div className="py-12">
-            <EmptyState 
-              icon="person_off" 
-              title={t.orders.loginRequired}
-              description={t.orders.loginRequiredDesc}
-              actionLabel={t.orders.goToLogin} 
-              actionHref="/auth/login" 
-            />
-          </div>
         ) : filteredOrders.length === 0 ? (
           <div className="py-12">
             <EmptyState 
               icon="search_off" 
               title="No orders found"
-              description={searchQuery ? `No orders matching "${searchQuery}"` : "No orders in this category"}
+              description={searchQuery ? `No orders matching "${searchQuery}"` : "Orders you place from this device will show up here."}
               actionLabel={searchQuery ? "Clear search" : t.orders.startOrdering}
               actionHref={searchQuery ? "/app/orders" : "/app/home"}
             />

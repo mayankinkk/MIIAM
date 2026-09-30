@@ -62,3 +62,7 @@ next-env.d.ts
 .keystore
 *.jks
 *.keystore
+
+# playwright
+/test-results/
+/playwright-report/

@@ -14,7 +14,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
-import { calculateOrderTotals } from "@/lib/checkout-utils";
+import { calculateOrderTotals, isValidPhone, normalizePhone } from "@/lib/checkout-utils";
 import { usePlaceOrder } from "@/lib/hooks/usePlaceOrder";
 import logger from "@/lib/logger";
 
@@ -47,8 +47,8 @@ export default function CheckoutPage() {
 
   const [hydrated, setHydrated] = useState(false);
   const [showAddressWarning, setShowAddressWarning] = useState(false);
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState(false);
   const { items, totalPrice } = useCartStore();
   const supabase = useMemo(() => createClient(), []);
 
@@ -62,11 +62,9 @@ export default function CheckoutPage() {
       try { setSavedAddresses(JSON.parse(allSaved)); } catch { /* corrupted data, ignore */ }
     }
 
-    async function checkAuth() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-    }
-    checkAuth();
+    // Pre-fill the phone number from a previous order on this device.
+    const lastPhone = localStorage.getItem("miiam_customer_phone");
+    if (lastPhone) setPhone(lastPhone);
 
     async function loadVendorDetails() {
       try {
@@ -352,6 +350,37 @@ export default function CheckoutPage() {
                 </div>
               )}
 
+              {/* Phone number — required so the vendor/rider can reach the customer */}
+              <div className="mb-3">
+                <label htmlFor="customer-phone" className="text-xs font-bold text-on-surface-variant mb-1.5 block">
+                  Phone number <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-lg">call</span>
+                  <input
+                    id="customer-phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    maxLength={16}
+                    required
+                    className="w-full pl-11 pr-4 py-3 bg-surface-subtle rounded-xl border border-outline/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm"
+                    placeholder="98765 43210"
+                    value={phone}
+                    onChange={(e) => { setPhone(e.target.value); setPhoneError(false); }}
+                    aria-describedby="customer-phone-help"
+                    aria-invalid={phoneError}
+                  />
+                </div>
+                <p
+                  id="customer-phone-help"
+                  className={`mt-1.5 text-xs font-semibold ${phoneError ? "text-red-500" : "text-on-surface-variant"}`}
+                  role={phoneError ? "alert" : undefined}
+                >
+                  {phoneError ? "Enter a valid 10-digit mobile number" : "We'll only use this to update you about the order."}
+                </p>
+              </div>
+
               <button
                 onClick={() => {
                   if (!deliveryAddress) {
@@ -359,12 +388,14 @@ export default function CheckoutPage() {
                     setTimeout(() => setShowAddressWarning(false), 3000);
                     return;
                   }
-                  if (isAuthenticated === false) {
-                    setShowLoginPrompt(true);
+                  if (!isValidPhone(phone)) {
+                    setPhoneError(true);
+                    setTimeout(() => setPhoneError(false), 3000);
                     return;
                   }
                   setPlacing(true);
 
+                  const phoneE164 = normalizePhone(phone);
                   const orderArgs = {
                     deliveryAddress,
                     paymentMethod,
@@ -379,11 +410,17 @@ export default function CheckoutPage() {
                     isRecurring,
                     recurringFrequency,
                     recurringDayOfWeek,
-                    phone: deliveryAddress.phone || "",
+                    phone: phoneE164,
                     serviceCharge,
                   };
 
-                  placeOrder(orderArgs).finally(() => setPlacing(false));
+                  placeOrder(orderArgs)
+                    .then((ok) => {
+                      if (ok) {
+                        try { window.localStorage.setItem("miiam_customer_phone", phoneE164); } catch { /* ignore */ }
+                      }
+                    })
+                    .finally(() => setPlacing(false));
                 }}
                 disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
                 className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
@@ -428,40 +465,6 @@ export default function CheckoutPage() {
           }}
           onClose={() => setShowAddressPicker(false)}
         />
-      )}
-
-      {showLoginPrompt && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="login-prompt-title">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-sm p-6 space-y-5 shadow-xl">
-            <div className="flex items-center justify-center w-16 h-16 mx-auto bg-primary/10 rounded-full">
-              <span className="material-symbols-outlined text-primary text-3xl">person</span>
-            </div>
-            <div className="text-center space-y-1">
-              <h2 id="login-prompt-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Login Required</h2>
-              <p className="text-sm text-[var(--color-on-surface)]/70">Sign in to place your order and track it in real-time.</p>
-            </div>
-            <div className="space-y-3">
-              <a
-                href={`/auth/login?redirect=${encodeURIComponent('/app/checkout')}`}
-                className="block w-full text-center bg-[var(--color-primary)] text-white py-3.5 rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all"
-              >
-                Sign In
-              </a>
-              <a
-                href={`/auth/signup?redirect=${encodeURIComponent('/app/checkout')}`}
-                className="block w-full text-center border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] py-3.5 rounded-xl font-bold text-sm hover:bg-[var(--color-surface-container)] transition-colors"
-              >
-                Create Account
-              </a>
-              <button
-                onClick={() => setShowLoginPrompt(false)}
-                className="block w-full text-center text-[var(--color-on-surface)]/60 py-2 text-xs font-medium hover:text-[var(--color-on-surface)] transition-colors"
-              >
-                Continue Browsing
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </>
   );

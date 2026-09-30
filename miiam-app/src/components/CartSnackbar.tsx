@@ -4,6 +4,7 @@ import { useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { canOptimizeImage } from "@/lib/image-urls";
 import { useCartSnackbarStore } from "@/lib/store/cartSnackbarStore";
 import { useCartStore } from "@/lib/store/cartStore";
 
@@ -55,6 +56,7 @@ export default function CartSnackbar() {
                   width={44}
                   height={44}
                   className="w-full h-full object-cover"
+                  unoptimized={!canOptimizeImage(itemImage)}
                 />
               </div>
             ) : (
