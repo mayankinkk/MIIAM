@@ -24,10 +24,10 @@ export default function CombosSection({ combos }: CombosSectionProps) {
   if (combos.length === 0) return null;
 
   return (
-    <div className="px-5 pb-4">
+    <div className="px-4 pb-3">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="text-lg font-black text-on-surface">Combos & Deals</h2>
+          <h2 className="text-lg font-bold text-on-surface">Combos & Deals</h2>
           <p className="text-[11px] text-on-surface-variant mt-0.5">Save more with combo offers</p>
         </div>
         <Link href="/app/food?filter=combos" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>

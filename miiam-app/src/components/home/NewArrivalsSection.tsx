@@ -20,11 +20,11 @@ export default function NewArrivalsSection({ items }: NewArrivalsSectionProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-4 py-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg animate-bounce">✨</span>
-          <h2 className="text-lg font-black text-on-surface">New on MIIAM</h2>
+          <h2 className="text-lg font-bold text-on-surface">New on MIIAM</h2>
         </div>
         <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>

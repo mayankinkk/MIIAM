@@ -10,11 +10,12 @@ interface HomeHeaderProps {
   timeIcon: string;
   location: string;
   unreadCount: number;
+  etaMinutes?: number;
   onLocationClick: () => void;
   onNotificationsClick: () => void;
 }
 
-export default function HomeHeader({ userName, greeting, timeIcon, location, unreadCount, onLocationClick, onNotificationsClick }: HomeHeaderProps) {
+export default function HomeHeader({ userName, greeting, timeIcon, location, unreadCount, etaMinutes, onLocationClick, onNotificationsClick }: HomeHeaderProps) {
   const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
 
@@ -26,7 +27,7 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
 
   return (
     <header className={`sticky top-0 z-50 bg-surface transition-all duration-200 ${scrolled ? "shadow-[0_2px_12px_rgba(0,0,0,0.08)]" : "border-b border-border-subtle"}`}>
-      <div className="px-5 pt-3 pb-3">
+      <div className="px-4 pt-3 pb-3">
         <div className="flex items-center justify-between gap-3">
           <div className="flex-1 min-w-0">
             <h1 className="text-[17px] leading-snug font-extrabold text-on-surface truncate capitalize">
@@ -53,6 +54,12 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
             <span className="material-symbols-outlined text-[20px] text-on-surface-variant">person</span>
           </Link>
         </div>
+
+        {etaMinutes != null && etaMinutes > 0 && (
+          <p className="text-[13px] font-bold text-on-surface mt-1 leading-snug">
+            Delivery in ~{etaMinutes} min
+          </p>
+        )}
 
         {/* Address row */}
         <button

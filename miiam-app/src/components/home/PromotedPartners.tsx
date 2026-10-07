@@ -24,7 +24,7 @@ export default function PromotedPartners({ restaurants }: PromotedPartnersProps)
   if (restaurants.length === 0) return null;
 
   return (
-    <div className="px-4 pb-4">
+    <div className="px-4 pb-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-purple-500" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>

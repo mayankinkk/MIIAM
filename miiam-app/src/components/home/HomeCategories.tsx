@@ -17,7 +17,7 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
   };
 
   return (
-    <div className="px-5 pt-4 pb-2">
+    <div className="px-4 pt-3 pb-2">
       <div className="grid grid-cols-4 gap-x-2 gap-y-3">
         {categories.map((cat, index) => (
           <Link

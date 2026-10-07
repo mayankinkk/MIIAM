@@ -18,10 +18,10 @@ export default function CategoryShowcase({ categories }: CategoryShowcaseProps) 
   if (categories.length === 0) return null;
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-4 py-3">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-lg">🎨</span>
-        <h2 className="text-lg font-black text-on-surface">Explore Categories</h2>
+        <h2 className="text-lg font-bold text-on-surface">Explore Categories</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {categories.map((cat) => (

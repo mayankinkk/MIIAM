@@ -1,10 +1,11 @@
-const CACHE_NAME = 'miiam-v3';
-const STATIC_CACHE = 'miiam-static-v3';
-const DYNAMIC_CACHE = 'miiam-dynamic-v3';
-const SHELL_CACHE = 'miiam-shell-v3';
+const CACHE_NAME = 'miiam-v4';
+const STATIC_CACHE = 'miiam-static-v4';
+const DYNAMIC_CACHE = 'miiam-dynamic-v4';
 
+// Only evergreen, build-independent files are pre-cached.
+// HTML and RSC payloads are NEVER cached: they reference content-hashed
+// /_next/static chunks that vanish on every deploy (stale copies cause 404s).
 const STATIC_ASSETS = [
-  '/',
   '/manifest.json',
   '/partner-manifest.json',
   '/offline.html',
@@ -13,34 +14,11 @@ const STATIC_ASSETS = [
   '/icons/icon-512.svg',
 ];
 
-const APP_SHELL_PAGES = [
-  '/',
-  '/app/home',
-  '/app/food',
-  '/app/services',
-  '/app/cart',
-  '/app/profile',
-  '/app/grocery',
-  '/app/orders',
-  '/app/wallet',
-  '/app/home',
-  '/app/settings',
-  '/offline.html',
-  '/partner-offline.html',
-];
-
-const API_CACHE_DURATION = 5 * 60 * 1000;
-
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    Promise.all([
-      caches.open(STATIC_CACHE).then((cache) =>
-        Promise.all(STATIC_ASSETS.map((url) => cache.add(url).catch(() => {})))
-      ),
-      caches.open(SHELL_CACHE).then((cache) =>
-        Promise.all(APP_SHELL_PAGES.map((url) => cache.add(url).catch(() => {})))
-      ),
-    ])
+    caches.open(STATIC_CACHE).then((cache) =>
+      Promise.all(STATIC_ASSETS.map((url) => cache.add(url).catch(() => {})))
+    )
   );
   self.skipWaiting();
 });
@@ -50,7 +28,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys
-          .filter((key) => key !== STATIC_CACHE && key !== DYNAMIC_CACHE && key !== SHELL_CACHE)
+          .filter((key) => key !== STATIC_CACHE && key !== DYNAMIC_CACHE)
           .map((key) => caches.delete(key))
       );
     })
@@ -72,8 +50,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Navigations: always network, offline falls back to the static offline page.
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirstWithCachedFallback(request, SHELL_CACHE, DYNAMIC_CACHE));
+    event.respondWith(navigationWithOfflineFallback(request));
     return;
   }
 
@@ -97,12 +76,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (url.origin === location.origin) {
-    event.respondWith(staleWhileRevalidate(request, STATIC_CACHE));
-    return;
-  }
-
-  event.respondWith(networkFirst(request, DYNAMIC_CACHE));
+  // Same-origin (RSC payloads, etc.) and third-party: network only, never cache —
+  // cached RSC payloads reference deleted chunks after a deploy.
+  event.respondWith(networkOnly(request));
 });
 
 async function cacheFirst(request, cacheName) {
@@ -129,6 +105,24 @@ async function cacheFirst(request, cacheName) {
   return response;
 }
 
+async function networkOnly(request) {
+  try {
+    return await fetch(request);
+  } catch {
+    return new Response('Offline', { status: 503 });
+  }
+}
+
+async function navigationWithOfflineFallback(request) {
+  try {
+    return await fetch(request);
+  } catch {
+    const offline = await caches.match('/offline.html');
+    if (offline) return offline;
+    return new Response('Offline', { status: 503 });
+  }
+}
+
 async function networkFirst(request, cacheName) {
   let response;
   try {
@@ -149,54 +143,6 @@ async function networkFirst(request, cacheName) {
   }
 
   return response;
-}
-
-async function networkFirstWithCachedFallback(request, shellCacheName, dynamicCacheName) {
-  let response;
-  try {
-    response = await fetch(request);
-  } catch (fetchErr) {
-    const cached = await caches.match(request);
-    if (cached) return cached;
-    const url = new URL(request.url);
-    const offlinePage = url.pathname.startsWith('/partner') ? '/partner-offline.html' : '/offline.html';
-    const shellCached = await caches.match(offlinePage);
-    if (shellCached) return shellCached;
-    return new Response('Offline', { status: 503 });
-  }
-
-  if (response && response.ok) {
-    try {
-      const dynamicCache = await caches.open(dynamicCacheName);
-      await dynamicCache.put(request, response.clone());
-    } catch (cacheErr) {
-      console.warn('Failed to cache response in networkFirstWithCachedFallback:', cacheErr);
-    }
-  }
-
-  return response;
-}
-
-async function staleWhileRevalidate(request, cacheName) {
-  const cached = await caches.match(request);
-
-  const fetchPromise = fetch(request)
-    .then((response) => {
-      if (response && response.ok) {
-        const responseToCache = response.clone();
-        caches.open(cacheName).then((cache) => {
-          cache.put(request, responseToCache).catch((cacheErr) => {
-            console.warn('Failed to cache response in staleWhileRevalidate:', cacheErr);
-          });
-        }).catch((err) => {
-          console.warn('Failed to open cache in staleWhileRevalidate:', err);
-        });
-      }
-      return response;
-    })
-    .catch(() => cached);
-
-  return cached || fetchPromise;
 }
 
 self.addEventListener('push', (event) => {
@@ -228,7 +174,7 @@ self.addEventListener('sync', (event) => {
 
 async function syncPendingRequests() {
   try {
-    const cache = await caches.open('miiam-pending-v3');
+    const cache = await caches.open('miiam-pending-v4');
     const requests = await cache.keys();
     for (const request of requests) {
       try {

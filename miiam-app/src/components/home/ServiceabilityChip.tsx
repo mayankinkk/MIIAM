@@ -13,7 +13,7 @@ export default function ServiceabilityChip({ pincode, displayAddress, localServi
   if (!pincode) return null;
 
   return (
-    <div className="px-5 pt-2.5">
+    <div className="px-4 pt-2.5">
       <div className="flex items-center gap-1.5 text-[11px] font-medium text-on-surface-variant">
         <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${localServiceable ? "bg-status-success animate-pulse" : "bg-status-warning"}`} />
         <span className="truncate">

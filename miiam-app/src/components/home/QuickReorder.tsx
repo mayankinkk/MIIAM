@@ -15,7 +15,7 @@ interface QuickReorderProps {
 
 export default function QuickReorder({ order }: QuickReorderProps) {
   return (
-    <div className="px-5 pt-2 pb-1">
+    <div className="px-4 pt-2 pb-1">
       <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-4 border border-primary/10">
         <div className="flex items-center gap-2 mb-2">
           <span className="material-symbols-outlined text-accent text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>replay</span>

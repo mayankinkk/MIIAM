@@ -17,7 +17,7 @@ export default function RecentlyViewed({ items }: RecentlyViewedProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="px-5 pb-4">
+    <div className="px-4 pb-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="material-symbols-outlined text-blue-500" style={{ fontVariationSettings: "'FILL' 1" }}>history</span>

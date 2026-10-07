@@ -21,11 +21,11 @@ export default function TrendingSection({ items }: TrendingSectionProps) {
   if (items.length === 0) return null;
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-4 py-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-lg animate-pulse">🔥</span>
-          <h2 className="text-lg font-black text-on-surface">What&apos;s Trending</h2>
+          <h2 className="text-lg font-bold text-on-surface">What&apos;s Trending</h2>
         </div>
         <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>

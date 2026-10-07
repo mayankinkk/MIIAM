@@ -20,7 +20,7 @@ export default function SpotlightCard({ restaurant }: SpotlightCardProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="px-4 pb-4">
+    <div className="px-4 pb-3">
       <div className="flex items-center gap-2 mb-3">
         <span className="material-symbols-outlined text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
         <h2 className="text-lg font-bold text-on-surface">{t.home.featuredToday}</h2>
@@ -39,7 +39,7 @@ export default function SpotlightCard({ restaurant }: SpotlightCardProps) {
             <div className="flex items-center gap-2 mb-1">
               <span className="bg-white/30 text-xs font-bold px-2 py-0.5 rounded-full">⭐ {t.home.featured}</span>
             </div>
-            <h3 className="text-xl font-black">{restaurant.name || restaurant.shop_name}</h3>
+            <h3 className="text-xl font-bold">{restaurant.name || restaurant.shop_name}</h3>
             <p className="text-sm text-white/80">{restaurant.cuisine || t.home.variousCuisines}</p>
             <div className="flex items-center gap-2 mt-2">
               <span className="flex items-center gap-1 bg-[var(--color-surface-container-lowest)]/20 px-2 py-1 rounded-full text-xs font-bold">

@@ -37,10 +37,10 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
   const foodRestaurants = restaurants.filter(r => r.type === 'food' || r.type === 'restaurant');
 
   return (
-    <div className="px-5 pb-4">
+    <div className="px-4 pb-3">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="text-lg font-black text-on-surface">{t.home.nearbyPopular}</h2>
+          <h2 className="text-lg font-bold text-on-surface">{t.home.nearbyPopular}</h2>
           <p className="text-[11px] text-on-surface-variant mt-0.5">{foodRestaurants.length} restaurants nearby</p>
         </div>
         <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">{t.home.seeAll}</Link>
@@ -101,7 +101,7 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-4xl text-accent">location_on</span>
           </div>
-          <h3 className="text-lg font-black text-on-surface mb-1">{t.home.locationRequired}</h3>
+          <h3 className="text-lg font-bold text-on-surface mb-1">{t.home.locationRequired}</h3>
           <p className="text-sm text-on-surface-variant mb-5">{t.home.locationRequiredDesc}</p>
           <button
             onClick={onLocationClick}
@@ -115,7 +115,7 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
           <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="material-symbols-outlined text-4xl text-amber-500">location_off</span>
           </div>
-          <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
+          <h3 className="text-lg font-bold text-on-surface mb-1">{t.home.notAvailable}</h3>
           <p className="text-sm text-on-surface-variant mb-1">{t.home.notAvailableDesc}</p>
           <p className="text-sm font-bold text-accent mb-4">{displayAddress}</p>
           <p className="text-xs text-[var(--color-outline-variant)] mb-5">{t.home.expanding}</p>

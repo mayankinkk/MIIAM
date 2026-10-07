@@ -18,6 +18,7 @@ import OffersCarousel from "@/components/home/OffersCarousel";
 import ActiveOrderBubble from "@/components/home/ActiveOrderBubble";
 import ServiceabilityChip from "@/components/home/ServiceabilityChip";
 import HomeCategories from "@/components/home/HomeCategories";
+import HomeDepartments from "@/components/home/HomeDepartments";
 import QuickReorder from "@/components/home/QuickReorder";
 import SpotlightCard from "@/components/home/SpotlightCard";
 import PromotedPartners from "@/components/home/PromotedPartners";
@@ -105,7 +106,6 @@ export default function HomePage() {
   const offers = dbOffers;
 
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [currentOffer, setCurrentOffer] = useState(0);
   const locationStore = useLocationStore();
   const [location, setLocation] = useState(locationStore.displayAddress || t.home.selectLocation);
   const [activeOrder, setActiveOrder] = useState<ActiveOrder | null>(null);
@@ -121,6 +121,12 @@ export default function HomePage() {
   const [nearbyRestaurants, setNearbyRestaurants] = useState<HomeVendor[]>([]);
   const [featuredRestaurants, setFeaturedRestaurants] = useState<HomeVendor[]>([]);
   const [spotlightRestaurant, setSpotlightRestaurant] = useState<HomeVendor | null>(null);
+  const etaMinutes = useMemo(() => {
+    const times = nearbyRestaurants
+      .map((v) => v.delivery_time_min)
+      .filter((t): t is number => typeof t === "number" && t > 0);
+    return times.length ? Math.min(...times) : 25;
+  }, [nearbyRestaurants]);
   const [combos, setCombos] = useState<{ id: string; name: string; description: string; image_url: string; original_price: number; combo_price: number; items: string[] }[]>(() => {
     if (typeof window !== "undefined") {
       const cached = localStorage.getItem("miiam_combos_cache");
@@ -179,7 +185,7 @@ export default function HomePage() {
 
       const { data: lastOrderData } = await supabase
         .from("orders")
-        .select("id, status, total_amount, placed_at, vendor_id, items")
+        .select("id, status, total_amount, placed_at, vendor_id")
         .eq("user_id", user.id)
         .in("status", ["delivered", "completed"])
         .order("placed_at", { ascending: false })
@@ -191,9 +197,14 @@ export default function HomePage() {
           const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", lastOrderData.vendor_id).maybeSingle();
           if (v?.shop_name) vendorName = v.shop_name;
         }
-        const itemsList = Array.isArray(lastOrderData.items)
-          ? (lastOrderData.items as Array<{ name?: string }>).map((i) => i.name || "Item").join(", ")
-          : typeof lastOrderData.items === "string" ? lastOrderData.items : "Previous order";
+        const { data: lastItems } = await supabase
+          .from("order_items")
+          .select("name")
+          .eq("order_id", lastOrderData.id)
+          .limit(6);
+        const itemsList = lastItems && lastItems.length > 0
+          ? lastItems.map((i: { name?: string }) => i.name || "Item").join(", ")
+          : "Previous order";
         setLastOrder({
           id: lastOrderData.id,
           vendor_id: lastOrderData.vendor_id || "",
@@ -469,14 +480,6 @@ export default function HomePage() {
     loadCategories();
   }, [supabase]);
 
-  useEffect(() => {
-    if (offers.length <= 1) return;
-    const timer = setInterval(() => {
-      setCurrentOffer((prev) => (prev + 1) % offers.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [offers.length]);
-
   if (loading) return <HomeSkeleton />;
 
   if (dataError) {
@@ -495,6 +498,7 @@ export default function HomePage() {
         timeIcon={timeIcon}
         location={location}
         unreadCount={unreadCount}
+        etaMinutes={etaMinutes}
         onLocationClick={() => setShowLocationModal(true)}
         onNotificationsClick={async () => {
           setShowNotifications(!showNotifications);
@@ -522,10 +526,11 @@ export default function HomePage() {
       />
 
       <PullToRefresh onRefresh={async () => { setRetryKey((k) => k + 1); }}>
+        <HomeDepartments />
         <HomeCategories categories={categories} />
       </PullToRefresh>
 
-      <OffersCarousel offers={offers} currentOffer={currentOffer} />
+      <OffersCarousel offers={offers} />
 
       {lastOrder && <QuickReorder order={lastOrder} />}
 
