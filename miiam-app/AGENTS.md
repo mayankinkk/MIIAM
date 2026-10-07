@@ -92,7 +92,7 @@ src/
 - PR title must match conventional commit format
 - Squash merge to main
 - No force pushes to shared branches
-- **Always push to production**: after pushing any feature branch, fast-forward `main` to it and push `origin/main` too — Vercel Production deploys only from `main`
+- **Always push to production, and only push `main`**: commit on a local feature branch, fast-forward `main`, then push **only** `origin/main`. Never push feature branches — Vercel builds every pushed branch as a Preview and (on Hobby) blocks the Production build behind it. `vercel.json` `ignoreCommand` also cancels any non-main build as a safety net.
 
 ## Performance
 - Use `next/image` for all images (auto-optimization)
