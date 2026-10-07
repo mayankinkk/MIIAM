@@ -253,7 +253,7 @@ function ServiceDetailContent() {
                 <span className="text-2xl font-black text-on-surface">₹{service.price}</span>
               )}
               {service.originalPrice && (
-                <span className="text-sm text-on-surface-variant line-through ml-2">₹{service.originalPrice}</span>
+                <div className="text-sm text-on-surface-variant line-through mt-0.5">₹{service.originalPrice}</div>
               )}
             </div>
             <span className="text-xs text-on-surface-variant">{t.checkout.incTaxes}</span>

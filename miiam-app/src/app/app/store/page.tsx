@@ -159,21 +159,21 @@ export default function StorePage() {
                     <span className={`absolute top-2 left-2 w-5 h-5 border-2 ${item.is_veg ? "border-green-500 bg-white" : "border-red-500 bg-white"} rounded-sm flex items-center justify-center`}>
                       <span className={`w-2 h-2 ${item.is_veg ? "bg-green-500" : "bg-red-500"} rounded-full`} />
                     </span>
-                    {/* Price */}
-                    <span className="absolute bottom-2 right-2 bg-primary text-on-primary text-[10px] font-black px-2 py-1 rounded-lg">
-                      ₹{item.price}
-                    </span>
+                    {/* Discount badge (deals only — price lives in the stack below) */}
+                    {item.original_price && item.original_price > item.price && (
+                      <span className="absolute bottom-2 right-2 bg-deal text-white text-[10px] font-black px-2 py-1 rounded-lg">
+                        {Math.round(((item.original_price - item.price) / item.original_price) * 100)}% OFF
+                      </span>
+                    )}
                   </div>
                   <div className="p-3">
                     <h3 className="font-bold text-sm text-on-surface truncate">{item.name}</h3>
-                    {item.original_price && (
-                      <div className="flex items-center gap-1 mt-0.5">
+                    <div className="flex flex-col items-start mt-0.5 leading-tight">
+                      <span className="text-sm font-black text-on-surface">₹{item.price}</span>
+                      {item.original_price && item.original_price > item.price && (
                         <span className="text-[10px] text-on-surface-variant line-through">₹{item.original_price}</span>
-                        <span className="text-[10px] font-bold text-green-600">
-                          {Math.round(((item.original_price - item.price) / item.original_price) * 100)}% OFF
-                        </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                     {item.vendor_name && (
                       <p className="text-[10px] text-on-surface-variant/70 mt-1 truncate">{item.vendor_name}</p>
                     )}

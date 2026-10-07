@@ -512,7 +512,7 @@ export default function VendorPage() {
                       <p className="text-[11px] text-gray-400 mt-1 line-clamp-2 leading-relaxed">{item.description}</p>
                     )}
                     <div className="flex items-center justify-between mt-auto pt-2">
-                      <div className="flex items-baseline gap-1.5">
+                      <div className="flex flex-col items-start leading-tight">
                         <span className="font-black text-gray-900 text-base">₹{item.price}</span>
                         {item.original_price && (
                           <span className="text-xs text-gray-400 line-through">₹{item.original_price}</span>

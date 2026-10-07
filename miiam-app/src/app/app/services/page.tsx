@@ -534,11 +534,11 @@ function ServicesContent() {
 
                     {/* Price & CTA */}
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-outline/10">
-                      <div className="flex items-baseline gap-1.5">
+                      <div className="flex flex-col items-start leading-tight">
+                        <span className="font-black text-xl text-on-surface">{"₹"}{service.price}</span>
                         {service.originalPrice && (
                           <span className="text-xs text-on-surface-variant line-through">{"₹"}{service.originalPrice}</span>
                         )}
-                        <span className="font-black text-xl text-on-surface">{"₹"}{service.price}</span>
                       </div>
                       <button onClick={(e) => {
                         e.preventDefault();

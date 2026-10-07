@@ -58,10 +58,10 @@ export default memo(function MenuItemCard({ item, quantity = 0, onAdd, onIncreme
         {item.description && (
           <p className="text-[10px] text-on-surface-variant/60 truncate mt-0.5">{item.description}</p>
         )}
-        <div className="flex items-center gap-2 mt-1.5">
+        <div className="flex flex-col items-start mt-1.5 leading-tight">
           <span className="text-sm font-extrabold text-on-surface">₹{item.price}</span>
           {item.original_price && item.original_price > item.price && (
-            <span className="text-xs text-on-surface-variant/60 line-through">₹{item.original_price}</span>
+            <span className="text-[11px] text-on-surface-variant/60 line-through">₹{item.original_price}</span>
           )}
         </div>
       </div>

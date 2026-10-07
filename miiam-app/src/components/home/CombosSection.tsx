@@ -74,9 +74,9 @@ export default function CombosSection({ combos }: CombosSectionProps) {
                   {combo.items.length} items
                 </span>
               )}
-              <div className="flex items-center gap-2 mt-2">
-                <span className="text-xs text-on-surface-variant line-through">₹{combo.original_price}</span>
+              <div className="flex flex-col items-start mt-2 leading-tight">
                 <span className="text-sm font-black text-on-surface">₹{combo.combo_price}</span>
+                <span className="text-xs text-on-surface-variant line-through">₹{combo.original_price}</span>
               </div>
             </div>
           </Link>

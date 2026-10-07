@@ -342,7 +342,7 @@ export default function ComboDetailPage() {
       <div className="mx-4 -mt-4 relative z-10 bg-surface-container-lowest rounded-2xl p-5 shadow-md border border-outline-variant/10">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col leading-tight">
               <span className="text-3xl font-black text-on-surface">₹{combo.combo_price}</span>
               <span className="text-lg text-on-surface-variant line-through">₹{combo.original_price}</span>
             </div>
@@ -487,7 +487,7 @@ export default function ComboDetailPage() {
                   </div>
                   <div className="p-2.5">
                     <p className="text-xs font-bold text-on-surface truncate">{sc.name}</p>
-                    <div className="flex items-center gap-1.5 mt-1">
+                    <div className="flex flex-col items-start mt-1 leading-tight">
                       <span className="text-xs font-black text-on-surface">₹{sc.combo_price}</span>
                       <span className="text-[10px] text-on-surface-variant line-through">₹{sc.original_price}</span>
                     </div>
