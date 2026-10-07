@@ -218,7 +218,7 @@ export default function StoreItemDetailPage() {
                       sizes="128px"
                       fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                     />
-                    <span className="absolute bottom-1 right-1 bg-emerald-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">₹{ri.price}</span>
+                    <span className="absolute bottom-1 right-1 bg-deal text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">₹{ri.price}</span>
                   </div>
                   <div className="p-2">
                     <h3 className="font-bold text-on-surface text-[10px] truncate">{ri.name}</h3>

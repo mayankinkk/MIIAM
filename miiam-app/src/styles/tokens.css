@@ -31,6 +31,9 @@
   --color-accent-dim: #096b18;
   --color-accent-light: #d9f2de;
 
+  /* Deal / price pill — deep orange, passes 4.5:1 with white text */
+  --color-deal: #d14306;
+
   /* MIIAM Color System (Backward Compatible — maps to Tailwind utilities) */
   --color-surface: #ffffff;
   --color-surface-bright: #ffffff;

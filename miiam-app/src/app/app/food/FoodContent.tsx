@@ -893,7 +893,7 @@ export default function FoodPageContent() {
                                 <span className={`w-1.5 h-1.5 ${itemVeg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                               </span>
                             </div>
-                            <span className="absolute bottom-1.5 right-1.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                            <span className="absolute bottom-1.5 right-1.5 bg-deal text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
                               ₹{itemPrice}
                             </span>
                           </div>
@@ -941,7 +941,7 @@ export default function FoodPageContent() {
                             sizes="144px"
                             fallbackSrc="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80"
                           />
-                          <span className="absolute bottom-1.5 right-1.5 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
+                          <span className="absolute bottom-1.5 right-1.5 bg-deal text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm">
                             ₹{item.price}
                           </span>
                         </div>

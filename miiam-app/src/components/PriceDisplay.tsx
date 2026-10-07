@@ -21,17 +21,15 @@ export default function PriceDisplay({ price, originalPrice, size = "md", showSa
   const s = sizes[size];
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex flex-col items-start leading-tight">
       <span className={`font-black text-on-surface ${s.price}`}>₹{price.toFixed(0)}</span>
       {hasDiscount && (
-        <>
-          <span className={`font-medium text-on-surface-variant/50 line-through ${s.original}`}>₹{originalPrice.toFixed(0)}</span>
-          {showSavings && (
-            <span className={`font-bold text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-full ${s.badge}`}>
-              {discountPercent}% off
-            </span>
-          )}
-        </>
+        <span className={`font-medium text-on-surface-variant/50 line-through ${s.original}`}>₹{originalPrice.toFixed(0)}</span>
+      )}
+      {hasDiscount && showSavings && (
+        <span className={`font-bold text-deal bg-deal/10 rounded-full mt-0.5 ${s.badge}`}>
+          {discountPercent}% off
+        </span>
       )}
     </div>
   );
