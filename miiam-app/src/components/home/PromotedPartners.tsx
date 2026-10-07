@@ -41,7 +41,7 @@ export default function PromotedPartners({ restaurants }: PromotedPartnersProps)
                 <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
               )}
               {restaurant.is_promoted && (
-                <div className="absolute top-2 left-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <div className="absolute top-2 left-2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">
                   {t.home.promoted}
                 </div>
               )}

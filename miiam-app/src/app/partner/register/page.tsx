@@ -189,7 +189,7 @@ export default function VendorRegister() {
             </div>
             <button
               onClick={() => router.push("/")}
-              className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
+              className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
             >
               Go to Home
             </button>
@@ -215,7 +215,7 @@ export default function VendorRegister() {
             <div key={s.num} className="flex items-center gap-2">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                 step > s.num ? "bg-green-500 text-white" :
-                step === s.num ? "bg-[var(--color-primary)] text-white" :
+                step === s.num ? "bg-[var(--color-primary)] text-on-primary" :
                 "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
               }`}>
                 {step > s.num ? "✓" : s.num}
@@ -366,7 +366,7 @@ export default function VendorRegister() {
               </button>
             ) : <div />}
             {step < 4 ? (
-              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors">
+              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors">
                 Continue
               </button>
             ) : (

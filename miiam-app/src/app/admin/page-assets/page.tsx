@@ -129,7 +129,7 @@ export default function PageAssetsPage() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
+          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
         >
           + Add Section
         </button>
@@ -224,7 +224,7 @@ export default function PageAssetsPage() {
                   <div className="flex gap-3 mt-4">
                     <button
                       onClick={() => handleEdit(asset)}
-                      className="flex-1 py-2.5 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 py-2.5 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined text-sm">edit</span>
                       Edit
@@ -344,7 +344,7 @@ export default function PageAssetsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving || !editForm.image_url}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
@@ -413,7 +413,7 @@ export default function PageAssetsPage() {
               <button
                 onClick={handleAdd}
                 disabled={saving || !newForm.section || !newForm.image_url}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
               >
                 {saving ? "Saving..." : "Add Section"}
               </button>

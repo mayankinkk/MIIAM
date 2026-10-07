@@ -38,9 +38,9 @@ function VendorFailureContent() {
     <div className="min-h-screen bg-surface">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface-container-lowest/90 backdrop-blur-2xl shadow-sm">
         <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
-          <span className="material-symbols-outlined text-primary">close</span>
+          <span className="material-symbols-outlined text-accent">close</span>
         </Link>
-        <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        <span className="text-xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         <div className="w-10" />
       </nav>
 
@@ -110,7 +110,7 @@ function VendorFailureContent() {
                   <p className="text-xs text-on-surface-variant">{option.description}</p>
                 </div>
                 {selectedOption === option.id && (
-                  <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  <span className="material-symbols-outlined text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>
                     check_circle
                   </span>
                 )}
@@ -129,7 +129,7 @@ function VendorFailureContent() {
                 window.location.href = "/app/food";
               }
             }}
-            className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-on-primary py-4 rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t.common.confirm} {selectedOption === "refund" ? "Refund" : "Browse Restaurants"}
           </button>

@@ -91,7 +91,7 @@ export default function ComboAnalytics() {
               onClick={() => setTimeRange(range)}
               className={`px-3 py-1.5 rounded-full text-xs font-bold ${
                 timeRange === range
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-on-primary"
                   : "bg-surface-container-high text-on-surface-variant"
               }`}
             >

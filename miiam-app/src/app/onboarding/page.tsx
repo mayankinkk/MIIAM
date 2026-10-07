@@ -17,29 +17,29 @@ export default function OnboardingPage() {
       {/* Step 1: Welcome */}
       <main className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden">
         {/* Floating Debris */}
-        <div className="absolute top-20 right-10 text-5xl transform rotate-12 select-none" style={{ filter: "drop-shadow(0 10px 15px rgba(77,33,42,0.1))" }}>🍕</div>
-        <div className="absolute top-1/2 left-4 text-4xl transform -rotate-12 select-none" style={{ filter: "drop-shadow(0 10px 15px rgba(77,33,42,0.1))" }}>📦</div>
-        <div className="absolute bottom-40 right-20 text-6xl transform rotate-6 select-none" style={{ filter: "drop-shadow(0 10px 15px rgba(77,33,42,0.1))" }}>✨</div>
+        <div className="absolute top-20 right-10 text-5xl transform rotate-12 select-none" style={{ filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.1))" }}>🍕</div>
+        <div className="absolute top-1/2 left-4 text-4xl transform -rotate-12 select-none" style={{ filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.1))" }}>📦</div>
+        <div className="absolute bottom-40 right-20 text-6xl transform rotate-6 select-none" style={{ filter: "drop-shadow(0 10px 15px rgba(0,0,0,0.1))" }}>✨</div>
 
         <div className="max-w-4xl w-full z-10">
           {/* Brand */}
           <div className="flex justify-center mb-12">
-            <span className="text-5xl font-extrabold tracking-tighter text-[var(--color-primary)]">MIIAM</span>
+            <span className="text-5xl font-extrabold tracking-tighter text-[var(--color-accent)]">MIIAM</span>
           </div>
 
           {/* Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
-            <div className="md:col-span-8 bg-[var(--color-surface-container-lowest)] rounded-lg p-10 shadow-[0px_20px_40px_rgba(77,33,42,0.06)] flex flex-col justify-between min-h-[400px]">
+            <div className="md:col-span-8 bg-[var(--color-surface-container-lowest)] rounded-lg p-10 shadow-[0px_20px_40px_rgba(0,0,0,0.06)] flex flex-col justify-between min-h-[400px]">
               <div>
                 <h1 className="text-5xl md:text-6xl font-extrabold tracking-tighter mb-6 leading-none">
-                  Taste the <span className="text-[var(--color-primary)]">Vibrant</span> Side of Life.
+                  Taste the <span className="text-[var(--color-accent)]">Vibrant</span> Side of Life.
                 </h1>
                 <p className="text-[var(--color-on-surface-variant)] max-w-md">
                   MIIAM brings you the best of food delivery and home services in one app.
                 </p>
               </div>
               <div className="flex items-center gap-4 mt-8">
-                <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white">
+                <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-on-primary">
                   <span className="material-symbols-outlined">restaurant</span>
                 </div>
                 <div className="w-12 h-12 rounded-full bg-brand-secondary flex items-center justify-center text-white">
@@ -74,7 +74,7 @@ export default function OnboardingPage() {
           <div className="flex flex-col items-center gap-4">
             <Link
               href="/app/home"
-              className="w-full md:w-80 text-center bento-gradient-red text-white font-bold py-5 rounded-xl shadow-lg shadow-[var(--color-primary)]/20 transform transition-transform active:scale-95 text-lg"
+              className="w-full md:w-80 text-center bento-gradient-red text-on-primary font-bold py-5 rounded-xl shadow-lg shadow-[var(--color-primary)]/20 transform transition-transform active:scale-95 text-lg"
             >
               Get Started
             </Link>
@@ -90,21 +90,21 @@ export default function OnboardingPage() {
             <p className="text-[var(--color-on-surface-variant)] text-lg">Swipe between Appetite and Trust.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(0,0,0,0.04)]">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-[var(--color-primary)]/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
               <div className="mb-8 w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center">
-                <span className="material-symbols-outlined text-4xl text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
+                <span className="material-symbols-outlined text-4xl text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>restaurant_menu</span>
               </div>
               <h3 className="text-3xl font-bold mb-6">Food Delivery</h3>
               <p className="text-[var(--color-on-surface-variant)] leading-relaxed mb-8">
                 From local favorites to top restaurants. We don't just deliver food; we deliver the moment.
               </p>
               <div className="flex flex-wrap gap-3">
-                <span className="px-4 py-2 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-full text-xs font-bold uppercase tracking-wider">Fast Delivery</span>
-                <span className="px-4 py-2 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-full text-xs font-bold uppercase tracking-wider">Exclusive Chefs</span>
+                <span className="px-4 py-2 bg-[var(--color-primary)]/10 text-[var(--color-accent)] rounded-full text-xs font-bold uppercase tracking-wider">Fast Delivery</span>
+                <span className="px-4 py-2 bg-[var(--color-primary)]/10 text-[var(--color-accent)] rounded-full text-xs font-bold uppercase tracking-wider">Exclusive Chefs</span>
               </div>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(77,33,42,0.04)]">
+            <div className="bg-[var(--color-surface-container-lowest)] rounded-lg p-12 relative overflow-hidden group shadow-[0px_20px_40px_rgba(0,0,0,0.04)]">
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-secondary/10 rounded-full transform group-hover:scale-150 transition-transform duration-700" />
               <div className="mb-8 w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center">
                 <span className="material-symbols-outlined text-4xl text-brand-secondary" style={{ fontVariationSettings: "'FILL' 1" }}>verified_user</span>
@@ -120,7 +120,7 @@ export default function OnboardingPage() {
             </div>
           </div>
           <div className="mt-16 flex justify-center">
-            <Link href="/app/home" className="px-12 py-5 bg-[var(--color-on-surface)] text-white rounded-xl font-bold text-lg hover:bg-[var(--color-primary)] transition-colors">
+            <Link href="/app/home" className="px-12 py-5 bg-[var(--color-on-surface)] text-on-primary rounded-xl font-bold text-lg hover:bg-[var(--color-primary)] transition-colors">
               Explore Ecosystem
             </Link>
           </div>
@@ -141,7 +141,7 @@ export default function OnboardingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-primary)]/10 to-transparent" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <div className="w-16 h-16 bg-[var(--color-primary)]/20 rounded-full animate-ping absolute -top-4 -left-4" />
-                <div className="bg-[var(--color-primary)] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-xl relative z-10">
+                <div className="bg-[var(--color-primary)] text-on-primary w-10 h-10 rounded-full flex items-center justify-center shadow-xl relative z-10">
                   <span className="material-symbols-outlined">location_on</span>
                 </div>
               </div>
@@ -154,7 +154,7 @@ export default function OnboardingPage() {
           <div className="space-y-4">
             <Link
               href="/app/home"
-              className="w-full bento-gradient-blue text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-brand-secondary/20 transform transition-transform active:scale-95 text-lg"
+              className="w-full bg-secondary text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-brand-secondary/20 transform transition-transform active:scale-95 text-lg"
             >
               <span className="material-symbols-outlined">near_me</span>
               Use current location

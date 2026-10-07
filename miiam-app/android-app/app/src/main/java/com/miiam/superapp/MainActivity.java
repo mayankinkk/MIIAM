@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setStatusBarColor(0xFFBA001C);
-        getWindow().setNavigationBarColor(0xFFBA001C);
+        getWindow().setStatusBarColor(0xFFF8CB46);
+        getWindow().setNavigationBarColor(0xFFF8CB46);
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -345,8 +345,8 @@ public class MainActivity extends AppCompatActivity {
         TextView retryBtn = new TextView(this);
         retryBtn.setText("RETRY");
         retryBtn.setTextSize(16);
-        retryBtn.setTextColor(0xFFFFFFFF);
-        retryBtn.setBackgroundColor(0xFFBA001C);
+        retryBtn.setTextColor(0xFF1F1F1F);
+        retryBtn.setBackgroundColor(0xFFF8CB46);
         retryBtn.setPadding(dpToPx(32), dpToPx(12), dpToPx(32), dpToPx(12));
         retryBtn.setGravity(Gravity.CENTER);
         retryBtn.setOnClickListener(v -> loadUrl());

@@ -227,7 +227,7 @@ export default function VendorDashboard() {
         <p className="text-[var(--color-outline)] mb-6">You don&apos;t have a vendor account yet. Register to start selling.</p>
         <Link
           href="/partner/register"
-          className="bg-[var(--color-primary)] text-white px-8 py-4 rounded-2xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
+          className="bg-[var(--color-primary)] text-on-primary px-8 py-4 rounded-2xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
         >
           Register Your Store
         </Link>
@@ -348,7 +348,7 @@ export default function VendorDashboard() {
               <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
               Pending Orders
               {pendingOrders.length > 0 && (
-                <span className="bg-[var(--color-primary)] text-white text-xs px-2 py-0.5 rounded-full">{pendingOrders.length}</span>
+                <span className="bg-[var(--color-primary)] text-on-primary text-xs px-2 py-0.5 rounded-full">{pendingOrders.length}</span>
               )}
             </h2>
             <Link href="/partner/orders" className="text-sm font-bold text-[var(--color-primary)] hover:underline">

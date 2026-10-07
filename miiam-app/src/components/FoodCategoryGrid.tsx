@@ -43,7 +43,7 @@ export default function FoodCategoryGrid({ categories = defaultCategories }: Foo
             <div className="w-14 h-14 rounded-2xl overflow-hidden bg-surface-container group-hover:scale-105 transition-transform shadow-sm">
               <BlurImage src={cat.image} alt={cat.name} fill className="w-full h-full" sizes="56px" />
             </div>
-            <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-primary transition-colors text-center leading-tight">
+            <span className="text-[10px] font-bold text-on-surface-variant group-hover:text-accent transition-colors text-center leading-tight">
               {cat.name}
             </span>
           </Link>

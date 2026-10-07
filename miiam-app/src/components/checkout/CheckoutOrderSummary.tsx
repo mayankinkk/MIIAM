@@ -92,7 +92,7 @@ export default function CheckoutOrderSummary({
         <div className="pt-4 border-t border-outline-variant/30 flex justify-between items-end gap-2">
           <span className="text-base sm:text-lg font-bold">{t.checkout.totalAmount}</span>
           <div className="text-right min-w-0">
-            <p className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tighter truncate">₹{grand}</p>
+            <p className="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tighter truncate">₹{grand}</p>
             <p className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Inclusive of all taxes</p>
           </div>
         </div>

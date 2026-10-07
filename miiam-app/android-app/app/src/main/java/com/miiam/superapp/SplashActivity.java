@@ -22,14 +22,14 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setStatusBarColor(0xFFBA001C);
-        getWindow().setNavigationBarColor(0xFFBA001C);
+        getWindow().setStatusBarColor(0xFFF8CB46);
+        getWindow().setNavigationBarColor(0xFFF8CB46);
 
         // Root: red background, centered content
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER);
-        root.setBackgroundColor(0xFFBA001C);
+        root.setBackgroundColor(0xFFF8CB46);
 
         // White circle with M letter
         View circle = new View(this) {
@@ -45,9 +45,9 @@ public class SplashActivity extends AppCompatActivity {
                 bgPaint.setColor(0xFFFFFFFF);
                 canvas.drawCircle(cx, cy, radius, bgPaint);
 
-                // Red M letter
+                // Dark M letter
                 Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                textPaint.setColor(0xFFBA001C);
+                textPaint.setColor(0xFF1F1F1F);
                 textPaint.setTextSize(radius * 1.1f);
                 textPaint.setTextAlign(Paint.Align.CENTER);
                 textPaint.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);

@@ -289,7 +289,7 @@ export default function VendorAnalytics() {
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
             <button key={p} onClick={() => setPeriod(p)} aria-pressed={period === p}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}

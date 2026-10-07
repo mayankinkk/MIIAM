@@ -30,7 +30,7 @@ export default function CombosSection({ combos }: CombosSectionProps) {
           <h2 className="text-lg font-black text-on-surface">Combos & Deals</h2>
           <p className="text-[11px] text-on-surface-variant mt-0.5">Save more with combo offers</p>
         </div>
-        <Link href="/app/food?filter=combos" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
+        <Link href="/app/food?filter=combos" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {combos.map((combo) => (
@@ -65,7 +65,7 @@ export default function CombosSection({ combos }: CombosSectionProps) {
                 )}
               </div>
               {combo.category && (
-                <span className="inline-block mt-2 px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-bold rounded-full">
+                <span className="inline-block mt-2 px-2 py-0.5 bg-primary/10 text-accent text-[9px] font-bold rounded-full">
                   {combo.category}
                 </span>
               )}
@@ -76,7 +76,7 @@ export default function CombosSection({ combos }: CombosSectionProps) {
               )}
               <div className="flex items-center gap-2 mt-2">
                 <span className="text-xs text-on-surface-variant line-through">₹{combo.original_price}</span>
-                <span className="text-sm font-black text-primary">₹{combo.combo_price}</span>
+                <span className="text-sm font-black text-on-surface">₹{combo.combo_price}</span>
               </div>
             </div>
           </Link>

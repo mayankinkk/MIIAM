@@ -123,7 +123,7 @@ export default function AdminCategoriesPage() {
           placeholder="New category name"
           className="flex-1 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] text-[var(--color-on-surface)] px-4 py-3 rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
         />
-        <button onClick={addCategory} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold hover:opacity-90">
+        <button onClick={addCategory} className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold hover:opacity-90">
           Add
         </button>
       </div>

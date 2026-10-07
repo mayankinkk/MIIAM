@@ -52,7 +52,7 @@ export default function NotificationsPanel({ isOpen, onClose, notifications, not
               role="tab"
               aria-selected={notifTab === tab}
               onClick={() => onTabChange(tab)}
-              className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === tab ? "text-primary border-primary" : "text-gray-400 border-transparent"}`}
+              className={`flex-1 py-3 text-sm font-bold border-b-2 ${notifTab === tab ? "text-accent border-primary" : "text-gray-400 border-transparent"}`}
             >
               {tab === "all" ? t.home.all : tab === "orders" ? t.home.ordersTab : t.home.offersTab}
             </button>
@@ -70,14 +70,14 @@ export default function NotificationsPanel({ isOpen, onClose, notifications, not
                   notif.type === "order" ? "bg-surface-container-high" :
                   notif.type === "promo" ? "bg-amber-500/10" : "bg-surface-container-low"
                 }`}>
-                  <span className="material-symbols-outlined text-primary">
+                  <span className="material-symbols-outlined text-accent">
                     {notif.type === "order" ? "restaurant" :
                      notif.type === "promo" ? "local_offer" : "info"}
                   </span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-start justify-between">
-                    <p className={`font-bold text-on-surface text-sm ${!notif.is_read ? 'text-primary' : ''}`}>{notif.title}</p>
+                    <p className={`font-bold text-on-surface text-sm ${!notif.is_read ? 'text-accent' : ''}`}>{notif.title}</p>
                     <span className="text-[10px] text-gray-400">
                       {new Date(notif.created_at).toLocaleDateString()}
                     </span>
@@ -91,7 +91,7 @@ export default function NotificationsPanel({ isOpen, onClose, notifications, not
                           import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast("Coupon code copied!", "success"));
                         }
                       }}
-                      className="mt-2 text-xs font-bold text-primary"
+                      className="mt-2 text-xs font-bold text-accent"
                       aria-label={`Apply offer: ${notif.title}`}
                     >
                       {t.home.applyNow}

@@ -16,7 +16,7 @@ export default function ComboError({
       <div className="flex gap-3">
         <button
           onClick={reset}
-          className="px-4 py-2 bg-primary text-white rounded-xl font-bold text-sm"
+          className="px-4 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm"
         >
           Try again
         </button>

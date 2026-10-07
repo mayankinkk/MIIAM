@@ -208,7 +208,7 @@ export default function FlowersPartnersPage() {
           <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Flowers Partners</h1>
           <p className="text-[var(--color-outline)] text-sm">Manage flower shop partners</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
+        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Partner
         </button>
       </div>
@@ -399,7 +399,7 @@ export default function FlowersPartnersPage() {
             </div>
             <div className="p-6 border-t flex gap-4">
               <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
-              <button onClick={handleSavePartner} disabled={saving} className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
+              <button onClick={handleSavePartner} disabled={saving} className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
                 {saving ? "Saving..." : editingPartner ? "Update Partner" : "Add Partner"}
               </button>
             </div>

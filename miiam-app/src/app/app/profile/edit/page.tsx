@@ -159,9 +159,9 @@ export default function EditProfilePage() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(0,0,0,0.06)]">
         <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
-          <span className="material-symbols-outlined text-primary">arrow_back</span>
+          <span className="material-symbols-outlined text-accent">arrow_back</span>
         </Link>
         <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.settings.editProfile}</span>
       </header>
@@ -176,11 +176,11 @@ export default function EditProfilePage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-xl p-6 shadow-[0px_10px_30px_rgba(77,33,42,0.04)] space-y-6">
+          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-xl p-6 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] space-y-6">
             
             {/* Avatar Upload */}
             <div className="flex flex-col items-center justify-center border-b border-outline-variant/20 pb-6 mb-6">
-              <div className="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-primary text-3xl font-bold mb-3 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+              <div className="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-accent text-3xl font-bold mb-3 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                 {formData.avatarUrl ? (
                   <BlurImage src={formData.avatarUrl} alt="Avatar" fill className="w-full h-full" sizes="96px" />
                 ) : (
@@ -245,7 +245,7 @@ export default function EditProfilePage() {
           <button
             type="submit"
             disabled={saving || uploading}
-            className="w-full bento-gradient-red text-white py-5 rounded-xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex justify-center items-center gap-2"
+            className="w-full bento-gradient-red text-on-primary py-5 rounded-xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex justify-center items-center gap-2"
           >
                 {saving ? (
                   <>

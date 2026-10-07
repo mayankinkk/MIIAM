@@ -198,8 +198,8 @@
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 5px color-mix(in srgb, var(--color-primary, #ba001c) 30%, transparent); }
-  50% { box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary, #ba001c) 60%, transparent), 0 0 30px color-mix(in srgb, var(--color-primary, #ba001c) 30%, transparent); }
+  0%, 100% { box-shadow: 0 0 5px color-mix(in srgb, var(--color-primary, #f8cb46) 30%, transparent); }
+  50% { box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary, #f8cb46) 60%, transparent), 0 0 30px color-mix(in srgb, var(--color-primary, #f8cb46) 30%, transparent); }
 }
 
 @keyframes badge-shine {
@@ -293,7 +293,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-primary, #ba001c);
+  background: var(--color-primary, #f8cb46);
   animation: loading-dots 1.4s ease-in-out infinite;
 }
 
@@ -341,7 +341,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--color-primary, #ba001c);
+  background: var(--color-primary, #f8cb46);
   border-radius: var(--radius-xs, 3px);
   animation: tab-slide 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }

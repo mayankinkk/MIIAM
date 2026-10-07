@@ -22,7 +22,7 @@ export default function PriceDisplay({ price, originalPrice, size = "md", showSa
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
-      <span className={`font-black text-primary ${s.price}`}>₹{price.toFixed(0)}</span>
+      <span className={`font-black text-on-surface ${s.price}`}>₹{price.toFixed(0)}</span>
       {hasDiscount && (
         <>
           <span className={`font-medium text-on-surface-variant/50 line-through ${s.original}`}>₹{originalPrice.toFixed(0)}</span>

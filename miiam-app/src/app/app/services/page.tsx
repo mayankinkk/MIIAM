@@ -124,7 +124,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               </div>
               <div>
                 <h2 id="booking-modal-title" className="font-black text-on-surface text-lg">{service.name}</h2>
-                <p className="text-primary font-bold text-sm">
+                <p className="text-accent font-bold text-sm">
                   {service.priceMin && service.priceMax ? `₹${service.priceMin} – ₹${service.priceMax}` : `₹${service.price}`} • {service.duration}
                 </p>
               </div>
@@ -137,7 +137,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
                   onClick={() => { setSelectedDate(d.value); if (navigator.vibrate) navigator.vibrate(10); }}
                   className={`px-4 py-2.5 rounded-xl text-sm font-bold border-2 transition-all active:scale-95 ${
                     selectedDate === d.value
-                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                      ? "bg-primary text-on-primary border-primary shadow-md shadow-primary/20"
                       : "border-outline text-on-surface-variant hover:border-primary/40"
                   }`}>
                   {d.label}
@@ -152,7 +152,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
                   onClick={() => { setSelectedSlot(slot); if (navigator.vibrate) navigator.vibrate(10); }}
                   className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left active:scale-[0.98] ${
                     selectedSlot === slot
-                      ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                      ? "bg-primary text-on-primary border-primary shadow-md shadow-primary/20"
                       : "border-outline text-on-surface-variant hover:border-primary/40"
                   }`}>
                   {slot}
@@ -172,7 +172,7 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               if (!address.trim()) { addToast(t.services.pleaseEnterAddress, "error"); return; }
               setStep("confirm");
               if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
-            }} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-primary-hover transition-all active:scale-[0.98]">
+            }} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base disabled:opacity-40 hover:bg-primary-hover hover:text-on-primary transition-all active:scale-[0.98]">
               {t.services.reviewBooking}
             </button>
             <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">
@@ -189,13 +189,13 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
               <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.date}</span><span className="font-bold text-on-surface text-sm">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</span></div>
               <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.time}</span><span className="font-bold text-on-surface text-sm">{selectedSlot}</span></div>
               {address && <div className="flex justify-between"><span className="text-on-surface-variant text-sm">{t.services.address}</span><span className="font-bold text-on-surface text-sm text-right max-w-[60%]">{address}</span></div>}
-              <div className="border-t border-outline/20 pt-3 flex justify-between"><span className="font-bold text-on-surface">{t.services.total}</span><span className="font-black text-primary text-lg">₹{service.price}</span></div>
+              <div className="border-t border-outline/20 pt-3 flex justify-between"><span className="font-bold text-on-surface">{t.services.total}</span><span className="font-black text-on-surface text-lg">₹{service.price}</span></div>
             </div>
             <div className="bg-primary-container/30 border border-primary/20 rounded-xl p-3 flex gap-2 mb-5">
-              <span className="material-symbols-outlined text-primary text-sm mt-0.5">info</span>
+              <span className="material-symbols-outlined text-accent text-sm mt-0.5">info</span>
               <p className="text-xs text-on-primary-container">{t.services.paymentAfterService}</p>
             </div>
-            <button onClick={handleConfirmBooking} disabled={booking} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base hover:bg-primary-hover transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2">
+            <button onClick={handleConfirmBooking} disabled={booking} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base hover:bg-primary-hover hover:text-on-primary transition-all active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2">
               {booking ? (<><span className="w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />{t.services.booking}</>) : t.services.confirmAndBook}
             </button>
             <button onClick={() => { setStep("pick"); if (navigator.vibrate) navigator.vibrate(10); }} className="w-full mt-3 py-3 text-on-surface-variant font-semibold text-sm hover:text-on-surface transition-colors">{t.services.goBack}</button>
@@ -209,10 +209,10 @@ function BookingModal({ service, onClose }: { service: ServiceData; onClose: () 
             </div>
             <h2 className="font-black text-2xl text-on-surface mb-2">{t.services.bookingConfirmed}</h2>
             <p className="text-on-surface-variant mb-1">{service.name}</p>
-            <p className="font-bold text-primary mb-1">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
+            <p className="font-bold text-accent mb-1">{new Date(selectedDate).toLocaleDateString("en-IN", { weekday: "long", month: "long", day: "numeric" })}</p>
             <p className="text-on-surface-variant font-semibold mb-6">{selectedSlot}</p>
             <p className="text-sm text-on-surface-variant/60 mb-8">{t.services.bookingConfirmedDesc}</p>
-            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base hover:bg-primary-hover transition-all active:scale-[0.98]">{t.common.done}</button>
+            <button onClick={() => { onClose(); if (navigator.vibrate) navigator.vibrate([20, 10, 20]); }} className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-base hover:bg-primary-hover hover:text-on-primary transition-all active:scale-[0.98]">{t.common.done}</button>
           </div>
         )}
       </div>
@@ -428,7 +428,7 @@ function ServicesContent() {
                         <div className="relative h-36 overflow-hidden">
                           <BlurImage src={service.image} alt={service.name} fill className="w-full h-full object-cover" sizes="256px" fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80" />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                          <span className="absolute top-2 left-2 bg-primary text-white text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide shadow-md">
+                          <span className="absolute top-2 left-2 bg-primary text-on-primary text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wide shadow-md">
                             {t.services[service.badge as keyof typeof t.services] || service.badge}
                           </span>
                           {service.originalPrice && (
@@ -471,7 +471,7 @@ function ServicesContent() {
                           </div>
                           <div className="p-3">
                             <h3 className="font-bold text-on-surface text-[11px] truncate">{service.name}</h3>
-                            <p className="text-[10px] font-bold text-primary mt-0.5">₹{service.price}</p>
+                            <p className="text-[10px] font-bold text-on-surface mt-0.5">₹{service.price}</p>
                           </div>
                         </Link>
                       ))}

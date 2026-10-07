@@ -174,7 +174,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
               {item.description && (
                 <p className="text-xs text-[var(--color-outline)] mt-1 line-clamp-2">{item.description}</p>
               )}
-              <p className="text-base font-extrabold text-[var(--color-primary)] mt-1">₹{item.price}</p>
+              <p className="text-base font-extrabold text-[var(--color-accent)] mt-1">₹{item.price}</p>
             </div>
           </div>
 
@@ -196,14 +196,14 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
                         onClick={() => toggleOption(cat.label, opt.label, cat.multi)}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                           isSelected
-                            ? "bg-primary/10 border-2 border-primary text-primary"
+                            ? "bg-primary/10 border-2 border-primary text-accent"
                             : "bg-[var(--color-surface-subtle)] border-2 border-transparent text-[var(--color-on-surface)]"
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           {cat.multi ? (
                             <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${isSelected ? "border-primary bg-primary" : "border-[var(--color-outline)]"}`}>
-                              {isSelected && <span className="material-symbols-outlined text-white text-xs">check</span>}
+                              {isSelected && <span className="material-symbols-outlined text-on-primary text-xs">check</span>}
                             </div>
                           ) : (
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${isSelected ? "border-primary" : "border-[var(--color-outline)]"}`}>
@@ -231,14 +231,14 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[var(--color-surface-container)] transition-colors"
               >
-                <span className="material-symbols-outlined text-[var(--color-primary)]">remove</span>
+                <span className="material-symbols-outlined text-[var(--color-accent)]">remove</span>
               </button>
               <span className="text-xl font-extrabold text-[var(--color-on-surface)] w-8 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
                 className="w-10 h-10 rounded-xl bg-[var(--color-surface-container-lowest)] shadow flex items-center justify-center hover:bg-[var(--color-surface-container)] transition-colors"
               >
-                <span className="material-symbols-outlined text-[var(--color-primary)]">add</span>
+                <span className="material-symbols-outlined text-[var(--color-accent)]">add</span>
               </button>
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function CustomizationModal({ item, vendor_id, vendor_name, onClo
         <div className="bg-[var(--color-surface-container-lowest)] border-t border-[var(--color-border-subtle)] px-6 py-4 pb-[env(safe-area-inset-bottom)] flex-shrink-0">
           <button
             onClick={handleAddToCart}
-            className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-primary-dim active:scale-95 transition-all shadow-lg shadow-primary/30"
+            className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:bg-primary-dim hover:text-on-primary active:scale-95 transition-all shadow-lg shadow-primary/30"
           >
             <span className="material-symbols-outlined">add_shopping_cart</span>
             <span>Add to Cart</span>

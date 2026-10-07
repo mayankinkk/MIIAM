@@ -77,12 +77,12 @@ export default function AddressPickerPage() {
         className: 'crosshair-marker',
         html: `
           <div style="position: relative; width: 60px; height: 60px;">
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: rgba(186,0,28,0.9); border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.4);"></div>
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 2px solid rgba(186,0,28,0.5); border-radius: 50%;"></div>
-            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: rgba(186,0,28,0.7);"></div>
-            <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: rgba(186,0,28,0.7);"></div>
-            <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 2px; background: rgba(186,0,28,0.7);"></div>
-            <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 2px; background: rgba(186,0,28,0.7);"></div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; background: rgba(248,203,70,0.9); border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.4);"></div>
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 2px solid rgba(248,203,70,0.5); border-radius: 50%;"></div>
+            <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: rgba(248,203,70,0.7);"></div>
+            <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 12px; background: rgba(248,203,70,0.7);"></div>
+            <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 2px; background: rgba(248,203,70,0.7);"></div>
+            <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 2px; background: rgba(248,203,70,0.7);"></div>
           </div>
         `,
         iconSize: [60, 60],
@@ -338,7 +338,7 @@ export default function AddressPickerPage() {
           {detecting ? (
             <span className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin block" />
           ) : (
-            <span className="material-symbols-outlined text-primary">my_location</span>
+            <span className="material-symbols-outlined text-accent">my_location</span>
           )}
         </button>
 
@@ -418,7 +418,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => setAddressLabel("home")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition-all ${
-                    addressLabel === "home" ? "bg-primary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                    addressLabel === "home" ? "bg-primary text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">home</span>
@@ -427,7 +427,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => setAddressLabel("office")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition-all ${
-                    addressLabel === "office" ? "bg-primary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                    addressLabel === "office" ? "bg-primary text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">work</span>
@@ -436,7 +436,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => setAddressLabel("other")}
                   className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium flex items-center justify-center gap-1 transition-all ${
-                    addressLabel === "other" ? "bg-primary text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                    addressLabel === "other" ? "bg-primary text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                   }`}
                 >
                   <span className="material-symbols-outlined text-sm">location_on</span>
@@ -484,7 +484,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving || !currentLocation}
-                  className="flex-[2] bg-primary text-white py-3 rounded-lg font-bold text-sm hover:bg-primary-dim transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="flex-[2] bg-primary text-on-primary py-3 rounded-lg font-bold text-sm hover:bg-primary-dim hover:text-on-primary transition-colors flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {saving ? (
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

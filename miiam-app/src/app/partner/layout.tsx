@@ -99,7 +99,7 @@ export default function PartnerLayout({
 
         <div className="p-4 border-t border-[var(--color-border-subtle)]">
           <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl flex items-center gap-3 mb-4 border border-[var(--color-border-subtle)]">
-            <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+            <div className="w-10 h-10 bg-[var(--color-primary)] rounded-full text-on-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
               {initials}
             </div>
             <div className="overflow-hidden min-w-0">
@@ -136,7 +136,7 @@ export default function PartnerLayout({
         {mobileMenuOpen && (
           <div className="md:hidden bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-2 relative z-20">
             <div className="flex items-center gap-3 px-4 py-3 mb-2 bg-[var(--color-surface-subtle)] rounded-xl">
-              <div className="w-8 h-8 bg-[var(--color-primary)] rounded-full text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <div className="w-8 h-8 bg-[var(--color-primary)] rounded-full text-on-primary flex items-center justify-center font-bold text-xs flex-shrink-0">
                 {initials}
               </div>
               <div className="overflow-hidden min-w-0">

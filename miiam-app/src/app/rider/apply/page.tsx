@@ -76,7 +76,7 @@ export default function RiderApplyPage() {
           </p>
           <Link 
             href="/rider/login" 
-            className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-all"
+            className="block w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-all"
           >
             Back to Login
           </Link>

@@ -25,7 +25,7 @@ export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSele
           <div className="flex justify-between items-center text-sm">
             <span className="font-bold text-on-surface">Rider Tip</span>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-primary">₹{tipAmount}</span>
+              <span className="font-semibold text-on-surface">₹{tipAmount}</span>
               <button onClick={onEditTip} className="text-xs text-blue-600 underline">Edit</button>
             </div>
           </div>
@@ -34,7 +34,7 @@ export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSele
       ) : (
         <button
           onClick={onEditTip}
-          className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors"
+          className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-accent transition-colors"
         >
           <span className="material-symbols-outlined text-[18px]">favorite</span>
           Add tip for your rider

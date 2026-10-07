@@ -1,13 +1,13 @@
 export const colors = {
   brand: {
     primary: 'var(--color-primary)',
-    primaryHover: '#a40017',
-    primaryLight: '#ff7670',
+    primaryHover: '#e5b62e',
+    primaryLight: '#fce9b0',
     primaryLighter: '#ff5a57',
     primaryDark: '#8c1500',
     onPrimary: '#ffffff',
     onPrimaryContainer: '#4e0006',
-    secondary: '#0b50d5',
+    secondary: '#0c831f',
     secondaryHover: '#0044bf',
     secondaryLight: '#c4d0ff',
     secondaryLighter: '#b1c2ff',
@@ -148,10 +148,10 @@ export const shadows = {
   md: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
   lg: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
   xl: '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-  editorial: '0px 20px 40px rgba(77, 33, 42, 0.06)',
-  editorialSm: '0px 10px 30px rgba(77, 33, 42, 0.04)',
-  glow: '0 0 20px rgba(186, 0, 28, 0.3)',
-  glowStrong: '0 0 30px rgba(186, 0, 28, 0.5)',
+  editorial: '0px 20px 40px rgba(0, 0, 0, 0.06)',
+  editorialSm: '0px 10px 30px rgba(0, 0, 0, 0.04)',
+  glow: '0 0 20px rgba(248, 203, 70, 0.3)',
+  glowStrong: '0 0 30px rgba(248, 203, 70, 0.5)',
 } as const;
 
 export const transitions = {

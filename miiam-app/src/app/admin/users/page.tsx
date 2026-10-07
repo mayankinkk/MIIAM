@@ -233,7 +233,7 @@ export default function UserRegistry() {
              </button>
              <button
                onClick={() => { setSearchQuery(""); setPage(1); }}
-               className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
+               className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
                aria-label="Clear search"
              >
                <span className="material-symbols-outlined">filter_list</span>
@@ -284,7 +284,7 @@ export default function UserRegistry() {
                 </td>
                   <td className="p-6">
                     <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
-                      profile.role === 'admin' ? 'bg-[var(--color-primary)] text-white' :
+                      profile.role === 'admin' ? 'bg-[var(--color-primary)] text-on-primary' :
                       profile.role === 'rider' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' :
                       'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
                     }`}>
@@ -373,7 +373,7 @@ export default function UserRegistry() {
               <div className="flex justify-between"><span className="text-[var(--color-outline)]">Joined</span><span className="font-bold">{selectedProfile.created_at ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN") : "—"}</span></div>
               <div className="flex justify-between"><span className="text-[var(--color-outline)]">ID</span><span className="font-bold text-xs">{selectedProfile.id}</span></div>
             </div>
-            <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl">Close</button>
+            <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl">Close</button>
           </div>
         </div>
       )}
@@ -388,7 +388,7 @@ export default function UserRegistry() {
                 <button
                   key={role}
                   onClick={() => setNewRole(role)}
-                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
+                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
                 >
                   {role}
                 </button>
@@ -405,7 +405,7 @@ export default function UserRegistry() {
                   setShowRoleModal(false);
                 }}
                 disabled={!newRole || newRole === selectedProfile.role}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl disabled:opacity-50"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl disabled:opacity-50"
               >
                 Save
               </button>

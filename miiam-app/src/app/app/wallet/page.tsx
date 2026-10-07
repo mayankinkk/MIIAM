@@ -97,16 +97,16 @@ export default function WalletPage() {
 
         <main className="px-5 py-6 max-w-2xl mx-auto space-y-6">
           {/* Balance Card */}
-          <div className="bg-gradient-to-br from-primary to-primary-dim rounded-3xl p-6 text-white shadow-lg">
-            <p className="text-white/70 text-xs font-bold uppercase tracking-wider">Available Balance</p>
+          <div className="bg-gradient-to-br from-primary to-primary-dim rounded-3xl p-6 text-on-primary shadow-lg">
+            <p className="text-on-primary/70 text-xs font-bold uppercase tracking-wider">Available Balance</p>
             <p className="text-4xl font-black mt-2">₹{balance.toFixed(2)}</p>
-            <p className="text-white/60 text-xs mt-2">Use your wallet balance at checkout</p>
+            <p className="text-on-primary/60 text-xs mt-2">Use your wallet balance at checkout</p>
           </div>
 
           {/* Gift Card */}
           <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
             <h2 className="font-bold text-on-surface mb-3 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">card_giftcard</span>
+              <span className="material-symbols-outlined text-accent">card_giftcard</span>
               Redeem Gift Card
             </h2>
             <div className="flex gap-2">
@@ -120,7 +120,7 @@ export default function WalletPage() {
               <button
                 onClick={redeemGiftCard}
                 disabled={!giftCode.trim() || redeeming}
-                className="px-5 py-3 bg-primary text-white font-bold rounded-xl text-sm disabled:opacity-50 active:scale-95 transition-all"
+                className="px-5 py-3 bg-primary text-on-primary font-bold rounded-xl text-sm disabled:opacity-50 active:scale-95 transition-all"
               >
                 {redeeming ? "..." : "Redeem"}
               </button>

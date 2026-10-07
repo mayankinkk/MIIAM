@@ -21,7 +21,7 @@ export default function DeliveryTimeBadge({ min, max, variant = "default", class
     return (
       <div className={`flex items-center gap-3 p-3 bg-surface-container rounded-xl ${className}`}>
         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-primary text-lg">delivery_dining</span>
+          <span className="material-symbols-outlined text-accent text-lg">delivery_dining</span>
         </div>
         <div>
           <p className="text-sm font-bold text-on-surface">Delivery Time</p>
@@ -35,7 +35,7 @@ export default function DeliveryTimeBadge({ min, max, variant = "default", class
 
   return (
     <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-container rounded-full ${className}`}>
-      <span className="material-symbols-outlined text-sm text-primary">schedule</span>
+      <span className="material-symbols-outlined text-sm text-accent">schedule</span>
       <span className="text-xs font-bold text-on-surface">{min}–{max} min</span>
     </div>
   );

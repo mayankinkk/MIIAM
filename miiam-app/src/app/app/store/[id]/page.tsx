@@ -109,7 +109,7 @@ export default function StoreItemDetailPage() {
         <span className="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4">inventory_2</span>
         <h1 className="text-xl font-black text-on-surface mb-1">Item Not Found</h1>
         <p className="text-sm text-on-surface-variant mb-4">This item may have been removed.</p>
-        <Link href="/app/food" className="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold">Browse Food</Link>
+        <Link href="/app/food" className="px-5 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold">Browse Food</Link>
       </div>
     );
   }
@@ -167,7 +167,7 @@ export default function StoreItemDetailPage() {
               )}
             </div>
             <div className="text-right flex-shrink-0">
-              <span className="text-2xl font-black text-primary">₹{item.price}</span>
+              <span className="text-2xl font-black text-on-surface">₹{item.price}</span>
               {item.original_price && (
                 <div className="flex items-center gap-1 justify-end mt-0.5">
                   <span className="text-sm text-on-surface-variant line-through">₹{item.original_price}</span>
@@ -236,18 +236,18 @@ export default function StoreItemDetailPage() {
           <motion.button
             onClick={handleAdd}
             whileTap={{ scale: 0.97 }}
-            className="w-full py-3.5 bg-primary text-white rounded-xl font-black text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-black text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
             Add to Cart — ₹{item.price}
           </motion.button>
         ) : (
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 bg-primary rounded-xl px-3 py-2">
+            <div className="flex items-center gap-1 bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
               <motion.button
                 onClick={() => updateQuantity(item.id, qty - 1)}
                 whileTap={{ scale: 0.8 }}
-                className="text-white font-bold w-9 h-9 flex items-center justify-center"
+                className="bg-primary text-on-primary font-bold w-9 h-9 flex items-center justify-center hover:brightness-95 transition-colors"
               >
                 −
               </motion.button>
@@ -255,21 +255,21 @@ export default function StoreItemDetailPage() {
                 key={qty}
                 initial={{ scale: 1.3 }}
                 animate={{ scale: 1 }}
-                className="text-white font-black text-sm min-w-[20px] text-center"
+                className="text-on-surface font-extrabold text-sm min-w-[24px] text-center"
               >
                 {qty}
               </motion.span>
               <motion.button
                 onClick={handleAdd}
                 whileTap={{ scale: 1.2 }}
-                className="text-white font-bold w-9 h-9 flex items-center justify-center"
+                className="bg-primary text-on-primary font-bold w-9 h-9 flex items-center justify-center hover:brightness-95 transition-colors"
               >
                 +
               </motion.button>
             </div>
             <Link
               href="/app/cart"
-              className="flex-1 ml-3 py-3.5 bg-primary text-white rounded-xl font-black text-sm text-center shadow-lg shadow-primary/20"
+              className="flex-1 ml-3 py-3.5 bg-primary text-on-primary rounded-xl font-black text-sm text-center shadow-lg shadow-primary/20"
             >
               View Cart — ₹{(item.price * qty).toFixed(0)}
             </Link>

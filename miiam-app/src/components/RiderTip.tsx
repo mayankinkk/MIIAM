@@ -60,7 +60,7 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
               }`}
             >
               <div className="text-sm font-bold text-[var(--color-on-surface)]">{label}</div>
-              {amount > 0 && <div className="text-xs text-[var(--color-primary)]">₹{amount}</div>}
+              {amount > 0 && <div className="text-xs text-[var(--color-accent)]">₹{amount}</div>}
             </button>
           );
         })}
@@ -81,7 +81,7 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
           </div>
           <button
             onClick={handleCustomTip}
-            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold"
+            className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg font-bold"
           >
             Add
           </button>
@@ -98,7 +98,7 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
         <button
           onClick={() => selectedTip !== null && handleSelect(selectedTip)}
           disabled={selectedTip === null}
-          className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl disabled:opacity-50"
+          className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl disabled:opacity-50"
         >
           Add ₹{selectedTip !== null && selectedTip >= 0 ? calculateTip(selectedTip) : selectedTip === -1 ? customAmount : 0} Tip
         </button>

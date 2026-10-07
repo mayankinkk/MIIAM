@@ -43,7 +43,7 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
           <h2 className="text-lg font-black text-on-surface">{t.home.nearbyPopular}</h2>
           <p className="text-[11px] text-on-surface-variant mt-0.5">{foodRestaurants.length} restaurants nearby</p>
         </div>
-        <Link href="/app/food" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">{t.home.seeAll}</Link>
+        <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">{t.home.seeAll}</Link>
       </div>
       {foodRestaurants.length > 0 ? (
         <div className="space-y-3">
@@ -73,7 +73,7 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
                   </div>
                   <div className="flex items-center gap-3 mt-2">
                     <span className="flex items-center gap-1 text-[11px] text-on-surface-variant">
-                      <span className="material-symbols-outlined text-[12px] text-primary">schedule</span>
+                      <span className="material-symbols-outlined text-[12px] text-accent">schedule</span>
                       {restaurant.delivery_time_min || 25}–{restaurant.delivery_time_max || 35} min
                     </span>
                     {restaurant.delivery_charge !== undefined && restaurant.delivery_charge !== null && (
@@ -99,13 +99,13 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
       ) : !hasPincode ? (
         <div className="bg-surface-container-lowest border border-outline-variant/10 rounded-2xl p-8 text-center shadow-sm">
           <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
+            <span className="material-symbols-outlined text-4xl text-accent">location_on</span>
           </div>
           <h3 className="text-lg font-black text-on-surface mb-1">{t.home.locationRequired}</h3>
           <p className="text-sm text-on-surface-variant mb-5">{t.home.locationRequiredDesc}</p>
           <button
             onClick={onLocationClick}
-            className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+            className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:bg-[#e5b62e] active:scale-95 transition-all shadow-md"
           >
             {t.home.selectPincode}
           </button>
@@ -117,11 +117,11 @@ export default function NearbyRestaurants({ restaurants, hasLocation, hasPincode
           </div>
           <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
           <p className="text-sm text-on-surface-variant mb-1">{t.home.notAvailableDesc}</p>
-          <p className="text-sm font-bold text-primary mb-4">{displayAddress}</p>
+          <p className="text-sm font-bold text-accent mb-4">{displayAddress}</p>
           <p className="text-xs text-[var(--color-outline-variant)] mb-5">{t.home.expanding}</p>
           <button
             onClick={onLocationClick}
-            className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
+            className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm"
           >
             {t.home.changeLocation}
           </button>

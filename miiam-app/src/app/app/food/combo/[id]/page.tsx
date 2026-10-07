@@ -227,7 +227,7 @@ export default function ComboDetailPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
         <p className="text-xl font-black text-on-surface mb-2">Combo not found</p>
-        <Link href="/app/home" className="text-primary font-bold">Go back</Link>
+        <Link href="/app/home" className="text-accent font-bold">Go back</Link>
       </div>
     );
   }
@@ -343,7 +343,7 @@ export default function ComboDetailPage() {
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-black text-primary">₹{combo.combo_price}</span>
+              <span className="text-3xl font-black text-on-surface">₹{combo.combo_price}</span>
               <span className="text-lg text-on-surface-variant line-through">₹{combo.original_price}</span>
             </div>
             <p className="text-sm text-green-600 font-bold mt-1">You save ₹{savings.toFixed(0)}</p>
@@ -360,7 +360,7 @@ export default function ComboDetailPage() {
             <button
               ref={addBtnRef}
               onClick={handleAddToCart}
-              className="bg-primary text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all"
+              className="bg-primary text-on-primary px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim hover:text-on-primary active:scale-95 transition-all"
             >
               Add to Cart
             </button>
@@ -382,7 +382,7 @@ export default function ComboDetailPage() {
           <ul className="space-y-2.5">
             {combo.items.map((item, i) => (
               <li key={i} className="flex items-start gap-2.5">
-                <span className="w-5 h-5 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-5 h-5 bg-primary/10 text-accent rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <span className="material-symbols-outlined text-xs">check</span>
                 </span>
                 <span className="text-sm text-on-surface">{item}</span>
@@ -414,7 +414,7 @@ export default function ComboDetailPage() {
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-black text-on-surface">Menu from {vendor?.shop_name}</h2>
             {vendor && (
-              <Link href={`/app/food/${vendor.id}`} className="text-xs font-bold text-primary hover:underline">
+              <Link href={`/app/food/${vendor.id}`} className="text-xs font-bold text-accent hover:underline">
                 View All
               </Link>
             )}
@@ -443,7 +443,7 @@ export default function ComboDetailPage() {
                 </div>
                 <div className="p-2">
                   <p className="text-xs font-bold text-on-surface truncate">{item.name}</p>
-                  <p className="text-xs font-bold text-primary mt-0.5">₹{item.price}</p>
+                  <p className="text-xs font-bold text-on-surface mt-0.5">₹{item.price}</p>
                 </div>
               </Link>
             ))}
@@ -456,7 +456,7 @@ export default function ComboDetailPage() {
         <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/10">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-black text-on-surface">You Might Also Like</h2>
-            <Link href="/app/food?filter=combos" className="text-xs font-bold text-primary hover:underline">
+            <Link href="/app/food?filter=combos" className="text-xs font-bold text-accent hover:underline">
               View All
             </Link>
           </div>
@@ -488,7 +488,7 @@ export default function ComboDetailPage() {
                   <div className="p-2.5">
                     <p className="text-xs font-bold text-on-surface truncate">{sc.name}</p>
                     <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-xs font-black text-primary">₹{sc.combo_price}</span>
+                      <span className="text-xs font-black text-on-surface">₹{sc.combo_price}</span>
                       <span className="text-[10px] text-on-surface-variant line-through">₹{sc.original_price}</span>
                     </div>
                   </div>
@@ -505,8 +505,8 @@ export default function ComboDetailPage() {
           <h2 className="text-base font-black text-on-surface">Ratings & Reviews</h2>
           {vendor?.rating && (
             <div className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-full">
-              <span className="material-symbols-outlined text-sm text-primary">star</span>
-              <span className="text-sm font-bold text-primary">{vendor.rating}</span>
+              <span className="material-symbols-outlined text-sm text-accent">star</span>
+              <span className="text-sm font-bold text-accent">{vendor.rating}</span>
               {vendor.rating_count != null && (
                 <span className="text-xs text-on-surface-variant">({vendor.rating_count})</span>
               )}
@@ -525,7 +525,7 @@ export default function ComboDetailPage() {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span
                         key={i}
-                        className={`material-symbols-outlined text-sm ${i < review.rating ? "text-primary" : "text-outline-variant"}`}
+                        className={`material-symbols-outlined text-sm ${i < review.rating ? "text-accent" : "text-outline-variant"}`}
                       >
                         star
                       </span>

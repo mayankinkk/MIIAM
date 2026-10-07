@@ -118,7 +118,7 @@ export default function StorePage() {
               onClick={() => setActiveCategory(cat.id)}
               className={`flex items-center gap-1.5 flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border ${
                 activeCategory === cat.id
-                  ? "bg-primary text-white border-primary"
+                  ? "bg-primary text-on-primary border-primary"
                   : "bg-surface-container-lowest text-on-surface-variant border-outline-variant/15"
               }`}
             >
@@ -160,7 +160,7 @@ export default function StorePage() {
                       <span className={`w-2 h-2 ${item.is_veg ? "bg-green-500" : "bg-red-500"} rounded-full`} />
                     </span>
                     {/* Price */}
-                    <span className="absolute bottom-2 right-2 bg-primary text-white text-[10px] font-black px-2 py-1 rounded-lg">
+                    <span className="absolute bottom-2 right-2 bg-primary text-on-primary text-[10px] font-black px-2 py-1 rounded-lg">
                       ₹{item.price}
                     </span>
                   </div>
@@ -183,26 +183,26 @@ export default function StorePage() {
                         <motion.button
                           onClick={(e) => { e.preventDefault(); handleAdd(item); }}
                           whileTap={{ scale: 0.95 }}
-                          className="w-full py-2 bg-primary text-white rounded-xl text-xs font-bold"
+                          className="w-full h-8 bg-primary text-on-primary border border-primary rounded-lg text-xs font-extrabold hover:brightness-95 transition-all"
                         >
                           ADD
                         </motion.button>
                       ) : (
-                        <div className="flex items-center justify-between bg-primary rounded-xl px-1">
+                        <div className="flex items-center justify-between bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
                           <motion.button
                             onClick={(e) => { e.preventDefault(); updateQuantity(item.id, qty - 1); }}
                             whileTap={{ scale: 0.8 }}
-                            className="text-white font-bold w-8 h-8 flex items-center justify-center"
+                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center hover:brightness-95 transition-colors"
                           >
                             −
                           </motion.button>
-                          <motion.span key={qty} initial={{ scale: 1.3 }} animate={{ scale: 1 }} className="text-white font-black text-xs">
+                          <motion.span key={qty} initial={{ scale: 1.3 }} animate={{ scale: 1 }} className="text-on-surface font-extrabold text-xs">
                             {qty}
                           </motion.span>
                           <motion.button
                             onClick={(e) => { e.preventDefault(); handleAdd(item); }}
                             whileTap={{ scale: 1.2 }}
-                            className="text-white font-bold w-8 h-8 flex items-center justify-center"
+                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center hover:brightness-95 transition-colors"
                           >
                             +
                           </motion.button>

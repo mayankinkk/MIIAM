@@ -288,7 +288,7 @@ export default function EnhancedServicesDashboard() {
           </button>
           <button
             onClick={() => setActiveTab("settings")}
-            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm flex items-center gap-2"
+            className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm flex items-center gap-2"
           >
             <span className="material-symbols-outlined text-sm">add</span>
             Add Service
@@ -303,7 +303,7 @@ export default function EnhancedServicesDashboard() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-colors ${
               activeTab === tab
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
@@ -517,7 +517,7 @@ export default function EnhancedServicesDashboard() {
                   onClick={() => setStatusFilter(status)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize ${
                     statusFilter === status
-                      ? "bg-[var(--color-primary)] text-white"
+                      ? "bg-[var(--color-primary)] text-on-primary"
                       : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                   }`}
                 >
@@ -617,7 +617,7 @@ export default function EnhancedServicesDashboard() {
             <h2 className="text-xl font-black text-[var(--color-on-surface)]">Service Providers</h2>
             <button
               onClick={() => setShowProviderModal(true)}
-              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm flex items-center gap-2"
+              className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-sm">add</span>
               Add Provider
@@ -860,7 +860,7 @@ export default function EnhancedServicesDashboard() {
                 });
                 useToastStore.getState().addToast("Pricing settings saved", "success");
               }}
-              className="w-full mt-4 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+              className="w-full mt-4 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm"
             >
               Update Settings
             </button>
@@ -897,7 +897,7 @@ export default function EnhancedServicesDashboard() {
                   setProviderForm({ name: "", phone: "", email: "", service_type: "beauty", experience: "" });
                   loadProviders();
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm"
               >
                 Register
               </button>
@@ -929,7 +929,7 @@ export default function EnhancedServicesDashboard() {
                   setShowCategoryModal(false);
                   setCategoryForm({ name: "", icon: "home_repair_service", description: "" });
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm"
               >
                 Create
               </button>
@@ -962,7 +962,7 @@ export default function EnhancedServicesDashboard() {
                   setEditingCategory(null);
                   loadCategories();
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm"
               >
                 Save Changes
               </button>
@@ -1135,7 +1135,7 @@ export default function EnhancedServicesDashboard() {
                   setEditingItem(null);
                   loadServiceItems();
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm"
               >
                 {editingItem ? "Save Changes" : "Create"}
               </button>

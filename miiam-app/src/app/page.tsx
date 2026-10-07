@@ -13,7 +13,7 @@ export default function RootPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="text-center">
-        <div className="w-10 h-10 border-4 border-[#ba001c] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <div className="w-10 h-10 border-4 border-[#0c831f] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
         <p className="text-slate-500 font-medium text-sm">Redirecting to app...</p>
       </div>
     </div>

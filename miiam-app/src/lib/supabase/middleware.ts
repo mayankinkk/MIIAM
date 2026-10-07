@@ -24,19 +24,18 @@ export async function updateSession(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
-  const pathname = request.nextUrl.pathname
 
   const publicPartnerPaths = ['/partner', '/partner/register', '/partner/dashboard']
-  const isPublicPartner = publicPartnerPaths.some(p => pathname === p)
+  const isPublicPartner = publicPartnerPaths.some(p =>
+    request.nextUrl.pathname === p
+  )
   const publicAuthPaths = ['/rider/login', '/rider/apply']
-  const isPublicAuth = publicAuthPaths.some(p => pathname === p)
-
-  // No sign-in wall in the customer app: catalog, cart, checkout, orders and
-  // profile all render for signed-out visitors (orders are identified by the
-  // phone number captured at checkout). Only staff portals need a session.
-  const protectedPaths = ['/admin', '/rider', '/partner']
+  const isPublicAuth = publicAuthPaths.some(p =>
+    request.nextUrl.pathname === p
+  )
+  const protectedPaths = ['/app', '/admin', '/rider', '/partner']
   const isProtected = !isPublicPartner && !isPublicAuth && protectedPaths.some(p =>
-    pathname.startsWith(p)
+    request.nextUrl.pathname.startsWith(p)
   )
 
   if (isProtected && !user) {

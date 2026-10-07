@@ -52,11 +52,11 @@ export default function ThemePage() {
               <span className="material-symbols-outlined text-2xl">{t.icon}</span>
             </div>
             <div className="flex-1 text-left">
-              <p className={`font-bold ${theme === t.value ? "text-primary" : "text-on-surface"}`}>{t.label}</p>
+              <p className={`font-bold ${theme === t.value ? "text-accent" : "text-on-surface"}`}>{t.label}</p>
               <p className="text-xs text-on-surface-variant">{t.sub}</p>
             </div>
             {theme === t.value && (
-              <span className="material-symbols-outlined text-primary">check_circle</span>
+              <span className="material-symbols-outlined text-accent">check_circle</span>
             )}
           </button>
         ))}

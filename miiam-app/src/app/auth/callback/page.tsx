@@ -92,7 +92,7 @@ function CallbackContent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
       <div className="text-center">
-        <span className="material-symbols-outlined text-6xl text-[var(--color-primary)] animate-spin">sync</span>
+        <span className="material-symbols-outlined text-6xl text-[var(--color-accent)] animate-spin">sync</span>
         <p className="mt-4 text-[var(--color-on-surface)] font-medium">Signing you in...</p>
       </div>
     </div>

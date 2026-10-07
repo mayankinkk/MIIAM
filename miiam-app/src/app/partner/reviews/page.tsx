@@ -140,7 +140,7 @@ export default function PartnerReviewsPage() {
           reviews.map((review) => (
             <div key={review.id} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-5 border border-[var(--color-border-subtle)]">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
                   {review.profile?.full_name?.[0] || "U"}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -183,7 +183,7 @@ export default function PartnerReviewsPage() {
                       <button
                         onClick={() => saveReply(review.id)}
                         disabled={!replyInputs[review.id]?.trim() || saving[review.id]}
-                        className="px-4 py-2 bg-primary text-white text-sm font-bold rounded-lg hover:bg-primary-dim disabled:opacity-50 transition-colors"
+                        className="px-4 py-2 bg-primary text-on-primary text-sm font-bold rounded-lg hover:bg-primary-dim disabled:opacity-50 transition-colors"
                       >
                         {saving[review.id] ? "..." : "Reply"}
                       </button>

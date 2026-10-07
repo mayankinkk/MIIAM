@@ -22,7 +22,7 @@ function Confetti() {
   const [pieces, setPieces] = useState<ConfettiPiece[]>([]);
   
   useEffect(() => {
-    const colors = ["var(--color-primary)", "#ff7670", "#ffc371", "#0b50d5", "#38ef7d", "#ffd200", "#ff6a00"];
+    const colors = ["var(--color-primary)", "#fce9b0", "#ffc371", "#0c831f", "#38ef7d", "#ffd200", "#ff6a00"];
     const confetti = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
@@ -238,13 +238,13 @@ function PaymentStatusContent() {
             <div className="space-y-3 mb-6">
               <button 
                 onClick={() => router.push("/app/checkout")}
-                className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors"
+                className="w-full bg-primary text-on-primary py-4 rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-colors"
               >
                 Try Again
               </button>
               <Link 
                 href="/app/support"
-                className="block w-full text-center text-primary font-bold py-3"
+                className="block w-full text-center text-accent font-bold py-3"
               >
                 {t.refund.contactSupport}
               </Link>
@@ -270,14 +270,14 @@ function PaymentStatusContent() {
               )}
               <Link 
                 href={`/app/orders/${orderId}`}
-                className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-colors flex items-center justify-center gap-2"
+                className="block w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-center hover:bg-primary-dim hover:text-on-primary transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">order_play</span>
                 {t.home.trackOrder}
               </Link>
               <Link 
                 href="/app/food"
-                className="block w-full text-center text-primary font-bold py-3"
+                className="block w-full text-center text-accent font-bold py-3"
               >
                 {t.common.seeAll}
               </Link>
@@ -288,14 +288,14 @@ function PaymentStatusContent() {
             <div className="space-y-3 mb-6">
               <Link 
                 href={`/app/orders/${orderId}`}
-                className="block w-full bg-primary text-white py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-colors flex items-center justify-center gap-2"
+                className="block w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-center hover:bg-primary-dim hover:text-on-primary transition-colors flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">order_play</span>
                 {t.home.trackOrder}
               </Link>
               <Link 
                 href="/app/support"
-                className="block w-full text-center text-primary font-bold py-3"
+                className="block w-full text-center text-accent font-bold py-3"
               >
                 {t.refund.contactSupport}
               </Link>
@@ -306,11 +306,11 @@ function PaymentStatusContent() {
           {showConfetti && <Confetti />}
 
           <div className="flex justify-center gap-4 pt-6 border-t border-outline-variant/20">
-            <Link href="/app/home" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+            <Link href="/app/home" className="flex items-center gap-2 text-on-surface-variant hover:text-accent transition-colors">
               <span className="material-symbols-outlined">home</span>
               <span className="font-bold text-sm">{t.common.home}</span>
             </Link>
-            <Link href="/app/orders" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+            <Link href="/app/orders" className="flex items-center gap-2 text-on-surface-variant hover:text-accent transition-colors">
               <span className="material-symbols-outlined">receipt_long</span>
               <span className="font-bold text-sm">{t.nav.orders}</span>
             </Link>

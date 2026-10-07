@@ -34,7 +34,7 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-lg font-black text-primary">{userName.charAt(0).toUpperCase()}</span>
+              <span className="text-lg font-black text-accent">{userName.charAt(0).toUpperCase()}</span>
             </div>
             <div>
               <p className="text-xs text-on-surface-variant font-medium">{greeting} {timeIcon}</p>
@@ -81,13 +81,13 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
       <div className="px-5 pb-3">
         <button
           onClick={onLocationClick}
-          className="flex items-center gap-3 bg-primary/5 hover:bg-primary/10 px-4 py-2.5 rounded-2xl w-full transition-colors border border-primary/10"
+          className="flex items-center gap-3 hover:bg-surface-container-high px-4 py-2.5 rounded-xl w-full transition-colors border border-border-subtle"
         >
-          <div className="w-8 h-8 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-primary text-lg">location_on</span>
+          <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <span className="material-symbols-outlined text-on-surface text-lg">location_on</span>
           </div>
           <div className="flex-1 text-left min-w-0">
-            <p className="text-[10px] text-primary font-bold uppercase tracking-wider">{t.home.deliveringTo}</p>
+            <p className="text-[10px] text-accent font-bold uppercase tracking-wider">{t.home.deliveringTo}</p>
             <p className="font-bold text-on-surface text-sm truncate">{location}</p>
           </div>
           <span className="material-symbols-outlined text-on-surface-variant text-xl">unfold_more</span>
@@ -96,8 +96,8 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
 
       {/* Search */}
       <div className="px-5 pb-4">
-        <Link href="/app/search" className="flex items-center w-full bg-surface-container-high rounded-2xl px-4 py-3.5 hover:bg-surface-container-highest transition-all border border-outline-variant/10 active:scale-[0.99]">
-          <span className="material-symbols-outlined text-primary text-xl">search</span>
+        <Link href="/app/search" className="flex items-center w-full h-11 bg-surface-container-high rounded-xl px-4 hover:bg-surface-container-highest transition-all active:scale-[0.99]">
+          <span className="material-symbols-outlined text-on-surface-variant text-xl">search</span>
           <span className="ml-3 text-on-surface-variant/70 text-sm flex-1">{t.home.searchPlaceholder}</span>
           <span className="material-symbols-outlined text-on-surface-variant/40 text-lg">mic</span>
         </Link>

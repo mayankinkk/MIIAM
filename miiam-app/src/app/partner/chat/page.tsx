@@ -122,7 +122,7 @@ export default function PartnerChatPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-sm text-[var(--color-on-surface)]">Order #{oid.slice(0, 8)}</span>
-                    {unread > 0 && <span className="bg-[var(--color-primary)] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{unread}</span>}
+                    {unread > 0 && <span className="bg-[var(--color-primary)] text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">{unread}</span>}
                   </div>
                   <p className="text-xs text-[var(--color-outline-variant)] mt-1 truncate">{last.message}</p>
                 </button>
@@ -141,7 +141,7 @@ export default function PartnerChatPage() {
                 <div className="flex-1 min-h-0 p-4 space-y-3 overflow-y-auto">
                   {(grouped[activeOrder] || []).slice().reverse().map((m) => (
                     <div key={m.id} className={`flex ${m.sender === "vendor" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
+                      <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${m.sender === "vendor" ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}>
                         <p>{m.message}</p>
                         <p className={`text-[10px] mt-1 ${m.sender === "vendor" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
                           {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -163,7 +163,7 @@ export default function PartnerChatPage() {
                     onClick={sendReply}
                     disabled={sending || !reply.trim()}
                     aria-label="Send message"
-                    className="px-5 py-2.5 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)] disabled:opacity-50"
+                    className="px-5 py-2.5 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)] disabled:opacity-50"
                   >
                     Send
                   </button>

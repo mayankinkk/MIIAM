@@ -15,7 +15,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
     <section className="bg-surface-container-lowest p-4 sm:p-6 rounded-2xl shadow-sm">
       <div className="flex items-center gap-3 mb-4 sm:mb-5">
         <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-          <span className="material-symbols-outlined text-primary">location_on</span>
+          <span className="material-symbols-outlined text-accent">location_on</span>
         </div>
         <div className="flex-1">
           <h2 className="text-lg font-extrabold text-on-surface">{t.checkout.deliveryAddress}</h2>
@@ -23,7 +23,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
         </div>
         <button
           onClick={onChangeAddress}
-          className="text-primary font-bold text-sm bg-surface px-3 py-1.5 rounded-lg hover:bg-surface-container transition-colors"
+          className="text-accent font-bold text-sm bg-surface px-3 py-1.5 rounded-lg hover:bg-surface-container transition-colors"
         >
           Change
         </button>
@@ -32,7 +32,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
       {deliveryAddress ? (
         <div className="p-3 sm:p-4 rounded-xl border-2 border-primary bg-primary/5 flex items-start gap-3 sm:gap-4">
           <div className="w-11 h-11 rounded-xl bg-surface-container flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>
               {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}
             </span>
           </div>
@@ -53,13 +53,13 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
             )}
           </div>
           <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-white text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+            <span className="material-symbols-outlined text-on-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
           </div>
         </div>
       ) : (
         <button
           onClick={onChangeAddress}
-          className="w-full p-4 sm:p-5 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center gap-2 text-on-surface-variant hover:border-primary hover:text-primary hover:bg-surface transition-all"
+          className="w-full p-4 sm:p-5 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center gap-2 text-on-surface-variant hover:border-primary hover:text-accent hover:bg-surface transition-all"
         >
           <span className="material-symbols-outlined text-3xl">add_location</span>
           <span className="font-bold text-sm sm:text-base">{t.checkout.addAddress}</span>
@@ -70,7 +70,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
       {deliveryAddress && (
         <button
           onClick={onChangeAddress}
-          className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-outline-variant/40 text-xs sm:text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary flex items-center justify-center gap-2 transition-all"
+          className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-outline-variant/40 text-xs sm:text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent flex items-center justify-center gap-2 transition-all"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           {t.checkout.useDifferentAddress}

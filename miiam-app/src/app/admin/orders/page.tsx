@@ -601,7 +601,7 @@ export default function OrderManagement() {
                     <button
                       onClick={() => selectedRiderId && assignRider(selectedOrder.id, selectedRiderId)}
                       disabled={!selectedRiderId || assigning}
-                      className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50"
+                      className="px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:opacity-90 disabled:opacity-50"
                     >
                       {assigning ? "Assigning..." : "Assign"}
                     </button>

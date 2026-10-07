@@ -178,7 +178,7 @@ export default function RiderEarningsPage() {
                 onClick={() => setSortBy(s)}
                 className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
                   sortBy === s 
-                    ? "bg-[var(--color-primary)] text-white" 
+                    ? "bg-[var(--color-primary)] text-on-primary" 
                     : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                 }`}
               >
@@ -207,7 +207,7 @@ export default function RiderEarningsPage() {
                 <tr key={rider.rider_id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
                   <td className="py-3">
                     <div className="flex items-center gap-3">
-                      <span className="w-6 h-6 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                      <span className="w-6 h-6 bg-[var(--color-primary)] text-on-primary rounded-full flex items-center justify-center text-xs font-bold">
                         {index + 1}
                       </span>
                       <span className="font-bold text-[var(--color-on-surface)]">{rider.rider_name}</span>

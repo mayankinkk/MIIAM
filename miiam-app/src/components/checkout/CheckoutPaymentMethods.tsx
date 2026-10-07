@@ -38,7 +38,7 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
                 name="payment"
                 checked={paymentMethod === pm.id}
                 onChange={() => onChange(pm.id)}
-                className="w-5 h-5 text-primary shrink-0"
+                className="w-5 h-5 text-accent shrink-0"
               />
               <span className="material-symbols-outlined text-secondary shrink-0">{pm.icon}</span>
               <div className="min-w-0">

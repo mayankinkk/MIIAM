@@ -159,7 +159,7 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
               role="option"
               aria-selected={sort === opt.value}
               onClick={() => { setSort(opt.value); setOpen(false); setActiveIndex(-1); }}
-              className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-primary font-bold" : "text-on-surface-variant"} ${activeIndex === i ? "bg-surface-container-low" : ""}`}
+              className={`w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low ${sort === opt.value ? "text-accent font-bold" : "text-on-surface-variant"} ${activeIndex === i ? "bg-surface-container-low" : ""}`}
             >
               {opt.label}
             </button>
@@ -238,8 +238,8 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
 
             {/* Price labels */}
             <div className="flex justify-between mt-2 text-xs text-on-surface-variant">
-              <span className="font-bold text-primary">₹{min}</span>
-              <span className="font-bold text-primary">₹{max}</span>
+              <span className="font-bold text-on-surface">₹{min}</span>
+              <span className="font-bold text-on-surface">₹{max}</span>
             </div>
 
             {/* Quick presets */}
@@ -255,7 +255,7 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
                   onClick={() => { setMin(preset.min); setMax(preset.max); }}
                   className={`px-2 py-1 rounded-full text-[10px] font-bold transition-all ${
                     min === preset.min && max === preset.max
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-on-primary"
                       : "bg-surface-container text-on-surface-variant"
                   }`}
                 >
@@ -264,7 +264,7 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
               ))}
             </div>
 
-            <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-white text-sm font-bold rounded-lg active:scale-95 transition-transform">{t.food.apply}</button>
+            <button onClick={() => { onApply(min, max); setOpen(false); if (navigator.vibrate) navigator.vibrate(15); }} className="w-full mt-3 py-2 bg-primary text-on-primary text-sm font-bold rounded-lg active:scale-95 transition-transform">{t.food.apply}</button>
           </div>
         </>
       )}
@@ -332,7 +332,7 @@ function AddToCartButton({
         whileTap={{ scale: 0.9 }}
         animate={bouncing ? { scale: [1, 1.15, 0.95, 1.05, 1] } : { scale: 1 }}
         transition={{ duration: 0.4 }}
-        className="px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim shadow-sm"
+        className="min-w-[52px] h-8 px-3 bg-primary text-on-primary text-xs font-extrabold rounded-lg border border-primary hover:brightness-95 transition-all"
       >
         {t.common.add}
       </motion.button>
@@ -343,22 +343,22 @@ function AddToCartButton({
     <motion.div
       animate={bouncing ? { scale: [1, 1.2, 0.95, 1.05, 1] } : { scale: 1 }}
       transition={{ duration: 0.4 }}
-      className="flex items-center gap-1.5 bg-primary rounded-full px-2 py-1 shadow-md"
+      className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden shadow-sm"
     >
       <motion.button
         onClick={() => updateQuantity(item.id, qty - 1)}
         whileTap={{ scale: 0.75 }}
         aria-label="Decrease quantity"
-        className="text-white font-bold w-10 h-10 flex items-center justify-center"
+        className="bg-primary text-on-primary font-bold w-9 h-9 flex items-center justify-center hover:brightness-95 transition-colors"
       >
         −
       </motion.button>
-      <span className="text-white font-bold text-xs min-w-[16px] text-center">{qty}</span>
+      <span className="text-on-surface font-extrabold text-xs min-w-[20px] text-center">{qty}</span>
       <motion.button
         onClick={handleAdd}
         whileTap={{ scale: 1.25 }}
         aria-label="Increase quantity"
-        className="text-white font-bold w-10 h-10 flex items-center justify-center"
+        className="bg-primary text-on-primary font-bold w-9 h-9 flex items-center justify-center hover:brightness-95 transition-colors"
       >
         +
       </motion.button>
@@ -394,14 +394,14 @@ function CartFloater() {
     >
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40"
+        className="flex items-center justify-between bg-primary text-on-primary px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40"
       >
         <div className="flex items-center gap-3">
           <div className="relative">
             <motion.span
               animate={showAnimation ? { scale: [1, 1.3, 1] } : { scale: 1 }}
               transition={{ duration: 0.4 }}
-              className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full inline-block"
+              className="bg-surface-container-lowest text-accent font-black text-xs px-2 py-0.5 rounded-full inline-block"
             >
               {itemCount}
             </motion.span>
@@ -704,7 +704,7 @@ export default function FoodPageContent() {
             }
           </p>
           {noLocalVendors && (
-            <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-primary underline whitespace-nowrap">
+            <button onClick={() => { window.location.href = "/app/home?selectLocation=true"; }} className="text-[10px] font-black text-accent underline whitespace-nowrap">
               {t.common.change}
             </button>
           )}
@@ -727,7 +727,7 @@ export default function FoodPageContent() {
       {/* Active Filter Badge */}
       {activeFilter !== "all" && (
         <div className="px-6 mt-3">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-accent px-4 py-2 rounded-full">
             <span className="material-symbols-outlined text-sm">filter_list</span>
             <span className="text-sm font-bold">
               {activeFilter === "under_99" && "Under ₹99"}
@@ -737,7 +737,7 @@ export default function FoodPageContent() {
               {activeFilter === "combos" && "Combos"}
               {activeFilter === "bakery" && "Bakery"}
             </span>
-            <button onClick={() => setActiveFilter("all")} className="ml-1 hover:bg-primary/20 rounded-full p-0.5" aria-label="Clear filter">
+            <button onClick={() => setActiveFilter("all")} className="ml-1 hover:bg-primary hover:text-on-primary/20 rounded-full p-0.5" aria-label="Clear filter">
               <span className="material-symbols-outlined text-sm">close</span>
             </button>
           </div>
@@ -772,7 +772,7 @@ export default function FoodPageContent() {
                 <span className="text-2xl">🍽</span>
               </div>
             </div>
-            <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-primary" : "text-on-surface-variant"}`}>{t.food.all}</span>
+            <span className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-accent" : "text-on-surface-variant"}`}>{t.food.all}</span>
           </button>
           {foodCategories.map((cat) => (
             <button
@@ -796,7 +796,7 @@ export default function FoodPageContent() {
                   />
                 </div>
               </div>
-              <span className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-primary" : "text-on-surface-variant"}`}>{cat.name}</span>
+              <span className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-accent" : "text-on-surface-variant"}`}>{cat.name}</span>
             </button>
           ))}
         </div>
@@ -855,7 +855,7 @@ export default function FoodPageContent() {
                     </div>
                     <button
                       onClick={() => { setActiveFilter(bucket.filter); if (navigator.vibrate) navigator.vibrate(10); }}
-                      className="text-xs font-bold text-primary hover:underline active:scale-95 transition-transform"
+                      className="text-xs font-bold text-accent hover:underline active:scale-95 transition-transform"
                     >
                       View More
                     </button>
@@ -921,7 +921,7 @@ export default function FoodPageContent() {
                     <span className="text-lg">🧁</span>
                     <h2 className="text-lg font-bold text-on-surface">Bakery Items</h2>
                   </div>
-                  <span className="text-xs font-bold text-primary">{menuItems.filter(i => i.category === "Bakery").length} items</span>
+                  <span className="text-xs font-bold text-accent">{menuItems.filter(i => i.category === "Bakery").length} items</span>
                 </div>
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                   {menuItems.filter(i => i.category === "Bakery").slice(0, 10).map((item) => {
@@ -980,13 +980,13 @@ export default function FoodPageContent() {
         ) : !hasLocation ? (
           <div className="bg-surface-container-lowest rounded-2xl p-8 text-center shadow-sm">
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
-              <span className="material-symbols-outlined text-4xl text-primary">location_on</span>
+              <span className="material-symbols-outlined text-4xl text-accent">location_on</span>
             </div>
             <h3 className="text-lg font-black text-on-surface mb-1">{t.food.locationRequired}</h3>
             <p className="text-sm text-on-surface-variant mb-5">{t.food.locationRequiredDesc}</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
-              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all shadow-md"
+              className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:bg-[#e5b62e] active:scale-95 transition-all shadow-md"
             >
               {t.food.setLocation}
             </button>
@@ -998,11 +998,11 @@ export default function FoodPageContent() {
             </div>
             <h3 className="text-lg font-black text-on-surface mb-1">{t.home.notAvailable}</h3>
             <p className="text-sm text-on-surface-variant mb-1">{t.home.notAvailableDesc}</p>
-            <p className="text-sm font-bold text-primary mb-4">{displayAddress}</p>
+            <p className="text-sm font-bold text-accent mb-4">{displayAddress}</p>
             <p className="text-xs text-outline mb-5">We're expanding every day! Try a nearby pincode or check back soon.</p>
             <button
               onClick={() => { window.location.href = "/app/home?selectLocation=true"; }}
-              className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm"
+              className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm"
             >
               {t.home.changeLocation}
             </button>
@@ -1096,7 +1096,7 @@ export default function FoodPageContent() {
             <div className="px-4 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-bold text-on-surface">{selectedCategory === "all" ? "All Restaurants" : foodCategories.find(c => c.id === selectedCategory)?.name || "Restaurants"}</h2>
-                <span className="text-xs font-bold text-primary">{searchedRestaurants.length} places</span>
+                <span className="text-xs font-bold text-accent">{searchedRestaurants.length} places</span>
               </div>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 {searchedRestaurants.map((restaurant) => (
@@ -1186,7 +1186,7 @@ export default function FoodPageContent() {
                       <div className="p-3 flex-1">
                         <div className="flex items-start justify-between gap-1">
                           <div className="flex items-center gap-2">
-                            <div className="relative w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-black flex-shrink-0 overflow-hidden">
+                            <div className="relative w-7 h-7 rounded-full bg-primary flex items-center justify-center text-on-primary text-[10px] font-black flex-shrink-0 overflow-hidden">
                               {restaurant.cover_image_url || restaurant.image_url ? <BlurImage src={(restaurant.cover_image_url || restaurant.image_url) as string} alt={`${restaurant.shop_name} cover`} fill className="w-full h-full" sizes="28px" /> : restaurant.shop_name?.charAt(0)}
                             </div>
                             <h3 className="font-bold text-on-surface text-sm leading-tight">{restaurant.shop_name}</h3>
@@ -1226,7 +1226,7 @@ export default function FoodPageContent() {
                             });
                             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                           }}
-                          className="absolute bottom-3 right-3 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform z-10"
+                          className="absolute bottom-3 right-3 w-8 h-8 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform z-10"
                           aria-label={`Quick add ${popularItem.name}`}
                         >
                           <span className="material-symbols-outlined text-lg">add</span>

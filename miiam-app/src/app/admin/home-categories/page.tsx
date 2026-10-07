@@ -125,7 +125,7 @@ export default function AdminHomeCategoriesPage() {
           <p className="text-sm text-[var(--color-outline)] mt-1">Manage the category shortcuts shown on the home page. Changes sync instantly.</p>
           {saving && <p className="text-xs text-primary mt-1">Saving...</p>}
         </div>
-        <button onClick={() => setShowAdd(true)} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm">
+        <button onClick={() => setShowAdd(true)} className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm">
           + Add Category
         </button>
       </div>
@@ -231,7 +231,7 @@ export default function AdminHomeCategoriesPage() {
                   {COLOR_OPTIONS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                 </select>
               </div>
-              <button onClick={addCategory} className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold">Add Category</button>
+              <button onClick={addCategory} className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold">Add Category</button>
             </div>
           </div>
         </div>

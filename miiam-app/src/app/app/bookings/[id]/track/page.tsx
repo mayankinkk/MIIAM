@@ -52,7 +52,7 @@ export default function BookingTrackPage() {
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center gap-4 px-4">
         <span className="material-symbols-outlined text-outline text-5xl">search_off</span>
         <h1 className="text-xl font-bold text-on-surface">Booking not found</h1>
-        <Link href="/app/bookings" className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">
+        <Link href="/app/bookings" className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">
           View Bookings
         </Link>
       </div>
@@ -98,21 +98,21 @@ export default function BookingTrackPage() {
 
   return (
     <div className="min-h-screen bg-surface pb-24">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all" aria-label="Back">
             <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
           </button>
-          <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+          <span className="text-xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         </div>
         <span className="text-on-surface font-semibold text-sm hidden md:block">Track Service</span>
       </nav>
 
       <main className="pt-20 max-w-2xl mx-auto px-4">
         <div className="mb-6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-primary">Track Service</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-on-surface">Track Service</h1>
           <p className="text-on-surface-variant text-sm mt-1">{booking.sub_service || booking.service_type}</p>
         </div>
 
@@ -125,7 +125,7 @@ export default function BookingTrackPage() {
             </div>
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-primary text-2xl">person</span>
+                <span className="material-symbols-outlined text-accent text-2xl">person</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-on-surface text-base">{booking.technician_name}</p>

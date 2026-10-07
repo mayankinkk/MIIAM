@@ -190,7 +190,7 @@ export default function LiveChatSupport() {
                       <span className="font-bold text-[var(--color-on-surface)] text-sm">{conv.user_name}</span>
                     </div>
                     {conv.unreadCount > 0 && (
-                      <span className="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{conv.unreadCount}</span>
+                      <span className="bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">{conv.unreadCount}</span>
                     )}
                   </div>
                   <p className="text-xs text-[var(--color-outline-variant)] mb-1">{conv.user_phone}</p>
@@ -260,7 +260,7 @@ export default function LiveChatSupport() {
                     <div
                       className={`max-w-[75%] p-3 rounded-2xl ${
                         msg.sender_type === "support"
-                          ? "bg-[var(--color-primary)] text-white rounded-br-md"
+                          ? "bg-[var(--color-primary)] text-on-primary rounded-br-md"
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-bl-md"
                       }`}
                     >
@@ -285,7 +285,7 @@ export default function LiveChatSupport() {
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 bg-primary text-white rounded-xl hover:bg-primary-dim"
+                    className="px-4 bg-primary text-on-primary rounded-xl hover:bg-primary-dim"
                   >
                     <span className="material-symbols-outlined">send</span>
                   </button>

@@ -96,13 +96,13 @@ export default function EnhancedProfilePage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24 flex flex-col">
-        <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
+        <header className="bg-gradient-to-br from-primary to-primary-container text-on-primary p-6 pb-12 rounded-b-[3rem]">
           <h1 className="text-xl font-black">{t.profile.title}</h1>
         </header>
         <main className="flex-1 flex items-center justify-center px-6 -mt-6">
           <div className="text-center space-y-5 max-w-sm">
             <div className="flex items-center justify-center w-20 h-20 mx-auto bg-primary/10 rounded-full">
-              <span className="material-symbols-outlined text-primary text-4xl">person</span>
+              <span className="material-symbols-outlined text-accent text-4xl">person</span>
             </div>
             <div className="space-y-1">
               <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)]">You're browsing as a guest</h2>
@@ -111,7 +111,7 @@ export default function EnhancedProfilePage() {
             <div className="space-y-3">
               <Link
                 href="/app/orders"
-                className="block w-full bg-[var(--color-primary)] text-white py-3.5 rounded-xl font-bold text-sm text-center hover:scale-[1.02] active:scale-95 transition-all"
+                className="block w-full bg-[var(--color-primary)] text-on-primary py-3.5 rounded-xl font-bold text-sm text-center hover:scale-[1.02] active:scale-95 transition-all"
               >
                 My Orders
               </Link>
@@ -131,7 +131,7 @@ export default function EnhancedProfilePage() {
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
       {/* Header */}
-      <header className="bg-gradient-to-br from-primary to-primary-container text-white p-6 pb-12 rounded-b-[3rem]">
+      <header className="bg-gradient-to-br from-primary to-primary-container text-on-primary p-6 pb-12 rounded-b-[3rem]">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-black">{t.profile.title}</h1>
           <Link href="/app/profile/edit" aria-label="Edit profile" className="p-2 bg-[var(--color-surface-container-lowest)]/10 rounded-full hover:bg-[var(--color-surface-container-lowest)]/20 transition-colors">
@@ -265,7 +265,7 @@ export default function EnhancedProfilePage() {
         {showHapticSettings && (
           <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 space-y-2 animate-fade-in">
             <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border-subtle)]">
-              <span className="material-symbols-outlined text-primary">vibration</span>
+              <span className="material-symbols-outlined text-accent">vibration</span>
               <p className="font-bold text-[var(--color-on-surface)]">{t.profile.hapticFeedbackSettings}</p>
             </div>
             

@@ -44,7 +44,7 @@ export default function GlobalError({
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => reset()}
-                className="px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:opacity-90 transition-opacity"
+                className="px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity"
               >
                 Try Again
               </button>
@@ -56,7 +56,7 @@ export default function GlobalError({
               </button>
               <Link
                 href="/"
-                className="text-sm text-[var(--color-primary)] font-bold hover:underline"
+                className="text-sm text-[var(--color-accent)] font-bold hover:underline"
               >
                 Go to Home
               </Link>

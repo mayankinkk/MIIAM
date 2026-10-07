@@ -29,7 +29,7 @@ export default function CheckoutScheduledServices({ items }: CheckoutScheduledSe
                 {item.name.includes('(') ? item.name.substring(item.name.indexOf('(') + 1, item.name.lastIndexOf(')')) : "Scheduled"}
               </p>
             </div>
-            <div className="font-bold text-primary">₹{item.price} x {item.quantity}</div>
+            <div className="font-bold text-on-surface">₹{item.price} x {item.quantity}</div>
           </div>
         ))}
       </div>

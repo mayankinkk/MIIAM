@@ -51,10 +51,10 @@ export function LandingNavbar({
   ];
 
   const navLinks = links || defaultLinks;
-  const brandColor = variant === "indigo" ? "text-indigo-600" : "text-[var(--color-primary)]";
-  const hoverColor = variant === "indigo" ? "hover:text-indigo-600" : "hover:text-[var(--color-primary)]";
+  const brandColor = variant === "indigo" ? "text-indigo-600" : "text-[var(--color-accent)]";
+  const hoverColor = variant === "indigo" ? "hover:text-indigo-600" : "hover:text-[var(--color-accent)]";
   const afterBg = variant === "indigo" ? "after:bg-indigo-600" : "after:bg-[var(--color-primary)]";
-  const linkColor = variant === "indigo" ? "text-indigo-600" : "text-[var(--color-primary)]";
+  const linkColor = variant === "indigo" ? "text-indigo-600" : "text-[var(--color-accent)]";
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-2xl border-b border-[var(--color-border-subtle)]/80 transition-all duration-500" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
@@ -82,7 +82,7 @@ export function LandingNavbar({
                 href="/app/profile"
                 className="flex items-center gap-2.5 bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)] border border-[var(--color-border-subtle)] px-4 py-2 rounded-full transition-all duration-200 group"
               >
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-white flex items-center justify-center font-bold text-xs">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-light)] text-on-primary flex items-center justify-center font-bold text-xs">
                   {user.email?.[0].toUpperCase()}
                 </div>
                 <span className={`text-sm font-semibold text-[var(--color-on-surface)] ${linkColor} hidden sm:block`}>
@@ -92,7 +92,7 @@ export function LandingNavbar({
             ) : (
               <Link
                 href="/app/home"
-                className={`${variant === "indigo" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20 hover:shadow-indigo-500/30" : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/30"} text-white px-6 py-2.5 rounded-full font-bold text-sm shadow-lg active:scale-95 transition-all duration-200`}
+                className={`${variant === "indigo" ? "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/20 hover:shadow-indigo-500/30" : "bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)] shadow-[var(--color-primary)]/20 hover:shadow-[var(--color-primary)]/30"} text-on-primary px-6 py-2.5 rounded-full font-bold text-sm shadow-lg active:scale-95 transition-all duration-200`}
               >
                 Order Now
               </Link>

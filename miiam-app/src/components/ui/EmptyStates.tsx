@@ -25,7 +25,7 @@ export function EmptyState({
   type = "default"
 }: EmptyStateProps) {
   const typeStyles: Record<string, { bg: string; icon: string }> = {
-    cart: { bg: "bg-primary/10", icon: "text-primary" },
+    cart: { bg: "bg-primary/10", icon: "text-accent" },
     orders: { bg: "bg-secondary/10", icon: "text-secondary" },
     favorites: { bg: "bg-rose-500/10", icon: "text-rose-500" },
     search: { bg: "bg-status-warning/10", icon: "text-status-warning" },

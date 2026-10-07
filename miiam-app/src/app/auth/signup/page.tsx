@@ -89,8 +89,8 @@ function SignupContent() {
             <button
               type="submit"
               disabled={!email.includes("@") || isLoading}
-              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200"
-              style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}
+              className="w-full bg-[var(--color-primary)] text-on-primary text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200"
+              style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)' }}
             >
               {isLoading ? "Sending..." : "Continue"}
             </button>
@@ -127,7 +127,7 @@ function SignupContent() {
           <div className="text-center">
             <p className="text-[var(--color-on-surface)] font-medium">
               Already have an account? 
-              <Link href="/auth/login" className="text-[var(--color-primary)] font-bold hover:underline underline-offset-4 transition-all"> Log In</Link>
+              <Link href="/auth/login" className="text-[var(--color-accent)] font-bold hover:underline underline-offset-4 transition-all"> Log In</Link>
             </p>
           </div>
         </div>
@@ -147,14 +147,14 @@ function SignupContent() {
             className="w-full h-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpdJoMqGx1JI9OC5-P3tNJEEsdLRmL0VxPoXXl7SBVXGDQu2WHUdcPOlWezQVyNynpg_QWeHfkWj2RHDuNYug-ViC-sGCb1gAmxWXR55MfJfFSu-IEHfieR6-hwdsuewLM6ha18jNmT4skgpzhcH9oI_IoeoKLwW5UQ0Bl2nQTBa19hpZNmDU5VKWE2R8ygNNLm3uduEb3bxKKXS1VtI4Y4Sp7408543z3l9doDDPv5qNjRXK14HNTeBx87404cD_sUm6ecb0-YWA"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#00174c]/80 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-[#ffdad7]/10 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1f1f1f]/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-[#f8cb46]/10 mix-blend-multiply" />
         </div>
 
         {/* Content Overlay */}
-        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)', border: '1px solid rgba(255, 255, 255, 0.3)' }}>
+        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)', border: '1px solid rgba(255, 255, 255, 0.3)' }}>
           <div className="space-y-6">
-            <span className="inline-block bg-[var(--color-primary)] text-white px-4 py-1 rounded-full text-[10px] tracking-[0.3em] font-bold">PREMIUM SERVICES</span>
+            <span className="inline-block bg-[var(--color-primary)] text-on-primary px-4 py-1 rounded-full text-[10px] tracking-[0.3em] font-bold">PREMIUM SERVICES</span>
             <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-on-surface" style={{ fontFamily: 'Plus Jakarta Sans' }}>Expert care for your urban lifestyle.</h2>
             <p className="text-[1.25rem] leading-[1.6] font-semibold text-on-surface-variant">From artisan meal prep to high-end home maintenance, MIIAM connects you with the city's finest professionals instantly.</p>
             <div className="flex items-center gap-6 pt-4">
@@ -162,7 +162,7 @@ function SignupContent() {
                 <BlurImage alt="User" className="w-12 h-12 rounded-full border-4 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdlq3gI79VpGIBuc6jzvcnJdRRWwFoWA8sjBVe8pUkHBcdftNBTXILgrBj6CaJydUbFmxNcVB-2k9tWhgC6tJX66AsqjRNcYwNnUgAdUTg2iuqPbE5HxfuEEdLUI3H322Z6q-JNs4B5jrxq-m37tJgOeHuWDk-EOFuDHqgoX3EXOqjIKX3iZJrXE6EAbQjxdKR8oAuPoIlsJytSVqWKxwxFhx9hj7IK4i2qbhheEhTvBW8b-3aELPtlklFVRU7kU2juTyK8Z3_0cM" />
                 <BlurImage alt="User" className="w-12 h-12 rounded-full border-4 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrdEzx_Wq8BLHAPK8vbfPiPmn5jp6k5_SxeKE8a9grEWxoqD4jhR96awoaIYxvR3TsqSmDXw4Le_rQJ6_sxiUfy_sN6jvIgVcOT0KGCTQj7WeuQYcw0hdShFgcnqgtwRkAIXYIbCkz1v9xc8YcZdwHMXo92GkezRZbIcqB3PEatcUcn-zJtcjlGr0BST3v2eS-uzUEpkHj9p8O_ID8qH6pwjGDF0T-KQmtqROYY7oxIwtIubov3AZ_okUVNNZ9ZFABMh4vRfVWnSg" />
                 <BlurImage alt="User" className="w-12 h-12 rounded-full border-4 border-white object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcYRQW-ha-2JtG7yj0lWOcFmVw51PXe-dqPWmQiq4FcXwNNtoQpXIcQGDd9QBC3M3kx9gGer6mS7BBPeCKfNxSRkx6c5vo4u9WL-TrLRf2U2ShsRzheTmu-8ld2MdwwjeG-nWPOat9XBSmrR9Xeejz3idDjeqm5yt1-cMmqS0z8YCc-k-gVrCftINTAI8YntgUrB-0XoMlAHKYeR7GPZ_ahZ-k1of-1PCe4a3MB0HQPLt9hGXG10DEGtnKbOT-_DaIrinpuAvq26Y" />
-                <div className="w-12 h-12 rounded-full border-4 border-white bg-[#00497d] flex items-center justify-center text-white text-xs font-bold">+2k</div>
+                <div className="w-12 h-12 rounded-full border-4 border-white bg-[#0c831f] flex items-center justify-center text-white text-xs font-bold">+2k</div>
               </div>
               <span className="text-[10px] tracking-[0.3em] font-bold text-on-surface">TRUSTED BY PROFESSIONALS</span>
             </div>

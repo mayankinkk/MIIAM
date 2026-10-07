@@ -209,7 +209,7 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
             <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
               <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;"><strong>Rider Details:</strong></p>
               <p style="margin: 0; color: var(--color-on-surface);">${escapeHtml(data.riderName)}</p>
-              ${data.riderPhone ? `<p style="margin: 5px 0 0 0; color: #0b50d5;">📞 ${escapeHtml(data.riderPhone)}</p>` : ""}
+              ${data.riderPhone ? `<p style="margin: 5px 0 0 0; color: #0c831f;">📞 ${escapeHtml(data.riderPhone)}</p>` : ""}
             </div>
             ` : ""}
             

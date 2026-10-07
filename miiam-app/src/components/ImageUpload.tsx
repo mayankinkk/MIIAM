@@ -74,7 +74,7 @@ export default function ImageUpload({
         )}
         {uploading && (
           <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/70 flex items-center justify-center">
-            <span className="material-symbols-outlined text-[var(--color-primary)] animate-spin">progress_activity</span>
+            <span className="material-symbols-outlined text-[var(--color-accent)] animate-spin">progress_activity</span>
           </div>
         )}
         <input
@@ -101,7 +101,7 @@ export default function ImageUpload({
             setUseUrl(!useUrl);
             if (!useUrl) onChange("");
           }}
-          className="text-xs font-bold text-[var(--color-primary)] hover:underline"
+          className="text-xs font-bold text-[var(--color-accent)] hover:underline"
         >
           {useUrl ? "Upload file instead" : "Or enter URL instead"}
         </button>

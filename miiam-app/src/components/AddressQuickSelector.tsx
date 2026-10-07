@@ -23,7 +23,7 @@ export default function AddressQuickSelector() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 text-xs font-bold text-on-surface-variant hover:text-primary transition-colors"
+        className="flex items-center gap-1.5 text-xs font-bold text-on-surface-variant hover:text-accent transition-colors"
       >
         <span className="material-symbols-outlined text-sm">location_on</span>
         Change
@@ -72,7 +72,7 @@ export default function AddressQuickSelector() {
 
               <Link
                 href="/app/addresses/add"
-                className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-outline/20 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-colors"
+                className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-outline/20 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent transition-colors"
                 onClick={() => setOpen(false)}
               >
                 <span className="material-symbols-outlined text-lg">add</span>

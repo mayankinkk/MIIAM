@@ -248,7 +248,7 @@ function ProfileSetupContent() {
               onClick={() => setStep(2)}
               disabled={!canProceed()}
               className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
-                canProceed() ? "bg-[var(--color-primary)] text-white hover:bg-[#a40017]" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
+                canProceed() ? "bg-[var(--color-primary)] text-on-primary hover:bg-[#e5b62e]" : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
               }`}
             >
               Continue
@@ -272,7 +272,7 @@ function ProfileSetupContent() {
                     }}
                     className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                       formData.state === state
-                        ? "bg-[var(--color-primary)] text-white"
+                        ? "bg-[var(--color-primary)] text-on-primary"
                         : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
                     }`}
                   >
@@ -300,7 +300,7 @@ function ProfileSetupContent() {
               <button
                 onClick={() => setStep(3)}
                 disabled={!formData.state}
-                className="flex-1 py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
+                className="flex-1 py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[#e5b62e] transition-all disabled:opacity-50"
               >
                 Next
               </button>
@@ -323,7 +323,7 @@ function ProfileSetupContent() {
                       onClick={() => updateField("city", city)}
                       className={`py-3 px-4 rounded-xl font-bold text-sm transition-all ${
                         formData.city === city
-                          ? "bg-[var(--color-primary)] text-white"
+                          ? "bg-[var(--color-primary)] text-on-primary"
                           : "bg-[var(--color-surface-container-lowest)] border-2 border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] hover:border-[var(--color-primary)]"
                       }`}
                     >
@@ -358,7 +358,7 @@ function ProfileSetupContent() {
               <button
                 onClick={handleComplete}
                 disabled={loading || !canProceed()}
-                className="flex-1 py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018] transition-all disabled:opacity-50"
+                className="flex-1 py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[#e5b62e] transition-all disabled:opacity-50"
               >
                 {loading ? "Saving..." : "Complete Setup"}
               </button>

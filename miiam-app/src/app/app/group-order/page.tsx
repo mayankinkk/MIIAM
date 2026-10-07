@@ -184,7 +184,7 @@ export default function GroupOrderPage() {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
-          <span className="material-symbols-outlined text-4xl text-primary animate-bounce">group</span>
+          <span className="material-symbols-outlined text-4xl text-accent animate-bounce">group</span>
           <p className="text-on-surface-variant text-sm mt-3">Loading...</p>
         </div>
       </div>
@@ -208,10 +208,10 @@ export default function GroupOrderPage() {
         {!group ? (
           <>
             {/* Create or Join */}
-            <div className="bg-gradient-to-br from-primary to-primary-dim rounded-3xl p-6 text-white shadow-lg text-center">
+            <div className="bg-gradient-to-br from-primary to-primary-dim rounded-3xl p-6 text-on-primary shadow-lg text-center">
               <span className="text-5xl mb-3 block">👥</span>
               <h2 className="text-2xl font-black">Order Together</h2>
-              <p className="text-white/80 text-sm mt-2">Create a group and order together — everyone adds their items</p>
+              <p className="text-on-primary/80 text-sm mt-2">Create a group and order together — everyone adds their items</p>
             </div>
 
             {/* Member name */}
@@ -229,7 +229,7 @@ export default function GroupOrderPage() {
 
               <button
                 onClick={createGroup}
-                className="w-full py-3.5 bg-primary text-white rounded-xl font-bold text-sm active:scale-95 transition-transform"
+                className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold text-sm active:scale-95 transition-transform"
               >
                 Create Group Order
               </button>
@@ -264,9 +264,9 @@ export default function GroupOrderPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-xs text-on-surface-variant">Group Code</p>
-                  <p className="text-2xl font-black text-primary font-mono tracking-[0.15em]">{group.code}</p>
+                  <p className="text-2xl font-black text-accent font-mono tracking-[0.15em]">{group.code}</p>
                 </div>
-                <button onClick={copyCode} className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold">
+                <button onClick={copyCode} className="px-3 py-2 bg-primary/10 text-accent rounded-lg text-xs font-bold">
                   Copy
                 </button>
               </div>
@@ -292,14 +292,14 @@ export default function GroupOrderPage() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-primary text-sm">person</span>
+                        <span className="material-symbols-outlined text-accent text-sm">person</span>
                       </div>
                       <div>
                         <p className="font-bold text-sm text-on-surface">{member.display_name}</p>
                         <p className="text-[10px] text-on-surface-variant">{member.role}</p>
                       </div>
                     </div>
-                    <p className="text-sm font-bold text-primary">
+                    <p className="text-sm font-bold text-accent">
                       ₹{member.items.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(0)}
                     </p>
                   </div>
@@ -323,7 +323,7 @@ export default function GroupOrderPage() {
             <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
               <div className="flex justify-between items-center">
                 <p className="font-bold text-on-surface">Group Total</p>
-                <p className="text-2xl font-black text-primary">₹{getGroupTotal().toFixed(0)}</p>
+                <p className="text-2xl font-black text-on-surface">₹{getGroupTotal().toFixed(0)}</p>
               </div>
             </div>
           </>

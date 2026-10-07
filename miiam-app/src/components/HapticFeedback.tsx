@@ -71,7 +71,7 @@ export function HapticToggle({
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
           isEnabled ? "bg-[var(--color-primary)]/10" : "bg-[var(--color-surface-container)]"
         }`}>
-          <span className={`material-symbols-outlined ${isEnabled ? "text-[var(--color-primary)]" : "text-[var(--color-outline-variant)]"}`}>
+          <span className={`material-symbols-outlined ${isEnabled ? "text-[var(--color-accent)]" : "text-[var(--color-outline-variant)]"}`}>
             vibration
           </span>
         </div>

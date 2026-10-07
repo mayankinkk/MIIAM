@@ -34,8 +34,8 @@ export default function LandingBottomNav() {
               aria-current={isActive ? "page" : undefined}
               className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all duration-200 active:scale-95 ${
                 isActive
-                  ? "text-[var(--color-primary)]"
-                  : "text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]"
+                  ? "text-[var(--color-accent)]"
+                  : "text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)]"
               }`}
             >
               {isActive && (

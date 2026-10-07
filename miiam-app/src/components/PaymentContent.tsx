@@ -33,9 +33,9 @@ export default function PaymentContent() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(0,0,0,0.06)]">
         <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
-          <span className="material-symbols-outlined text-primary">arrow_back</span>
+          <span className="material-symbols-outlined text-accent">arrow_back</span>
         </Link>
         <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.profile.paymentMethods}</span>
       </header>
@@ -54,7 +54,7 @@ export default function PaymentContent() {
             </div>
             <h2 className="text-xl font-bold text-[var(--color-on-surface-variant)] mb-2">No saved payment methods</h2>
             <p className="text-sm text-[var(--color-outline-variant)] mb-6">Payment methods will appear here after your first online payment via Razorpay.</p>
-            <Link href="/app/food" className="inline-block px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">
+            <Link href="/app/food" className="inline-block px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">
               Browse Menu
             </Link>
           </div>
@@ -72,7 +72,7 @@ export default function PaymentContent() {
                   </div>
                 </div>
                 {pm.isDefault && (
-                  <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">Default</span>
+                  <span className="px-2 py-1 bg-primary/10 text-accent text-xs font-bold rounded-full">Default</span>
                 )}
               </div>
             ))}

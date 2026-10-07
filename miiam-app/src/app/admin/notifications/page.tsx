@@ -187,7 +187,7 @@ export default function NotificationCenter() {
         </div>
         <button
           onClick={() => setShowSend(true)}
-          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
+          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
         >
           + Send Notification
         </button>
@@ -474,7 +474,7 @@ export default function NotificationCenter() {
 
               <button
                 onClick={sendNotification}
-                className="w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary-dim transition-colors"
+                className="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-dim transition-colors"
               >
                 {scheduleEnabled ? "Schedule Notification" : `Send to ${getSegmentLabel()}`}
               </button>

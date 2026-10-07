@@ -19,7 +19,7 @@ export default function ServiceUnavailable({ serviceName, message, icon }: Servi
         <p className="text-[var(--color-on-surface-variant)] mb-6">{message}</p>
         <Link 
           href="/app/home"
-          className="inline-block px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:opacity-90"
+          className="inline-block px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90"
         >
           Back to Home
         </Link>

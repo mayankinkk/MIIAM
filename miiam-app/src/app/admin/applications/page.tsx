@@ -132,7 +132,7 @@ export default function AdminApplicationsPage() {
             onClick={() => setFilter(status)}
             className={`px-4 py-2 rounded-full font-bold text-sm capitalize ${
               filter === status 
-                ? "bg-[var(--color-primary)] text-white" 
+                ? "bg-[var(--color-primary)] text-on-primary" 
                 : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
             }`}
           >

@@ -18,8 +18,8 @@ export default function QuickReorder({ order }: QuickReorderProps) {
     <div className="px-5 pt-2 pb-1">
       <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-4 border border-primary/10">
         <div className="flex items-center gap-2 mb-2">
-          <span className="material-symbols-outlined text-primary text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>replay</span>
-          <span className="text-xs font-bold text-primary uppercase tracking-wider">Order again</span>
+          <span className="material-symbols-outlined text-accent text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>replay</span>
+          <span className="text-xs font-bold text-accent uppercase tracking-wider">Order again</span>
         </div>
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
@@ -29,7 +29,7 @@ export default function QuickReorder({ order }: QuickReorderProps) {
           </div>
           <Link
             href={`/app/vendor/${order.vendor_id}`}
-            className="flex-shrink-0 bg-primary text-white text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm"
+            className="flex-shrink-0 bg-primary text-on-primary text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm"
           >
             Reorder
           </Link>

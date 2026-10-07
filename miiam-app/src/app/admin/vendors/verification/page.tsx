@@ -164,7 +164,7 @@ export default function VerificationPage() {
             onClick={() => setFilter(status)}
             className={`px-4 py-2 rounded-lg text-xs font-bold uppercase ${
               filter === status
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
             }`}
           >

@@ -40,7 +40,7 @@ export default function EmailInput({ purpose = "signup" }: EmailInputProps) {
         {error && <p className="text-status-error text-sm mt-2">{error}</p>}
       </div>
       <button onClick={handleSubmit} disabled={!email.includes("@") || isLoading}
-        className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${email.includes("@") && !isLoading ? "bg-primary text-white hover:bg-primary-dim" : "bg-surface-container-high text-outline-variant cursor-not-allowed"}`}>
+        className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${email.includes("@") && !isLoading ? "bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary" : "bg-surface-container-high text-outline-variant cursor-not-allowed"}`}>
         {isLoading ? "Sending..." : "Send Verification Code"}
       </button>
     </div>

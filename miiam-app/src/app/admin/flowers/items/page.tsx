@@ -170,7 +170,7 @@ export default function FlowersItemsPage() {
           <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Flowers Items</h1>
           <p className="text-[var(--color-outline)] text-sm">Manage flower products and catalog</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg font-bold text-sm hover:bg-[#a00018]">
+        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg font-bold text-sm hover:bg-[#a00018]">
           + Add Item
         </button>
       </div>
@@ -301,7 +301,7 @@ export default function FlowersItemsPage() {
             </div>
             <div className="p-6 border-t flex gap-4">
               <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
-              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
+              <button onClick={handleSave} disabled={saving} className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
                 {saving ? "Saving..." : editingItem ? "Update" : "Add Item"}
               </button>
             </div>

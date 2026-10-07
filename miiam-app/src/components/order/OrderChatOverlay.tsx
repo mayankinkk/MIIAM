@@ -88,7 +88,7 @@ export default function OrderChatOverlay({
             <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
               <span className="material-symbols-outlined text-secondary">arrow_back</span>
             </button>
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary overflow-hidden">
               {otherAvatar ? (
                 <BlurImage src={otherAvatar} alt={otherName || "avatar"} className="w-full h-full object-cover" />
               ) : (

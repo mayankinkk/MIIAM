@@ -59,9 +59,9 @@ export default memo(function MenuItemCard({ item, quantity = 0, onAdd, onIncreme
           <p className="text-[10px] text-on-surface-variant/60 truncate mt-0.5">{item.description}</p>
         )}
         <div className="flex items-center gap-2 mt-1.5">
-          <span className="text-sm font-black text-primary">₹{item.price}</span>
+          <span className="text-sm font-extrabold text-on-surface">₹{item.price}</span>
           {item.original_price && item.original_price > item.price && (
-            <span className="text-xs text-on-surface-variant/40 line-through">₹{item.original_price}</span>
+            <span className="text-xs text-on-surface-variant/60 line-through">₹{item.original_price}</span>
           )}
         </div>
       </div>
@@ -71,17 +71,17 @@ export default memo(function MenuItemCard({ item, quantity = 0, onAdd, onIncreme
         {quantity === 0 ? (
           <button
             onClick={onAdd}
-            className="px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary/20 transition-colors active:scale-95"
+            className="min-w-[52px] h-8 px-3 bg-primary text-on-primary border border-primary rounded-lg text-xs font-extrabold hover:brightness-95 transition-all active:scale-95"
           >
             ADD
           </button>
         ) : (
-          <div className="flex items-center bg-primary text-on-primary rounded-xl overflow-hidden">
-            <button onClick={onDecrement} className="w-9 h-9 flex items-center justify-center hover:bg-primary/80 transition-colors">
+          <div className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
+            <button onClick={onDecrement} className="w-8 h-8 bg-primary text-on-primary flex items-center justify-center hover:brightness-95 transition-colors">
               <span className="material-symbols-outlined text-sm">remove</span>
             </button>
-            <span className="w-8 text-center text-sm font-bold">{quantity}</span>
-            <button onClick={onIncrement} className="w-9 h-9 flex items-center justify-center hover:bg-primary/80 transition-colors">
+            <span className="w-7 text-center text-xs font-extrabold text-on-surface">{quantity}</span>
+            <button onClick={onIncrement} className="w-8 h-8 bg-primary text-on-primary flex items-center justify-center hover:brightness-95 transition-colors">
               <span className="material-symbols-outlined text-sm">add</span>
             </button>
           </div>

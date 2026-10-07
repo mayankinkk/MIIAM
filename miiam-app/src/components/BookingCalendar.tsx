@@ -208,7 +208,7 @@ export default function BookingCalendar({
                 p-3 text-sm font-bold rounded-lg transition-colors min-w-[44px]
                 ${!day.isCurrentMonth ? "text-[var(--color-outline-variant)]/60" : ""}
                 ${isPast ? "text-[var(--color-outline-variant)]/60 cursor-not-allowed" : ""}
-                ${selected ? "bg-[var(--color-primary)] text-white" : ""}
+                ${selected ? "bg-[var(--color-primary)] text-on-primary" : ""}
                 ${selectable && !selected ? "hover:bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" : ""}
                 ${!selectable && day.isCurrentMonth ? "bg-red-50 text-red-300 line-through" : ""}
               `}
@@ -243,7 +243,7 @@ export default function BookingCalendar({
                   className={`
                     py-3 rounded-lg text-sm font-bold transition-colors
                     ${selectedTime === slot.time 
-                      ? "bg-[var(--color-primary)] text-white" 
+                      ? "bg-[var(--color-primary)] text-on-primary" 
                       : slot.available 
                         ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]" 
                         : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)]/60 cursor-not-allowed line-through"
@@ -275,12 +275,12 @@ export default function BookingCalendar({
                 })} at {selectedTime}
               </p>
             </div>
-            <p className="text-xl font-black text-[var(--color-primary)]">₹{price}</p>
+            <p className="text-xl font-black text-[var(--color-accent)]">₹{price}</p>
           </div>
           <button
             onClick={handleBook}
             disabled={booking}
-            className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
+            className="w-full py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
           >
             {booking ? "Booking..." : "Confirm Booking"}
           </button>
@@ -305,7 +305,7 @@ export default function BookingCalendar({
             </button>
             <button
               onClick={() => setShowConfirmation(false)}
-              className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold"
+              className="w-full py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold"
             >
               Done
             </button>

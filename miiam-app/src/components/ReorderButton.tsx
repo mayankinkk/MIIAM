@@ -80,7 +80,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
     <button
       onClick={handleReorder}
       disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+      className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
     >
       {loading ? (
         <>
@@ -108,7 +108,7 @@ export function OrderHistoryCard({ order }: OrderHistoryCardProps) {
     <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
       <div className="flex justify-between items-start mb-3">
         <div>
-          <Link href={`/app/vendor/${order.vendor_id}`} className="font-bold text-[var(--color-on-surface)] hover:text-[var(--color-primary)]">
+          <Link href={`/app/vendor/${order.vendor_id}`} className="font-bold text-[var(--color-on-surface)] hover:text-[var(--color-accent)]">
             {order.vendor_name}
           </Link>
           <p className="text-xs text-[var(--color-outline)]">
@@ -138,7 +138,7 @@ export function OrderHistoryCard({ order }: OrderHistoryCardProps) {
       </div>
 
       <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
-        <span className="font-bold text-[var(--color-primary)]">₹{order.total_amount.toFixed(0)}</span>
+        <span className="font-bold text-[var(--color-accent)]">₹{order.total_amount.toFixed(0)}</span>
         <div className="flex gap-2">
           <ReorderButton order={order} />
           <Link 

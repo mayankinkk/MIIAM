@@ -122,7 +122,7 @@ export default function AdminCuisinesPage() {
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm"
+          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm"
         >
           + Add Cuisine
         </button>
@@ -192,7 +192,7 @@ export default function AdminCuisinesPage() {
               <div className="flex gap-2 mt-4 pt-3 border-t border-[var(--color-border-subtle)]">
                 <button
                   onClick={() => setEditingCuisine(cuisine)}
-                  className="flex-1 py-2 text-[var(--color-primary)] font-bold text-sm border border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                  className="flex-1 py-2 text-[var(--color-primary)] font-bold text-sm border border-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)] hover:text-on-primary transition-all"
                 >
                   Edit
                 </button>
@@ -241,7 +241,7 @@ export default function AdminCuisinesPage() {
               <button
                 onClick={handleAddCuisine}
                 disabled={loading}
-                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
               >
                 {loading ? "Adding..." : "Add Cuisine"}
               </button>
@@ -282,7 +282,7 @@ export default function AdminCuisinesPage() {
               <button
                 onClick={handleUpdateCuisine}
                 disabled={loading}
-                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
               >
                 {loading ? "Updating..." : "Update Cuisine"}
               </button>

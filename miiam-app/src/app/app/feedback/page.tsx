@@ -103,13 +103,13 @@ function FeedbackContent() {
           <div className="space-y-3">
             <Link
               href="/app/home"
-              className="block w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary-dim transition-all"
+              className="block w-full py-4 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-all"
             >
               {t.common.home}
             </Link>
             <Link
               href="/app/services"
-              className="block w-full py-4 border-2 border-primary text-primary rounded-xl font-bold hover:bg-surface-container-low transition-all"
+              className="block w-full py-4 border-2 border-primary text-accent rounded-xl font-bold hover:bg-surface-container-low transition-all"
             >
               Book Another Service
             </Link>
@@ -123,7 +123,7 @@ function FeedbackContent() {
     <div className="min-h-screen bg-gradient-to-b from-surface to-white">
       {/* Header */}
       <div className="bg-[var(--color-surface-container-lowest)] p-6 border-b border-pink-100">
-        <Link href="/app/home" className="flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-primary">
+        <Link href="/app/home" className="flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-accent">
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="font-bold">Back</span>
         </Link>
@@ -138,7 +138,7 @@ function FeedbackContent() {
           <p className="text-sm text-[var(--color-outline)] mb-4">by {providerName}</p>
           <div className="flex items-center justify-between">
             <span className="text-sm text-[var(--color-outline)]">Amount Paid</span>
-            <span className="text-xl font-black text-primary">₹{price}</span>
+            <span className="text-xl font-black text-on-surface">₹{price}</span>
           </div>
         </div>
 
@@ -189,7 +189,7 @@ function FeedbackContent() {
                   onClick={() => toggleTag(tag)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                     selectedTags.includes(tag)
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-on-primary"
                       : "bg-pink-50 text-[var(--color-on-surface-variant)] border border-pink-200 hover:border-primary"
                   }`}
                 >
@@ -222,7 +222,7 @@ function FeedbackContent() {
           disabled={rating === 0 || isSubmitting}
           className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
             rating > 0
-              ? "bg-primary text-white hover:bg-primary-dim"
+              ? "bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary"
               : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
           }`}
         >

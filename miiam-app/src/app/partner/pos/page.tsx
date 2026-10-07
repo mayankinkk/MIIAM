@@ -322,7 +322,7 @@ export default function PartnerPOS() {
             <button
               onClick={() => { setBatchMode(!batchMode); setBatchSelected(new Set()); }}
               className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
-                batchMode ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+                batchMode ? "bg-[var(--color-primary)] text-on-primary border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
               }`}
             >
               Batch
@@ -805,7 +805,7 @@ export default function PartnerPOS() {
               </div>
               <button
                 onClick={() => setCallMaskModal(null)}
-                className="block w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[var(--color-primary-dim)] transition-colors"
+                className="block w-full py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl hover:bg-[var(--color-primary-dim)] transition-colors"
               >
                 Done
               </button>

@@ -31,7 +31,7 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
     <>
       <button
         onClick={onToggleHelp}
-        className="w-full bg-gradient-to-r from-primary to-primary-container text-white rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
+        className="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-xl py-4 sm:py-5 text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all"
       >
         {canCancel ? t.orders.cancelOrder : t.orders.helpWithOrder}
       </button>

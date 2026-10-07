@@ -188,7 +188,7 @@ export default function CouponsAdminPage() {
               onClick={() => setFilter(f as "all" | "active" | "expired" | "exhausted")}
               className={`px-4 py-2 rounded-full font-bold text-sm capitalize transition-colors ${
                 filter === f
-                  ? "bg-[var(--color-primary)] text-white"
+                  ? "bg-[var(--color-primary)] text-on-primary"
                   : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
               }`}
             >
@@ -456,7 +456,7 @@ export default function CouponsAdminPage() {
 
               <button
                 type="submit"
-                className="w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a40017] transition-all"
+                className="w-full py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[#a40017] transition-all"
               >
                 {editingCoupon ? "Update Coupon" : "Create Coupon"}
               </button>

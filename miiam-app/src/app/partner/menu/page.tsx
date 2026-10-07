@@ -459,7 +459,7 @@ export default function PartnerMenuPage() {
               resetNewItem();
               setShowAddModal(true);
             }}
-            className="bg-[var(--color-primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
+            className="bg-[var(--color-primary)] text-on-primary px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : "Item"}
@@ -468,7 +468,7 @@ export default function PartnerMenuPage() {
             onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
             aria-pressed={bulkMode}
             className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
-              bulkMode ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+              bulkMode ? "bg-[var(--color-primary)] text-on-primary border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
             <span className="material-symbols-outlined text-lg">select_all</span>
@@ -561,7 +561,7 @@ export default function PartnerMenuPage() {
             <span className="material-symbols-outlined text-3xl text-[var(--color-outline-variant)] mb-2">file_upload</span>
             <p className="font-bold text-[var(--color-on-surface)] text-sm">Bulk Import Items</p>
             <p className="text-xs text-[var(--color-outline-variant)] mt-1 mb-3">CSV upload</p>
-              <label className="cursor-pointer px-4 py-2 bg-[var(--color-primary)] text-white text-xs font-bold rounded-xl hover:bg-[var(--color-primary-dim)]">
+              <label className="cursor-pointer px-4 py-2 bg-[var(--color-primary)] text-on-primary text-xs font-bold rounded-xl hover:bg-[var(--color-primary-dim)]">
               Upload CSV
               <input
                 type="file"
@@ -735,7 +735,7 @@ export default function PartnerMenuPage() {
                     setBulkValue("");
                   }
                 }}
-                className="px-4 py-2 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm"
+                className="px-4 py-2 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm"
               >
                 Apply
               </button>
@@ -1067,7 +1067,7 @@ export default function PartnerMenuPage() {
                             onClick={() => setNewItem({ ...newItem, discount_percent: p })}
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               newItem.discount_percent === p
-                                ? "bg-[var(--color-primary)] text-white shadow-md"
+                                ? "bg-[var(--color-primary)] text-on-primary shadow-md"
                                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
@@ -1165,7 +1165,7 @@ export default function PartnerMenuPage() {
                     }
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-on-primary file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
                 {newItem.imageFiles?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3">
@@ -1208,7 +1208,7 @@ export default function PartnerMenuPage() {
               <button
                 onClick={handleAddItem}
                 disabled={uploading}
-                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl mt-4 hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
+                className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl mt-4 hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
               >
                 {uploading ? "Uploading..." : `Add ${vendorKey === "grocery" ? "Product" : "Item"}`}
               </button>
@@ -1315,7 +1315,7 @@ export default function PartnerMenuPage() {
                             onClick={() => setEditingItem({ ...editingItem, discount_percent: p } as AnyItem)}
                             className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                               (editingItem as MenuItem).discount_percent === p
-                                ? "bg-[var(--color-primary)] text-white shadow-md"
+                                ? "bg-[var(--color-primary)] text-on-primary shadow-md"
                                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
@@ -1443,7 +1443,7 @@ export default function PartnerMenuPage() {
                     }
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-white file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-on-primary file:font-bold file:text-xs hover:file:bg-[#a40017]"
                 />
                 <div className="mt-2">
                   <button
@@ -1474,7 +1474,7 @@ export default function PartnerMenuPage() {
                 <button
                   onClick={handleUpdateItem}
                   disabled={uploading}
-                  className="flex-1 py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
+                  className="flex-1 py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
                 >
                   {uploading ? "Uploading..." : "Save Changes"}
                 </button>
@@ -1561,7 +1561,7 @@ export default function PartnerMenuPage() {
                     setNewCategoryName("");
                   }
                 }}
-                className="px-5 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
+                className="px-5 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
               >
                 Add
               </button>
@@ -1599,7 +1599,7 @@ export default function PartnerMenuPage() {
                   if (qr) link.href = qr.src;
                   link.click();
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
               >
                 Download
               </button>

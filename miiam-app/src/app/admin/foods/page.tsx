@@ -283,7 +283,7 @@ export default function AdminFoodsDashboard() {
                   onClick={() => setShowFilters(!showFilters)}
                   className={`px-4 py-2 rounded-xl text-sm font-bold border flex items-center gap-2 ${
                     showFilters || hasActiveFilters
-                      ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
+                      ? "bg-[var(--color-primary)] text-on-primary border-[var(--color-primary)]"
                       : "border-[var(--color-border-subtle)]"
                   }`}
                 >
@@ -395,7 +395,7 @@ export default function AdminFoodsDashboard() {
         {selectedOrders.length > 0 && (
           <div className="p-4 bg-[var(--color-primary)]/10 border-b border-[var(--color-primary)]/20 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="bg-[var(--color-primary)] text-white w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">
+              <span className="bg-[var(--color-primary)] text-on-primary w-8 h-8 rounded-full flex items-center justify-center font-black text-sm">
                 {selectedOrders.length}
               </span>
               <span className="font-bold text-[var(--color-on-surface)]">orders selected</span>

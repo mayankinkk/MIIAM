@@ -177,8 +177,8 @@ function SetPasswordContent() {
             <button
               type="submit"
               disabled={!password || !confirmPassword || isLoading || getStrength() < 3}
-              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
-              style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}
+              className="w-full bg-[var(--color-primary)] text-on-primary text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
+              style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)' }}
             >
               {isLoading ? isPasswordReset ? "Updating..." : "Creating Account..." : isPasswordReset ? "Update Password" : "Create Account"}
             </button>
@@ -195,9 +195,9 @@ function SetPasswordContent() {
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhfOu3V3KkjtmyRfet1cPPZc5-qz3jim-qm5VmrhPYL8E3dmOrFfYXh-HwTGSjO_r4V97XSEBy_beSGU9M8bT8PHCdIIjRAS2rc_9dvc2Hc0LuWrcxV_I-PXDGaYAS5GWX7xtmAFg-bM-_B534tnCSovYO6dgPTnCaTK497B_rF98rPi79CXKVAEP-jNYqV1DnuT2od_QN3lPEPg7WX1sk-MEbB6nBL3aIRWtvXwvBks9fDvVST6zxaQ6UBz0pCnlorp31ipPry8o"
             fill
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#00174c]/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1f1f1f]/80 via-transparent to-transparent" />
         </div>
-        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
+        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)' }}>
           <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-on-surface">Welcome to MIIAM</h2>
           <p className="text-[var(--color-on-surface)] mt-4">Your journey to premium experiences starts here.</p>
         </div>

@@ -48,7 +48,7 @@ export default memo(function VendorCard({ vendor, index = 0 }: VendorCardProps) 
     >
       <Link
         href={`/app/food/${vendor.id}`}
-        className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
+        className="block bg-surface-container-lowest rounded-xl overflow-hidden border border-border-subtle shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
       >
         {/* Image */}
         <div className="relative h-36 bg-surface-container">
@@ -81,7 +81,7 @@ export default memo(function VendorCard({ vendor, index = 0 }: VendorCardProps) 
           <p className="text-xs text-on-surface-variant/60 truncate mt-0.5">{vendor.cuisine || "Various"}</p>
           <div className="flex items-center gap-3 mt-2">
             {vendor.rating && (
-              <span className="flex items-center gap-0.5 text-xs font-bold text-amber-600">
+              <span className="flex items-center gap-0.5 text-xs font-bold bg-accent text-white px-1.5 py-0.5 rounded">
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                 {typeof vendor.rating === "number" ? vendor.rating.toFixed(1) : vendor.rating}
               </span>

@@ -223,7 +223,7 @@ export default function VendorPage() {
       <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <p className="text-[var(--color-on-surface-variant)]">Vendor not found</p>
-          <Link href="/app/food" className="text-primary font-bold mt-4 block">Go Back</Link>
+          <Link href="/app/food" className="text-accent font-bold mt-4 block">Go Back</Link>
         </div>
       </div>
     );
@@ -342,7 +342,7 @@ export default function VendorPage() {
       <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20">
         <div className="flex items-start gap-3 mb-3">
           <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-primary text-lg">location_on</span>
+            <span className="material-symbols-outlined text-accent text-lg">location_on</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-on-surface text-sm">{vendor.address || "Address not available"}</p>
@@ -365,7 +365,7 @@ export default function VendorPage() {
         <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-bold text-on-surface">Reviews</h2>
-            <Link href={`/app/vendor/${vendorId}/reviews`} className="text-xs font-bold text-primary">
+            <Link href={`/app/vendor/${vendorId}/reviews`} className="text-xs font-bold text-accent">
               See All →
             </Link>
           </div>
@@ -373,7 +373,7 @@ export default function VendorPage() {
             {reviews.slice(0, 4).map((review: Review) => (
               <div key={review.id} className="flex-shrink-0 w-56 bg-surface-container-low rounded-xl p-3 border border-outline-variant/20">
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-container text-white rounded-full flex items-center justify-center text-[10px] font-bold">
+                  <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full flex items-center justify-center text-[10px] font-bold">
                     {review.profile?.full_name?.[0] || "U"}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -391,7 +391,7 @@ export default function VendorPage() {
                 {review.tags && review.tags.length > 0 && (
                   <div className="flex gap-1 mt-2 flex-wrap">
                     {review.tags.slice(0, 2).map((tag: string) => (
-                      <span key={tag} className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
+                      <span key={tag} className="text-[9px] bg-primary/10 text-accent px-1.5 py-0.5 rounded-full font-medium">
                         {tag}
                       </span>
                     ))}
@@ -417,7 +417,7 @@ export default function VendorPage() {
                 onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
                   activeCategory === cat
-                    ? "bg-primary text-white shadow-sm shadow-primary/20"
+                    ? "bg-primary text-on-primary shadow-sm shadow-primary/20"
                     : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
                 }`}
               >
@@ -521,7 +521,7 @@ export default function VendorPage() {
                       {qty === 0 ? (
                         <button
                           onClick={() => handleCustomizeItem(item)}
-                          className="px-5 py-1.5 bg-white text-primary text-xs font-bold rounded-full border-2 border-primary hover:bg-primary hover:text-white active:scale-95 transition-all"
+                          className="min-w-[52px] px-3 h-8 bg-primary text-on-primary text-xs font-extrabold rounded-lg border border-primary hover:brightness-95 transition-all"
                         >
                           ADD +
                         </button>
@@ -529,18 +529,18 @@ export default function VendorPage() {
                         <motion.div
                           initial={{ scale: 0.8 }}
                           animate={{ scale: 1 }}
-                          className="flex items-center bg-primary rounded-full overflow-hidden shadow-md shadow-primary/30"
+                          className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden shadow-sm"
                         >
                           <button
                             onClick={() => handleUpdateQty(item.id, -1)}
-                            className="text-white font-bold w-9 h-9 flex items-center justify-center active:scale-90 transition-transform"
+                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center active:scale-90 transition-transform"
                           >
                             −
                           </button>
-                          <span className="text-white font-bold text-sm min-w-[20px] text-center">{qty}</span>
+                          <span className="text-on-surface font-extrabold text-sm min-w-[22px] text-center">{qty}</span>
                           <button
                             onClick={() => handleUpdateQty(item.id, 1)}
-                            className="text-white font-bold w-9 h-9 flex items-center justify-center active:scale-110 transition-transform"
+                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center active:scale-110 transition-transform"
                           >
                             +
                           </button>

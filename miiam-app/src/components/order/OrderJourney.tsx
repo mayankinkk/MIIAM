@@ -39,9 +39,9 @@ export default function OrderJourney({ steps, currentStepIndex, trackingInfo }: 
             <div key={step.key} className={`relative flex items-start gap-3 sm:gap-6 pb-6 sm:pb-8 min-w-0 ${isPending ? "opacity-40" : ""}`}>
               <div className={`relative z-10 w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${
                 isCurrent
-                  ? "bg-primary text-white shadow-lg shadow-primary/20 ring-4 ring-primary-container/30"
+                  ? "bg-primary text-on-primary shadow-lg shadow-primary/20 ring-4 ring-primary-container/30"
                   : isCompleted
-                    ? "bg-primary text-white shadow-md"
+                    ? "bg-primary text-on-primary shadow-md"
                     : "bg-on-background text-outline"
               }`}>
                 <span className={`material-symbols-outlined text-xl ${isCurrent ? "animate-pulse" : ""}`} style={{ fontVariationSettings: isCurrent || isCompleted ? "'FILL' 1" : "'FILL' 0" }}>
@@ -49,7 +49,7 @@ export default function OrderJourney({ steps, currentStepIndex, trackingInfo }: 
                 </span>
               </div>
               <div className="min-w-0 flex-1">
-                <h4 className={`text-md font-bold ${isCurrent ? "text-primary" : isCompleted ? "text-on-surface" : "text-outline"}`}>
+                <h4 className={`text-md font-bold ${isCurrent ? "text-accent" : isCompleted ? "text-on-surface" : "text-outline"}`}>
                   {step.label}
                 </h4>
                 <p className={`text-sm ${isCurrent ? "text-on-surface font-medium" : "text-on-surface-variant"}`}>
@@ -77,7 +77,7 @@ export default function OrderJourney({ steps, currentStepIndex, trackingInfo }: 
                   ) : "Pending"}
                 </p>
                 {isCurrent && (
-                  <p className="text-xs text-primary/60 font-bold mt-1 uppercase tracking-tighter">Current Step • {step.time}</p>
+                  <p className="text-xs text-accent/60 font-bold mt-1 uppercase tracking-tighter">Current Step • {step.time}</p>
                 )}
                 {isCompleted && !isCurrent && (
                   <p className="text-xs text-outline font-medium mt-1">{step.time}</p>

@@ -319,7 +319,7 @@ export default function SupportChatPage() {
           <Link href="/app/support" aria-label="Go back" className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white font-black text-sm">M</div>
+          <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-on-primary font-black text-sm">M</div>
           <div className="flex-1">
             <p className="font-bold text-[var(--color-on-surface)]">MIIAM Support</p>
             <div className="flex items-center gap-1">
@@ -339,21 +339,21 @@ export default function SupportChatPage() {
         {messages.map((msg) => (
           <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role !== "user" && (
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-black mr-2 flex-shrink-0 mt-auto ${
-                msg.role === "agent" ? "bg-blue-500" : "bg-gradient-to-br from-primary to-primary-container"
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black mr-2 flex-shrink-0 mt-auto ${
+                msg.role === "agent" ? "bg-blue-500 text-on-primary" : "bg-gradient-to-br from-primary to-primary-container text-on-primary"
               }`}>
                 {msg.role === "agent" ? "🧑‍💼" : "M"}
               </div>
             )}
             <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${
               msg.role === "user"
-                ? "bg-primary text-white rounded-br-sm"
+                ? "bg-primary text-on-primary rounded-br-sm"
                 : msg.role === "agent"
                   ? "bg-blue-50 text-blue-900 border border-blue-200 rounded-bl-sm"
                   : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] shadow-sm rounded-bl-sm"
             }`}>
               {msg.text}
-              <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
+              <p className={`text-[9px] mt-1 ${msg.role === "user" ? "text-on-primary/60" : "text-[var(--color-outline-variant)]"}`}>
                 {msg.time.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
               </p>
             </div>
@@ -362,7 +362,7 @@ export default function SupportChatPage() {
 
         {typing && (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-white text-xs font-black">M</div>
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center text-on-primary text-xs font-black">M</div>
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex gap-1 items-center">
               {[0, 1, 2].map((i) => (
                 <span key={i} className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
@@ -380,7 +380,7 @@ export default function SupportChatPage() {
             <button
               key={r}
               onClick={() => { setInput(r); }}
-              className="flex-shrink-0 px-3 py-1.5 bg-[var(--color-surface-container-lowest)] border border-primary text-primary rounded-full text-xs font-bold hover:bg-surface transition-colors"
+              className="flex-shrink-0 px-3 py-1.5 bg-[var(--color-surface-container-lowest)] border border-primary text-accent rounded-full text-xs font-bold hover:bg-surface transition-colors"
             >
               {r}
             </button>
@@ -401,7 +401,7 @@ export default function SupportChatPage() {
         <button
           onClick={sendMessage}
           disabled={!input.trim()}
-          className="w-11 h-11 bg-primary disabled:bg-[var(--color-surface-container-high)] text-white rounded-2xl flex items-center justify-center transition-all active:scale-90"
+          className="w-11 h-11 bg-primary disabled:bg-[var(--color-surface-container-high)] text-on-primary rounded-2xl flex items-center justify-center transition-all active:scale-90"
         >
           <span className="material-symbols-outlined">send</span>
         </button>

@@ -4,3 +4,10 @@
 @import "../styles/scrollbar.css";
 @import "../styles/animations.css";
 @import "../styles/utilities.css";
+
+/* On-primary: yellow surfaces always take dark ink text (WCAG AA).
+   Unlayered so it wins over layered text-* utilities on the same element. */
+[class^="bg-primary"],
+[class*=" bg-primary"] {
+  color: var(--color-on-primary);
+}

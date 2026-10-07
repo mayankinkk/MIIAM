@@ -82,12 +82,12 @@ export default function NotificationsPage() {
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
             <Link href="/app/home" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary">arrow_back</span>
+              <span className="material-symbols-outlined text-accent">arrow_back</span>
             </Link>
-            <span className="text-2xl font-extrabold text-primary">MIIAM</span>
+            <span className="text-2xl font-extrabold text-accent">MIIAM</span>
           </div>
           {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-sm font-bold text-primary">
+            <button onClick={markAllRead} className="text-sm font-bold text-accent">
               Mark all read
             </button>
           )}
@@ -155,7 +155,7 @@ export default function NotificationsPage() {
               </p>
               <button
                 onClick={requestPermission}
-                className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dim transition-colors"
+                className="w-full py-4 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-dim hover:text-on-primary transition-colors"
               >
                 Enable Notifications
               </button>
@@ -204,7 +204,7 @@ export default function NotificationsPage() {
                         notification.type === "order" ? "bg-surface-container-high" :
                         notification.type === "promo" ? "bg-amber-100 dark:bg-amber-900/30" : "bg-surface-container"
                       }`}>
-                        <span className="material-symbols-outlined text-lg text-primary">
+                        <span className="material-symbols-outlined text-lg text-accent">
                           {notification.type === "order" ? "restaurant" :
                            notification.type === "promo" ? "local_offer" : "info"}
                         </span>

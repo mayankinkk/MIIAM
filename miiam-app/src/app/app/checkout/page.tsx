@@ -215,9 +215,9 @@ export default function CheckoutPage() {
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link href="/app/cart" aria-label="Back to cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container dark:hover:bg-[var(--color-surface-container)] transition-all">
-            <span className="material-symbols-outlined text-primary">arrow_back</span>
+            <span className="material-symbols-outlined text-accent">arrow_back</span>
           </Link>
-          <span className="text-xl sm:text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+          <span className="text-xl sm:text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         </div>
         <span className="text-on-surface dark:text-[var(--color-on-surface)] font-semibold hidden md:block">Checkout</span>
       </nav>
@@ -235,7 +235,7 @@ export default function CheckoutPage() {
             <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">shopping_cart</span>
             <h2 className="text-xl font-black text-[var(--color-on-surface-variant)] mt-4">{t.checkout.cartEmpty}</h2>
             <p className="text-sm text-[var(--color-outline-variant)] mt-2">{t.checkout.cartEmptyDesc}</p>
-            <Link href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm">{t.checkout.browseMenu}</Link>
+            <Link href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">{t.checkout.browseMenu}</Link>
           </div>
         ) : (
 
@@ -319,7 +319,7 @@ export default function CheckoutPage() {
                     <button
                       onClick={applyPromo}
                       disabled={applyingPromo || !promoInput.trim()}
-                      className="px-4 py-3 bg-primary text-white rounded-xl text-sm font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 shrink-0"
+                      className="px-4 py-3 bg-primary text-on-primary rounded-xl text-sm font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 shrink-0"
                     >
                       {applyingPromo ? "..." : "Apply"}
                     </button>
@@ -423,11 +423,11 @@ export default function CheckoutPage() {
                     .finally(() => setPlacing(false));
                 }}
                 disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
-                className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
+                className="w-full bg-primary text-on-primary py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-md hover:brightness-95 active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
               >
                 {placing ? (
                   <>
-                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span className="w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
                     {t.checkout.placingOrder}
                   </>
                 ) : t.checkout.placeOrder}

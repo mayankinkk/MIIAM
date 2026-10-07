@@ -99,9 +99,9 @@ export default function FavoritesPage() {
     <PullToRefresh onRefresh={loadFavorites}>
       <header className="fixed top-0 w-full z-50 flex items-center gap-4 px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
         <Link href="/app/home" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
-          <span className="material-symbols-outlined text-primary">arrow_back</span>
+          <span className="material-symbols-outlined text-accent">arrow_back</span>
         </Link>
-        <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        <span className="text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         <span className="text-on-surface font-semibold ml-2">Favourites</span>
       </header>
 
@@ -109,7 +109,7 @@ export default function FavoritesPage() {
 
       <main className="pt-24 pb-24 px-6 max-w-4xl mx-auto">
         <section className="mb-10">
-          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-primary">Your Faves</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight leading-none mb-2 text-on-surface">Your Faves</h1>
           <p className="text-on-surface-variant text-lg">Places you&apos;ve saved for later.</p>
         </section>
 
@@ -146,7 +146,7 @@ export default function FavoritesPage() {
                         <span className="text-xs bg-primary-container/20 text-on-primary px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{vendor.cuisine || "Food"}</span>
                       </div>
                       <div className="flex items-center gap-1 text-sm font-bold text-on-surface">
-                        <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                        <span className="material-symbols-outlined text-accent text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                         {vendor.rating.toFixed(1)}
                       </div>
                     </div>
@@ -157,7 +157,7 @@ export default function FavoritesPage() {
                 </Link>
                 <button
                   onClick={(e) => { e.preventDefault(); handleToggle(vendor.id); }}
-                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg transition-all active:scale-90 hover:bg-primary-dim"
+                  className="absolute top-3 right-3 w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-lg transition-all active:scale-90 hover:bg-primary-dim hover:text-on-primary"
                   aria-label="Remove from favourites"
                 >
                   <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>

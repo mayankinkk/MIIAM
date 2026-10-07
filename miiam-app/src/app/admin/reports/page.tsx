@@ -236,7 +236,7 @@ export default function ReportsPage() {
             onClick={() => setReportType(type.id)}
             className={`p-6 rounded-2xl text-left transition-all ${
               reportType === type.id
-                ? "bg-[var(--color-primary)] text-white shadow-lg shadow-red-900/20"
+                ? "bg-[var(--color-primary)] text-on-primary shadow-lg shadow-red-900/20"
                 : "bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] hover:border-[var(--color-border-subtle)]"
             }`}
           >
@@ -278,7 +278,7 @@ export default function ReportsPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Orders Report</h3>
-                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
+                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-on-primary flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
@@ -322,7 +322,7 @@ export default function ReportsPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Revenue Report</h3>
-                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
+                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-on-primary flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
@@ -351,7 +351,7 @@ export default function ReportsPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Vendor Performance Report</h3>
-                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
+                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-on-primary flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
@@ -384,7 +384,7 @@ export default function ReportsPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
               <div className="p-6 border-b border-slate-50 flex justify-between items-center">
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Rider Performance Report</h3>
-                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
+                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-on-primary flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>
@@ -417,7 +417,7 @@ export default function ReportsPage() {
             <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">User Analytics Report</h3>
-                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-white flex items-center gap-1 hover:opacity-90">
+                <button onClick={exportCsv} className="px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs font-bold text-on-primary flex items-center gap-1 hover:opacity-90">
                   <span className="material-symbols-outlined text-sm">download</span> Export CSV
                 </button>
               </div>

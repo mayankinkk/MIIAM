@@ -21,7 +21,7 @@ interface BadgeProps {
 
 const variantStyles: Record<BadgeVariant, string> = {
   primary:
-    "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
+    "bg-[var(--color-primary)]/10 text-[var(--color-accent)]",
   secondary:
     "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)]",
   success:

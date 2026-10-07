@@ -118,7 +118,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-6">
         <span className="text-6xl mb-4">🔍</span>
         <h2 className="text-xl font-bold text-on-surface mb-2">{t.orders.orderNotFound}</h2>
-        <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold mt-4">
+        <Link href="/app/orders" className="bg-primary text-on-primary px-6 py-3 rounded-xl font-bold mt-4">
           {t.orders.viewAllOrders}
         </Link>
       </div>
@@ -129,9 +129,9 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
     <div className="min-h-screen bg-surface">
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
         <Link href={`/app/orders/${id}`} aria-label="Go back" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all">
-          <span className="material-symbols-outlined text-primary">arrow_back</span>
+          <span className="material-symbols-outlined text-accent">arrow_back</span>
         </Link>
-        <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        <span className="text-xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         <div className="w-10" />
       </nav>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders', href: '/app/orders' }, { label: 'Refund' }]} />
@@ -191,7 +191,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
             </div>
             <div className="flex justify-between">
               <span className="text-on-surface-variant">{t.refund.orderTotal}</span>
-              <span className="font-bold text-primary">₹{order.total_amount?.toFixed(2)}</span>
+              <span className="font-bold text-on-surface">₹{order.total_amount?.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-on-surface-variant">{t.refund.paymentMethod}</span>
@@ -203,7 +203,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
         {order.status !== "refunded" && !showCancelForm && (
           <button
             onClick={() => setShowCancelForm(true)}
-            className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary-dim transition-colors mb-4"
+            className="w-full bg-primary text-on-primary py-4 rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-colors mb-4"
           >
             {t.refund.requestCancellation}
           </button>
@@ -235,7 +235,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
                     value={reason}
                     checked={cancelReason === reason}
                     onChange={(e) => setCancelReason(e.target.value)}
-                    className="text-primary"
+                    className="text-accent"
                   />
                   <span className="text-sm text-on-surface">{reason}</span>
                 </label>
@@ -251,7 +251,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
               <button
                 onClick={handleCancelOrder}
                 disabled={cancelling}
-                className="flex-1 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary-dim transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                className="flex-1 bg-primary text-on-primary py-3 rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
               >
                 {cancelling ? (
                   <>
@@ -273,7 +273,7 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
               <div key={step.status} className={`relative flex items-start gap-4 ${!step.completed ? "opacity-40" : ""}`}>
                 <div className={`relative z-10 w-10 h-10 rounded-full flex items-center justify-center ${
                   step.completed 
-                    ? "bg-primary text-white" 
+                    ? "bg-primary text-on-primary" 
                     : "bg-[var(--color-surface-container)] text-[var(--color-outline-variant)]"
                 }`}>
                   {step.completed ? (

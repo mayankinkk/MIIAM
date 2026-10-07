@@ -50,7 +50,7 @@ export default function LocationModal({ isOpen, onClose, manualPincode, onPincod
         <button
           onClick={onCheckAvailability}
           disabled={manualPincode.length !== 6 || isLoadingLocation}
-          className="w-full mb-3 bg-primary text-white py-4 rounded-xl font-bold text-base hover:bg-[#a00018] transition-colors disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
+          className="w-full mb-3 bg-primary text-on-primary py-4 rounded-xl font-bold text-base hover:bg-[#e5b62e] transition-colors disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
         >
           {isLoadingLocation ? (
             <>

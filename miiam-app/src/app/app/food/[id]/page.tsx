@@ -111,29 +111,29 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
       <button
         onClick={handleAdd}
         className={compact
-          ? "px-2 py-0.5 bg-primary text-white text-[9px] font-bold rounded-full hover:bg-primary-dim active:scale-90 transition-all"
-          : "px-4 py-1.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-dim active:scale-90 transition-all"
+          ? "min-w-[44px] px-2 h-6 bg-primary text-on-primary text-[9px] font-extrabold rounded-md border border-primary active:scale-95 transition-all"
+          : "min-w-[52px] px-3 h-8 bg-primary text-on-primary text-xs font-extrabold rounded-lg border border-primary active:scale-95 transition-all"
         }
       >
-        Add +
+        ADD +
       </button>
     );
   }
 
   if (compact) {
     return (
-      <div className="flex items-center gap-0.5 bg-primary rounded-full px-0.5 py-0.5">
+      <div className="flex items-center bg-surface-container-lowest border border-primary rounded-md overflow-hidden">
         <button
           onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
-          className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform text-[10px]"
+          className="bg-primary text-on-primary font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform text-[10px]"
           aria-label={`Decrease quantity of ${item.name}`}
         >
           −
         </button>
-        <span className="text-white font-bold text-[9px] min-w-[10px] text-center">{qty}</span>
+        <span className="text-on-surface font-extrabold text-[9px] min-w-[12px] text-center">{qty}</span>
         <button
           onClick={handleAdd}
-          className="text-white font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform text-[10px]"
+          className="bg-primary text-on-primary font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform text-[10px]"
           aria-label={`Increase quantity of ${item.name}`}
         >
           +
@@ -143,18 +143,18 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
   }
 
   return (
-    <div className="flex items-center gap-1 bg-primary rounded-full px-1 py-0.5">
+    <div className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
       <button
         onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
-        className="text-white font-bold w-7 h-7 flex items-center justify-center active:scale-75 transition-transform text-sm"
+        className="bg-primary text-on-primary font-bold w-7 h-7 flex items-center justify-center active:scale-75 transition-transform text-sm hover:brightness-95"
         aria-label={`Decrease quantity of ${item.name}`}
       >
         −
       </button>
-      <span className="text-white font-bold text-xs min-w-[14px] text-center">{qty}</span>
+      <span className="text-on-surface font-extrabold text-xs min-w-[16px] text-center">{qty}</span>
       <button
         onClick={handleAdd}
-        className="text-white font-bold w-7 h-7 flex items-center justify-center active:scale-125 transition-transform text-sm"
+        className="bg-primary text-on-primary font-bold w-7 h-7 flex items-center justify-center active:scale-125 transition-transform text-sm hover:brightness-95"
         aria-label={`Increase quantity of ${item.name}`}
       >
         +
@@ -267,7 +267,7 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-4 rounded-xl font-extrabold disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98] transition-all"
+          className="w-full bg-primary text-on-primary py-4 rounded-xl font-extrabold disabled:opacity-50 hover:brightness-95 active:scale-[0.98] transition-all"
         >
           {submitting ? t.food.submitting : t.food.submitReview}
         </button>
@@ -283,10 +283,10 @@ function CartFloater() {
     <div className="fixed bottom-6 left-4 right-4 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-primary text-white px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
+        className="flex items-center justify-between bg-primary text-on-primary px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
       >
         <div className="flex items-center gap-3">
-          <span className="bg-surface-container-lowest text-primary font-black text-xs px-2 py-0.5 rounded-full">
+          <span className="bg-surface-container-lowest text-accent font-black text-xs px-2 py-0.5 rounded-full">
             {totalItems()}
           </span>
           <span className="font-bold">View Cart</span>
@@ -413,15 +413,15 @@ export default function RestaurantProfilePage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
         <div className="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-4">
-          <span className="material-symbols-outlined text-4xl text-primary">wifi_off</span>
+          <span className="material-symbols-outlined text-4xl text-accent">wifi_off</span>
         </div>
         <p className="text-xl font-black text-on-surface mb-2">{t.common.error}</p>
         <p className="text-on-surface-variant text-sm mb-6 text-center">{error}</p>
         <div className="flex gap-3">
-          <button onClick={fetchData} className="px-6 py-3 bg-primary text-white rounded-xl font-bold hover:opacity-90 transition-opacity">
+          <button onClick={fetchData} className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity">
             {t.common.retry}
           </button>
-          <Link href="/app/food" className="px-6 py-3 bg-surface-container text-primary rounded-xl font-bold hover:opacity-90 transition-opacity">
+          <Link href="/app/food" className="px-6 py-3 bg-surface-container text-accent rounded-xl font-bold hover:opacity-90 transition-opacity">
             ← Back
           </Link>
         </div>
@@ -434,7 +434,7 @@ export default function RestaurantProfilePage() {
       <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-center">
           <p className="text-2xl font-black text-on-surface mb-2">{t.food.restaurantNotFound}</p>
-          <Link href="/app/food" className="text-primary font-bold">{t.food.backToFood}</Link>
+          <Link href="/app/food" className="text-accent font-bold">{t.food.backToFood}</Link>
         </div>
       </div>
     );
@@ -521,17 +521,17 @@ export default function RestaurantProfilePage() {
         </span>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-          <span className="material-symbols-outlined text-primary text-base">schedule</span>
+          <span className="material-symbols-outlined text-accent text-base">schedule</span>
           <span className="text-sm font-semibold">{vendor.delivery_time_min && vendor.delivery_time_max ? `${vendor.delivery_time_min}-${vendor.delivery_time_max} min` : "30-40 min"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-          <span className="material-symbols-outlined text-primary text-base">delivery_dining</span>
+          <span className="material-symbols-outlined text-accent text-base">delivery_dining</span>
           <span className="text-sm font-semibold">{vendor.delivery_charge ? `₹${vendor.delivery_charge}` : "₹49 delivery"}</span>
         </div>
         <div className="w-px h-4 bg-surface-container-high" />
         <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-          <span className="material-symbols-outlined text-primary text-base">storefront</span>
+          <span className="material-symbols-outlined text-accent text-base">storefront</span>
           <span className="text-sm font-semibold">{vendor.opening_hours || "10 AM – 11 PM"}</span>
           <ClosingCountdown openingHours={vendor.opening_hours} />
         </div>
@@ -539,7 +539,7 @@ export default function RestaurantProfilePage() {
           <>
             <div className="w-px h-4 bg-surface-container-high" />
             <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
-              <span className="material-symbols-outlined text-primary text-base">location_on</span>
+              <span className="material-symbols-outlined text-accent text-base">location_on</span>
               <span className="text-sm font-semibold truncate max-w-[160px]">{vendor.address}</span>
             </div>
           </>
@@ -562,7 +562,7 @@ export default function RestaurantProfilePage() {
         <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-xl">event</span>
+              <span className="material-symbols-outlined text-accent text-xl">event</span>
               <div>
                 <p className="font-bold text-sm text-on-surface">Schedule for Later</p>
                 <p className="text-[10px] text-on-surface-variant">Choose a date & time</p>
@@ -632,7 +632,7 @@ export default function RestaurantProfilePage() {
                     <p className="font-bold text-on-surface text-[10px] line-clamp-2">{item.name}</p>
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
-                    <span className="font-black text-primary text-xs">₹{item.price}</span>
+                    <span className="font-black text-on-surface text-xs">₹{item.price}</span>
                     <AddToCartButton item={item} vendor={vendor} compact isOpen={isOpen} />
                   </div>
                 </div>
@@ -685,7 +685,7 @@ export default function RestaurantProfilePage() {
                 onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
                 className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm transition-all active:scale-95 ${
                   activeCategory === cat
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-on-primary"
                     : "bg-surface-container-lowest text-on-surface-variant border border-outline"
                 }`}
               >
@@ -770,7 +770,7 @@ export default function RestaurantProfilePage() {
                       <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
                     )}
                     <div className="flex items-center justify-between mt-2">
-                      <span className="font-black text-primary text-base">₹{item.price}</span>
+                      <span className="font-black text-on-surface text-base">₹{item.price}</span>
                       <AddToCartButton item={item} vendor={vendor} isOpen={isOpen} />
                     </div>
                   </div>
@@ -804,7 +804,7 @@ export default function RestaurantProfilePage() {
                   <div className="space-y-2">
                     {popular.map((item, idx) => (
                       <div key={item.id} className="flex items-center gap-3">
-                        <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[10px] font-black flex items-center justify-center flex-shrink-0">{idx + 1}</span>
+                        <span className="w-5 h-5 rounded-full bg-primary/10 text-accent text-[10px] font-black flex items-center justify-center flex-shrink-0">{idx + 1}</span>
                         <span className={`w-3 h-3 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
                           <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
                         </span>
@@ -816,7 +816,7 @@ export default function RestaurantProfilePage() {
                   <div className="mt-3 pt-3 border-t border-outline-variant flex items-center justify-between">
                     <div>
                       <p className="text-xs text-on-surface-variant">Order all together</p>
-                      <p className="font-black text-primary">₹{totalComboPrice}</p>
+                      <p className="font-black text-on-surface">₹{totalComboPrice}</p>
                     </div>
                     <button
                       onClick={() => {
@@ -834,7 +834,7 @@ export default function RestaurantProfilePage() {
                         });
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                       }}
-                      className="px-4 py-2 bg-primary text-white text-xs font-bold rounded-full active:scale-95 transition-transform"
+                      className="px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-full active:scale-95 transition-transform"
                     >
                       Add All
                     </button>
@@ -852,7 +852,7 @@ export default function RestaurantProfilePage() {
           <h2 className="text-lg font-black text-on-surface">{t.food.reviews}</h2>
           <button
             onClick={() => setShowReviewModal(true)}
-            className="text-sm font-bold text-primary bg-surface px-3 py-1.5 rounded-lg hover:bg-[#ffe4e7] transition-colors active:scale-95"
+            className="text-sm font-bold text-accent bg-surface px-3 py-1.5 rounded-lg hover:bg-[#fff7e0] transition-colors active:scale-95"
           >
             + {t.food.writeReview}
           </button>
@@ -891,7 +891,7 @@ export default function RestaurantProfilePage() {
               {reviews.map((review) => (
                 <div key={review.id} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary font-black text-sm flex-shrink-0">
                       {review.user_name?.charAt(0).toUpperCase() || "U"}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -918,7 +918,7 @@ export default function RestaurantProfilePage() {
             <p className="text-sm text-outline mb-4">{t.food.beFirst}</p>
             <button
               onClick={() => setShowReviewModal(true)}
-              className="px-6 py-2.5 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl text-sm hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg text-sm hover:brightness-95 active:scale-[0.98] transition-all"
             >
               {t.food.writeReview}
             </button>

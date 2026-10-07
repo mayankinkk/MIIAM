@@ -54,7 +54,7 @@ export default function InstallPrompt() {
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
-          <span className="material-symbols-outlined text-white text-xl">install_mobile</span>
+          <span className="material-symbols-outlined text-on-primary text-xl">install_mobile</span>
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-on-surface text-sm">Install MIIAM</p>

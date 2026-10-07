@@ -173,7 +173,7 @@ export default function PartnerInventoryPage() {
               onClick={() => setFilter(chip.key)}
               className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
                 filter === chip.key
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-on-primary"
                   : "bg-surface-container text-on-surface-variant border border-outline-variant/20"
               }`}
             >

@@ -73,7 +73,7 @@ export default function CartCrossSell() {
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-[0px_4px_20px_rgba(77,33,42,0.06)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10">
+    <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.06)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10">
       <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
         <span className="material-symbols-outlined text-sm">recommend</span>
         You might also like
@@ -111,7 +111,7 @@ export default function CartCrossSell() {
                 {item.vendor_name}
               </p>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-xs font-bold text-primary">₹{item.price}</span>
+                <span className="text-xs font-bold text-on-surface">₹{item.price}</span>
                 <button
                   onClick={() =>
                     addItem({
@@ -125,7 +125,7 @@ export default function CartCrossSell() {
                       is_veg: item.is_veg,
                     })
                   }
-                  className="w-7 h-7 bg-primary text-white rounded-full flex items-center justify-center shadow-sm hover:scale-105 active:scale-95 transition-all"
+                  className="w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-sm hover:scale-105 active:scale-95 transition-all"
                   aria-label={`Add ${item.name} to cart`}
                 >
                   <span className="material-symbols-outlined text-sm">add</span>

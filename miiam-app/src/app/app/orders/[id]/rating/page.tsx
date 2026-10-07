@@ -52,11 +52,11 @@ function AnimatedStarRating({
             >
               <span
                 className={`material-symbols-outlined text-5xl transition-all duration-300 ${
-                  isActive ? "text-primary" : "text-outline-variant"
+                  isActive ? "text-accent" : "text-outline-variant"
                 } ${hover === star ? "scale-110" : ""}`}
                 style={{ 
                   fontVariationSettings: `'FILL' ${isActive ? 1 : 0}`,
-                  filter: isActive ? "drop-shadow(0 0 8px rgba(186, 0, 28, 0.5))" : "none",
+                  filter: isActive ? "drop-shadow(0 0 8px rgba(248, 203, 70, 0.5))" : "none",
                 }}
               >
                 star
@@ -66,7 +66,7 @@ function AnimatedStarRating({
         })}
       </div>
       {rating > 0 && (
-        <p className="text-sm text-primary font-bold animate-fade-in">
+        <p className="text-sm text-accent font-bold animate-fade-in">
           {rating === 5 ? t.rating.excellent : rating >= 4 ? t.rating.great : rating >= 3 ? t.rating.good : t.rating.okay}
         </p>
       )}
@@ -80,7 +80,7 @@ function Confetti() {
       left: Math.random() * 100,
       delay: Math.random() * 0.5,
       size: Math.random() * 8 + 4,
-      color: ["var(--color-primary)", "#ff7670", "#ffd200", "#0b50d5", "#38ef7d"][i % 5],
+      color: ["var(--color-primary)", "#fce9b0", "#ffd200", "#0c831f", "#38ef7d"][i % 5],
     }))
   );
 
@@ -338,7 +338,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         <div className="min-h-screen bg-surface flex items-center justify-center p-6">
           <div className="text-center animate-bounce-in">
             <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/30">
-              <span className="material-symbols-outlined text-white text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              <span className="material-symbols-outlined text-on-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             </div>
             <h2 className="text-3xl font-extrabold text-on-surface mb-2">{t.rating.thanksForRating}</h2>
             <p className="text-on-surface-variant font-medium">{t.rating.feedbackHelps}</p>
@@ -355,13 +355,13 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(0,0,0,0.06)]">
         <div className="flex justify-between items-center w-full px-6 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} aria-label="Close" className="hover:opacity-80 transition-opacity">
               <span className="material-symbols-outlined text-on-surface">close</span>
             </button>
-            <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+            <span className="text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
           </div>
         </div>
       </header>
@@ -369,13 +369,13 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
       <main className="pt-24 pb-12 px-6 max-w-md mx-auto space-y-6">
         <section className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-surface-container-highest rounded-full mb-4">
-            <span className="material-symbols-outlined text-primary text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            <span className="material-symbols-outlined text-accent text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-on-surface">{t.rating.title}</h1>
           <p className="text-on-surface-variant font-medium">{t.rating.subtitle}</p>
         </section>
 
-        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
+        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(0,0,0,0.04)] space-y-6">
           <AnimatedStarRating
             rating={foodRating}
             hover={hoverFood}
@@ -386,7 +386,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           />
         </section>
 
-        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-4">
+        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-[0px_20px_40px_rgba(0,0,0,0.04)] space-y-4">
           <h3 className="text-sm font-bold text-on-surface-variant text-center uppercase tracking-wider">{t.rating.rateInDetail}</h3>
           <div className="space-y-3">
             {[
@@ -405,7 +405,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
                     >
                       <span
                         className={`material-symbols-outlined text-xl transition-all ${
-                          star <= dim.state ? "text-primary" : "text-outline-variant"
+                          star <= dim.state ? "text-accent" : "text-outline-variant"
                         }`}
                         style={{ fontVariationSettings: `'FILL' ${star <= dim.state ? 1 : 0}` }}
                       >
@@ -419,7 +419,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </section>
 
-        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(77,33,42,0.04)] space-y-6">
+        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(0,0,0,0.04)] space-y-6">
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-surface-container">
@@ -452,7 +452,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           <textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            className="w-full bg-[var(--color-surface-container-lowest)] rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(77,33,42,0.02)] resize-none"
+            className="w-full bg-[var(--color-surface-container-lowest)] rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(0,0,0,0.02)] resize-none"
             placeholder={t.rating.shareExperience}
           />
         </section>
@@ -464,7 +464,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               onClick={() => toggleTag(tag)}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 ${
                 selectedTags.includes(tag)
-                  ? "bg-primary text-white"
+                  ? "bg-primary text-on-primary"
                   : "bg-[var(--color-surface-container-lowest)] text-on-surface-variant hover:bg-surface-container"
               }`}
             >
@@ -476,7 +476,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         <button
           onClick={handleSubmit}
           disabled={(foodRating === 0 && riderRating === 0) || submitting}
-          className="w-full bg-gradient-to-r from-primary to-[#a40017] text-white rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(186,0,28,0.20)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-primary to-[#e5b62e] text-on-primary rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(248,203,70,0.20)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <span className="flex items-center justify-center gap-2">

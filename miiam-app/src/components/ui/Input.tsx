@@ -75,7 +75,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {icon && iconPosition === "left" && (
             <span
               className={`material-symbols-outlined text-[var(--color-on-surface-variant)] text-xl ${
-                focused ? "text-[var(--color-primary)]" : ""
+                focused ? "text-[var(--color-accent)]" : ""
               }`}
             >
               {icon}
@@ -102,7 +102,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {icon && iconPosition === "right" && (
             <span
               className={`material-symbols-outlined text-[var(--color-on-surface-variant)] text-xl ${
-                focused ? "text-[var(--color-primary)]" : ""
+                focused ? "text-[var(--color-accent)]" : ""
               }`}
             >
               {icon}

@@ -218,7 +218,7 @@ export default function CustomerInsights() {
         <div className="divide-y divide-slate-50">
           {users.sort((a, b) => (userOrderCounts[b.id] || 0) - (userOrderCounts[a.id] || 0)).slice(0, 10).map((user, i) => (
             <div key={user.id} className="p-4 flex items-center gap-4 hover:bg-[var(--color-surface-subtle)]">
-              <span className="w-6 h-6 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-xs font-bold">
+              <span className="w-6 h-6 bg-[var(--color-primary)] text-on-primary rounded-full flex items-center justify-center text-xs font-bold">
                 {i + 1}
               </span>
               <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container-high)] flex items-center justify-center font-bold text-[var(--color-on-surface-variant)]">

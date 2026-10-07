@@ -141,7 +141,7 @@ export default function VendorOrders() {
             onClick={() => setActiveTab(tab.key)}
             className={`px-5 py-3 text-sm font-bold rounded-t-xl transition-all ${
               activeTab === tab.key
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]"
             }`}
           >
@@ -244,7 +244,7 @@ export default function VendorOrders() {
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                filter === f ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
+                filter === f ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
               }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1)}

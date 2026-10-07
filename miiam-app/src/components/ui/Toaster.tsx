@@ -61,7 +61,7 @@ function ToastItem({
     success: { bg: "bg-emerald-500/10 dark:bg-emerald-500/15", icon: "text-emerald-500", bar: "bg-emerald-500" },
     error:   { bg: "bg-status-error/10 dark:bg-status-error/15", icon: "text-status-error", bar: "bg-status-error" },
     warning: { bg: "bg-status-warning/10 dark:bg-status-warning/15", icon: "text-status-warning", bar: "bg-status-warning" },
-    info:    { bg: "bg-primary/10", icon: "text-primary", bar: "bg-primary" },
+    info:    { bg: "bg-primary/10", icon: "text-accent", bar: "bg-primary" },
   };
 
   const icons: Record<string, string> = {
@@ -95,7 +95,7 @@ function ToastItem({
             toast.action!.onClick();
             onDismiss(toast.id);
           }}
-          className="text-xs font-bold text-primary hover:text-primary/80 transition-colors shrink-0"
+          className="text-xs font-bold text-accent hover:text-accent/80 transition-colors shrink-0"
         >
           {toast.action.label}
         </button>

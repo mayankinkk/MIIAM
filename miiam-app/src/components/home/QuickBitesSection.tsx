@@ -26,7 +26,7 @@ export default function QuickBitesSection({ items }: QuickBitesSectionProps) {
           <span className="text-lg">💸</span>
           <h2 className="text-lg font-black text-on-surface">Quick Bites Under ₹99</h2>
         </div>
-        <Link href="/app/food?filter=under_99" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
+        <Link href="/app/food?filter=under_99" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {items.map((item) => (
@@ -44,7 +44,7 @@ export default function QuickBitesSection({ items }: QuickBitesSectionProps) {
                 sizes="200px"
                 fallbackSrc="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
               />
-              <div className="absolute top-2 right-2 bg-primary text-white text-[10px] font-black px-2 py-1 rounded-full">
+              <div className="absolute top-2 right-2 bg-primary text-on-primary text-[10px] font-black px-2 py-1 rounded-full">
                 ₹{item.price}
               </div>
               {item.is_veg && (

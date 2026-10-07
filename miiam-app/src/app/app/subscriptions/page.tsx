@@ -143,7 +143,7 @@ export default function SubscriptionsPage() {
             <p className="text-xs text-on-surface-variant/60 mt-1">Set up a recurring order during checkout</p>
             <Link
               href="/app/store"
-              className="inline-block mt-6 px-6 py-3 bg-primary text-white font-bold rounded-xl hover:opacity-90 transition-all"
+              className="inline-block mt-6 px-6 py-3 bg-primary text-on-primary font-bold rounded-xl hover:opacity-90 transition-all"
             >
               {t.common.seeAll}
             </Link>
@@ -190,7 +190,7 @@ export default function SubscriptionsPage() {
                         <span className="text-on-surface font-bold">₹{(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
-                    <div className="border-t border-outline-variant/20 pt-2 flex justify-between text-sm font-extrabold text-primary">
+                    <div className="border-t border-outline-variant/20 pt-2 flex justify-between text-sm font-extrabold text-accent">
                       <span>{t.cart.total}</span>
                       <span>₹{total.toFixed(2)}</span>
                     </div>

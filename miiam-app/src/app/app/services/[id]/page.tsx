@@ -138,7 +138,7 @@ function ServiceDetailContent() {
         {service.description && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
             <h3 className="font-bold text-on-surface text-sm mb-2 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-lg">info</span> About
+              <span className="material-symbols-outlined text-accent text-lg">info</span> About
             </h3>
             <p className="text-sm text-on-surface-variant leading-relaxed">{service.description}</p>
           </motion.div>
@@ -148,7 +148,7 @@ function ServiceDetailContent() {
         {service.included.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
             <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-lg">checklist</span> {t.services.whatIncluded}
+              <span className="material-symbols-outlined text-accent text-lg">checklist</span> {t.services.whatIncluded}
             </h3>
             <div className="space-y-2.5">
               {service.included.map((item, i) => (
@@ -161,7 +161,7 @@ function ServiceDetailContent() {
               ))}
             </div>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-outline/20">
-              <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+              <span className="material-symbols-outlined text-accent text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
               <span className="text-xs text-on-surface-variant">{t.services.warrantyDays?.replace("{days}", String(service.warranty_days)) || `${service.warranty_days}-day warranty`}</span>
             </div>
           </motion.div>
@@ -170,7 +170,7 @@ function ServiceDetailContent() {
         {/* Date & Time Selection */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
           <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-lg">calendar_today</span> {t.services.selectDate}
+            <span className="material-symbols-outlined text-accent text-lg">calendar_today</span> {t.services.selectDate}
           </h3>
 
           {/* Date Chips */}
@@ -192,7 +192,7 @@ function ServiceDetailContent() {
           </div>
 
           <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-lg">schedule</span> {t.services.selectTimeSlot}
+            <span className="material-symbols-outlined text-accent text-lg">schedule</span> {t.services.selectTimeSlot}
           </h3>
 
           {/* Time Slots */}
@@ -214,7 +214,7 @@ function ServiceDetailContent() {
         {/* Address & Phone */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline/20">
           <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-lg">location_on</span> Service Address
+            <span className="material-symbols-outlined text-accent text-lg">location_on</span> Service Address
           </h3>
           <textarea
             className="w-full border-2 border-outline rounded-xl p-3 text-sm focus:border-primary focus:outline-none resize-none mb-3 text-on-surface bg-surface"
@@ -225,7 +225,7 @@ function ServiceDetailContent() {
             aria-label="Service address"
           />
           <h3 className="font-bold text-on-surface text-sm mb-3 flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-lg">phone</span> Phone Number
+            <span className="material-symbols-outlined text-accent text-lg">phone</span> Phone Number
           </h3>
           <input
             type="tel"
@@ -268,7 +268,7 @@ function ServiceDetailContent() {
       {/* Fixed CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-gradient-to-t from-surface via-surface to-transparent pt-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}>
         <button onClick={handleBook} disabled={adding || !selectedDate || !selectedTime}
-          className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2">
+          className="w-full bg-primary text-on-primary py-4 rounded-2xl font-bold text-lg shadow-xl shadow-primary/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2">
           {adding ? (
             <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (

@@ -230,7 +230,7 @@ export default function DevicesPage() {
                     }`}
                   >
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      isCurrent ? "bg-primary/10 text-primary" : "bg-surface text-on-surface-variant"
+                      isCurrent ? "bg-primary/10 text-accent" : "bg-surface text-on-surface-variant"
                     }`}>
                       <span className="material-symbols-outlined">{deviceIcon(s.device_info)}</span>
                     </div>
@@ -238,7 +238,7 @@ export default function DevicesPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="font-bold text-on-surface truncate">{deviceLabel(s.device_info)}</h3>
                         {isCurrent && (
-                          <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-full">
+                          <span className="px-2 py-0.5 bg-primary/10 text-accent text-[10px] font-black uppercase tracking-widest rounded-full">
                             This device
                           </span>
                         )}

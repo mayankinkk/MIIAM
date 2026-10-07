@@ -248,7 +248,7 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
               ))}
               <button
                 onClick={() => handleSearch(query)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 rounded-lg text-[var(--color-primary)] font-bold mt-2"
+                className="w-full flex items-center gap-3 px-3 py-2.5 bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 rounded-lg text-[var(--color-accent)] font-bold mt-2"
               >
                 <span className="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
                 Search for &quot;{query}&quot;
@@ -260,7 +260,7 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
             <div className="p-2">
               <div className="flex items-center justify-between px-3 py-2">
                 <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Recent Searches</div>
-                <button onClick={clearRecentSearches} className="text-xs text-[var(--color-primary)] font-medium">
+                <button onClick={clearRecentSearches} className="text-xs text-[var(--color-accent)] font-medium">
                   Clear all
                 </button>
               </div>

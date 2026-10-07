@@ -86,7 +86,7 @@ function LoginContent() {
     <div className="min-h-screen flex">
       {/* Left Side - Lifestyle Imagery (Desktop only) */}
       <section className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-[var(--color-on-surface)]">
-        <div className="absolute inset-0 bg-gradient-to-tr from-[#ffdad7]/40 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#f8cb46]/40 to-transparent z-10" />
         <BlurImage
           className="absolute inset-0 w-full h-full object-cover"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhfOu3V3KkjtmyRfet1cPPZc5-qz3jim-qm5VmrhPYL8E3dmOrFfYXh-HwTGSjO_r4V97XSEBy_beSGU9M8bT8PHCdIIjRAS2rc_9dvc2Hc0LuWrcxV_I-PXDGaYAS5GWX7xtmAFg-bM-_B534tnCSovYO6dgPTnCaTK497B_rF98rPi79CXKVAEP-jNYqV1DnuT2od_QN3lPEPg7WX1sk-MEbB6nBL3aIRWtvXwvBks9fDvVST6zxaQ6UBz0pCnlorp31ipPry8o"
@@ -95,7 +95,7 @@ function LoginContent() {
         />
         <div className="relative z-20 mt-auto p-16 max-w-xl">
           <div className="bg-[var(--color-primary)] px-4 py-1 inline-block mb-6 rounded-sm">
-            <span className="text-white text-[10px] tracking-[0.3em] font-bold">PREMIUM SELECTION</span>
+            <span className="text-on-primary text-[10px] tracking-[0.3em] font-bold">PREMIUM SELECTION</span>
           </div>
           <h1 className="text-white text-[4.5rem] leading-[0.9] tracking-[-0.05em] font-extrabold mb-6" style={{ fontFamily: 'Plus Jakarta Sans' }}>
             Savor the Moment.
@@ -108,7 +108,7 @@ function LoginContent() {
 
       {/* Right Side - Auth Card */}
       <section className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-12 lg:p-24 bg-[var(--color-surface-container-lowest)]">
-        <div className="w-full max-w-md space-y-8 bg-[var(--color-surface-container-lowest)] p-8 md:p-12 rounded-xl" style={{ boxShadow: '0 20px 40px rgba(77, 33, 42, 0.06)' }}>
+        <div className="w-full max-w-md space-y-8 bg-[var(--color-surface-container-lowest)] p-8 md:p-12 rounded-xl" style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)' }}>
           {/* Header */}
           <div className="space-y-2">
             <div className="text-3xl font-black tracking-tighter text-red-700 mb-8">MIIAM</div>
@@ -148,14 +148,14 @@ function LoginContent() {
                 />
               </div>
               <div className="space-y-1 text-right">
-                <Link href="/auth/forgot-password" className="text-xs text-[var(--color-primary)] font-bold hover:underline">Forgot Password?</Link>
+                <Link href="/auth/forgot-password" className="text-xs text-[var(--color-accent)] font-bold hover:underline">Forgot Password?</Link>
               </div>
             </div>
             {error && <p className="text-red-500 text-sm">{error}</p>}
             <button
               type="submit"
               disabled={!email.includes("@") || !password || isLoading}
-              className="w-full bg-[var(--color-primary)] text-white text-[1.5rem] leading-[1.2] font-extrabold py-5 rounded-full shadow-lg shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[var(--color-primary)] text-on-primary text-[1.5rem] leading-[1.2] font-extrabold py-5 rounded-full shadow-lg shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ fontFamily: 'Plus Jakarta Sans' }}
             >
               {isLoading ? "Signing in..." : "Sign In"}
@@ -185,7 +185,7 @@ function LoginContent() {
           </button>
 
           <p className="text-center text-[var(--color-on-surface)] font-medium">
-            Don't have an account? <Link href="/auth/signup" className="text-[var(--color-primary)] font-extrabold hover:underline underline-offset-4">Create Account</Link>
+            Don't have an account? <Link href="/auth/signup" className="text-[var(--color-accent)] font-extrabold hover:underline underline-offset-4">Create Account</Link>
           </p>
 
           <p className="text-center text-xs text-[var(--color-on-surface)]/60">

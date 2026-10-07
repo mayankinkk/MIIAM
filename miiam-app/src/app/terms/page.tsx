@@ -57,10 +57,10 @@ export default function TermsOfService() {
               <span className="text-xl font-black text-on-background">MIIAM</span>
             </Link>
             <div className="flex items-center gap-4">
-              <Link href="/privacy" className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">
+              <Link href="/privacy" className="text-sm font-medium text-on-surface-variant hover:text-accent transition-colors">
                 Privacy Policy
               </Link>
-              <Link href="/" className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:bg-primary/95 transition-all">
+              <Link href="/" className="px-4 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:bg-primary hover:text-on-primary/95 transition-all">
                 Back to Home
               </Link>
             </div>
@@ -95,7 +95,7 @@ export default function TermsOfService() {
           <main className="lg:col-span-9 mt-8 lg:mt-0">
             <div className="bg-surface-container border border-outline-variant/10 rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-8">
-                <span className="material-symbols-outlined text-4xl text-primary">description</span>
+                <span className="material-symbols-outlined text-4xl text-accent">description</span>
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-black text-on-background">Terms of Service</h1>
                   <p className="text-on-surface-variant/70 text-sm mt-1">Last updated: May 2025</p>
@@ -260,7 +260,7 @@ export default function TermsOfService() {
                       <li>Dissatisfaction arising from a change of mind after work was completed</li>
                     </ul>
                     
-                    <h3 className="text-lg font-bold text-primary mt-6">4. Cancellation Timing & Refunds</h3>
+                    <h3 className="text-lg font-bold text-accent mt-6">4. Cancellation Timing & Refunds</h3>
                     <div className="overflow-x-auto">
                       <table className="min-w-full border border-primary/20 text-sm text-on-surface">
                         <thead className="bg-primary">
@@ -421,12 +421,12 @@ export default function TermsOfService() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">M</span>
+              <span className="material-symbols-outlined text-accent">M</span>
               <span className="font-bold text-on-surface-variant">MIIAM Technologies Pvt. Ltd.</span>
             </div>
             <div className="flex gap-6">
-              <Link href="/terms" className="text-sm text-on-surface-variant hover:text-primary transition-colors">Terms of Service</Link>
-              <Link href="/privacy" className="text-sm text-on-surface-variant hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="text-sm text-on-surface-variant hover:text-accent transition-colors">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm text-on-surface-variant hover:text-accent transition-colors">Privacy Policy</Link>
             </div>
             <p className="text-sm text-on-surface-variant/60">© 2026 MIIAM. All rights reserved.</p>
           </div>

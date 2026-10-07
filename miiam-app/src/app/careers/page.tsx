@@ -220,17 +220,17 @@ export default function CareersPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-black text-[var(--color-primary)] tracking-tighter">
+          <Link href="/" className="text-2xl font-black text-[var(--color-accent)] tracking-tighter">
             MIIAM
           </Link>
           <div className="flex items-center gap-6">
             <button 
               onClick={() => setShowStatusCheck(true)}
-              className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)] transition-colors"
+              className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)] transition-colors"
             >
               Check Status
             </button>
-            <Link href="/" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
+            <Link href="/" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)]">
               ← Back to Home
             </Link>
           </div>
@@ -238,24 +238,24 @@ export default function CareersPage() {
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] px-4 py-20 text-center text-white">
+      <section className="bg-gradient-to-br from-[var(--color-primary)] to-[#c59507] px-4 py-20 text-center text-on-primary">
         <div className="max-w-3xl mx-auto">
-          <span className="inline-block bg-[var(--color-surface-container-lowest)]/20 text-white text-xs font-bold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
+          <span className="inline-block bg-[var(--color-surface-container-lowest)]/20 text-on-primary text-xs font-bold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
             🚀 JOIN OUR TEAM
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
             Build Your Career with MIIAM
           </h1>
-          <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
+          <p className="text-on-primary/80 text-lg mb-8 max-w-xl mx-auto">
             We're building Assam's fastest food delivery platform. Join us and make an impact while growing your career.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-              <a href="#openings" className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl">
+              <a href="#openings" className="bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)] px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl">
                 View Open Positions
               </a>
               <button 
                 onClick={() => setShowStatusCheck(true)}
-                className="bg-[var(--color-surface-container-lowest)]/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/30 transition-colors"
+                className="bg-[var(--color-surface-container-lowest)]/20 text-on-primary px-8 py-4 rounded-xl font-bold hover:bg-white/30 transition-colors"
               >
                 Check Application Status
               </button>
@@ -273,7 +273,7 @@ export default function CareersPage() {
             { value: "10K+", label: "Happy Customers" },
           ].map((stat) => (
             <div key={stat.label}>
-              <p className="text-3xl font-extrabold text-[var(--color-primary)]">{stat.value}</p>
+              <p className="text-3xl font-extrabold text-[var(--color-accent)]">{stat.value}</p>
               <p className="text-[var(--color-outline)] text-sm">{stat.label}</p>
             </div>
           ))}
@@ -315,7 +315,7 @@ export default function CareersPage() {
                 onClick={() => setActiveDept(dept)}
                 className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
                   activeDept === dept
-                    ? "bg-[var(--color-primary)] text-white"
+                    ? "bg-[var(--color-primary)] text-on-primary"
                     : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                 }`}
               >
@@ -350,7 +350,7 @@ export default function CareersPage() {
                   </div>
                   <button
                     onClick={() => handleApply(job)}
-                    className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#a40017] transition-colors flex-shrink-0"
+                    className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#e5b62e] transition-colors flex-shrink-0"
                   >
                     Apply Now
                   </button>
@@ -380,12 +380,12 @@ export default function CareersPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-br from-[var(--color-primary)] to-[#6b0011] px-4 py-20 text-center text-white">
+      <section className="bg-gradient-to-br from-[var(--color-primary)] to-[#c59507] px-4 py-20 text-center text-on-primary">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
             Don't See the Perfect Role?
           </h2>
-          <p className="text-white/80 text-lg mb-8">
+          <p className="text-on-primary/80 text-lg mb-8">
             Send us your resume anyway. We're always looking for talented people to join our team.
           </p>
           <button
@@ -393,7 +393,7 @@ export default function CareersPage() {
               setSelectedJob(null);
               setShowApplyForm(true);
             }}
-            className="bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] px-10 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform shadow-xl"
+            className="bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)] px-10 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform shadow-xl"
           >
             Send Your Resume
           </button>
@@ -434,7 +434,7 @@ export default function CareersPage() {
               {/* Section 1: Basic Info */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">person</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">person</span>
                   Basic Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -460,7 +460,7 @@ export default function CareersPage() {
               {/* Section 2: Personal Info */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">badge</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">badge</span>
                   Personal Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -483,7 +483,7 @@ export default function CareersPage() {
               {/* Section 3: Address */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">location_on</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">location_on</span>
                   Address
                 </h3>
                 <div className="space-y-4">
@@ -511,7 +511,7 @@ export default function CareersPage() {
               {/* Section 4: Vehicle Details */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">two_wheeler</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">two_wheeler</span>
                   Vehicle Details
                 </h3>
                 <div className="space-y-4">
@@ -556,7 +556,7 @@ export default function CareersPage() {
               {/* Section 5: Work Preferences */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">schedule</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">schedule</span>
                   Work Preferences
                 </h3>
                 <div className="space-y-4">
@@ -616,7 +616,7 @@ export default function CareersPage() {
               {/* Section 6: Experience */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">work_history</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">work_history</span>
                   Delivery Experience
                 </h3>
                 <div className="space-y-4">
@@ -645,7 +645,7 @@ export default function CareersPage() {
               {/* Section 7: Device Check */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">smartphone</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">smartphone</span>
                   Device Check
                 </h3>
                 <div className="space-y-4">
@@ -681,7 +681,7 @@ export default function CareersPage() {
               {/* Section 8: Verification */}
               <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
                 <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">verified_user</span>
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">verified_user</span>
                   ID Verification
                 </h3>
                 <div>
@@ -691,7 +691,7 @@ export default function CareersPage() {
                 </div>
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-[var(--color-primary)] text-white font-bold rounded-xl hover:bg-[#a40017] transition-colors disabled:opacity-50">
+              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl hover:bg-[#e5b62e] transition-colors disabled:opacity-50">
                 {isSubmitting ? "Submitting..." : "Submit Application"}
               </button>
             </form>
@@ -716,7 +716,7 @@ export default function CareersPage() {
                 <div className="space-y-6">
                   <div className="text-center">
                     <div className="w-16 h-16 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="material-symbols-outlined text-[var(--color-primary)] text-3xl">fact_check</span>
+                      <span className="material-symbols-outlined text-[var(--color-accent)] text-3xl">fact_check</span>
                     </div>
                     <p className="text-[var(--color-on-surface-variant)]">Enter the phone number you used during application to track your progress.</p>
                   </div>
@@ -733,7 +733,7 @@ export default function CareersPage() {
                   <button 
                     onClick={checkStatus}
                     disabled={checkingStatus || statusPhone.length < 10}
-                    className="w-full py-4 bg-[var(--color-primary)] text-white font-bold rounded-2xl shadow-xl shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                    className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-bold rounded-2xl shadow-xl shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
                   >
                     {checkingStatus ? "Checking..." : "Track My Application"}
                   </button>
@@ -763,7 +763,7 @@ export default function CareersPage() {
                   </p>
                   <button 
                     onClick={() => setFoundStatus(null)}
-                    className="text-[var(--color-primary)] font-bold text-sm hover:underline pt-4 block w-full"
+                    className="text-[var(--color-accent)] font-bold text-sm hover:underline pt-4 block w-full"
                   >
                     Check another number
                   </button>

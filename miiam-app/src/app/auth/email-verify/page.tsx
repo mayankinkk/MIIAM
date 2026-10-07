@@ -95,10 +95,10 @@ function EmailVerifyContent() {
       </div>
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-20 h-20 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mb-8">
-          <span className="material-symbols-outlined text-[var(--color-primary)] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>email</span>
+          <span className="material-symbols-outlined text-[var(--color-accent)] text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>email</span>
         </div>
         <h1 className="text-2xl font-black text-[var(--color-on-surface)] mb-2">Verify Your Email</h1>
-        <p className="text-[var(--color-outline)] text-center mb-8">We sent a 6-digit code to<br /><span className="font-bold text-[var(--color-primary)]">{email}</span></p>
+        <p className="text-[var(--color-outline)] text-center mb-8">We sent a 6-digit code to<br /><span className="font-bold text-[var(--color-accent)]">{email}</span></p>
         <div className="w-full max-w-sm">
           <div className="flex justify-center gap-2 mb-6">
             {otp.map((d, i) => (
@@ -112,13 +112,13 @@ function EmailVerifyContent() {
         <div className="text-center">
           {resendTimer > 0 ? (
             <p className="text-[var(--color-outline-variant)] text-sm">
-              Resend code in <span className="font-bold text-[var(--color-primary)]">{resendTimer}</span> seconds
+              Resend code in <span className="font-bold text-[var(--color-accent)]">{resendTimer}</span> seconds
             </p>
           ) : (
             <button 
               onClick={resend} 
               disabled={resent}
-              className={`font-bold text-sm hover:underline ${resent ? "text-[var(--color-outline-variant)]" : "text-[var(--color-primary)]"}`}
+              className={`font-bold text-sm hover:underline ${resent ? "text-[var(--color-outline-variant)]" : "text-[var(--color-accent)]"}`}
             >
               {resent ? "Code sent!" : "Resend Code"}
             </button>

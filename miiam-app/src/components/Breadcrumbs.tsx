@@ -32,7 +32,7 @@ export default function Breadcrumbs({ items, className = "" }: BreadcrumbsProps)
                   {item.label}
                 </span>
               ) : (
-                <Link href={item.href} className="text-primary hover:underline">
+                <Link href={item.href} className="text-accent hover:underline">
                   {item.label}
                 </Link>
               )}

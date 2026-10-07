@@ -27,7 +27,7 @@ export default function TrendingSection({ items }: TrendingSectionProps) {
           <span className="text-lg animate-pulse">🔥</span>
           <h2 className="text-lg font-black text-on-surface">What&apos;s Trending</h2>
         </div>
-        <Link href="/app/food" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
+        <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {items.map((item, index) => (
@@ -59,7 +59,7 @@ export default function TrendingSection({ items }: TrendingSectionProps) {
               <h3 className="font-bold text-sm text-on-surface line-clamp-1">{item.name}</h3>
               <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{item.vendor_name}</p>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-sm font-black text-primary">₹{item.price}</span>
+                <span className="text-sm font-black text-on-surface">₹{item.price}</span>
                 <span className="text-[9px] text-on-surface-variant">{item.order_count}+ orders</span>
               </div>
             </div>

@@ -266,7 +266,7 @@ export default function AdvancedAnalytics() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-sm font-bold capitalize transition-colors ${
               activeTab === tab
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
@@ -556,7 +556,7 @@ export default function AdvancedAnalytics() {
               <div className="space-y-4">
                 {topVendors.map(([vendor, data], i) => (
                   <div key={vendor} className="flex items-center gap-4">
-                    <span className="w-6 h-6 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    <span className="w-6 h-6 bg-[var(--color-primary)] text-on-primary rounded-full flex items-center justify-center text-xs font-bold">
                       {i + 1}
                     </span>
                     <div className="flex-1">
@@ -637,7 +637,7 @@ export default function AdvancedAnalytics() {
                 const a = document.createElement("a"); a.href = url; a.download = "orders-report.csv"; a.click();
                 URL.revokeObjectURL(url);
               }}
-              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold flex items-center gap-2"
+              className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg text-sm font-bold flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-sm">download</span>
               Export CSV

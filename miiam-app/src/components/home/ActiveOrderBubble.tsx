@@ -82,7 +82,7 @@ export default function ActiveOrderBubble({ activeOrder, expanded, onToggle, onC
               <p className="text-xs text-on-surface-variant">{t.home.estimatedDelivery}</p>
               <p className="font-bold text-orange-600">{activeOrder.eta}</p>
             </div>
-            <Link href={`/app/orders/${activeOrder.id}`} className="text-primary font-bold text-sm">
+            <Link href={`/app/orders/${activeOrder.id}`} className="text-accent font-bold text-sm">
               {t.home.trackOrder}
             </Link>
           </div>

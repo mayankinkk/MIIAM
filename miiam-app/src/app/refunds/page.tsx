@@ -35,18 +35,18 @@ export default function RefundsPage() {
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[var(--color-primary)] rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-white text-xl">M</span>
+                <span className="material-symbols-outlined text-on-primary text-xl">M</span>
               </div>
               <span className="text-xl font-black text-[var(--color-on-surface)]">MIIAM</span>
             </Link>
             <div className="flex items-center gap-4">
-              <Link href="/terms" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
+              <Link href="/terms" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)]">
                 Terms of Service
               </Link>
-              <Link href="/privacy" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
+              <Link href="/privacy" className="text-sm font-medium text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)]">
                 Privacy Policy
               </Link>
-              <Link href="/" className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold hover:opacity-90">
+              <Link href="/" className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg text-sm font-bold hover:opacity-90">
                 Back to Home
               </Link>
             </div>
@@ -66,7 +66,7 @@ export default function RefundsPage() {
                     onClick={() => scrollToSection(section.id)}
                     className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       activeSection === section.id
-                        ? "bg-[var(--color-primary)] text-white"
+                        ? "bg-[var(--color-primary)] text-on-primary"
                         : "text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]"
                     }`}
                   >
@@ -81,7 +81,7 @@ export default function RefundsPage() {
           <main className="lg:col-span-9 mt-8 lg:mt-0">
             <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-sm p-6 sm:p-8 lg:p-10">
               <div className="flex items-center gap-3 mb-8">
-                <span className="material-symbols-outlined text-4xl text-[var(--color-primary)]">attach_money</span>
+                <span className="material-symbols-outlined text-4xl text-[var(--color-accent)]">attach_money</span>
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-on-surface)]">Refund Policy</h1>
                   <p className="text-[var(--color-outline)] text-sm mt-1">Last updated: May 2026</p>
@@ -99,7 +99,7 @@ export default function RefundsPage() {
 
                 {/* Food & Grocery Orders */}
                 <section id="food">
-                  <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">2. Food & Grocery Orders</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent)] mb-4">2. Food & Grocery Orders</h2>
                   <div className="space-y-4 text-[var(--color-on-surface-variant)]">
                     <p><strong className="text-[var(--color-on-surface)]">2.1 Eligible for full refund:</strong></p>
                     <ul className="list-disc pl-6 space-y-1">
@@ -128,7 +128,7 @@ export default function RefundsPage() {
 
                 {/* Home Services */}
                 <section id="services">
-                  <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">3. Home Services</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent)] mb-4">3. Home Services</h2>
                   <div className="space-y-4 text-[var(--color-on-surface-variant)]">
                     <p><strong className="text-[var(--color-on-surface)]">3.1 Eligible for full refund:</strong></p>
                     <ul className="list-disc pl-6 space-y-1">
@@ -154,13 +154,13 @@ export default function RefundsPage() {
 
                 {/* Cancellation Timing */}
                 <section id="timing">
-                  <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4">4. Cancellation Timing & Refunds</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent)] mb-4">4. Cancellation Timing & Refunds</h2>
                   <div className="overflow-x-auto">
                     <table className="min-w-full border border-[var(--color-primary)]/20 text-sm">
                       <thead className="bg-[var(--color-primary)]">
                         <tr>
-                          <th className="p-3 text-left text-white font-bold">Scenario</th>
-                          <th className="p-3 text-left text-white font-bold">Refund</th>
+                          <th className="p-3 text-left text-on-primary font-bold">Scenario</th>
+                          <th className="p-3 text-left text-on-primary font-bold">Refund</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -244,13 +244,13 @@ export default function RefundsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-[var(--color-primary)]">M</span>
+              <span className="material-symbols-outlined text-[var(--color-accent)]">M</span>
               <span className="font-bold text-[var(--color-on-surface-variant)]">MIIAM Technologies Pvt. Ltd.</span>
             </div>
             <div className="flex gap-6">
-              <Link href="/terms" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-primary)]">Terms of Service</Link>
-              <Link href="/privacy" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-primary)]">Privacy Policy</Link>
-              <Link href="/refunds" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-primary)]">Refund Policy</Link>
+              <Link href="/terms" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-accent)]">Terms of Service</Link>
+              <Link href="/privacy" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-accent)]">Privacy Policy</Link>
+              <Link href="/refunds" className="text-sm text-[var(--color-outline)] hover:text-[var(--color-accent)]">Refund Policy</Link>
             </div>
             <p className="text-sm text-[var(--color-outline-variant)]">© 2026 MIIAM. All rights reserved.</p>
           </div>

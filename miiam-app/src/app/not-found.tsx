@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex flex-col items-center justify-center p-6">
       <div className="max-w-md w-full text-center">
         <div className="w-24 h-24 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span className="material-symbols-outlined text-5xl text-[var(--color-primary)]">search_off</span>
+          <span className="material-symbols-outlined text-5xl text-[var(--color-accent)]">search_off</span>
         </div>
         <h1 className="text-3xl font-black text-[var(--color-on-surface)] mb-2">404</h1>
         <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Page Not Found</h2>
@@ -16,7 +16,7 @@ export default function NotFound() {
         <div className="space-y-3">
           <Link
             href="/"
-            className="block w-full px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:opacity-90 transition-opacity"
+            className="block w-full px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity"
           >
             Go Home
           </Link>

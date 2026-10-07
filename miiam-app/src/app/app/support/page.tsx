@@ -249,11 +249,11 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
   return (
     <div className="h-[100dvh] bg-background flex flex-col pb-24 md:pb-0">
       {/* Header */}
-      <header className="bg-primary text-white px-4 py-6 shrink-0">
+      <header className="bg-primary text-on-primary px-4 py-6 shrink-0">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-extrabold">{t.settings.helpCenter}</h1>
-            <p className="text-white/70 text-sm mt-1">{t.settings.helpCenterSub}</p>
+            <p className="text-on-primary/70 text-sm mt-1">{t.settings.helpCenterSub}</p>
           </div>
         </div>
       </header>
@@ -268,7 +268,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               key={tabKey}
               onClick={() => setTab(tabKey)}
               className={`flex-1 py-4 text-sm font-bold border-b-2 transition-all ${
-                tab === tabKey ? "border-primary text-primary" : "border-transparent text-on-surface-variant"
+                tab === tabKey ? "border-primary text-accent" : "border-transparent text-on-surface-variant"
               }`}
             >
               {tabKey === "home" ? t.common.home : tabKey === "chat" ? `💬 ${t.settings.chatWithUs}` : tabKey === "tickets" ? `🎫 ${t.settings.support}` : `❓ ${t.settings.helpCenter}`}
@@ -331,7 +331,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
                           <p className="text-xs text-on-surface-variant">#{order.id.slice(0, 8).toUpperCase()}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-primary">₹{order.total_amount}</p>
+                          <p className="font-bold text-on-surface">₹{order.total_amount}</p>
                           <span className="text-[10px] px-2 py-0.5 bg-[var(--color-surface-container)] rounded-full">{order.status}</span>
                         </div>
                       </div>
@@ -347,12 +347,12 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               <div className="space-y-3">
                 <button
                   onClick={() => setTab("chat")}
-                  className="w-full bg-primary text-white rounded-2xl p-5 flex items-center gap-4 hover:bg-primary-dim transition-all shadow-md"
+                  className="w-full bg-primary text-on-primary rounded-2xl p-5 flex items-center gap-4 hover:bg-primary-dim hover:text-on-primary transition-all shadow-md"
                 >
                   <span className="material-symbols-outlined text-3xl">chat</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">{t.settings.chatWithUs}</p>
-                    <p className="text-white/70 text-sm">{t.settings.chatWithUsSub}</p>
+                    <p className="text-on-primary/70 text-sm">{t.settings.chatWithUsSub}</p>
                   </div>
                   <span className="material-symbols-outlined">chevron_right</span>
                 </button>
@@ -361,7 +361,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
                   href={`tel:${support.support_phone}`}
                   className="w-full bg-surface-container-lowest border border-outline-variant/20 text-on-surface rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
-                  <span className="material-symbols-outlined text-3xl text-primary">call</span>
+                  <span className="material-symbols-outlined text-3xl text-accent">call</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">{t.settings.support}</p>
                     <p className="text-on-surface-variant text-sm">{support.support_phone_label}</p>
@@ -373,7 +373,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
                   href={`mailto:${support.support_email}`}
                   className="w-full bg-surface-container-lowest border border-outline-variant/20 text-on-surface rounded-2xl p-5 flex items-center gap-4 hover:border-primary transition-all"
                 >
-                  <span className="material-symbols-outlined text-3xl text-primary">email</span>
+                  <span className="material-symbols-outlined text-3xl text-accent">email</span>
                   <div className="text-left flex-1">
                     <p className="font-bold text-lg">{t.settings.helpCenter}</p>
                     <p className="text-on-surface-variant text-sm">Response within {support.support_email_response_time}</p>
@@ -404,17 +404,17 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               <h2 className="text-lg font-bold text-on-surface mb-4">Follow Us</h2>
               <div className="flex gap-3">
                 {support.support_twitter && (
-                  <a href={support.support_twitter} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-all text-center">
+                  <a href={support.support_twitter} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent transition-all text-center">
                     Twitter
                   </a>
                 )}
                 {support.support_instagram && (
-                  <a href={support.support_instagram} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-all text-center">
+                  <a href={support.support_instagram} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent transition-all text-center">
                     Instagram
                   </a>
                 )}
                 {support.support_facebook && (
-                  <a href={support.support_facebook} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-primary transition-all text-center">
+                  <a href={support.support_facebook} target="_blank" rel="noopener noreferrer" className="flex-1 bg-surface-container-lowest border border-outline-variant/20 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent transition-all text-center">
                     Facebook
                   </a>
                 )}
@@ -439,17 +439,17 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
                 <div key={msg.id} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[85%] rounded-2xl px-5 py-3 ${
                     msg.from === "user"
-                      ? "bg-primary text-white rounded-br-md"
+                      ? "bg-primary text-on-primary rounded-br-md"
                       : "bg-surface-container-lowest text-on-surface shadow-sm rounded-bl-md"
                   }`}>
                     <p className="text-sm leading-relaxed">{msg.text}</p>
-                    <p className={`text-xs mt-2 ${msg.from === "user" ? "text-white/50" : "text-[var(--color-outline-variant)]"}`}>{msg.time}</p>
+                    <p className={`text-xs mt-2 ${msg.from === "user" ? "text-on-primary/50" : "text-[var(--color-outline-variant)]"}`}>{msg.time}</p>
                   </div>
                 </div>
               ))}
               {sending && (
                 <div className="flex justify-end">
-                  <div className="bg-primary/70 text-white rounded-2xl rounded-br-md px-5 py-3">
+                  <div className="bg-primary/70 text-on-primary rounded-2xl rounded-br-md px-5 py-3">
                     <div className="flex gap-1">
                       <span className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                       <span className="w-2 h-2 bg-white/70 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -468,7 +468,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
                   <button
                     key={reply}
                     onClick={() => handleQuickAction(reply.toLowerCase().replace(" ", ""))}
-                    className="bg-surface-container-lowest border border-primary text-primary px-4 py-2 rounded-full text-sm font-semibold hover:bg-surface transition-all"
+                    className="bg-surface-container-lowest border border-primary text-accent px-4 py-2 rounded-full text-sm font-semibold hover:bg-surface transition-all"
                   >
                     {reply}
                   </button>
@@ -489,7 +489,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               <button
                 onClick={handleSend}
                 disabled={!newMessage.trim() || sending}
-                className="w-10 h-10 bg-primary text-white rounded-xl flex items-center justify-center disabled:opacity-50"
+                className="w-10 h-10 bg-primary text-on-primary rounded-xl flex items-center justify-center disabled:opacity-50"
               >
                 <span className="material-symbols-outlined">{sending ? "hourglass_empty" : "send"}</span>
               </button>
@@ -499,9 +499,9 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
 
         {tab === "tickets" && (
           <div className="space-y-6">
-            <div className="bg-primary text-white rounded-2xl p-6">
+            <div className="bg-primary text-on-primary rounded-2xl p-6">
               <h2 className="text-xl font-bold mb-2">{t.settings.support}</h2>
-              <p className="text-white/70 text-sm">Track and manage your support requests</p>
+              <p className="text-on-primary/70 text-sm">Track and manage your support requests</p>
             </div>
             
             <div className="text-center py-12 text-on-surface-variant">
@@ -510,7 +510,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               <p className="text-sm mt-2">Start a chat to create a ticket</p>
               <button 
                 onClick={() => setTab("chat")}
-                className="mt-4 bg-primary text-white px-6 py-3 rounded-xl font-bold"
+                className="mt-4 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold"
               >
                 Start Chat
               </button>
@@ -520,21 +520,21 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               <h3 className="font-bold text-on-surface mb-4">How Tickets Work</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">1</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">1</div>
                   <div>
                     <p className="font-semibold text-on-surface">Start a Chat</p>
                     <p className="text-sm text-on-surface-variant">Describe your issue in the chat</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">2</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">2</div>
                   <div>
                     <p className="font-semibold text-on-surface">We Create a Ticket</p>
                     <p className="text-sm text-on-surface-variant">Our team will create a support ticket for you</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">3</div>
+                  <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm">3</div>
                   <div>
                     <p className="font-semibold text-on-surface">Track Here</p>
                     <p className="text-sm text-on-surface-variant">View ticket status and updates</p>
@@ -561,11 +561,11 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
 
             {/* Category Pills */}
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-              <button onClick={() => setFaqCategory("All")} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === "All" ? "bg-primary text-white" : "bg-surface-container-lowest border border-outline-variant/20"}`}>
+              <button onClick={() => setFaqCategory("All")} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === "All" ? "bg-primary text-on-primary" : "bg-surface-container-lowest border border-outline-variant/20"}`}>
                 All
               </button>
               {faqs.map((section) => (
-                <button key={section.category} onClick={() => setFaqCategory(section.category)} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === section.category ? "bg-primary text-white" : "bg-surface-container-lowest border border-outline-variant/20"}`}>
+                <button key={section.category} onClick={() => setFaqCategory(section.category)} className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap ${faqCategory === section.category ? "bg-primary text-on-primary" : "bg-surface-container-lowest border border-outline-variant/20"}`}>
                   {section.category}
                 </button>
               ))}
@@ -585,7 +585,7 @@ const [userOrders, setUserOrders] = useState<OrderData[]>([]);
               return (
                 <section key={section.category}>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="material-symbols-outlined text-primary">
+                    <span className="material-symbols-outlined text-accent">
                       {section.category === "Orders & Delivery" ? "local_shipping" :
                        section.category === "Payments & Refunds" ? "payments" :
                        section.category === "Account & Profile" ? "person" : "help"}

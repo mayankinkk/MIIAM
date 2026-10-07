@@ -43,13 +43,13 @@ export default function LanguagePage() {
             >
               <span className="text-3xl">{lang.flag}</span>
               <div className="flex-1 text-left">
-                <p className={`font-bold ${language === lang.code ? "text-primary" : "text-on-surface"}`}>
+                <p className={`font-bold ${language === lang.code ? "text-accent" : "text-on-surface"}`}>
                   {lang.native}
                 </p>
                 <p className="text-xs text-on-surface-variant">{lang.label}</p>
               </div>
               {language === lang.code && (
-                <span className="material-symbols-outlined text-primary">check_circle</span>
+                <span className="material-symbols-outlined text-accent">check_circle</span>
               )}
             </button>
           ))}
@@ -57,7 +57,7 @@ export default function LanguagePage() {
 
         <div className="mt-6 bg-surface-container-low border border-outline-variant/20 rounded-2xl p-4">
           <p className="text-xs font-bold text-on-surface-variant flex items-center gap-1">
-            <span className="material-symbols-outlined text-sm text-primary">info</span>
+            <span className="material-symbols-outlined text-sm text-accent">info</span>
             {t.settings.note}
           </p>
         </div>

@@ -88,7 +88,7 @@ export default function AdminSidebar() {
     <aside className={`${collapsed ? "w-[72px]" : "w-64"} bg-surface-container-lowest border-r border-outline/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar transition-all duration-300`}>
       {/* Header */}
       <div className={`${collapsed ? "px-3 py-4" : "px-6 py-6"} border-b border-outline/5 flex items-center ${collapsed ? "justify-center" : "gap-3"}`}>
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-black shrink-0">M</div>
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary font-black shrink-0">M</div>
         {!collapsed && (
           <Link href="/admin" className="text-xl font-black tracking-tighter text-primary">
             MIIAM <span className="text-outline-variant text-xs tracking-normal">Staff</span>

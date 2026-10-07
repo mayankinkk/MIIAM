@@ -94,7 +94,7 @@ export default function ReferralPage() {
         <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 text-center">
           <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">Your Referral Code</p>
           <div className="bg-surface-container rounded-xl px-6 py-4 mb-4">
-            <p className="text-2xl font-black text-primary tracking-[0.2em] font-mono">{referralCode || "------"}</p>
+            <p className="text-2xl font-black text-accent tracking-[0.2em] font-mono">{referralCode || "------"}</p>
           </div>
           <div className="flex gap-3">
             <button
@@ -106,7 +106,7 @@ export default function ReferralPage() {
             </button>
             <button
               onClick={share}
-              className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+              className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
             >
               <span className="material-symbols-outlined text-lg">share</span>
               Share
@@ -117,7 +117,7 @@ export default function ReferralPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 text-center">
-            <p className="text-3xl font-black text-primary">{referralCount}</p>
+            <p className="text-3xl font-black text-accent">{referralCount}</p>
             <p className="text-xs text-on-surface-variant mt-1">Friends Referred</p>
           </div>
           <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 text-center">
@@ -136,7 +136,7 @@ export default function ReferralPage() {
               { step: 3, icon: "redeem", title: "Both earn ₹50", desc: "You get ₹50, they get ₹50 off first order" },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
                   {item.step}
                 </div>
                 <div>

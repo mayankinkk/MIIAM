@@ -91,7 +91,7 @@ export default async function RiderDashboardPage() {
               <div className="flex gap-3 relative z-10">
                 <Link
                   href="/rider/orders"
-                  className="flex-1 bg-[var(--color-surface-container-low)] text-[var(--color-primary)] py-3 rounded-xl font-bold text-center hover:bg-[var(--color-primary)] hover:text-white transition-colors no-underline block"
+                  className="flex-1 bg-[var(--color-surface-container-low)] text-[var(--color-primary)] py-3 rounded-xl font-bold text-center hover:bg-[var(--color-primary)] hover:text-on-primary transition-colors no-underline block"
                 >
                   View & Accept
                 </Link>

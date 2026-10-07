@@ -11,7 +11,7 @@ function AccessDeniedContent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)] px-6">
       <div className="w-full max-w-md text-center">
-        <div className="mb-8 inline-flex items-center justify-center w-24 h-24 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] animate-pulse">
+        <div className="mb-8 inline-flex items-center justify-center w-24 h-24 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-accent)] animate-pulse">
           <span className="material-symbols-outlined text-5xl">lock</span>
         </div>
 
@@ -24,7 +24,7 @@ function AccessDeniedContent() {
             <div className="space-y-4">
               <Link
                 href="/partner/register"
-                className="block w-full bg-[var(--color-primary)] text-white rounded-xl py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="block w-full bg-[var(--color-primary)] text-on-primary rounded-xl py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 Register Your Store
               </Link>
@@ -45,7 +45,7 @@ function AccessDeniedContent() {
             <div className="space-y-4">
               <Link
                 href="/"
-                className="block w-full bg-[var(--color-primary)] text-white rounded-xl py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="block w-full bg-[var(--color-primary)] text-on-primary rounded-xl py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 Back to Home
               </Link>

@@ -202,7 +202,7 @@ export default function OrdersPage() {
   return (
     <>
       <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
-        <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+        <span className="text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
       </header>
       <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders' }]} />
       <PullToRefresh onRefresh={async () => {
@@ -245,7 +245,7 @@ export default function OrdersPage() {
                   onClick={() => setStatusFilter(chip.key)}
                   className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
                     statusFilter === chip.key
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-on-primary"
                       : "bg-surface-container text-on-surface-variant border border-outline-variant/20"
                   }`}
                 >
@@ -297,7 +297,7 @@ export default function OrdersPage() {
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${statusColors[order.status] ?? "bg-surface-container text-primary"}`}>
+                          <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${statusColors[order.status] ?? "bg-surface-container text-accent"}`}>
                             {order.status.replace(/_/g, " ")}
                           </span>
                           <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] mt-2">₹{order.total_amount.toFixed(2)}</p>
@@ -312,7 +312,7 @@ export default function OrdersPage() {
                     <button
                       onClick={() => handleReorder(order)}
                       disabled={reordering === order.id}
-                      className="flex-1 bg-primary text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60"
+                      className="flex-1 bg-primary text-on-primary py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60"
                     >
                       <span className="material-symbols-outlined text-sm">refresh</span>
                       {reordering === order.id ? t.orders.adding : t.cart.reorder}

@@ -16,9 +16,9 @@ export default function OrderHeader({ orderId, isRefreshing, onRefresh, extraAct
       <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
         <div className="flex items-center gap-4">
           <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all" aria-label="Go to orders">
-            <span className="material-symbols-outlined text-primary">arrow_back</span>
+            <span className="material-symbols-outlined text-accent">arrow_back</span>
           </Link>
-          <span className="text-2xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+          <span className="text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         </div>
         <div className="flex items-center gap-3">
           {extraActions}

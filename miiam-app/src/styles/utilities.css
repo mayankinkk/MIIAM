@@ -64,11 +64,11 @@
 
 /* Gradients */
 .bento-gradient-red {
-  background: linear-gradient(135deg, var(--color-primary, #ba001c) 0%, var(--color-primary-container, #ff7670) 100%);
+  background: linear-gradient(135deg, var(--color-primary, #f8cb46) 0%, var(--color-primary-container, #fce9b0) 100%);
 }
 
 .bento-gradient-blue {
-  background: linear-gradient(135deg, var(--color-secondary, #0b50d5) 0%, var(--color-secondary-container, #c4d0ff) 100%);
+  background: linear-gradient(135deg, var(--color-secondary, #0c831f) 0%, var(--color-secondary-container, #d9f2de) 100%);
 }
 
 /* Common Phone Dimensions (not fixed, for reference & PWA) */

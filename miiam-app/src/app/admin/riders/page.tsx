@@ -119,7 +119,7 @@ function RidersPage() {
           <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Riders</h1>
           <p className="text-[var(--color-outline-variant)]">Manage delivery riders</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2">
+        <button onClick={() => setShowAddModal(true)} className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2">
           <span className="material-symbols-outlined">add</span> Add Rider
         </button>
       </div>
@@ -146,7 +146,7 @@ function RidersPage() {
           <div className="p-4 border-b border-[var(--color-border-subtle)]">
             <div className="flex gap-2">
               {(["all", "online", "offline"] as const).map(f => (
-                <button key={f} onClick={() => setFilter(f)} className={`flex-1 py-2 rounded-lg text-xs font-bold ${filter === f ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline)]"}`}>{f.charAt(0).toUpperCase() + f.slice(1)}</button>
+                <button key={f} onClick={() => setFilter(f)} className={`flex-1 py-2 rounded-lg text-xs font-bold ${filter === f ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline)]"}`}>{f.charAt(0).toUpperCase() + f.slice(1)}</button>
               ))}
             </div>
           </div>
@@ -154,7 +154,7 @@ function RidersPage() {
             {filteredRiders.map(rider => (
               <div key={rider.id} className="p-4 border-b border-slate-50 hover:bg-[var(--color-surface-subtle)] cursor-pointer" onClick={() => setSelectedRider(rider)}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold overflow-hidden shadow-inner">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] text-on-primary flex items-center justify-center font-bold overflow-hidden shadow-inner">
                     {rider.profile?.avatar_url ? (
 <BlurImage 
   src={rider.profile.avatar_url} 
@@ -330,7 +330,7 @@ function RidersPage() {
               {newRider.id_proof_type && <div><label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Upload {newRider.id_proof_type}</label><input type="file" accept="image/*" onChange={e => setNewRider({ ...newRider, id_proof_image: e.target.files?.[0] || null })} className="w-full p-4 rounded-xl border border-[var(--color-border-subtle)]" required /></div>}
               <div><label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Vehicle</label><select value={newRider.vehicle_type} onChange={e => setNewRider({ ...newRider, vehicle_type: e.target.value, vehicle_number: "" })} className="w-full p-4 rounded-xl border border-[var(--color-border-subtle)] font-bold"><option value="motorcycle">Motorcycle</option><option value="scooty">Scooty</option><option value="bicycle">Bicycle</option></select></div>
               {(newRider.vehicle_type === "motorcycle" || newRider.vehicle_type === "scooty") && <div><label className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Vehicle Number</label><input type="text" value={newRider.vehicle_number} onChange={e => setNewRider({ ...newRider, vehicle_number: e.target.value })} className="w-full p-4 rounded-xl border border-[var(--color-border-subtle)] font-bold" placeholder="Number" /></div>}
-              <button type="submit" disabled={saving} className="w-full bg-[var(--color-primary)] text-white px-6 py-4 rounded-xl font-bold hover:bg-[#a00019] disabled:opacity-50">
+              <button type="submit" disabled={saving} className="w-full bg-[var(--color-primary)] text-on-primary px-6 py-4 rounded-xl font-bold hover:bg-[#a00019] disabled:opacity-50">
                 {saving ? "Saving..." : isEditing ? "Save Changes" : "Add Rider"}
               </button>
               {isEditing && (

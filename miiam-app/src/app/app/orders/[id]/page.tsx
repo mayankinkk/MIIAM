@@ -72,7 +72,7 @@ function EtaCountdown({ etaMinutes }: { etaMinutes: number }) {
   const secs = remaining % 60;
 
   return (
-    <p className="text-xl font-black text-primary leading-none tabular-nums">
+    <p className="text-xl font-black text-accent leading-none tabular-nums">
       {mins > 0 && <>{mins}<span className="text-xs font-bold">m</span> </>}
       <span className="text-xs font-bold">{secs}s</span>
     </p>
@@ -201,13 +201,13 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
   const riderInfo = pageOrder?.riders
     ? {
         name: pageOrder.riders.name || t.orders.rider,
-        image: pageOrder.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+        image: pageOrder.riders.profile_image || "https://ui-avatars.com/api/?name=Rider&background=0c831f&color=fff",
         rating: pageOrder.riders.rating || 4.9,
         phone: pageOrder.riders.phone,
       }
     : {
         name: t.orders.assigningRider,
-        image: "https://ui-avatars.com/api/?name=Rider&background=0b50d5&color=fff",
+        image: "https://ui-avatars.com/api/?name=Rider&background=0c831f&color=fff",
         rating: 0,
       };
 
@@ -225,7 +225,7 @@ export default function OrderTrackingPage({ params }: { params: Promise<{ id: st
         <span className="text-6xl mb-4">🔍</span>
         <h2 className="text-xl font-bold mb-2">{t.orders.orderNotFound}</h2>
         <p className="text-on-surface-variant dark:text-[var(--color-outline)] text-center mb-6">{t.orders.orderNotFoundDesc}</p>
-        <Link href="/app/orders" className="bg-primary text-white px-6 py-3 rounded-xl font-bold">
+        <Link href="/app/orders" className="bg-primary text-on-primary px-6 py-3 rounded-xl font-bold">
           {t.orders.viewAllOrders}
         </Link>
         <button onClick={() => window.location.reload()} className="mt-4 text-sm text-on-surface-variant dark:text-[var(--color-outline)]">

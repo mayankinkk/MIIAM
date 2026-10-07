@@ -110,12 +110,12 @@ export default function PullToRefresh({
                 animate={{ rotate: progress * 180, scale: 0.8 + progress * 0.4 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <span className="material-symbols-outlined text-primary text-2xl">arrow_downward</span>
+                <span className="material-symbols-outlined text-accent text-2xl">arrow_downward</span>
               </motion.div>
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: progress }}
-                className="text-[11px] font-bold text-primary"
+                className="text-[11px] font-bold text-accent"
               >
                 {progress >= 1 ? "Release to refresh" : "Pull down"}
               </motion.span>

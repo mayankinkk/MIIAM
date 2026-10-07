@@ -142,7 +142,7 @@ export default function SponsoredListingsPage() {
         </div>
         <button
           onClick={openCreateModal}
-          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2"
+          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           New Listing
@@ -264,7 +264,7 @@ export default function SponsoredListingsPage() {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
               >
                 {saving ? "Saving..." : editingItem ? "Update Listing" : "Create Listing"}
               </button>

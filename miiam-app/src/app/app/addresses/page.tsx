@@ -48,7 +48,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
     <div className={`bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-primary" : ""}`}>
       {/* Default badge */}
       {address.is_default && (
-        <div className="bg-primary text-white text-xs font-bold px-4 py-2 flex items-center gap-2">
+        <div className="bg-primary text-on-primary text-xs font-bold px-4 py-2 flex items-center gap-2">
           <span className="material-symbols-outlined text-sm">check_circle</span>
           Default Address
         </div>
@@ -129,7 +129,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
       <div className="border-t border-[var(--color-border-subtle)] flex">
         <button
           onClick={onSelect}
-          className="flex-1 py-3 text-primary font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-surface transition-colors"
+          className="flex-1 py-3 text-accent font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-surface transition-colors"
         >
           Select for Delivery
         </button>
@@ -462,10 +462,10 @@ export default function AddressBookPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/app/profile" className="text-2xl font-black text-primary tracking-tighter">
+          <Link href="/app/profile" className="text-2xl font-black text-accent tracking-tighter">
             MIIAM
           </Link>
-          <Link href="/app/profile" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-primary">
+          <Link href="/app/profile" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-accent">
             Cancel
           </Link>
         </div>
@@ -518,14 +518,14 @@ export default function AddressBookPage() {
         <div className="space-y-3">
           <Link
             href="/app/addresses/add"
-            className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim transition-colors shadow-lg shadow-primary/20"
+            className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim hover:text-on-primary transition-colors shadow-lg shadow-primary/20"
           >
             <span className="material-symbols-outlined">add_location</span>
             Add New Address
           </Link>
           <Link
             href="/app/addresses/add"
-            className="w-full py-3 bg-secondary text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#0940b0] transition-colors"
+            className="w-full py-3 bg-secondary text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#096b18] transition-colors"
           >
             <span className="material-symbols-outlined">my_location</span>
             Auto Detect on Map
@@ -647,7 +647,7 @@ export default function AddressBookPage() {
                         type="button"
                         onClick={handleSendOtp}
                         disabled={sendingOtp || otpCooldown > 0 || newAddress.phone.replace(/\D/g, "").length !== 10}
-                        className="px-4 py-3 rounded-xl text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 whitespace-nowrap"
+                        className="px-4 py-3 rounded-xl text-sm font-bold bg-primary text-on-primary hover:bg-primary hover:text-on-primary/90 transition-all disabled:opacity-50 whitespace-nowrap"
                       >
                         {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Retry ${otpCooldown}s` : "Send OTP"}
                       </button>
@@ -682,7 +682,7 @@ export default function AddressBookPage() {
                     <button
                       type="button"
                       onClick={() => { setPhoneVerified(false); setOtpSent(false); setOtpCode(""); setNewAddress({ ...newAddress, phone: "" }); }}
-                      className="text-xs text-primary font-bold hover:underline"
+                      className="text-xs text-accent font-bold hover:underline"
                     >
                       Change
                     </button>
@@ -707,7 +707,7 @@ export default function AddressBookPage() {
               <button
                 onClick={handleUseMyLocation}
                 disabled={detectingLocation}
-                className="w-full py-3 bg-[var(--color-surface-container-lowest)] border border-primary text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface transition-colors"
+                className="w-full py-3 bg-[var(--color-surface-container-lowest)] border border-primary text-accent font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface transition-colors"
               >
                 <span className="material-symbols-outlined">{detectingLocation ? "sync" : "my_location"}</span>
                 {detectingLocation ? "Detecting Location..." : "Use My Current Location"}
@@ -772,7 +772,7 @@ export default function AddressBookPage() {
               <button
                 onClick={handleSave}
                 disabled={!newAddress.name || !newAddress.street || !newAddress.postal_code || !phoneVerified}
-                className="w-full py-4 bg-primary text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xl shadow-primary/30"
+                className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim hover:text-on-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xl shadow-primary/30"
               >
                 <span className="material-symbols-outlined">check</span>
                 {editingAddress ? "Update Address" : "Save Address"}

@@ -118,7 +118,7 @@ export default function PromotionsManagement() {
           <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Home Promotions</h1>
           <p className="text-[var(--color-outline)]">Manage the offer carousel on the home page.</p>
         </div>
-        <button onClick={openAdd} className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all">
+        <button onClick={openAdd} className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all">
           + Add Promotion
         </button>
       </div>
@@ -267,7 +267,7 @@ export default function PromotionsManagement() {
                 <label htmlFor="promo-link" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-1">Link URL (optional)</label>
                 <input id="promo-link" value={form.link_url} onChange={(e) => setForm({ ...form, link_url: e.target.value })} className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10" placeholder="/app/food" />
               </div>
-              <button onClick={savePromo} disabled={!form.title} className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:bg-[#a00018] disabled:opacity-50 transition-colors">
+              <button onClick={savePromo} disabled={!form.title} className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[#a00018] disabled:opacity-50 transition-colors">
                 {editing ? "Save Changes" : "Add Promotion"}
               </button>
             </div>

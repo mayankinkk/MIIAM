@@ -20,10 +20,10 @@ export default function PrivacyPolicyPage() {
     <div className="min-h-screen bg-background text-on-background font-sans">
       <nav className="fixed top-0 w-full z-50 bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/20">
         <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <Link href="/" className="text-2xl font-black text-primary tracking-tighter">
+          <Link href="/" className="text-2xl font-black text-accent tracking-tighter">
             MIIAM
           </Link>
-          <Link href="/" className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors">
+          <Link href="/" className="text-sm font-bold text-on-surface-variant hover:text-accent transition-colors">
             ← Back to Home
           </Link>
         </div>
@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
 
       <main className="pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-black uppercase tracking-widest mb-6">
+          <span className="inline-block px-4 py-1.5 bg-primary/10 text-accent rounded-full text-xs font-black uppercase tracking-widest mb-6">
             Legal
           </span>
           <h1 className="text-4xl md:text-5xl font-black text-on-background tracking-tighter mb-8">
@@ -85,7 +85,7 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Service professionals</strong> – name and contact for booking</li>
                 <li><strong>Payment gateways</strong> – Razorpay, Cashfree, etc. (processed securely)</li>
               </ul>
-              <p className="text-on-surface-variant mt-4 font-semibold text-primary">
+              <p className="text-on-surface-variant mt-4 font-semibold text-accent">
                 We do NOT sell your personal data to third parties.
               </p>
             </section>

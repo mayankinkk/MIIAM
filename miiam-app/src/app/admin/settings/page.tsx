@@ -186,7 +186,7 @@ export default function SettingsPage() {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-lg text-sm font-bold uppercase ${
               activeTab === tab
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
             }`}
           >
@@ -724,7 +724,7 @@ export default function SettingsPage() {
               <button
                 onClick={runHealthChecks}
                 aria-label="Refresh health checks"
-                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-xl text-sm font-bold hover:opacity-90"
+                className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-xl text-sm font-bold hover:opacity-90"
               >
                 Refresh
               </button>
@@ -782,7 +782,7 @@ export default function SettingsPage() {
         <button
           onClick={saveSettings}
           disabled={loading}
-          className="px-8 py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50"
+          className="px-8 py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90 disabled:opacity-50"
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>

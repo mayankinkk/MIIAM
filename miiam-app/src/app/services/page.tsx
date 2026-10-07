@@ -109,13 +109,13 @@ export default function ServicesLandingPage() {
       {/* Hero Section */}
       <div className="relative pt-20 pb-12 px-6 text-center">
         <div className="transition-all duration-700 opacity-100 translate-y-0">
-          <span className="inline-block text-sm font-bold text-[var(--color-primary)] bg-[var(--color-primary)]/10 px-4 py-1.5 rounded-full mb-4">
+          <span className="inline-block text-sm font-bold text-[var(--color-accent)] bg-[var(--color-primary)]/10 px-4 py-1.5 rounded-full mb-4">
             Professional Home Services
           </span>
           <h1 className="text-4xl md:text-5xl font-black text-[var(--color-on-surface)] mb-3 leading-tight">
             Expert Services,
             <br />
-            <span className="text-[var(--color-primary)]">At Your Doorstep</span>
+            <span className="text-[var(--color-accent)]">At Your Doorstep</span>
           </h1>
           <p className="text-[var(--color-outline)] text-lg max-w-md mx-auto">
             Book trusted professionals for home repair, cleaning, beauty & more
@@ -127,7 +127,7 @@ export default function ServicesLandingPage() {
           {stats.map((stat, i) => (
             <div key={i} className="text-center">
               <div className="w-10 h-10 mx-auto rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center mb-2">
-                <span className="material-symbols-outlined text-[var(--color-primary)] text-lg">{stat.icon}</span>
+                <span className="material-symbols-outlined text-[var(--color-accent)] text-lg">{stat.icon}</span>
               </div>
               <p className="font-black text-[var(--color-on-surface)] text-sm">{stat.number}</p>
               <p className="text-[10px] text-[var(--color-outline)] font-medium">{stat.label}</p>
@@ -210,7 +210,7 @@ export default function ServicesLandingPage() {
                 {/* Content Section */}
                 <div className="p-5">
                   <div className="mb-2">
-                    <span className="text-xs font-medium text-[var(--color-primary)] uppercase tracking-wider">{category.subtitle}</span>
+                    <span className="text-xs font-medium text-[var(--color-accent)] uppercase tracking-wider">{category.subtitle}</span>
                   </div>
                   <h3 className="text-xl font-black text-[var(--color-on-surface)] mb-2">{category.title}</h3>
                   <p className="text-sm text-[var(--color-outline)] mb-4">{category.description}</p>
@@ -230,7 +230,7 @@ export default function ServicesLandingPage() {
                   </div>
 
                   {/* CTA */}
-                  <div className={`flex items-center gap-2 text-sm font-bold transition-all duration-300 ${hoveredCard === index ? "text-[var(--color-primary)]" : "text-[var(--color-outline-variant)]"}`}>
+                  <div className={`flex items-center gap-2 text-sm font-bold transition-all duration-300 ${hoveredCard === index ? "text-[var(--color-accent)]" : "text-[var(--color-outline-variant)]"}`}>
                     <span>Explore</span>
                     <span className={`material-symbols-outlined transition-transform duration-300 ${hoveredCard === index ? "translate-x-1" : ""}`}>arrow_forward</span>
                   </div>
@@ -287,7 +287,7 @@ export default function ServicesLandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/app/services"
-                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all hover:scale-105"
+                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)] rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all hover:scale-105"
                 >
                   Browse All Services
                 </Link>

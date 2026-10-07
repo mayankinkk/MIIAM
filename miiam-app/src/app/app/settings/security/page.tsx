@@ -59,7 +59,7 @@ export default function SecurityPage() {
             <button
               onClick={handlePasswordReset}
               disabled={loading}
-              className="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary/95 disabled:opacity-50 transition-all active:scale-[0.98]"
+              className="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary hover:text-on-primary/95 disabled:opacity-50 transition-all active:scale-[0.98]"
             >
               {loading ? "Sending..." : "Send Password Reset Email"}
             </button>

@@ -52,7 +52,7 @@ export default memo(function ServiceCard({ service, index = 0 }: ServiceCardProp
           <h3 className="font-bold text-on-surface text-sm truncate">{service.name}</h3>
           <p className="text-xs text-on-surface-variant/60 mt-0.5">{service.duration}</p>
           <div className="flex items-center justify-between mt-2">
-            <span className="text-sm font-black text-primary">
+            <span className="text-sm font-black text-accent">
               ₹{service.priceMin && service.priceMax
                 ? `${service.priceMin}–${service.priceMax}`
                 : service.price}

@@ -169,7 +169,7 @@ export default function VendorPromotions() {
         </div>
         <button
           onClick={() => { generateCode(); setShowCreate(true); }}
-          className="bg-[var(--color-primary)] text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[var(--color-primary-dim)] transition-colors"
+          className="bg-[var(--color-primary)] text-on-primary px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[var(--color-primary-dim)] transition-colors"
         >
           <span className="material-symbols-outlined text-lg">add</span>
           Create Offer
@@ -368,7 +368,7 @@ export default function VendorPromotions() {
               </div>
               <button
                 onClick={handleCreate}
-                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors"
+                className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors"
               >
                 Create Promotion
               </button>

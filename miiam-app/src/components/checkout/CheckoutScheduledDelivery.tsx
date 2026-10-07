@@ -72,12 +72,12 @@ export default function CheckoutScheduledDelivery({
         className="w-full p-4 rounded-lg border-2 border-outline-variant/30 flex items-center justify-between hover:border-primary transition-all mb-4"
       >
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary">calendar_month</span>
+          <span className="material-symbols-outlined text-accent">calendar_month</span>
           <span className={scheduledDate ? "font-bold text-on-surface" : "text-on-surface-variant"}>
             {scheduledDate || "Select a date"}
           </span>
         </div>
-        <span className="material-symbols-outlined text-primary">
+        <span className="material-symbols-outlined text-accent">
           {showDatePicker ? "expand_less" : "expand_more"}
         </span>
       </button>
@@ -98,7 +98,7 @@ export default function CheckoutScheduledDelivery({
                 onClick={() => onScheduledDateChange(d.value)}
                 className={`px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold border transition-all ${
                   scheduledDate === d.value
-                    ? "bg-primary text-white border-primary"
+                    ? "bg-primary text-on-primary border-primary"
                     : "border-outline-variant/30 hover:border-primary"
                 }`}
               >
@@ -115,12 +115,12 @@ export default function CheckoutScheduledDelivery({
         className="w-full p-4 rounded-lg border-2 border-outline-variant/30 flex items-center justify-between hover:border-primary transition-all"
       >
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary">access_time</span>
+          <span className="material-symbols-outlined text-accent">access_time</span>
           <span className={scheduledTime ? "font-bold text-on-surface" : "text-on-surface-variant"}>
             {scheduledTime || "Select a time slot"}
           </span>
         </div>
-        <span className="material-symbols-outlined text-primary">
+        <span className="material-symbols-outlined text-accent">
           {showTimePicker ? "expand_less" : "expand_more"}
         </span>
       </button>
@@ -132,7 +132,7 @@ export default function CheckoutScheduledDelivery({
               onClick={() => { onScheduledTimeChange(slot); onShowTimePickerChange(false); }}
               className={`p-3 rounded-lg text-xs sm:text-sm font-semibold border transition-all text-left ${
                 scheduledTime === slot
-                  ? "bg-primary text-white border-primary"
+                  ? "bg-primary text-on-primary border-primary"
                   : "border-outline-variant/30 hover:border-primary"
               }`}
             >

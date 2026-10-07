@@ -253,24 +253,24 @@ export default function ServiceProductGrid({
             addToCart(product);
             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
           }}
-          className="w-11 h-11 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
+          className="w-11 h-11 bg-[var(--color-primary)] text-on-primary rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all animate-glow-pulse"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>
       );
     }
     return (
-      <div className="flex items-center gap-2 bg-[var(--color-primary)] rounded-full px-2 animate-cart-pop">
+      <div className="flex items-center gap-1 bg-surface-container-lowest border border-primary rounded-lg px-1 animate-cart-pop">
         <button
           onClick={() => {
             updateQuantity(product.id, quantity - 1);
             if (navigator.vibrate) navigator.vibrate(10);
           }}
-          className="w-10 h-10 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
+          className="w-9 h-9 bg-primary text-on-primary rounded-md flex items-center justify-center hover:brightness-95 active:scale-90 transition-all"
         >
           <span className="material-symbols-outlined text-lg">remove</span>
         </button>
-        <span className="text-white font-bold text-sm min-w-[20px] text-center">
+        <span className="text-on-surface font-extrabold text-sm min-w-[22px] text-center">
           {quantity}
         </span>
         <button
@@ -278,7 +278,7 @@ export default function ServiceProductGrid({
             addToCart(product);
             if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
           }}
-          className="w-10 h-10 text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-transform"
+          className="w-9 h-9 bg-primary text-on-primary rounded-md flex items-center justify-center hover:brightness-95 active:scale-90 transition-all"
         >
           <span className="material-symbols-outlined text-lg">add</span>
         </button>
@@ -312,7 +312,7 @@ export default function ServiceProductGrid({
           >
             <span className="material-symbols-outlined">shopping_cart</span>
             {totalItems() > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--color-primary)] text-white text-xs rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-[var(--color-primary)] text-on-primary text-xs rounded-full flex items-center justify-center">
                 {totalItems()}
               </span>
             )}
@@ -400,7 +400,7 @@ export default function ServiceProductGrid({
             }}
             className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap ${
               selectedCategory === "all"
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "bg-surface-container text-on-surface-variant"
             } active:scale-95 transition-all`}
           >
@@ -415,7 +415,7 @@ export default function ServiceProductGrid({
               }}
               className={`px-4 py-2 rounded-full font-medium text-sm whitespace-nowrap flex items-center gap-2 ${
                 selectedCategory === filterTransform(cat.id)
-                  ? "bg-[var(--color-primary)] text-white"
+                  ? "bg-[var(--color-primary)] text-on-primary"
                   : "bg-surface-container text-on-surface-variant"
               } active:scale-95 transition-all animate-category-slide`}
               style={{ animationDelay: `${i * 50}ms` }}
@@ -451,7 +451,7 @@ export default function ServiceProductGrid({
                     key={opt.value}
                     onClick={() => { setSortBy(opt.value); setShowSort(false); }}
                     className={`w-full text-left px-4 py-3 text-sm font-semibold hover:bg-surface-container transition-colors ${
-                      sortBy === opt.value ? "text-[var(--color-primary)] bg-[var(--color-surface-container)]" : "text-on-surface"
+                      sortBy === opt.value ? "text-[var(--color-accent)] bg-[var(--color-surface-container)]" : "text-on-surface"
                     }`}
                   >
                     {opt.label}
@@ -467,7 +467,7 @@ export default function ServiceProductGrid({
             onClick={() => setInStockOnly(!inStockOnly)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
               inStockOnly
-                ? "bg-[var(--color-primary)] text-white"
+                ? "bg-[var(--color-primary)] text-on-primary"
                 : "bg-surface-container-lowest text-on-surface hover:bg-surface-container"
             }`}
           >
@@ -488,13 +488,13 @@ export default function ServiceProductGrid({
         ) : locationRequired ? (
           <div className="text-center py-16 bg-surface-container-lowest rounded-3xl shadow-sm border border-outline-variant mx-2 animate-reveal-up">
             <div className="w-20 h-20 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-glow-pulse">
-              <span className="material-symbols-outlined text-4xl text-[var(--color-primary)]">location_on</span>
+              <span className="material-symbols-outlined text-4xl text-[var(--color-accent)]">location_on</span>
             </div>
             <h3 className="text-lg font-black text-on-surface">Location Required</h3>
             <p className="text-on-surface-variant text-sm mt-2 max-w-[240px] mx-auto">Please set your delivery location to view available products in your area.</p>
             <button 
               onClick={() => { router.push("/app/home?selectLocation=true"); }}
-              className="mt-6 px-6 py-2.5 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all shadow-md"
+              className="mt-6 px-6 py-2.5 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-dim hover:text-on-primary active:scale-95 transition-all shadow-md"
             >
               Set Location
             </button>
@@ -520,7 +520,7 @@ export default function ServiceProductGrid({
             <p className="text-on-surface-variant text-sm mt-2 max-w-[200px] mx-auto">{emptyDescription}</p>
             <button 
               onClick={() => setSelectedCategory("all")}
-              className="mt-6 px-6 py-2 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dim transition-colors"
+              className="mt-6 px-6 py-2 bg-primary text-on-primary rounded-full font-bold text-sm hover:bg-primary-dim hover:text-on-primary transition-colors"
             >
               {emptyActionLabel}
             </button>
@@ -556,7 +556,7 @@ export default function ServiceProductGrid({
                     {product.category || product.description || ""}
                   </p>
                   <div className="flex items-center justify-between mt-2">
-                    <span className="font-black text-[var(--color-primary)]">
+                    <span className="font-black text-[var(--color-accent)]">
                       {priceLabel}
                       {product.price}
                     </span>
@@ -579,7 +579,7 @@ export default function ServiceProductGrid({
               router.push("/app/cart");
             }
           }}
-          className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-white px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${
+          className={`fixed bottom-6 left-4 right-4 z-50 flex items-center justify-between text-on-primary px-5 py-4 rounded-2xl shadow-2xl active:scale-[0.98] transition-transform animate-slide-reveal ${
             isServiceable
               ? "bg-[var(--color-primary)] shadow-primary/40"
               : "bg-outline cursor-not-allowed shadow-none"
@@ -587,7 +587,7 @@ export default function ServiceProductGrid({
           style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
           <div className="flex items-center gap-3">
-            <span className="bg-surface-container-lowest text-[var(--color-primary)] font-black text-xs px-2 py-0.5 rounded-full">
+            <span className="bg-surface-container-lowest text-[var(--color-accent)] font-black text-xs px-2 py-0.5 rounded-full">
               {totalItems()}
             </span>
             <span className="font-bold">View Cart</span>

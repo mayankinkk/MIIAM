@@ -103,14 +103,14 @@ export default function ChatPage() {
   return (
     <div className="bg-surface text-on-surface min-h-screen flex flex-col">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(77,33,42,0.06)]">
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[var(--color-surface-container-lowest)]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,0,0,0.06)]">
         <div className="flex items-center gap-4">
           <Link href={`/app/orders/${orderId}`} className="text-secondary hover:bg-surface-container rounded-full p-2 transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
                 <span className="material-symbols-outlined">two_wheeler</span>
               </div>
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
@@ -125,7 +125,7 @@ export default function ChatPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <a href="tel:+919957873472" className="w-10 h-10 flex items-center justify-center text-primary hover:bg-[var(--color-surface-container)] rounded-full transition-colors active:scale-95 duration-200">
+          <a href="tel:+919957873472" className="w-10 h-10 flex items-center justify-center text-accent hover:bg-[var(--color-surface-container)] rounded-full transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined">phone</span>
           </a>
         </div>

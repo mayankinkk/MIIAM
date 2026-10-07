@@ -120,7 +120,7 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
       <button
         type="submit"
         disabled={loading || rating === 0}
-        className="w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-primary-dim transition-all disabled:opacity-50"
+        className="w-full py-3 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-dim hover:text-on-primary transition-all disabled:opacity-50"
       >
         {loading ? "Submitting..." : "Submit Review"}
       </button>

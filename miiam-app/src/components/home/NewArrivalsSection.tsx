@@ -26,7 +26,7 @@ export default function NewArrivalsSection({ items }: NewArrivalsSectionProps) {
           <span className="text-lg animate-bounce">✨</span>
           <h2 className="text-lg font-black text-on-surface">New on MIIAM</h2>
         </div>
-        <Link href="/app/food" className="text-xs font-bold text-primary bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
+        <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {items.map((item) => (
@@ -56,7 +56,7 @@ export default function NewArrivalsSection({ items }: NewArrivalsSectionProps) {
             <div className="p-3">
               <h3 className="font-bold text-sm text-on-surface line-clamp-1">{item.name}</h3>
               <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{item.vendor_name}</p>
-              <span className="text-sm font-black text-primary mt-2 block">₹{item.price}</span>
+              <span className="text-sm font-black text-on-surface mt-2 block">₹{item.price}</span>
             </div>
           </Link>
         ))}

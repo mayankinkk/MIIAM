@@ -284,7 +284,7 @@ export default function VendorWalletPage() {
               <button
                 onClick={handleRequestPayout}
                 disabled={!payoutAmount || parseFloat(payoutAmount) <= 0 || parseFloat(payoutAmount) > wallet.balance}
-                className="w-full py-4 bg-[var(--color-primary)] text-white font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
+                className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
               >
                 Request ₹{parseFloat(payoutAmount || "0").toFixed(2)}
               </button>

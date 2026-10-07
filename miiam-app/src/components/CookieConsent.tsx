@@ -28,7 +28,7 @@ export default function CookieConsent() {
     <div className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6">
       <div className="bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant/10 p-5 max-w-2xl mx-auto">
         <div className="flex items-start gap-4">
-          <span className="material-symbols-outlined text-primary text-2xl mt-0.5">cookie</span>
+          <span className="material-symbols-outlined text-accent text-2xl mt-0.5">cookie</span>
           <div className="flex-1">
             <h3 className="font-bold text-on-surface text-sm mb-1">We use cookies</h3>
             <p className="text-on-surface-variant text-xs leading-relaxed">
@@ -43,7 +43,7 @@ export default function CookieConsent() {
               </button>
               <button
                 onClick={accept}
-                className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:opacity-90 active:scale-95 transition-all"
+                className="px-4 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 active:scale-95 transition-all"
               >
                 Accept All
               </button>

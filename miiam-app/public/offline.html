@@ -10,21 +10,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
   <style>
     :root {
-      --bg: #fff4f4;
+      --bg: #fffdf6;
       --surface: #ffffff;
-      --text: #4d212a;
-      --text-secondary: #814c55;
-      --primary: #ba001c;
-      --outline: #e8e0e0;
+      --text: #1f1f1f;
+      --text-secondary: #666666;
+      --primary: #f8cb46;
+      --accent: #0c831f;
+      --outline: #e8e8e8;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #1c1214;
-        --surface: #2a1f22;
-        --text: #f5e6e8;
-        --text-secondary: #c8a8ad;
-        --primary: #ff6b8a;
-        --outline: #3d3033;
+        --bg: #121212;
+        --surface: #1f1f1f;
+        --text: #f2f2f2;
+        --text-secondary: #b3b3b3;
+        --primary: #f8cb46;
+        --accent: #73c04d;
+        --outline: #333333;
       }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,11 +60,11 @@
       margin: 0 auto 20px;
     }
     @media (prefers-color-scheme: dark) {
-      .icon-wrap { background: rgba(255, 107, 138, 0.12); }
+      .icon-wrap { background: rgba(248, 203, 70, 0.15); }
     }
     .icon-wrap .material-symbols-outlined {
       font-size: 40px;
-      color: var(--primary);
+      color: var(--accent);
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 40;
     }
     h1 {
@@ -91,7 +93,7 @@
     }
     .tip .material-symbols-outlined {
       font-size: 18px;
-      color: var(--primary);
+      color: var(--accent);
       margin-top: 1px;
       flex-shrink: 0;
     }
@@ -114,7 +116,7 @@
     .btn:active { transform: scale(0.97); }
     .btn-primary {
       background: var(--primary);
-      color: white;
+      color: #1f1f1f;
     }
     .btn-secondary {
       background: transparent;

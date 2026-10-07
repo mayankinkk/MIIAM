@@ -228,14 +228,14 @@ export default function BookingsPage() {
 
   return (
     <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 dark:bg-[var(--color-surface)]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(77,33,42,0.06)]"
+      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 dark:bg-[var(--color-surface)]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.06)]"
         style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
       >
         <div className="flex items-center gap-3">
           <Link href="/app/profile" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all" aria-label="Back">
             <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
           </Link>
-          <span className="text-xl font-extrabold tracking-tighter text-primary">MIIAM</span>
+          <span className="text-xl font-extrabold tracking-tighter text-accent">MIIAM</span>
         </div>
         <span className="text-on-surface font-semibold hidden md:block">{t.profile.bookings}</span>
       </nav>
@@ -244,7 +244,7 @@ export default function BookingsPage() {
 
       <main className="pt-20 max-w-2xl mx-auto px-4">
         <section className="mb-6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-primary">{t.profile.bookings}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-on-surface">{t.profile.bookings}</h1>
           <p className="text-on-surface-variant text-sm mt-1">{t.profile.serviceAppointments}</p>
         </section>
 
@@ -253,7 +253,7 @@ export default function BookingsPage() {
           <button
             onClick={() => setActiveTab("upcoming")}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "upcoming" ? "bg-primary text-white" : "text-on-surface-variant"
+              activeTab === "upcoming" ? "bg-primary text-on-primary" : "text-on-surface-variant"
             }`}
           >
             Upcoming ({upcoming.length})
@@ -261,7 +261,7 @@ export default function BookingsPage() {
           <button
             onClick={() => setActiveTab("past")}
             className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-              activeTab === "past" ? "bg-primary text-white" : "text-on-surface-variant"
+              activeTab === "past" ? "bg-primary text-on-primary" : "text-on-surface-variant"
             }`}
           >
             Past ({past.length})
@@ -280,7 +280,7 @@ export default function BookingsPage() {
               {activeTab === "upcoming" ? "Book a service to get started" : "Your completed bookings will appear here"}
             </p>
             {activeTab === "upcoming" && (
-              <Link href="/app/services" className="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all inline-block">
+              <Link href="/app/services" className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:scale-[1.02] active:scale-95 transition-all inline-block">
                 Browse Services
               </Link>
             )}
@@ -298,7 +298,7 @@ export default function BookingsPage() {
                 <div key={booking.id} className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm border border-outline-variant/10">
                   <div className="flex items-start gap-3 mb-3">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <span className="material-symbols-outlined text-primary text-xl">{serviceIcon}</span>
+                      <span className="material-symbols-outlined text-accent text-xl">{serviceIcon}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
@@ -373,7 +373,7 @@ export default function BookingsPage() {
                           setRescheduleDate(booking.scheduled_date || "");
                           setRescheduleTime(booking.scheduled_time || "");
                         }}
-                        className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 py-2 bg-primary/10 text-accent rounded-lg text-xs font-bold text-center hover:bg-primary hover:text-on-primary/20 transition-colors flex items-center justify-center gap-1"
                       >
                         <span className="material-symbols-outlined text-[14px]">edit_calendar</span>
                         Reschedule
@@ -402,7 +402,7 @@ export default function BookingsPage() {
                       </button>
                       <button
                         onClick={() => { setRebookBooking(booking); setRebookDate(""); setRebookTime(""); }}
-                        className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 py-2 bg-primary/10 text-accent rounded-lg text-xs font-bold text-center hover:bg-primary hover:text-on-primary/20 transition-colors flex items-center justify-center gap-1"
                       >
                         <span className="material-symbols-outlined text-[14px]">replay</span>
                         Book Again
@@ -418,7 +418,7 @@ export default function BookingsPage() {
                       </div>
                       <button
                         onClick={() => { setRebookBooking(booking); setRebookDate(""); setRebookTime(""); }}
-                        className="flex-1 py-2 bg-primary/10 text-primary rounded-lg text-xs font-bold text-center hover:bg-primary/20 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 py-2 bg-primary/10 text-accent rounded-lg text-xs font-bold text-center hover:bg-primary hover:text-on-primary/20 transition-colors flex items-center justify-center gap-1"
                       >
                         <span className="material-symbols-outlined text-[14px]">replay</span>
                         Book Again
@@ -448,7 +448,7 @@ export default function BookingsPage() {
                   onClick={() => setRescheduleDate(d.value)}
                   className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${
                     rescheduleDate === d.value
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-on-primary border-primary"
                       : "border-outline text-on-surface-variant hover:border-primary"
                   }`}
                 >
@@ -465,7 +465,7 @@ export default function BookingsPage() {
                   onClick={() => setRescheduleTime(slot)}
                   className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left ${
                     rescheduleTime === slot
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-on-primary border-primary"
                       : "border-outline text-on-surface-variant hover:border-primary"
                   }`}
                 >
@@ -484,7 +484,7 @@ export default function BookingsPage() {
               <button
                 onClick={handleReschedule}
                 disabled={!rescheduleDate || !rescheduleTime || rescheduling}
-                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {rescheduling ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
                 {rescheduling ? "Rescheduling..." : "Confirm"}
@@ -548,7 +548,7 @@ export default function BookingsPage() {
               <button
                 onClick={handleSubmitRating}
                 disabled={rating === 0 || submittingRating}
-                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {submittingRating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
                 {submittingRating ? "Submitting..." : "Submit"}
@@ -574,7 +574,7 @@ export default function BookingsPage() {
                   onClick={() => setRebookDate(d.value)}
                   className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${
                     rebookDate === d.value
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-on-primary border-primary"
                       : "border-outline text-on-surface-variant hover:border-primary"
                   }`}
                 >
@@ -591,7 +591,7 @@ export default function BookingsPage() {
                   onClick={() => setRebookTime(slot)}
                   className={`p-3 rounded-xl text-xs font-bold border-2 transition-all text-left ${
                     rebookTime === slot
-                      ? "bg-primary text-white border-primary"
+                      ? "bg-primary text-on-primary border-primary"
                       : "border-outline text-on-surface-variant hover:border-primary"
                   }`}
                 >
@@ -610,7 +610,7 @@ export default function BookingsPage() {
               <button
                 onClick={handleRebook}
                 disabled={!rebookDate || !rebookTime || rebooking}
-                className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {rebooking ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
                 {rebooking ? "Booking..." : "Confirm Booking"}

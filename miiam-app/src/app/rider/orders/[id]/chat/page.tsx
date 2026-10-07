@@ -69,7 +69,7 @@ export default function RiderChatPage() {
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
               <span className="material-symbols-outlined">person</span>
             </div>
             <div>

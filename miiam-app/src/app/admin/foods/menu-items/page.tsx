@@ -261,7 +261,7 @@ export default function AdminMenuItemsPage() {
           </label>
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm"
+            className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm"
           >
             + Add Item
           </button>
@@ -469,7 +469,7 @@ export default function AdminMenuItemsPage() {
               <button
                 onClick={handleAddItem}
                 disabled={loading}
-                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
               >
                 {loading ? "Adding..." : "Add Item"}
               </button>
@@ -559,7 +559,7 @@ export default function AdminMenuItemsPage() {
               <button
                 onClick={handleUpdateItem}
                 disabled={loading}
-                className="w-full py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold disabled:opacity-50"
+                className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
               >
                 {loading ? "Updating..." : "Update Item"}
               </button>

@@ -70,7 +70,7 @@ export default function OrderSummary({ items, subtotal, deliveryFee = 0, discoun
         )}
         <div className="flex justify-between pt-1 border-t border-outline/10">
           <span className="text-sm font-bold text-on-surface">Total</span>
-          <span className="text-sm font-black text-primary">₹{calculatedTotal.toFixed(0)}</span>
+          <span className="text-sm font-black text-on-surface">₹{calculatedTotal.toFixed(0)}</span>
         </div>
       </div>
     </div>

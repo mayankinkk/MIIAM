@@ -89,7 +89,7 @@ export function MenuItemCustomizationCard({
                 </span>
               </div>
               {option.price > 0 && (
-                <span className="text-sm font-bold text-[var(--color-primary)]">+₹{option.price}</span>
+                <span className="text-sm font-bold text-[var(--color-accent)]">+₹{option.price}</span>
               )}
             </label>
           );
@@ -123,7 +123,7 @@ export function CustomizationSummary({ customizations, selections }: Customizati
   return (
     <div className="text-xs text-[var(--color-outline)] mt-2">
       {selectedNames.join(" • ")}
-      <span className="font-bold text-[var(--color-primary)] ml-1">+₹{total}</span>
+      <span className="font-bold text-[var(--color-accent)] ml-1">+₹{total}</span>
     </div>
   );
 }

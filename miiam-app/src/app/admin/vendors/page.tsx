@@ -534,7 +534,7 @@ export default function AdminVendorsPage() {
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Vendors</h1>
         <button
           onClick={() => setShowAddVendor(true)}
-          className="bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim transition-all"
+          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm hover:bg-primary-dim transition-all"
         >
           + Add Vendor
         </button>
@@ -883,7 +883,7 @@ export default function AdminVendorsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-primary-dim transition-all disabled:opacity-50"
+                  className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-primary-dim transition-all disabled:opacity-50"
                 >
                   {loading ? "Creating..." : "Create Vendor"}
                 </button>
@@ -1333,7 +1333,7 @@ export default function AdminVendorsPage() {
                     type="button"
                     onClick={handleAddNewMenuItem}
                     disabled={loading || !newMenuItem.name || !newMenuItem.price}
-                    className="w-full py-2.5 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                    className="w-full py-2.5 bg-[var(--color-primary)] text-on-primary rounded-lg text-sm font-bold hover:bg-[#a00018] disabled:opacity-50 transition-all"
                   >
                     {loading ? "Adding..." : "Add Menu Item"}
                   </button>
@@ -1351,7 +1351,7 @@ export default function AdminVendorsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-primary-dim transition-all disabled:opacity-50"
+                  className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-primary-dim transition-all disabled:opacity-50"
                 >
                   {loading ? "Updating..." : "Update Vendor"}
                 </button>
@@ -1570,7 +1570,7 @@ export default function AdminVendorsPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 py-2.5 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm hover:bg-primary-dim transition-all disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-primary-dim transition-all disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>

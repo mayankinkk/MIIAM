@@ -167,7 +167,7 @@ export function ModalButton({
 }: ModalButtonProps) {
   const base = "flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all";
   const styles = {
-    primary: "bg-brand-primary text-white hover:bg-brand-primary-hover disabled:opacity-50",
+    primary: "bg-brand-primary text-on-primary hover:bg-brand-primary-hover disabled:opacity-50",
     secondary: "bg-surface-container text-on-surface-variant hover:bg-surface-container-high",
     danger: "bg-status-error text-white hover:bg-status-error/90 disabled:opacity-50",
   };

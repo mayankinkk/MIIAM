@@ -331,7 +331,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
               <button
                 onClick={handleAssignTechnician}
                 disabled={!techName.trim() || assigning}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {assigning ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
                 {assigning ? "Assigning..." : "Assign Technician"}

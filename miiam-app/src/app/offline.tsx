@@ -5,7 +5,7 @@ export default function OfflinePage() {
     <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-6">
       <div className="text-center max-w-sm">
         <div className="w-20 h-20 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center mx-auto mb-5">
-          <span className="material-symbols-outlined text-[var(--color-primary)] text-[40px]">
+          <span className="material-symbols-outlined text-[var(--color-accent)] text-[40px]">
             wifi_off
           </span>
         </div>
@@ -18,13 +18,13 @@ export default function OfflinePage() {
         </p>
         <div className="space-y-3 text-left mb-8">
           <div className="flex items-start gap-3 text-sm text-[var(--color-outline)]">
-            <span className="material-symbols-outlined text-[var(--color-primary)] text-base mt-0.5">
+            <span className="material-symbols-outlined text-[var(--color-accent)] text-base mt-0.5">
               check_circle
             </span>
             <span>Cached orders, cart, and profile are still accessible</span>
           </div>
           <div className="flex items-start gap-3 text-sm text-[var(--color-outline)]">
-            <span className="material-symbols-outlined text-[var(--color-primary)] text-base mt-0.5">
+            <span className="material-symbols-outlined text-[var(--color-accent)] text-base mt-0.5">
               info
             </span>
             <span>New orders will sync when you&apos;re back online</span>
@@ -33,7 +33,7 @@ export default function OfflinePage() {
         <div className="flex flex-col gap-3">
           <button
             onClick={() => window.location.reload()}
-            className="w-full py-3.5 px-6 rounded-2xl bg-[var(--color-primary)] text-white text-sm font-bold hover:opacity-90 active:scale-[0.98] transition-all"
+            className="w-full py-3.5 px-6 rounded-2xl bg-[var(--color-primary)] text-on-primary text-sm font-bold hover:opacity-90 active:scale-[0.98] transition-all"
           >
             Try Again
           </button>

@@ -50,7 +50,7 @@ export default function QuickReorder({ items, vendorId, vendorName }: QuickReord
   return (
     <button
       onClick={handleReorder}
-      className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-[10px] font-bold hover:bg-primary/20 transition-colors active:scale-95"
+      className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-accent rounded-full text-[10px] font-bold hover:bg-primary hover:text-on-primary/20 transition-colors active:scale-95"
     >
       <span className="material-symbols-outlined text-xs">replay</span>
       Reorder

@@ -19,7 +19,7 @@ export default function OffersCarousel({ offers, currentOffer }: OffersCarouselP
   return (
     <div className="px-5 pt-3 pb-1">
       <Link href="/app/home">
-        <div className={`relative h-36 rounded-3xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].gradient} shadow-lg`}>
+        <div className={`relative h-36 rounded-xl overflow-hidden bg-gradient-to-r ${offers[currentOffer].gradient} shadow-[0_2px_8px_rgba(0,0,0,0.08)]`}>
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9zdmc+')] opacity-50" />
           <div className="absolute top-4 left-5">
             <span className="text-[10px] font-black bg-white/20 backdrop-blur-sm text-white px-2.5 py-1 rounded-full uppercase tracking-wider">

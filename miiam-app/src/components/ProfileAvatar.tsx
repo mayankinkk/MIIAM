@@ -32,7 +32,7 @@ export default function ProfileAvatar({ name, image, size = "md", online, classN
         />
       ) : (
         <div className={`${sizes[size]} rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-surface-container-lowest`}>
-          <span className="font-bold text-primary">{initials}</span>
+          <span className="font-bold text-accent">{initials}</span>
         </div>
       )}
 

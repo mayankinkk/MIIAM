@@ -153,7 +153,7 @@ export default function ServiceSettingsPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleSaveHours(service.id)}
-                        className="px-2 py-1 bg-[var(--color-primary)] text-white rounded text-[11px] font-bold"
+                        className="px-2 py-1 bg-[var(--color-primary)] text-on-primary rounded text-[11px] font-bold"
                       >
                         Save
                       </button>
@@ -205,7 +205,7 @@ export default function ServiceSettingsPage() {
                     />
                     <button
                       onClick={() => handleSaveMessage(service.id)}
-                      className="px-3 py-2 bg-[var(--color-primary)] text-white rounded-lg text-sm font-bold"
+                      className="px-3 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg text-sm font-bold"
                     >
                       Save
                     </button>
