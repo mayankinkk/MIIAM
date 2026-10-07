@@ -64,13 +64,13 @@ export default function BookingTrackPage() {
   const statusConfig: Record<string, { icon: string; iconColor: string; title: string; message: string }> = {
     in_progress: {
       icon: "pending",
-      iconColor: "text-blue-500",
+      iconColor: "text-deal",
       title: "In Progress",
       message: "Your service is currently in progress.",
     },
     confirmed: {
       icon: "check_circle",
-      iconColor: "text-blue-500",
+      iconColor: "text-accent",
       title: "Booking Confirmed",
       message: "Your booking is confirmed. A technician will be assigned soon.",
     },
@@ -82,7 +82,7 @@ export default function BookingTrackPage() {
     },
     completed: {
       icon: "task_alt",
-      iconColor: "text-green-500",
+      iconColor: "text-accent",
       title: "Service Completed",
       message: "Your service has been completed.",
     },

@@ -29,8 +29,8 @@ interface ServiceBooking {
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: string }> = {
   pending: { label: "Pending", color: "text-amber-700", bg: "bg-amber-100", icon: "hourglass_empty" },
-  confirmed: { label: "Confirmed", color: "text-blue-700", bg: "bg-blue-100", icon: "check_circle" },
-  in_progress: { label: "In Progress", color: "text-indigo-700", bg: "bg-indigo-100", icon: "engineering" },
+  confirmed: { label: "Confirmed", color: "text-on-surface", bg: "bg-primary/40", icon: "check_circle" },
+  in_progress: { label: "In Progress", color: "text-deal", bg: "bg-deal/10", icon: "engineering" },
   completed: { label: "Completed", color: "text-green-700", bg: "bg-green-100", icon: "task_alt" },
   cancelled: { label: "Cancelled", color: "text-red-700", bg: "bg-red-100", icon: "cancel" },
 };
@@ -358,7 +358,7 @@ export default function BookingsPage() {
 
                   {(booking.status === "confirmed" || booking.status === "pending") && (
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-full text-[10px] font-bold">
+                      <div className="flex items-center gap-1.5 bg-surface-container text-on-surface px-3 py-1.5 rounded-full text-[10px] font-bold">
                         <span className="material-symbols-outlined text-[12px]" style={{ fontVariationSettings: "'FILL' 1" }}>event</span>
                         Scheduled {dateStr} {booking.scheduled_time ? `· ${booking.scheduled_time}` : ""}
                       </div>

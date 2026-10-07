@@ -44,7 +44,7 @@ export default function BookingConfirmationPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-outline/30 border-t-primary rounded-full animate-spin" />
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function BookingConfirmationPage() {
         <span className="material-symbols-outlined text-outline text-6xl mb-4">event_available</span>
         <h1 className="text-xl font-black text-on-surface mb-1">No Booking Found</h1>
         <p className="text-sm text-on-surface-variant mb-4">Your booking details will appear here.</p>
-        <Link href="/app/bookings" className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm">View All Bookings</Link>
+        <Link href="/app/bookings" className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">View All Bookings</Link>
       </div>
     );
   }
@@ -64,10 +64,10 @@ export default function BookingConfirmationPage() {
     <div className="min-h-screen bg-surface flex flex-col items-center px-4 py-12">
       {/* Success Animation */}
       <div className="relative mb-6">
-        <div className="w-24 h-24 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center animate-bounce-in">
-          <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-5xl">check_circle</span>
+        <div className="w-24 h-24 bg-accent/15 dark:bg-accent/20 rounded-full flex items-center justify-center animate-bounce-in">
+          <span className="material-symbols-outlined text-accent text-5xl">check_circle</span>
         </div>
-        <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
+        <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center shadow-lg">
           <span className="material-symbols-outlined text-white text-lg">celebration</span>
         </div>
       </div>
@@ -85,8 +85,8 @@ export default function BookingConfirmationPage() {
         <div className="h-px bg-outline-variant/20" />
 
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-lg">home_repair_service</span>
+          <div className="w-10 h-10 bg-primary/20 dark:bg-primary/30 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="material-symbols-outlined text-on-surface dark:text-primary text-lg">home_repair_service</span>
           </div>
           <div>
             <p className="font-bold text-on-surface text-sm">{booking.sub_service || booking.service_type}</p>
@@ -136,13 +136,13 @@ export default function BookingConfirmationPage() {
           <>
             <div className="h-px bg-outline-variant/20" />
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-lg">person</span>
+              <div className="w-10 h-10 bg-accent/15 dark:bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="material-symbols-outlined text-accent text-lg">person</span>
               </div>
               <div>
                 <p className="font-bold text-on-surface text-sm">{booking.technician_name}</p>
                 {booking.technician_phone && (
-                  <a href={`tel:${booking.technician_phone}`} className="text-xs text-blue-600 font-bold">{booking.technician_phone}</a>
+                  <a href={`tel:${booking.technician_phone}`} className="text-xs text-accent font-bold">{booking.technician_phone}</a>
                 )}
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function BookingConfirmationPage() {
         <Link href="/app/bookings" className="flex-1 py-3 bg-surface-container-low text-on-surface rounded-xl font-bold text-sm text-center hover:bg-surface-container-high transition-all">
           View Bookings
         </Link>
-        <Link href="/app/services" className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm text-center hover:bg-blue-700 transition-all shadow-md shadow-blue-600/20">
+        <Link href="/app/services" className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm text-center hover:bg-primary-hover transition-all shadow-md shadow-primary/20">
           Book Another
         </Link>
       </div>
