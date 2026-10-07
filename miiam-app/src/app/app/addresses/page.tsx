@@ -37,8 +37,8 @@ interface AddressCardProps {
 function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: AddressCardProps) {
   const { t } = useTranslation();
   const labelColors = {
-    Home: { bg: "bg-blue-100 dark:bg-blue-900/30", text: "text-blue-700 dark:text-blue-400", accent: "from-blue-500 to-blue-600" },
-    Office: { bg: "bg-purple-100 dark:bg-purple-900/30", text: "text-purple-700 dark:text-purple-400", accent: "from-purple-500 to-purple-600" },
+    Home: { bg: "bg-accent/10 dark:bg-accent/20", text: "text-accent dark:text-accent", accent: "from-accent to-accent/70" },
+    Office: { bg: "bg-accent/10 dark:bg-accent/20", text: "text-accent dark:text-accent", accent: "from-deal to-deal/70" },
     Other: { bg: "bg-[var(--color-surface-container)]", text: "text-[var(--color-on-surface)]", accent: "from-slate-500 to-slate-600" },
   };
   
@@ -136,7 +136,7 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
         {!address.is_default && (
           <button
             onClick={onSetDefault}
-            className="flex-1 py-3 text-blue-600 dark:text-blue-400 font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
+            className="flex-1 py-3 text-accent font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-accent/10 dark:hover:bg-accent/20 transition-colors"
           >
             Set as Default
           </button>
@@ -155,8 +155,8 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 }
 
 const addressTypes = [
-  { id: "home", icon: "home", label: "Home", color: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" },
-  { id: "office", icon: "business", label: "Office", color: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400" },
+  { id: "home", icon: "home", label: "Home", color: "bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent" },
+  { id: "office", icon: "business", label: "Office", color: "bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent" },
   { id: "other", icon: "place", label: "Other", color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" },
 ];
 
@@ -533,12 +533,12 @@ export default function AddressBookPage() {
         </div>
 
         {/* Info */}
-        <div className="mt-8 bg-blue-50 dark:bg-[var(--color-surface-container)] rounded-2xl p-4">
+        <div className="mt-8 bg-accent/10 dark:bg-[var(--color-surface-container)] rounded-2xl p-4">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-blue-600">info</span>
+            <span className="material-symbols-outlined text-accent">info</span>
             <div>
-              <p className="font-bold text-blue-900 dark:text-[var(--color-on-surface)] text-sm">Delivery Tips</p>
-              <ul className="text-xs text-blue-700 dark:text-[var(--color-outline)] mt-2 space-y-1">
+              <p className="font-bold text-accent dark:text-[var(--color-on-surface)] text-sm">Delivery Tips</p>
+              <ul className="text-xs text-accent dark:text-[var(--color-outline)] mt-2 space-y-1">
                 <li>• Add clear, complete addresses for smoother deliveries</li>
                 <li>• Include landmark or building name if available</li>
                 <li>• Add delivery instructions (e.g., gate code, floor)</li>

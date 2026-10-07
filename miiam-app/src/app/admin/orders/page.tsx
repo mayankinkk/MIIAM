@@ -11,10 +11,10 @@ const STATUS_OPTIONS: OrderStatus[] = ["pending", "scheduled", "accepted", "proc
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
   pending: "bg-yellow-100 text-yellow-700",
-  scheduled: "bg-indigo-100 text-indigo-700",
-  accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  processing: "bg-indigo-100 text-indigo-700",
-  preparing: "bg-purple-100 text-purple-700",
+  scheduled: "bg-deal/10 text-deal",
+  accepted: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
+  processing: "bg-deal/10 text-deal",
+  preparing: "bg-accent/10 text-accent",
   ready_for_pickup: "bg-orange-100 text-orange-700",
   shopping: "bg-pink-100 text-pink-700",
   picked_up: "bg-pink-100 text-pink-700",
@@ -436,7 +436,7 @@ export default function OrderManagement() {
                         </>
                       )}
                       {order.status === "accepted" && (
-                        <button onClick={() => updateStatus(order.id, "preparing")} className="px-2 py-1 bg-purple-50 text-purple-600 rounded-lg text-[10px] font-bold hover:bg-purple-100">Prepare</button>
+                        <button onClick={() => updateStatus(order.id, "preparing")} className="px-2 py-1 bg-accent/10 text-accent rounded-lg text-[10px] font-bold hover:bg-accent/20">Prepare</button>
                       )}
                       {order.status === "preparing" && (
                         <button onClick={() => updateStatus(order.id, "ready_for_pickup")} className="px-2 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold hover:bg-orange-100">Ready</button>

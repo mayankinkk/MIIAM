@@ -185,7 +185,7 @@ export default function LiveChatSupport() {
                       <span className={`w-2 h-2 rounded-full ${
                         conv.status === "open" ? "bg-green-500 animate-pulse" :
                         conv.status === "pending" ? "bg-amber-500" :
-                        conv.status === "resolved" ? "bg-blue-500" : "bg-gray-400"
+                        conv.status === "resolved" ? "bg-accent" : "bg-gray-400"
                       }`} />
                       <span className="font-bold text-[var(--color-on-surface)] text-sm">{conv.user_name}</span>
                     </div>
@@ -202,7 +202,7 @@ export default function LiveChatSupport() {
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       conv.status === "open" ? "bg-green-100 text-green-700" :
                       conv.status === "pending" ? "bg-amber-100 text-amber-700" :
-                      conv.status === "resolved" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
+                      conv.status === "resolved" ? "bg-deal/10 text-deal" : "bg-gray-100 text-gray-700"
                     }`}>
                       {conv.status}
                     </span>

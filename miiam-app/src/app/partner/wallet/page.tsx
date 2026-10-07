@@ -165,7 +165,7 @@ export default function VendorWalletPage() {
           <p className="text-sm text-[var(--color-outline)] font-medium">Net Earnings (after 15% fee)</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <span className="material-symbols-outlined text-blue-500">receipt_long</span>
+          <span className="material-symbols-outlined text-accent">receipt_long</span>
           <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{deliveredOrders.length}</p>
           <p className="text-sm text-[var(--color-outline)] font-medium">Completed Orders</p>
         </div>
@@ -175,7 +175,7 @@ export default function VendorWalletPage() {
           <p className="text-sm text-[var(--color-outline)] font-medium">Platform Fee</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <span className="material-symbols-outlined text-purple-500">payments</span>
+          <span className="material-symbols-outlined text-accent">payments</span>
           <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">
             ₹{wallet.total_earned > 0 ? (wallet.total_earned / deliveredOrders.length).toFixed(0) : 0}
           </p>

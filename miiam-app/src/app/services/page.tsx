@@ -29,7 +29,7 @@ const serviceCategories = [
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=600&q=80",
     services: ["Gas Refill", "Deep Cleaning", "Installation", "Repair"],
     color: "blue",
-    gradient: "from-blue-500 to-cyan-400",
+    gradient: "from-accent to-cyan-400",
     price: "From ₹199",
   },
   {
@@ -77,7 +77,7 @@ const serviceCategories = [
     image: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80",
     services: ["Refrigerator", "Washing Machine", "Microwave", "TV"],
     color: "purple",
-    gradient: "from-purple-500 to-violet-400",
+    gradient: "from-deal to-deal/70",
     price: "From ₹249",
   },
 ];
@@ -91,8 +91,8 @@ const stats = [
 
 const whyChooseUs = [
   { icon: "verified_user", title: "Verified Experts", desc: "Background-checked professionals", color: "bg-green-100 text-green-600" },
-  { icon: "schedule", title: "Flexible Scheduling", desc: "Book at your convenience", color: "bg-blue-100 text-blue-600" },
-  { icon: "support_agent", title: "24/7 Support", desc: "Round-the-clock assistance", color: "bg-purple-100 text-purple-600" },
+  { icon: "schedule", title: "Flexible Scheduling", desc: "Book at your convenience", color: "bg-accent/10 text-accent" },
+  { icon: "support_agent", title: "24/7 Support", desc: "Round-the-clock assistance", color: "bg-accent/10 text-accent" },
 ];
 
 export default function ServicesLandingPage() {
@@ -186,14 +186,14 @@ export default function ServicesLandingPage() {
                       category.color === "pink"
                         ? "bg-pink-500"
                         : category.color === "blue"
-                          ? "bg-blue-500"
+                          ? "bg-accent"
                           : category.color === "cyan"
                             ? "bg-cyan-500"
                             : category.color === "amber"
                               ? "bg-amber-500"
                               : category.color === "green"
                                 ? "bg-green-500"
-                                : "bg-purple-500"
+                                : "bg-accent"
                     }`}
                   >
                     <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>

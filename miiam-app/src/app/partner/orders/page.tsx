@@ -173,8 +173,8 @@ export default function VendorOrders() {
                       <span className="font-extrabold text-[var(--color-on-surface)]">#{sb.id.slice(0, 8).toUpperCase()}</span>
                       <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
                         sb.status === "pending" ? "bg-amber-100 text-amber-700" :
-                        sb.status === "confirmed" ? "bg-blue-100 text-blue-700" :
-                        sb.status === "in_progress" ? "bg-indigo-100 text-indigo-700" :
+                        sb.status === "confirmed" ? "bg-deal/10 text-deal" :
+                        sb.status === "in_progress" ? "bg-deal/10 text-deal" :
                         sb.status === "completed" ? "bg-green-100 text-green-700" :
                         sb.status === "cancelled" ? "bg-red-100 text-red-700" :
                         "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
@@ -275,9 +275,9 @@ export default function VendorOrders() {
                     <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
                     <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
                       order.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                      order.status === "accepted" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
-                      order.status === "preparing" ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300" :
-                      order.status === "ready_for_pickup" ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300" :
+                      order.status === "accepted" ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal" :
+                      order.status === "preparing" ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal" :
+                      order.status === "ready_for_pickup" ? "bg-accent/10 text-accent dark:bg-accent/20 dark:text-accent" :
                       order.status === "shopping" || order.status === "picked_up" ? "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300" :
                       order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                       order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
@@ -377,10 +377,10 @@ export default function VendorOrders() {
                       <button onClick={() => updateStatus(order.id, "preparing")} className="px-6 py-3 bg-amber-600 text-white rounded-xl font-bold text-sm hover:bg-amber-700 transition-colors">Start Preparing</button>
                     )}
                     {order.status === "preparing" && (
-                      <button onClick={() => updateStatus(order.id, "ready_for_pickup")} className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-sm hover:bg-indigo-700 transition-colors">Mark Ready for Pickup</button>
+                      <button onClick={() => updateStatus(order.id, "ready_for_pickup")} className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors">Mark Ready for Pickup</button>
                     )}
                     {order.status === "ready_for_pickup" && (
-                      <div className="px-6 py-3 bg-purple-50 text-purple-700 rounded-xl font-bold text-sm border border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800">
+                      <div className="px-6 py-3 bg-accent/10 text-accent rounded-xl font-bold text-sm border border-accent/20 dark:bg-accent/20 dark:text-accent dark:border-accent/40">
                         <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
                         Waiting for Rider
                       </div>

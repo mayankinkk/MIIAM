@@ -347,9 +347,9 @@ export default function AddressPickerPage() {
           <div className="absolute top-24 left-4 right-4 z-40 bg-[var(--color-surface-container-lowest)]/95 dark:bg-[var(--color-surface-container-lowest)]/95 backdrop-blur p-3 rounded-xl shadow-lg">
             <div className="flex items-center gap-2">
               {locationStatus === "improving" ? (
-                <span className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-accent/40 border-t-transparent rounded-full animate-spin" />
               ) : (
-                <span className="w-4 h-4 bg-blue-500 rounded-full animate-pulse" />
+                <span className="w-4 h-4 bg-accent rounded-full animate-pulse" />
               )}
               <span className="text-sm font-medium text-[var(--color-on-surface)]">
                 {locationStatus === "improving" ? "Improving accuracy..." : "Detecting location..."}
@@ -472,7 +472,7 @@ export default function AddressPickerPage() {
                 <button
                   onClick={() => handleDetectLocation(true)}
                   disabled={detecting}
-                  className="flex-1 py-3 rounded-lg border-2 border-secondary text-secondary font-bold text-sm hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-lg border-2 border-secondary text-secondary font-bold text-sm hover:bg-accent/10 transition-colors flex items-center justify-center gap-2"
                 >
                   {detecting ? (
                     <span className="w-4 h-4 border-2 border-secondary border-t-transparent rounded-full animate-spin" />

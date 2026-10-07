@@ -24,11 +24,11 @@ interface ServiceBooking {
 
 const defaultServiceOptions: ServiceOption[] = [
   { id: "beauty", dbId: "beauty", label: "Beauty & Wellness", icon: "spa", color: "text-pink-500", bg: "bg-pink-50" },
-  { id: "ac", dbId: "ac", label: "AC Repair", icon: "ac_unit", color: "text-blue-500", bg: "bg-blue-50" },
+  { id: "ac", dbId: "ac", label: "AC Repair", icon: "ac_unit", color: "text-accent", bg: "bg-accent/10" },
   { id: "plumbing", dbId: "plumbing", label: "Plumbing", icon: "plumbing", color: "text-cyan-500", bg: "bg-cyan-50" },
   { id: "electrical", dbId: "electrical", label: "Electrical", icon: "electrical_services", color: "text-amber-500", bg: "bg-amber-50" },
   { id: "cleaning", dbId: "cleaning", label: "Cleaning", icon: "cleaning_services", color: "text-green-500", bg: "bg-green-50" },
-  { id: "appliance", dbId: "appliance", label: "Appliance", icon: "kitchen", color: "text-purple-500", bg: "bg-purple-50" },
+  { id: "appliance", dbId: "appliance", label: "Appliance", icon: "kitchen", color: "text-accent", bg: "bg-accent/10" },
   { id: "pest", dbId: "pest", label: "Pest Control", icon: "bug_report", color: "text-red-500", bg: "bg-red-50" },
 ];
 
@@ -109,8 +109,8 @@ export default function EnhancedServicesDashboard() {
         return;
       }
       if (data && data.length > 0) {
-        const colors = ["text-pink-500", "text-blue-500", "text-cyan-500", "text-amber-500", "text-green-500", "text-purple-500", "text-red-500", "text-indigo-500", "text-teal-500"];
-        const bgs = ["bg-pink-50", "bg-blue-50", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-purple-50", "bg-red-50", "bg-indigo-50", "bg-teal-50"];
+        const colors = ["text-pink-500", "text-accent", "text-cyan-500", "text-amber-500", "text-green-500", "text-accent", "text-red-500", "text-accent", "text-teal-500"];
+        const bgs = ["bg-pink-50", "bg-accent/10", "bg-cyan-50", "bg-amber-50", "bg-green-50", "bg-accent/10", "bg-red-50", "bg-accent/10", "bg-teal-50"];
         setServiceOptions(data.map((c: ServiceCategoryRow, i: number) => ({
           id: c.slug || c.name.toLowerCase().replace(/\s+/g, "_"),
           dbId: c.id,
@@ -325,7 +325,7 @@ export default function EnhancedServicesDashboard() {
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-blue-500">calendar_month</span>
+                <span className="material-symbols-outlined text-accent">calendar_month</span>
                 <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Active Bookings</span>
               </div>
               <p className="text-3xl font-black text-[var(--color-on-surface)]">{stats.activeBookings}</p>
@@ -333,7 +333,7 @@ export default function EnhancedServicesDashboard() {
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-purple-500">receipt_long</span>
+                <span className="material-symbols-outlined text-accent">receipt_long</span>
                 <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Total Bookings</span>
               </div>
               <p className="text-3xl font-black text-[var(--color-on-surface)]">{stats.totalBookings}</p>
@@ -412,7 +412,7 @@ export default function EnhancedServicesDashboard() {
             </div>
 
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-400 rounded-3xl p-6 text-white shadow-lg">
+              <div className="bg-gradient-to-br from-accent to-accent/70 rounded-3xl p-6 text-white shadow-lg">
                 <h3 className="font-bold text-lg mb-2">Quick Actions</h3>
                 <div className="space-y-2">
                   <button
@@ -484,7 +484,7 @@ export default function EnhancedServicesDashboard() {
                         <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
                           booking.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                           booking.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                          booking.status === "in_progress" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                          booking.status === "in_progress" ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal" :
                           "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                         }`}>
                           {booking.status.replaceAll("_", " ")}
@@ -576,7 +576,7 @@ export default function EnhancedServicesDashboard() {
                         className={`text-[10px] font-black px-2 py-1 rounded-full border-0 cursor-pointer ${
                           booking.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                           booking.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                          booking.status === "in_progress" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                          booking.status === "in_progress" ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal" :
                           "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
                         }`}
                       >

@@ -17,7 +17,7 @@ const slides = [
     emoji: "🔧",
     title: "Book Home Services",
     description: "AC repair, plumbing, cleaning — book professionals in just a few taps.",
-    gradient: "from-blue-500/20 to-blue-500/5",
+    gradient: "from-accent/20 to-accent/70/5",
   },
   {
     icon: "local_offer",

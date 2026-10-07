@@ -176,7 +176,7 @@ export default function CombosPage() {
           <h1 className="text-2xl font-black text-gray-900">Combos</h1>
           <p className="text-sm text-gray-500 mt-0.5">Manage combo deals for the home page</p>
         </div>
-        <button onClick={openAdd} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-colors">
+        <button onClick={openAdd} className="flex items-center gap-2 bg-primary text-on-primary px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-primary-hover transition-colors">
           <span className="material-symbols-outlined text-lg">add</span> Add Combo
         </button>
       </div>
@@ -199,7 +199,7 @@ export default function CombosPage() {
       <div className="flex items-center gap-3 mb-4">
         <div className="flex-1 relative">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">search</span>
-          <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search combos..." className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500" />
+          <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search combos..." className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20 focus:border-accent/40" />
         </div>
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
           {(["all", "active", "inactive"] as const).map((f) => (
@@ -209,7 +209,7 @@ export default function CombosPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12"><div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto" /></div>
+        <div className="text-center py-12"><div className="w-8 h-8 border-4 border-accent/30 border-t-primary rounded-full animate-spin mx-auto" /></div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
           <span className="material-symbols-outlined text-5xl text-gray-300">merge</span>
@@ -271,11 +271,11 @@ export default function CombosPage() {
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-gray-500">Name *</label>
-                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Burger + Fries + Coke" />
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" placeholder="Burger + Fries + Coke" />
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-500">Description</label>
-                <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Classic combo deal" />
+                <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" placeholder="Classic combo deal" />
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-500">Image</label>
@@ -286,7 +286,7 @@ export default function CombosPage() {
                       <button onClick={() => setForm({ ...form, image_file: null, image_preview: "", image_url: "" })} className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">✕</button>
                     </div>
                   ) : (
-                    <label className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+                    <label className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-accent/40 hover:bg-accent/10 transition-colors">
                       <span className="material-symbols-outlined text-gray-400 text-xl">add_a_photo</span>
                       <span className="text-[9px] text-gray-400 mt-0.5">Upload</span>
                       <input type="file" accept="image/*" className="hidden" onChange={(e) => {
@@ -298,41 +298,41 @@ export default function CombosPage() {
                     </label>
                   )}
                   <div className="flex-1">
-                    <input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value, image_preview: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Or paste image URL" />
+                    <input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value, image_preview: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" placeholder="Or paste image URL" />
                   </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold text-gray-500">Original Price *</label>
-                  <input type="number" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="299" />
+                  <input type="number" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" placeholder="299" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500">Combo Price *</label>
-                  <input type="number" value={form.combo_price} onChange={(e) => setForm({ ...form, combo_price: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="199" />
+                  <input type="number" value={form.combo_price} onChange={(e) => setForm({ ...form, combo_price: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" placeholder="199" />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-bold text-gray-500">Items (comma separated)</label>
-                <input value={form.items} onChange={(e) => setForm({ ...form, items: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Burger, Fries, Coke" />
+                <input value={form.items} onChange={(e) => setForm({ ...form, items: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" placeholder="Burger, Fries, Coke" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold text-gray-500">Vendor</label>
-                  <select value={form.vendor_id} onChange={(e) => setForm({ ...form, vendor_id: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                  <select value={form.vendor_id} onChange={(e) => setForm({ ...form, vendor_id: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20">
                     <option value="">No vendor</option>
                     {vendors.map((v) => <option key={v.id} value={v.id}>{v.shop_name}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500">Display Order</label>
-                  <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
+                  <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: e.target.value })} className="w-full mt-1 px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-accent/40/20" />
                 </div>
               </div>
             </div>
             <div className="flex gap-3 mt-6">
               <button onClick={() => setShowModal(false)} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">Cancel</button>
-              <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-blue-600 text-white hover:bg-blue-700 transition-colors">{editingCombo ? "Update" : "Create"}</button>
+              <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-primary text-on-primary hover:bg-primary-hover transition-colors">{editingCombo ? "Update" : "Create"}</button>
             </div>
           </div>
         </div>

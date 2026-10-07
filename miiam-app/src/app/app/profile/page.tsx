@@ -26,13 +26,13 @@ export default function EnhancedProfilePage() {
   const { settings, updateSetting, triggerHaptic } = useHapticStore();
 
   const menuItems = [
-    { id: "orders", icon: "receipt_long", label: t.profile.myOrders, sub: t.profile.viewAllOrders, color: "text-blue-500", bg: "bg-blue-50" },
+    { id: "orders", icon: "receipt_long", label: t.profile.myOrders, sub: t.profile.viewAllOrders, color: "text-accent", bg: "bg-accent/10" },
     { id: "bookings", icon: "calendar_month", label: t.profile.bookings, sub: t.profile.serviceAppointments, color: "text-amber-500", bg: "bg-amber-50" },
-    { id: "subscriptions", icon: "repeat", label: t.profile.recurringOrders, sub: t.profile.scheduledSubscriptions, color: "text-purple-500", bg: "bg-purple-50" },
+    { id: "subscriptions", icon: "repeat", label: t.profile.recurringOrders, sub: t.profile.scheduledSubscriptions, color: "text-accent", bg: "bg-accent/10" },
     { id: "addresses", icon: "location_on", label: t.profile.savedAddresses, sub: t.profile.manageDeliveryAddresses, color: "text-green-500", bg: "bg-green-50" },
     { id: "favorites", icon: "favorite", label: t.profile.favorites, sub: t.profile.yourSavedItems, color: "text-red-500", bg: "bg-red-50" },
-    { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-purple-500", bg: "bg-purple-50" },
-    { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-indigo-500", bg: "bg-indigo-50" },
+    { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-accent", bg: "bg-accent/10" },
+    { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-accent", bg: "bg-accent/10" },
     { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-[var(--color-outline)]", bg: "bg-[var(--color-surface-subtle)]" },
     { id: "haptic", icon: "vibration", label: t.profile.hapticFeedback, sub: t.profile.vibrationSettings, color: "text-cyan-500", bg: "bg-cyan-50", special: true },
   ];

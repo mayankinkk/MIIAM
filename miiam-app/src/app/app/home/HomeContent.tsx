@@ -95,14 +95,14 @@ export default function HomePage() {
   const defaultCategories = [
     { id: "food?filter=under_99", label: "Under ₹99", icon: "local_fire_department", color: "from-orange-400 to-red-400" },
     { id: "food?filter=under_149", label: "Under ₹149", icon: "savings", color: "from-emerald-400 to-teal-400" },
-    { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-blue-400 to-indigo-400" },
-    { id: "food?filter=under_249", label: "Under ₹249", icon: "new_releases", color: "from-purple-400 to-pink-400" },
+    { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-accent to-accent/70" },
+    { id: "food?filter=under_249", label: "Under ₹249", icon: "new_releases", color: "from-deal to-deal/70" },
     { id: "food?filter=combos", label: "Combos", icon: "merge", color: "from-amber-400 to-orange-400" },
     { id: "food?filter=bakery", label: "Bakery", icon: "bakery_dining", color: "from-pink-400 to-rose-400" },
   ];
   const [categories, setCategories] = useState(defaultCategories);
 
-  const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string }>>([]);
+  const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string; link_url?: string | null; image_url?: string | null }>>([]);
   const offers = dbOffers;
 
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -157,12 +157,20 @@ export default function HomePage() {
     async function checkAndLoad() {
       const { pincode } = locationStore;
 
-      const [userResult, vendorsResult] = await Promise.all([
+      const [userResult, vendorsResult, sponsoredResult] = await Promise.all([
         supabase.auth.getUser(),
         pincode
           ? supabase.from("vendors").select("id, shop_name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city").order("shop_name", { ascending: true }).limit(50)
           : Promise.resolve({ data: null }),
+        supabase
+          .from("sponsored_listings")
+          .select("vendor_id, start_date, end_date")
+          .lte("start_date", new Date().toISOString().slice(0, 10))
+          .gte("end_date", new Date().toISOString().slice(0, 10)),
       ]);
+      const sponsoredIds = new Set(
+        (sponsoredResult.data || []).map((s: { vendor_id: string }) => s.vendor_id)
+      );
 
       const { user } = userResult.data;
       if (!user) return;
@@ -241,7 +249,7 @@ export default function HomePage() {
         });
         setLocalServiceable(local.length > 0);
         setNearbyRestaurants(local);
-        setFeaturedRestaurants(local.filter((v: HomeVendor) => v.is_featured || v.is_promoted).slice(0, 6));
+        setFeaturedRestaurants(local.filter((v: HomeVendor) => v.is_featured || v.is_promoted || sponsoredIds.has(v.id)).slice(0, 6));
         setSpotlightRestaurant(local.find((v: HomeVendor) => v.is_featured) || null);
       }
 
@@ -446,19 +454,37 @@ export default function HomePage() {
   useEffect(() => {
     async function loadPromos() {
       try {
-        const { data } = await supabase
-          .from("home_promotions")
-          .select("id, badge, title, subtitle, gradient, link_url")
-          .eq("is_active", true)
-          .order("position");
-        if (data && data.length > 0) {
-          setDbOffers(data.map((p: { id: string; badge: string; title: string; subtitle: string; gradient: string }) => ({
-            id: p.id,
-            badge: p.badge || "",
-            title: p.title,
-            subtitle: p.subtitle || "",
-            gradient: p.gradient || "from-blue-500 to-indigo-500",
-          })));
+        const [promosRes, bannersRes] = await Promise.all([
+          supabase
+            .from("home_promotions")
+            .select("id, badge, title, subtitle, gradient, link_url")
+            .eq("is_active", true)
+            .order("position"),
+          supabase
+            .from("banners")
+            .select("id, badge, title, subtitle, gradient, link_url, image_url")
+            .eq("is_active", true)
+            .order("position"),
+        ]);
+        const promoOffers = (promosRes.data || []).map((p: { id: string; badge: string | null; title: string; subtitle: string | null; gradient: string | null; link_url: string | null }) => ({
+          id: p.id,
+          badge: p.badge || "",
+          title: p.title,
+          subtitle: p.subtitle || "",
+          gradient: p.gradient || "from-accent to-accent/70",
+          link_url: p.link_url,
+        }));
+        const bannerOffers = (bannersRes.data || []).map((b: { id: string; badge: string | null; title: string; subtitle: string | null; gradient: string | null; link_url: string | null; image_url: string | null }) => ({
+          id: b.id,
+          badge: b.badge || "",
+          title: b.title,
+          subtitle: b.subtitle || "",
+          gradient: b.gradient || "from-accent to-accent/70",
+          link_url: b.link_url,
+          image_url: b.image_url,
+        }));
+        if (promoOffers.length > 0 || bannerOffers.length > 0) {
+          setDbOffers([...promoOffers, ...bannerOffers]);
         }
       } catch {
         // Use fallback offers

@@ -28,13 +28,13 @@ export const SERVICE_TIME_SLOTS = [
 ] as const;
 
 export const SERVICE_CATEGORIES = [
-  { id: "ac", name: "AC Service", icon: "ac_unit", color: "bg-blue-100 text-blue-600" },
+  { id: "ac", name: "AC Service", icon: "ac_unit", color: "bg-accent/10 text-accent" },
   { id: "cleaning", name: "Home Cleaning", icon: "cleaning_services", color: "bg-green-100 text-green-600" },
   { id: "plumbing", name: "Plumbing", icon: "plumbing", color: "bg-cyan-100 text-cyan-600" },
   { id: "electrical", name: "Electrical", icon: "electrical_services", color: "bg-yellow-100 text-yellow-600" },
   { id: "beauty", name: "Beauty & Spa", icon: "spa", color: "bg-pink-100 text-pink-600" },
   { id: "pest", name: "Pest Control", icon: "pest_control", color: "bg-red-100 text-red-600" },
-  { id: "car", name: "Car Care", icon: "directions_car", color: "bg-purple-100 text-purple-600" },
+  { id: "car", name: "Car Care", icon: "directions_car", color: "bg-accent/10 text-accent" },
   { id: "appliance", name: "Appliances", icon: "kitchen", color: "bg-orange-100 text-orange-600" },
 ] as const;
 

@@ -78,10 +78,10 @@ export default function AlertSettingsModal({
             </button>
           </div>
 
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+          <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl">
             <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm">info</span>
-              <p className="text-xs text-blue-700 dark:text-blue-300">
+              <span className="material-symbols-outlined text-accent text-sm">info</span>
+              <p className="text-xs text-accent dark:text-accent">
                 {t.rider.modals.alertsInfo}
               </p>
             </div>

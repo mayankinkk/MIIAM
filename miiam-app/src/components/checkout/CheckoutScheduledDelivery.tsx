@@ -154,13 +154,13 @@ export default function CheckoutScheduledDelivery({
 
       {/* Recurring Order Toggle */}
       {scheduledDate && scheduledTime && (
-        <div className="mt-6 p-4 rounded-xl border-2 border-purple-200 bg-purple-50">
+        <div className="mt-6 p-4 rounded-xl border-2 border-accent/20 bg-accent/10">
           <label className={`flex items-center justify-between gap-3 ${vendorIds.length > 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}>
             <div className="flex items-center gap-3 min-w-0">
-              <span className="material-symbols-outlined text-purple-600 shrink-0">repeat</span>
+              <span className="material-symbols-outlined text-accent shrink-0">repeat</span>
               <div className="min-w-0">
-                <p className="font-bold text-purple-800 text-sm">Make this a recurring order</p>
-                <p className="text-xs text-purple-600">{vendorIds.length > 1 ? "Not available for multi-vendor carts" : "Auto-reorder on schedule"}</p>
+                <p className="font-bold text-accent text-sm">Make this a recurring order</p>
+                <p className="text-xs text-accent">{vendorIds.length > 1 ? "Not available for multi-vendor carts" : "Auto-reorder on schedule"}</p>
               </div>
             </div>
             <input
@@ -168,18 +168,18 @@ export default function CheckoutScheduledDelivery({
               checked={isRecurring}
               disabled={vendorIds.length > 1}
               onChange={(e) => onIsRecurringChange(e.target.checked)}
-              className="w-5 h-5 text-purple-600 rounded shrink-0"
+              className="w-5 h-5 text-accent rounded shrink-0"
             />
           </label>
 
           {isRecurring && (
             <div className="mt-4 space-y-3">
               <div>
-                <label className="text-xs font-bold text-purple-700 block mb-1">Repeat every</label>
+                <label className="text-xs font-bold text-accent block mb-1">Repeat every</label>
                 <select
                   value={recurringFrequency}
                   onChange={(e) => onRecurringFrequencyChange(e.target.value)}
-                  className="w-full p-3 rounded-lg border-2 border-purple-200 text-sm font-semibold focus:outline-none focus:border-purple-400"
+                  className="w-full p-3 rounded-lg border-2 border-accent/20 text-sm font-semibold focus:outline-none focus:border-accent/40"
                 >
                   <option value="daily">Daily</option>
                   <option value="weekly">Weekly</option>
@@ -189,11 +189,11 @@ export default function CheckoutScheduledDelivery({
               </div>
               {(recurringFrequency === "weekly" || recurringFrequency === "biweekly") && (
                 <div>
-                  <label className="text-xs font-bold text-purple-700 block mb-1">On day</label>
+                  <label className="text-xs font-bold text-accent block mb-1">On day</label>
                   <select
                     value={recurringDayOfWeek}
                     onChange={(e) => onRecurringDayOfWeekChange(Number(e.target.value))}
-                    className="w-full p-3 rounded-lg border-2 border-purple-200 text-sm font-semibold focus:outline-none focus:border-purple-400"
+                    className="w-full p-3 rounded-lg border-2 border-accent/20 text-sm font-semibold focus:outline-none focus:border-accent/40"
                   >
                     {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, i) => (
                       <option key={day} value={i}>{day}</option>
@@ -201,7 +201,7 @@ export default function CheckoutScheduledDelivery({
                   </select>
                 </div>
               )}
-              <p className="text-xs text-purple-500 flex items-center gap-1">
+              <p className="text-xs text-accent flex items-center gap-1">
                 <span className="material-symbols-outlined text-[14px]">info</span>
                 Orders will be created automatically on your chosen schedule
               </p>

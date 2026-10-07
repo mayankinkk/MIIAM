@@ -106,7 +106,7 @@ export default function ImageUpload({
           {useUrl ? "Upload file instead" : "Or enter URL instead"}
         </button>
         {value && (
-          <a href={value} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline ml-auto">
+          <a href={value} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline ml-auto">
             View
           </a>
         )}

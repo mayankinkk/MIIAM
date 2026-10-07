@@ -17,7 +17,7 @@ interface PageAsset {
 
 const SECTION_LABELS: Record<string, { label: string; icon: string; color: string }> = {
   food_hero: { label: "Food Page Hero", icon: "restaurant", color: "bg-orange-50 border-orange-200" },
-  home_hero: { label: "Home Page Hero", icon: "home", color: "bg-blue-50 border-blue-200" },
+  home_hero: { label: "Home Page Hero", icon: "home", color: "bg-accent/10 border-accent/30" },
   grocery_hero: { label: "Grocery Page Hero", icon: "local_grocery_store", color: "bg-green-50 border-green-200" },
 };
 

@@ -8,12 +8,12 @@ import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 
 const modules = [
   { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]", route: "/admin/foods", type: "food" },
-  { id: "services", title: "Services", icon: "home_repair_service", color: "bg-blue-50 text-blue-600", route: "/admin/services", type: "services" },
+  { id: "services", title: "Services", icon: "home_repair_service", color: "bg-accent/10 text-accent", route: "/admin/services", type: "services" },
 ];
 
 const categoryColors: Record<string, string> = {
   food: "bg-[var(--color-primary)]",
-  services: "bg-blue-500",
+  services: "bg-accent",
 };
 
 export default function AdminDashboard() {
@@ -215,7 +215,7 @@ export default function AdminDashboard() {
         <>
           {/* KPI Cards */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="bg-gradient-to-br from-[var(--color-primary)] to-[#ff7670] text-white p-5 rounded-2xl shadow-lg shadow-red-900/20 col-span-2">
+            <div className="bg-gradient-to-br from-accent to-accent/70 text-white p-5 rounded-2xl shadow-lg shadow-red-900/20 col-span-2">
               <p className="text-xs font-bold opacity-80 uppercase tracking-wider">Total Revenue</p>
               <p className="text-3xl font-black mt-2">₹{stats.totalRevenue.toLocaleString()}</p>
               <p className="text-xs opacity-60 mt-1">{stats.totalOrders} total orders</p>
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
             <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Orders Today</p>
               <p className="text-3xl font-black text-[var(--color-on-surface)] mt-2">{stats.ordersToday}</p>
-              <p className="text-xs text-blue-500 mt-1">since midnight</p>
+              <p className="text-xs text-accent mt-1">since midnight</p>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Pending</p>
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Riders</p>
-              <p className="text-3xl font-black text-purple-600 mt-2">{stats.onlineRiders}</p>
+              <p className="text-3xl font-black text-accent mt-2">{stats.onlineRiders}</p>
               <p className="text-xs text-[var(--color-outline-variant)] mt-1">active riders</p>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-blue-500 text-lg">group</span>
+                <span className="material-symbols-outlined text-accent text-lg">group</span>
                 <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Total Users</p>
               </div>
               <p className="text-2xl font-black text-[var(--color-on-surface)]">{stats.totalUsers}</p>
@@ -270,7 +270,7 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-purple-500 text-lg">speed</span>
+                <span className="material-symbols-outlined text-accent text-lg">speed</span>
                 <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Platform Health</p>
               </div>
               <div className="flex items-center gap-2 mt-1">
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
                         item.type === "delivered" ? "bg-green-500" :
                         item.type === "cancelled" ? "bg-red-500" :
                         item.type === "pending" ? "bg-amber-500" :
-                        "bg-blue-500"
+                        "bg-deal"
                       }`}></span>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{item.message}</p>
@@ -365,7 +365,7 @@ export default function AdminDashboard() {
                             order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                             order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                             order.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                            "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                            "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
                           }`}>{order.status}</span>
                         </td>
                         <td className="py-3 text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString()}</td>

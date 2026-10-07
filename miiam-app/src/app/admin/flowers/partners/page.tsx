@@ -226,9 +226,9 @@ export default function FlowersPartnersPage() {
           <p className="text-red-600 text-xs font-bold">INACTIVE</p>
           <p className="text-2xl font-black text-red-700 mt-1">{stats.inactive}</p>
         </div>
-        <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
-          <p className="text-blue-600 text-xs font-bold">NEW THIS MONTH</p>
-          <p className="text-2xl font-black text-blue-700 mt-1">{stats.newThisMonth}</p>
+        <div className="bg-accent/10 p-4 rounded-xl border border-accent/30">
+          <p className="text-accent text-xs font-bold">NEW THIS MONTH</p>
+          <p className="text-2xl font-black text-accent mt-1">{stats.newThisMonth}</p>
         </div>
       </div>
 

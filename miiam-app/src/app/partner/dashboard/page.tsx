@@ -282,11 +282,11 @@ export default function VendorDashboard() {
             aria-checked={autoAccept}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
               autoAccept
-                ? "bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300"
+                ? "bg-deal/10 text-deal hover:bg-accent/20 dark:bg-accent/20 dark:text-accent"
                 : "bg-[var(--color-surface-container)] text-[var(--color-outline)] hover:bg-[var(--color-surface-container-high)]"
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${autoAccept ? "bg-blue-500 animate-pulse" : "bg-slate-400 dark:bg-slate-600"}`}></span>
+            <span className={`w-2 h-2 rounded-full ${autoAccept ? "bg-accent animate-pulse" : "bg-slate-400 dark:bg-slate-600"}`}></span>
             {autoAccept ? "Auto-Accept On" : "Auto-Accept Off"}
           </button>
         </div>
@@ -416,16 +416,16 @@ export default function VendorDashboard() {
           {activeOrders.length > 0 && (
             <div className="mt-6">
               <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2 mb-4">
-                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
+                <span className="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
                 Preparing ({activeOrders.length})
               </h2>
               <div className="space-y-4">
                 {activeOrders.map((order) => (
-                  <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-[var(--color-border-subtle)] border-l-4 border-l-blue-500">
+                  <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm border border-[var(--color-border-subtle)] border-l-4 border-l-accent">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <span className="font-extrabold text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
-                        <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-blue-100 text-blue-700 uppercase dark:bg-blue-900/30 dark:text-blue-300">
+                        <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-deal/10 text-deal uppercase dark:bg-accent/20 dark:text-accent">
                           {order.status}
                         </span>
                       </div>
@@ -442,7 +442,7 @@ export default function VendorDashboard() {
                       ))}
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
-                      <p className="font-extrabold text-lg text-blue-600">₹{(order.total_amount || 0).toFixed(2)}</p>
+                      <p className="font-extrabold text-lg text-accent">₹{(order.total_amount || 0).toFixed(2)}</p>
                       <button
                         onClick={() => handleMarkReady(order.id)}
                         disabled={processingOrder === order.id}

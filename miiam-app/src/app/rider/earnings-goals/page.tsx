@@ -236,7 +236,7 @@ export default function RiderEarningsGoalsPage() {
                   <div key={i} className="flex-1 flex flex-col items-center gap-1">
                     <div className="w-full bg-brand-secondary/20 rounded-t-md relative" style={{ height: "100%" }}>
                       <div
-                        className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-blue-400 rounded-t-md transition-all"
+                        className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-accent/70 rounded-t-md transition-all"
                         style={{ height: `${Math.max((amt / chartMax) * 100, 4)}%` }}
                       />
                     </div>

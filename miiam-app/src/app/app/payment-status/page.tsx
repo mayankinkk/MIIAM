@@ -157,9 +157,9 @@ function PaymentStatusContent() {
       message: paymentMethod === "cod"
         ? "Confirming your order..."
         : "Verifying your payment...",
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      borderColor: "border-blue-200",
+      color: "text-accent",
+      bgColor: "bg-accent/10",
+      borderColor: "border-accent/30",
     },
     success: {
       icon: "check_circle",
@@ -209,7 +209,7 @@ function PaymentStatusContent() {
             <div className="mb-8">
               <div className="h-3 bg-surface-container-high rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-accent to-accent/70 rounded-full transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>

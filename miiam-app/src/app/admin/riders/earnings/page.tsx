@@ -278,14 +278,14 @@ export default function RiderEarningsPage() {
             </div>
             <div className="flex justify-between items-center p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-blue-600">payments</span>
+                <span className="material-symbols-outlined text-accent">payments</span>
                 <span className="font-bold text-[var(--color-on-surface)]">UPI Transfers</span>
               </div>
               <span className="font-black text-[var(--color-on-surface)]">₹{(totalEarnings * 0.2).toFixed(0)}</span>
             </div>
             <div className="flex justify-between items-center p-4 bg-[var(--color-surface-subtle)] rounded-xl">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-purple-600">wallet</span>
+                <span className="material-symbols-outlined text-accent">wallet</span>
                 <span className="font-bold text-[var(--color-on-surface)]">Wallet Balance</span>
               </div>
               <span className="font-black text-[var(--color-on-surface)]">₹{(totalEarnings * 0.1).toFixed(0)}</span>

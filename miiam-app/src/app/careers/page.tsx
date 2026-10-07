@@ -37,7 +37,7 @@ const benefits = [
     icon: "schedule",
     title: "Flexible Hours",
     description: "Work when you want, where you want. No fixed timings.",
-    color: "from-blue-500 to-blue-600",
+    color: "from-accent to-accent/70",
   },
   {
     icon: "payments",
@@ -49,7 +49,7 @@ const benefits = [
     icon: "trending_up",
     title: "Growth Path",
     description: "Start as rider, grow to team lead, ops manager, and beyond.",
-    color: "from-purple-500 to-purple-600",
+    color: "from-deal to-deal/70",
   },
 ];
 
@@ -121,7 +121,7 @@ export default function CareersPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "hired": return "bg-green-100 text-green-700";
-      case "reviewed": return "bg-blue-100 text-blue-700";
+      case "reviewed": return "bg-deal/10 text-deal";
       default: return "bg-amber-100 text-amber-700";
     }
   };

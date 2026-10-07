@@ -323,8 +323,8 @@ export default function SupportChatPage() {
           <div className="flex-1">
             <p className="font-bold text-[var(--color-on-surface)]">MIIAM Support</p>
             <div className="flex items-center gap-1">
-              <span className={`w-2 h-2 rounded-full ${humanMode ? "bg-blue-500" : "bg-green-500 animate-pulse"}`} />
-              <span className={`text-xs font-medium ${humanMode ? "text-blue-600" : "text-green-600"}`}>
+              <span className={`w-2 h-2 rounded-full ${humanMode ? "bg-accent" : "bg-green-500 animate-pulse"}`} />
+              <span className={`text-xs font-medium ${humanMode ? "text-accent" : "text-green-600"}`}>
                 {humanMode ? "Connected to support agent" : "Online · Usually replies instantly"}
               </span>
             </div>
@@ -340,7 +340,7 @@ export default function SupportChatPage() {
           <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role !== "user" && (
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black mr-2 flex-shrink-0 mt-auto ${
-                msg.role === "agent" ? "bg-blue-500 text-on-primary" : "bg-gradient-to-br from-primary to-primary-container text-on-primary"
+                msg.role === "agent" ? "bg-accent text-on-primary" : "bg-gradient-to-br from-primary to-primary-container text-on-primary"
               }`}>
                 {msg.role === "agent" ? "🧑‍💼" : "M"}
               </div>
@@ -349,7 +349,7 @@ export default function SupportChatPage() {
               msg.role === "user"
                 ? "bg-primary text-on-primary rounded-br-sm"
                 : msg.role === "agent"
-                  ? "bg-blue-50 text-blue-900 border border-blue-200 rounded-bl-sm"
+                  ? "bg-accent/10 text-accent border border-accent/30 rounded-bl-sm"
                   : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] shadow-sm rounded-bl-sm"
             }`}>
               {msg.text}

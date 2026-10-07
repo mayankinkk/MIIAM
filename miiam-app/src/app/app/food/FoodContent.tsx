@@ -574,7 +574,7 @@ export default function FoodPageContent() {
         const { data } = await supabase.from("cuisines").select("id, name, image_url").eq("active", true).order("name");
         if (data && data.length > 0) {
           const icons = ["🍕", "🍔", "🍚", "🥡", "🍝", "🍰", "🌮", "🍜", "🥘", "🥗", "🍱", "🧁"];
-          const colors = ["bg-orange-100", "bg-amber-100", "bg-yellow-100", "bg-red-100", "bg-green-100", "bg-pink-100", "bg-purple-100", "bg-blue-100", "bg-teal-100", "bg-rose-100", "bg-indigo-100", "bg-lime-100"];
+          const colors = ["bg-orange-100", "bg-amber-100", "bg-yellow-100", "bg-red-100", "bg-green-100", "bg-pink-100", "bg-accent/10", "bg-accent/10", "bg-teal-100", "bg-rose-100", "bg-accent/10", "bg-lime-100"];
           setFoodCategories(data.map((c: { name: string; image_url?: string }, i: number) => ({
             id: c.name.toLowerCase(),
             name: c.name,
@@ -830,8 +830,8 @@ export default function FoodPageContent() {
             {[
               { max: 99, label: "Under ₹99", emoji: "🔥", color: "from-orange-500 to-red-500", dbCategory: "under_99", filter: "under_99" },
               { max: 149, label: "Under ₹149", emoji: "💰", color: "from-emerald-500 to-teal-500", dbCategory: "under_149", filter: "under_149" },
-              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-blue-500 to-indigo-500", dbCategory: "under_199", filter: "under_199" },
-              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-purple-500 to-pink-500", dbCategory: "under_249", filter: "under_249" },
+              { max: 199, label: "Under ₹199", emoji: "⭐", color: "from-accent to-accent/70", dbCategory: "under_199", filter: "under_199" },
+              { max: 249, label: "Under ₹249", emoji: "🎯", color: "from-deal to-deal/70", dbCategory: "under_249", filter: "under_249" },
             ].filter((bucket) => activeFilter === "all" || activeFilter === bucket.filter).map((bucket) => {
               // Prefer store_items from DB, fall back to filtering menu_items
               const isViewingBucket = activeFilter === bucket.filter;
@@ -1066,7 +1066,7 @@ export default function FoodPageContent() {
                     { name: "Chinese Cravings", emoji: "🥡", gradient: "from-yellow-500 to-amber-600", filter: "chinese" },
                     { name: "South Indian", emoji: "🥘", gradient: "from-green-500 to-emerald-600", filter: "south indian" },
                     { name: "Dessert Heaven", emoji: "🍰", gradient: "from-pink-500 to-rose-500", filter: "dessert" },
-                    { name: "Street Food", emoji: "🌮", gradient: "from-purple-500 to-violet-600", filter: "street" },
+                    { name: "Street Food", emoji: "🌮", gradient: "from-deal to-deal/70", filter: "street" },
                   ].map((collection) => {
                     const count = searchedRestaurants.filter(
                       (r) => r.cuisine?.toLowerCase().includes(collection.filter)

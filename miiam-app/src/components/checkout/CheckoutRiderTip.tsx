@@ -26,7 +26,7 @@ export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSele
             <span className="font-bold text-on-surface">Rider Tip</span>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-on-surface">₹{tipAmount}</span>
-              <button onClick={onEditTip} className="text-xs text-blue-600 underline">Edit</button>
+              <button onClick={onEditTip} className="text-xs text-accent underline">Edit</button>
             </div>
           </div>
           <TipThankYou amount={tipAmount} />

@@ -252,12 +252,12 @@ export default function RiderDocumentsPage() {
           </div>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800">
+        <div className="bg-accent/10 dark:bg-accent/20 p-4 rounded-2xl border border-accent/40 dark:border-accent/40">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">security</span>
+            <span className="material-symbols-outlined text-accent">security</span>
             <div>
-              <p className="font-bold text-blue-800 dark:text-blue-200 text-sm">Your Data is Safe</p>
-              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+              <p className="font-bold text-accent dark:text-accent text-sm">Your Data is Safe</p>
+              <p className="text-xs text-accent mt-1">
                 Documents are encrypted and stored securely. We comply with 
                 DPDP Act 2023 and never share your data with third parties.
               </p>

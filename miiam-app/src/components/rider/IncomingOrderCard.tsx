@@ -57,7 +57,7 @@ export default function IncomingOrderCard({
         <div className="p-4 overflow-y-auto flex-1">
           <div className="flex gap-2 mb-4 flex-wrap">
             {order.type === "multi_stop" ? (
-              <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
+              <span className="bg-accent/10 text-accent px-2 py-1 rounded-full text-[10px] font-bold flex items-center gap-1">
                 <span className="material-symbols-outlined text-[12px]">inventory_2</span>
                 {order.stops?.length} {t.rider.order.stops}
               </span>
@@ -87,20 +87,20 @@ export default function IncomingOrderCard({
           </div>
 
           {order.type === "multi_stop" && order.stops && (
-            <div className="bg-purple-50 p-3 rounded-xl mb-4 border border-purple-100">
-              <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.order.multiStopBatch}</p>
+            <div className="bg-accent/10 p-3 rounded-xl mb-4 border border-accent/40">
+              <p className="text-[10px] text-accent font-bold mb-2">{t.rider.order.multiStopBatch}</p>
               <div className="space-y-2">
                 {order.stops.map((stop, i) => (
                   <div key={i} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="w-5 h-5 bg-purple-200 rounded-full flex items-center justify-center text-purple-700 font-bold text-[8px]">{i + 1}</span>
+                      <span className="w-5 h-5 bg-accent/20 rounded-full flex items-center justify-center text-accent font-bold text-[8px]">{i + 1}</span>
                       <span className="text-[var(--color-on-surface-variant)]">{stop.name}</span>
                     </div>
-                    <span className="text-purple-600 font-bold">{stop.distance} km</span>
+                    <span className="text-accent font-bold">{stop.distance} km</span>
                   </div>
                 ))}
               </div>
-              <p className="text-[9px] text-purple-500 mt-2">{t.rider.order.completeAllToEarn} ₹{order.earnings}</p>
+              <p className="text-[9px] text-accent mt-2">{t.rider.order.completeAllToEarn} ₹{order.earnings}</p>
             </div>
           )}
 

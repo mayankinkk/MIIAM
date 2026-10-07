@@ -22,8 +22,8 @@ interface IncidentReport {
 const incidentTypes: IncidentType[] = [
   { id: "accident", icon: "🚨", label: "Accident", color: "bg-red-100" },
   { id: "theft", icon: "🔓", label: "Theft", color: "bg-orange-100" },
-  { id: "assault", icon: "⚠️", label: "Safety Concern", color: "bg-purple-100" },
-  { id: "vehicle", icon: "🔧", label: "Vehicle Issue", color: "bg-blue-100" },
+  { id: "assault", icon: "⚠️", label: "Safety Concern", color: "bg-accent/10" },
+  { id: "vehicle", icon: "🔧", label: "Vehicle Issue", color: "bg-accent/10" },
   { id: "medical", icon: "🏥", label: "Medical Emergency", color: "bg-green-100" },
 ];
 
@@ -173,8 +173,8 @@ export default function RiderIncidentPage() {
                 className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl hover:bg-[var(--color-surface-container)]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <span className="material-symbols-outlined text-blue-600">phone</span>
+                  <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-accent">phone</span>
                   </div>
                   <div>
                     <p className="font-bold text-sm">{contact.name}</p>

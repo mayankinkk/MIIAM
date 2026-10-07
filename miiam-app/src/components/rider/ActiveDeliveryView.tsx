@@ -44,7 +44,7 @@ function ActiveDeliveryView({
   onSetPickedItems,
 }: ActiveDeliveryViewProps) {
   const { t } = useTranslation();
-  const headerBg = deliveryStep === "shopping" ? "bg-purple-600" : deliveryStep === "picking_up" ? "bg-brand-secondary" : deliveryStep === "delivering" ? "bg-[var(--color-on-surface)]" : "bg-green-600";
+  const headerBg = deliveryStep === "shopping" ? "bg-accent" : deliveryStep === "picking_up" ? "bg-brand-secondary" : deliveryStep === "delivering" ? "bg-[var(--color-on-surface)]" : "bg-green-600";
 
   return (
     <div className="absolute inset-0 z-10 flex items-end justify-center pb-24 px-4">
@@ -131,7 +131,7 @@ function ActiveDeliveryView({
             ) : (
               <>
                 <div className={`flex flex-col items-center ${deliveryStep === "shopping" ? "text-white" : "text-white/50"}`}>
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "shopping" ? "bg-[var(--color-surface-container-lowest)] text-purple-600" : "bg-white/30"}`}>1</div>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center mb-1 ${deliveryStep === "shopping" ? "bg-[var(--color-surface-container-lowest)] text-accent" : "bg-white/30"}`}>1</div>
                   <span>{t.rider.delivery.shopStep}</span>
                 </div>
                 <div className="flex-1 h-0.5 bg-white/30 mx-2"><div className={`h-full bg-white ${["picking_up", "delivering", "arrived"].includes(deliveryStep) ? "w-full" : "w-0"}`}></div></div>
@@ -153,14 +153,14 @@ function ActiveDeliveryView({
           {deliveryStep === "shopping" && currentOrder.type !== "multi_stop" && (
             <>
               <div className="mb-4">
-                <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.delivery.shoppingMode}</p>
+                <p className="text-[10px] text-accent font-bold mb-2">{t.rider.delivery.shoppingMode}</p>
                 <p className="text-[10px] text-[var(--color-outline-variant)]">{t.rider.delivery.goToStore}</p>
                 <p className="font-bold text-lg mt-2">{currentOrder.vendor}</p>
                 <p className="text-sm text-[var(--color-outline)]">{currentOrder.vendorAddress}</p>
               </div>
               
-              <div className="bg-purple-50 p-4 rounded-xl mb-4">
-                <p className="text-[10px] text-purple-600 font-bold mb-3">{t.rider.delivery.itemsToBuy}</p>
+              <div className="bg-accent/10 p-4 rounded-xl mb-4">
+                <p className="text-[10px] text-accent font-bold mb-3">{t.rider.delivery.itemsToBuy}</p>
                 <div className="space-y-2">
                   {currentOrder.itemsList.map((item: string, i: number) => (
                     <div key={i} className="flex items-center justify-between p-2 bg-[var(--color-surface-container-lowest)] rounded-lg">
@@ -208,7 +208,7 @@ function ActiveDeliveryView({
                 </button>
               </div>
 
-              <Link href="/rider/orders" className="w-full mt-3 py-4 bg-purple-600 text-white font-black rounded-xl flex items-center justify-center gap-2">
+              <Link href="/rider/orders" className="w-full mt-3 py-4 bg-accent text-white font-black rounded-xl flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined">inventory_2</span>{t.rider.delivery.goToShoppingList}
               </Link>
 
@@ -232,11 +232,11 @@ function ActiveDeliveryView({
                 ))}
               </div>
               {currentOrder.type === "multi_stop" && currentOrder.stops && (
-                <div className="bg-purple-50 p-3 rounded-xl mb-4">
-                  <p className="text-[10px] text-purple-600 font-bold mb-2">{t.rider.delivery.deliveryStops}</p>
+                <div className="bg-accent/10 p-3 rounded-xl mb-4">
+                  <p className="text-[10px] text-accent font-bold mb-2">{t.rider.delivery.deliveryStops}</p>
                   {currentOrder.stops.map((stop, i) => (
-                    <div key={i} className={`flex items-center gap-2 text-sm py-1 ${i === currentStopIndex ? "text-purple-700 font-bold" : i < currentStopIndex ? "text-green-600 line-through" : "text-[var(--color-outline)]"}`}>
-                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${i === currentStopIndex ? "bg-purple-500 text-white" : i < currentStopIndex ? "bg-green-500 text-white" : "bg-[var(--color-surface-container-high)]"}`}>
+                    <div key={i} className={`flex items-center gap-2 text-sm py-1 ${i === currentStopIndex ? "text-accent font-bold" : i < currentStopIndex ? "text-green-600 line-through" : "text-[var(--color-outline)]"}`}>
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${i === currentStopIndex ? "bg-accent text-white" : i < currentStopIndex ? "bg-green-500 text-white" : "bg-[var(--color-surface-container-high)]"}`}>
                         {i < currentStopIndex ? "✓" : i + 1}
                       </span>
                       {stop.name}
@@ -267,7 +267,7 @@ function ActiveDeliveryView({
             <>
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-[10px] font-bold">
+                  <span className="bg-accent/10 text-accent px-2 py-1 rounded-full text-[10px] font-bold">
                     {t.rider.delivery.stop} {currentStopIndex + 1} {t.rider.delivery.of} {currentOrder.stops.length}
                   </span>
                   <span className="text-xs text-[var(--color-outline-variant)]">{currentOrder.stops[currentStopIndex].time}</span>

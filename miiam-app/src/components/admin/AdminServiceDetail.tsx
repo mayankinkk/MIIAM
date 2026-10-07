@@ -30,20 +30,20 @@ interface ServiceDetail {
 }
 
 const SERVICE_DETAILS: Record<string, ServiceDetail> = {
-  plumbing: { name: "Plumbing", icon: "plumbing", color: "blue", bg: "bg-blue-50" },
+  plumbing: { name: "Plumbing", icon: "plumbing", color: "blue", bg: "bg-accent/10" },
   electrical: { name: "Electrical", icon: "bolt", color: "amber", bg: "bg-amber-50" },
   cleaning: { name: "Cleaning", icon: "cleaning_services", color: "emerald", bg: "bg-emerald-50" },
   ac: { name: "AC Repair", icon: "ac_unit", color: "cyan", bg: "bg-cyan-50" },
-  appliance: { name: "Appliance Repair", icon: "home_repair_service", color: "purple", bg: "bg-purple-50" },
+  appliance: { name: "Appliance Repair", icon: "home_repair_service", color: "purple", bg: "bg-accent/10" },
   pest: { name: "Pest Control", icon: "bug_report", color: "red", bg: "bg-red-50" },
 };
 
 const COLOR_MAP: Record<string, string> = {
-  blue: "from-blue-500 to-blue-400",
+  blue: "from-accent to-accent/70",
   amber: "from-amber-500 to-amber-400",
   emerald: "from-emerald-500 to-emerald-400",
   cyan: "from-cyan-500 to-cyan-400",
-  purple: "from-purple-500 to-purple-400",
+  purple: "from-deal to-deal/70",
   red: "from-red-500 to-red-400",
 };
 
@@ -52,7 +52,7 @@ const TEXT_COLOR: Record<string, string> = {
   amber: "text-status-warning",
   emerald: "text-emerald-500",
   cyan: "text-cyan-500",
-  purple: "text-purple-500",
+  purple: "text-accent",
   red: "text-status-error",
 };
 
@@ -65,14 +65,14 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   const [techPhone, setTechPhone] = useState("");
   const [assigning, setAssigning] = useState(false);
   const [dbService, setDbService] = useState<ServiceDetail | null>(null);
-  const service = dbService || SERVICE_DETAILS[serviceKey] || { name: serviceKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), icon: "home_repair_service", color: "blue", bg: "bg-blue-50" };
+  const service = dbService || SERVICE_DETAILS[serviceKey] || { name: serviceKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), icon: "home_repair_service", color: "blue", bg: "bg-accent/10" };
 
   useEffect(() => {
     loadBookings();
     if (!SERVICE_DETAILS[serviceKey]) {
       supabase.from("service_categories").select("name, icon").eq("slug", serviceKey).maybeSingle()
         .then(({ data }: { data: { name: string; icon: string | null } | null }) => {
-          if (data) setDbService({ name: data.name, icon: data.icon || "home_repair_service", color: "blue", bg: "bg-blue-50" });
+          if (data) setDbService({ name: data.name, icon: data.icon || "home_repair_service", color: "blue", bg: "bg-accent/10" });
         });
     }
   }, []);
@@ -179,7 +179,7 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700",
     confirmed: "bg-status-info/10 text-status-info",
-    in_progress: "bg-indigo-100 text-indigo-700",
+    in_progress: "bg-deal/10 text-deal",
     completed: "bg-status-success/10 text-status-success",
     cancelled: "bg-status-error/10 text-status-error",
   };

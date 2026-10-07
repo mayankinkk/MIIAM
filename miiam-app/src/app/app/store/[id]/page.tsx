@@ -28,8 +28,8 @@ interface StoreItem {
 const BUCKET_LABELS: Record<string, { label: string; emoji: string; color: string }> = {
   under_99: { label: "Under ₹99", emoji: "🔥", color: "bg-orange-100 text-orange-700" },
   under_149: { label: "Under ₹149", emoji: "💰", color: "bg-emerald-100 text-emerald-700" },
-  under_199: { label: "Under ₹199", emoji: "⭐", color: "bg-blue-100 text-blue-700" },
-  under_249: { label: "Under ₹249", emoji: "🎯", color: "bg-purple-100 text-purple-700" },
+  under_199: { label: "Under ₹199", emoji: "⭐", color: "bg-deal/10 text-deal" },
+  under_249: { label: "Under ₹249", emoji: "🎯", color: "bg-accent/10 text-accent" },
 };
 
 export default function StoreItemDetailPage() {

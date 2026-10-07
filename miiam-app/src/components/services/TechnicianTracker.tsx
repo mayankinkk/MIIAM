@@ -54,7 +54,7 @@ export default function TechnicianTracker({ orderId }: TechnicianTrackerProps) {
 
   return (
     <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
-      <span className="material-symbols-outlined text-5xl text-blue-500 mb-3 block">engineering</span>
+      <span className="material-symbols-outlined text-5xl text-accent mb-3 block">engineering</span>
       <h2 className="text-lg font-bold text-on-surface mb-2">Technician Assigned</h2>
       <p className="text-on-surface-variant text-sm">Your service technician is on the way.</p>
     </div>

@@ -234,8 +234,8 @@ export default function RiderAccountPage() {
           className="w-full p-4 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-purple-600">schedule</span>
+            <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined text-accent">schedule</span>
             </div>
             <div className="text-left">
               <p className="font-bold text-[var(--color-on-surface)]">My Schedule</p>
@@ -392,7 +392,7 @@ export default function RiderAccountPage() {
                   key={shift.id}
                   onClick={() => toggleShift(shift.id)}
                   className={`w-full p-4 rounded-xl flex items-center justify-between border-2 transition-all ${
-                    shift.isSelected ? "border-brand-secondary bg-blue-50 dark:bg-blue-900/20" : "border-[var(--color-border-subtle)]"
+                    shift.isSelected ? "border-brand-secondary bg-accent/10 dark:bg-accent/20" : "border-[var(--color-border-subtle)]"
                   }`}
                 >
                   <div className="text-left">

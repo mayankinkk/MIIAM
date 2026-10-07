@@ -98,30 +98,30 @@ export default function CustomerInsights() {
           <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">User Segments</h2>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-purple-600">local_shipping</span>
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-accent">local_shipping</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
                   <span className="font-bold text-[var(--color-on-surface)]">Frequent Buyers (&gt;5 orders)</span>
-                  <span className="font-black text-purple-600">{frequentBuyers}</span>
+                  <span className="font-black text-accent">{frequentBuyers}</span>
                 </div>
                 <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500" style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }} />
+                  <div className="h-full bg-accent" style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }} />
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-blue-600">card_membership</span>
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-accent">card_membership</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
                   <span className="font-bold text-[var(--color-on-surface)]">Regular (2-5 orders)</span>
-                  <span className="font-black text-blue-600">{regularBuyers}</span>
+                  <span className="font-black text-accent">{regularBuyers}</span>
                 </div>
                 <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500" style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }} />
+                  <div className="h-full bg-accent" style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }} />
                 </div>
               </div>
             </div>

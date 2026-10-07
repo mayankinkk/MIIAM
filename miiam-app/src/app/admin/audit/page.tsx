@@ -182,7 +182,7 @@ export default function AuditLogs() {
                   <td className="p-4">
                     <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
                       log.action === "create" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                      log.action === "update" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                      log.action === "update" ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal" :
                       log.action === "delete" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
                       "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                     }`}>

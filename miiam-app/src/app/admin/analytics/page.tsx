@@ -185,7 +185,7 @@ export default function AdvancedAnalytics() {
   const statusDistribution = [
     { status: "delivered", label: "Delivered", count: deliveredOrders, color: "bg-green-500" },
     { status: "cancelled", label: "Cancelled", count: cancelledOrders, color: "bg-red-500" },
-    { status: "pending", label: "In Progress", count: pendingOrders, color: "bg-blue-500" },
+    { status: "pending", label: "In Progress", count: pendingOrders, color: "bg-accent" },
     { status: "other", label: "Other", count: orderCount - deliveredOrders - cancelledOrders - pendingOrders, color: "bg-slate-400" },
   ];
 
@@ -286,12 +286,12 @@ export default function AdvancedAnalytics() {
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-[var(--color-outline)] mb-1">Repeat Orders</p>
-              <p className="text-3xl font-black text-blue-600">{repeatOrderPct}%</p>
+              <p className="text-3xl font-black text-accent">{repeatOrderPct}%</p>
               <p className="text-xs text-[var(--color-outline-variant)] mt-1">Avg {avgOrdersPerCustomer} orders/customer</p>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
               <p className="text-sm text-[var(--color-outline)] mb-1">Avg Delivery Time</p>
-              <p className="text-3xl font-black text-purple-600">{avgDeliveryMinutes} min</p>
+              <p className="text-3xl font-black text-accent">{avgDeliveryMinutes} min</p>
               <p className="text-xs text-[var(--color-outline-variant)] mt-1">Across {ordersWithDeliveryTime.length} deliveries</p>
             </div>
             <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-lg">
@@ -420,8 +420,8 @@ export default function AdvancedAnalytics() {
                 }}
                 className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[var(--color-primary)] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-blue-600">group</span>
+                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                  <span className="material-symbols-outlined text-accent">group</span>
                 </div>
                 <div className="text-left">
                   <p className="font-bold text-[var(--color-on-surface)]">User Analytics</p>
@@ -444,8 +444,8 @@ export default function AdvancedAnalytics() {
                 }}
                 className="p-4 border-2 border-[var(--color-border-subtle)] rounded-xl hover:border-[var(--color-primary)] hover:bg-pink-50 transition-all flex items-center gap-4"
               >
-                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                  <span className="material-symbols-outlined text-purple-600">trending_up</span>
+                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                  <span className="material-symbols-outlined text-accent">trending_up</span>
                 </div>
                 <div className="text-left">
                   <p className="font-bold text-[var(--color-on-surface)]">Performance</p>
@@ -588,13 +588,13 @@ export default function AdvancedAnalytics() {
                   <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{activeVendors}</p>
                   <p className="text-xs text-[var(--color-outline)]">Active Vendors</p>
                 </div>
-                <div className="p-4 bg-blue-50 rounded-xl">
-                  <span className="material-symbols-outlined text-blue-600 text-2xl">two_wheeler</span>
+                <div className="p-4 bg-accent/10 rounded-xl">
+                  <span className="material-symbols-outlined text-accent text-2xl">two_wheeler</span>
                   <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{onlineRiders}</p>
                   <p className="text-xs text-[var(--color-outline)]">Online Riders</p>
                 </div>
-                <div className="p-4 bg-purple-50 rounded-xl">
-                  <span className="material-symbols-outlined text-purple-600 text-2xl">timer</span>
+                <div className="p-4 bg-accent/10 rounded-xl">
+                  <span className="material-symbols-outlined text-accent text-2xl">timer</span>
                   <p className="text-2xl font-black text-[var(--color-on-surface)] mt-2">{avgDeliveryMinutes > 0 ? `${avgDeliveryMinutes}m` : "N/A"}</p>
                   <p className="text-xs text-[var(--color-outline)]">Avg Delivery Time</p>
                 </div>
@@ -664,7 +664,7 @@ export default function AdvancedAnalytics() {
                       <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                         order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                         order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                        "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                        "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
                       }`}>
                         {order.status}
                       </span>
@@ -684,7 +684,7 @@ export default function AdvancedAnalytics() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
           <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">User Analytics</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl text-white">
+            <div className="p-6 bg-gradient-to-br from-accent to-accent/70 rounded-2xl text-white">
               <p className="text-xs font-bold opacity-80">Total Users</p>
               <p className="text-4xl font-black mt-2">{users.length}</p>
             </div>
@@ -714,12 +714,12 @@ export default function AdvancedAnalytics() {
               <p className="text-3xl font-black text-[var(--color-on-surface-variant)]">{vendors.length - activeVendors}</p>
               <p className="text-xs text-[var(--color-outline)]">Inactive</p>
             </div>
-            <div className="p-4 bg-blue-50 rounded-xl text-center">
-              <p className="text-3xl font-black text-blue-600">{topVendors.length}</p>
+            <div className="p-4 bg-accent/10 rounded-xl text-center">
+              <p className="text-3xl font-black text-accent">{topVendors.length}</p>
               <p className="text-xs text-[var(--color-outline)]">With Orders</p>
             </div>
-            <div className="p-4 bg-purple-50 rounded-xl text-center">
-              <p className="text-3xl font-black text-purple-600">
+            <div className="p-4 bg-accent/10 rounded-xl text-center">
+              <p className="text-3xl font-black text-accent">
                 ₹{topVendors[0] ? Math.round(topVendors[0][1].revenue / topVendors[0][1].orders) : 0}
               </p>
               <p className="text-xs text-[var(--color-outline)]">Top Avg Order</p>

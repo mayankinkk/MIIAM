@@ -69,7 +69,7 @@ export default function PartnerKOTPage() {
                   <p className="text-xs font-bold text-[var(--color-outline-variant)]">#{order.id.slice(0, 8).toUpperCase()}</p>
                   <p className="text-lg font-extrabold text-[var(--color-on-surface)] mt-0.5">{order.customer_name || "Guest"}</p>
                 </div>
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${order.status === ("confirmed" as OrderStatus) ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}`}>
+                <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${order.status === ("confirmed" as OrderStatus) ? "bg-amber-100 text-amber-700" : "bg-deal/10 text-deal"}`}>
                   {order.status}
                 </span>
               </div>
@@ -101,7 +101,7 @@ export default function PartnerKOTPage() {
                 {order.status === "accepted" && (
                   <button
                     onClick={() => updateStatus(order.id, "preparing")}
-                    className="flex-1 py-2.5 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700"
+                    className="flex-1 py-2.5 bg-primary text-on-primary text-xs font-bold rounded-xl hover:bg-primary-hover"
                   >
                     Start Preparing
                   </button>

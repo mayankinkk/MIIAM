@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { normalizeGradientClass } from "@/lib/gradient-utils";
 
 interface Promotion {
   id: string;
@@ -20,15 +21,15 @@ interface Promotion {
 const GRADIENT_OPTIONS = [
   { value: "from-orange-500 to-red-500", label: "Orange → Red" },
   { value: "from-green-500 to-emerald-500", label: "Green → Emerald" },
-  { value: "from-blue-500 to-indigo-500", label: "Blue → Indigo" },
-  { value: "from-purple-500 to-pink-500", label: "Purple → Pink" },
+  { value: "from-accent to-accent/70", label: "MIIAM Green" },
+  { value: "from-deal to-deal/70", label: "Deal Orange" },
   { value: "from-amber-500 to-orange-500", label: "Amber → Orange" },
   { value: "from-teal-500 to-cyan-500", label: "Teal → Cyan" },
   { value: "from-rose-500 to-pink-500", label: "Rose → Pink" },
   { value: "from-slate-700 to-slate-900", label: "Dark Slate" },
 ];
 
-const EMPTY_PROMO = { badge: "", title: "", subtitle: "", gradient: "from-blue-500 to-indigo-500", link_url: "" };
+const EMPTY_PROMO = { badge: "", title: "", subtitle: "", gradient: "from-accent to-accent/70", link_url: "" };
 
 export default function PromotionsManagement() {
   const supabase = useMemo(() => createClient(), []);
@@ -40,7 +41,7 @@ export default function PromotionsManagement() {
 
   async function loadPromos() {
     const { data } = await supabase.from("home_promotions").select("*").order("position");
-    if (data) setPromos(data);
+    if (data) setPromos(data.map((p: Promotion) => ({ ...p, gradient: normalizeGradientClass(p.gradient) })));
     setLoading(false);
   }
 

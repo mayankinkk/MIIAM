@@ -216,7 +216,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
       `}</style>
 
       <button onClick={() => setExpanded(!expanded)} className="w-full text-left" aria-expanded={expanded} aria-label={expanded ? "Collapse order details" : "Expand order details"}>
-        <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-brand-secondary to-indigo-600"}`}>
+        <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-brand-secondary to-accent/70"}`}>
           <div className="w-9 h-9 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center text-base flex-shrink-0">
             {phase === "pickup" ? "🏪" : "🏠"}
           </div>
@@ -243,7 +243,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
         <div style={{ animation: 'slide-up 0.25s ease' }}>
           {trackingInfo && (
             <div className="flex border-b border-[var(--color-border-subtle)]">
-              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50 dark:bg-green-900/20" : "bg-blue-50 dark:bg-blue-900/20"}`}>
+              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50 dark:bg-green-900/20" : "bg-accent/10 dark:bg-accent/20"}`}>
                 <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">ETA</p>
                 <p className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-brand-secondary"}`}>
                   {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
@@ -277,7 +277,7 @@ export default function ActiveDeliveryView({ order, riderId, onUpdateItemStatus,
             </div>
           )}
           <div className="px-4 pt-2 pb-1 flex gap-2">
-            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-blue-50 dark:bg-blue-900/20 px-4 py-2.5 rounded-lg flex items-center gap-1">
+            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-accent/10 dark:bg-accent/20 px-4 py-2.5 rounded-lg flex items-center gap-1">
               <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
               {showMap ? "Hide Map" : "Show Map"}
             </button>

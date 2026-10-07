@@ -218,7 +218,7 @@ export default function ReportsPage() {
     cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
     refunded: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
     pending: "bg-yellow-100 text-yellow-700",
-    processing: "bg-indigo-100 text-indigo-700",
+    processing: "bg-deal/10 text-deal",
     on_the_way: "bg-cyan-100 text-cyan-700",
   };
 

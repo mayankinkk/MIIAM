@@ -27,13 +27,13 @@ export default function PromotedPartners({ restaurants }: PromotedPartnersProps)
     <div className="px-4 pb-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-purple-500" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
+          <span className="material-symbols-outlined text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
           <h2 className="text-lg font-bold text-on-surface">{t.home.promotedPartners}</h2>
         </div>
       </div>
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {restaurants.map((restaurant) => (
-          <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-purple-500/30 transition-all">
+          <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-accent/40 transition-all">
             <div className="relative h-28 bg-surface-container">
               {restaurant.cover_image_url || restaurant.image_url ? (
                 <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />

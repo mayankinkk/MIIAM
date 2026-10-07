@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { normalizeGradientClass } from "@/lib/gradient-utils";
 import { useToastStore } from "@/lib/store/toastStore";
 
 interface HomeCategory {
@@ -14,8 +15,8 @@ interface HomeCategory {
 const DEFAULT_CATEGORIES: HomeCategory[] = [
   { id: "food?filter=under_99", label: "Under ₹99", icon: "local_fire_department", color: "from-orange-400 to-red-400" },
   { id: "food?filter=under_149", label: "Under ₹149", icon: "savings", color: "from-emerald-400 to-teal-400" },
-  { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-blue-400 to-indigo-400" },
-  { id: "food?filter=under_249", label: "Under ₹249", icon: "new_releases", color: "from-purple-400 to-pink-400" },
+  { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-accent to-accent/70" },
+  { id: "food?filter=under_249", label: "Under ₹249", icon: "new_releases", color: "from-deal to-deal/70" },
   { id: "food?filter=combos", label: "Combos", icon: "merge", color: "from-amber-400 to-orange-400" },
   { id: "food?filter=bakery", label: "Bakery", icon: "bakery_dining", color: "from-pink-400 to-rose-400" },
 ];
@@ -29,14 +30,14 @@ const ICON_OPTIONS = [
 const COLOR_OPTIONS = [
   { label: "Orange-Red", value: "from-orange-400 to-red-400" },
   { label: "Emerald-Teal", value: "from-emerald-400 to-teal-400" },
-  { label: "Blue-Indigo", value: "from-blue-400 to-indigo-400" },
-  { label: "Purple-Pink", value: "from-purple-400 to-pink-400" },
+  { label: "MIIAM Green", value: "from-accent to-accent/70" },
+  { label: "Deal Orange", value: "from-deal to-deal/70" },
   { label: "Amber-Orange", value: "from-amber-400 to-orange-400" },
   { label: "Pink-Rose", value: "from-pink-400 to-rose-400" },
   { label: "Green-Lime", value: "from-green-400 to-lime-400" },
-  { label: "Cyan-Blue", value: "from-cyan-400 to-blue-400" },
+  { label: "Cyan → Green", value: "from-cyan-400 to-accent/70" },
   { label: "Red-Pink", value: "from-red-400 to-pink-400" },
-  { label: "Indigo-Purple", value: "from-indigo-400 to-purple-400" },
+  { label: "Yellow → Green", value: "from-primary to-accent" },
 ];
 
 export default function AdminHomeCategoriesPage() {
@@ -59,7 +60,7 @@ export default function AdminHomeCategoriesPage() {
       if (data?.value) {
         const parsed = typeof data.value === "string" ? JSON.parse(data.value) : data.value;
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setCategories(parsed);
+          setCategories(parsed.map((c: HomeCategory) => ({ ...c, color: normalizeGradientClass(c.color) })));
           setLoading(false);
           return;
         }

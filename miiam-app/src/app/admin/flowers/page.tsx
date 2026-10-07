@@ -144,8 +144,8 @@ export default function FlowersAdmin() {
 
           <Link href="/admin/flowers/items" className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border border-[var(--color-border-subtle)] hover:border-[var(--color-primary)] hover:shadow-lg transition-all group">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-2xl text-blue-600">local_florist</span>
+              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                <span className="material-symbols-outlined text-2xl text-accent">local_florist</span>
               </div>
               <div>
                 <h3 className="font-bold text-[var(--color-on-surface)] group-hover:text-[var(--color-primary)]">Items</h3>

@@ -293,12 +293,12 @@ export default function OrderRefundPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+        <div className="mt-6 p-4 bg-accent/10 dark:bg-accent/20 border border-accent/30 dark:border-accent/40 rounded-xl">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-blue-600 dark:text-blue-400">info</span>
+            <span className="material-symbols-outlined text-accent">info</span>
             <div>
-              <p className="font-bold text-blue-700 dark:text-blue-300">{t.refund.refundTimeline}</p>
-              <p className="text-sm text-blue-600 dark:text-blue-400">
+              <p className="font-bold text-accent dark:text-accent">{t.refund.refundTimeline}</p>
+              <p className="text-sm text-accent">
                 {t.refund.refundTimelineDesc}
               </p>
             </div>

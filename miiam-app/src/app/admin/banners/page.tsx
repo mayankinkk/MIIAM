@@ -2,6 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { normalizeGradientClass } from "@/lib/gradient-utils";
 import ImageUpload from "@/components/ImageUpload";
 import BlurImage from "@/components/BlurImage";
 
@@ -29,7 +30,7 @@ export default function BannerManagement() {
 
   async function loadBanners() {
     const { data } = await supabase.from("banners").select("*").order("position");
-    if (data) setBanners(data);
+    if (data) setBanners(data.map((b: Banner) => ({ ...b, gradient: normalizeGradientClass(b.gradient) })));
     setLoading(false);
   }
 
@@ -270,8 +271,8 @@ export default function BannerManagement() {
                   <option value="from-primary to-primary-container">Primary</option>
                   <option value="from-orange-500 to-red-500">Orange-Red</option>
                   <option value="from-green-500 to-emerald-500">Green</option>
-                  <option value="from-blue-500 to-indigo-500">Blue-Indigo</option>
-                  <option value="from-violet-600 to-purple-400">Violet-Purple</option>
+                  <option value="from-accent to-accent/70">MIIAM Green</option>
+                  <option value="from-deal to-deal/70">Deal Orange</option>
                   <option value="from-amber-500 to-yellow-300">Amber-Yellow</option>
                   <option value="from-pink-500 to-rose-400">Pink-Rose</option>
                   <option value="from-teal-500 to-cyan-400">Teal-Cyan</option>

@@ -206,10 +206,10 @@ export default function AdminFoodsDashboard() {
 
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
-    accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-    preparing: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+    accepted: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
+    preparing: "bg-accent/10 text-accent dark:bg-accent/20 dark:text-accent",
     shopping: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
-    picked_up: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
+    picked_up: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
     on_the_way: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
     delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
     cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
@@ -518,7 +518,7 @@ export default function AdminFoodsDashboard() {
                           </>
                         )}
                         {order.status === "accepted" && (
-                          <button onClick={() => updateOrderStatus(order.id!, "preparing")} className="px-2 py-1 bg-purple-50 text-purple-600 rounded-lg text-[10px] font-bold hover:bg-purple-100">Prepare</button>
+                          <button onClick={() => updateOrderStatus(order.id!, "preparing")} className="px-2 py-1 bg-accent/10 text-accent rounded-lg text-[10px] font-bold hover:bg-accent/20">Prepare</button>
                         )}
                         {order.status === "preparing" && (
                           <button onClick={() => updateOrderStatus(order.id!, "ready_for_pickup")} className="px-2 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold hover:bg-orange-100">Ready</button>

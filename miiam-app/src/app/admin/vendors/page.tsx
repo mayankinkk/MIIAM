@@ -1134,7 +1134,7 @@ export default function AdminVendorsPage() {
                     </div>
                   </label>
 
-                  <label htmlFor="edit-is-promoted" className="flex items-center justify-between p-4 bg-purple-50 rounded-xl cursor-pointer border-2 border-transparent hover:border-purple-200 transition-all">
+                  <label htmlFor="edit-is-promoted" className="flex items-center justify-between p-4 bg-accent/10 rounded-xl cursor-pointer border-2 border-transparent hover:border-accent/20 transition-all">
                     <input
                       id="edit-is-promoted"
                       type="checkbox"
@@ -1142,15 +1142,15 @@ export default function AdminVendorsPage() {
                       className="sr-only"
                     />
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <span className="material-symbols-outlined text-purple-600">verified</span>
+                      <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                        <span className="material-symbols-outlined text-accent">verified</span>
                       </div>
                       <div>
                         <p className="font-bold text-sm text-[var(--color-on-surface)]">Promoted</p>
                         <p className="text-xs text-[var(--color-outline)]">Promoted section</p>
                       </div>
                     </div>
-                    <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isPromoted ? "bg-purple-500" : "bg-[var(--color-surface-container-high)]"}`}>
+                    <div className={`w-12 h-7 rounded-full p-1 transition-colors ${editForm.isPromoted ? "bg-accent" : "bg-[var(--color-surface-container-high)]"}`}>
                       <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${editForm.isPromoted ? "translate-x-5" : ""}`} />
                     </div>
                   </label>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { normalizeGradientClass } from "@/lib/gradient-utils";
 
 interface Category {
   id: string;
@@ -28,7 +29,7 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
             style={{ animationDelay: `${index * 50}ms` }}
           >
             <div className="w-full aspect-[6/5] rounded-xl bg-surface-container-lowest border border-outline-variant/70 flex items-center justify-center overflow-hidden group-hover:border-outline-variant group-hover:shadow-sm group-active:scale-95 transition-all duration-200">
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat.color || "from-primary to-primary-dim"} flex items-center justify-center`}>
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${normalizeGradientClass(cat.color) || "from-primary to-primary-dim"} flex items-center justify-center`}>
                 <span className="material-symbols-outlined text-white text-xl group-hover:scale-110 transition-transform duration-200">{cat.icon}</span>
               </div>
             </div>

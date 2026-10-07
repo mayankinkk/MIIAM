@@ -119,7 +119,7 @@ export default function RiderTrainingPage() {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white p-6 pb-8 rounded-b-[3rem]">
+      <header className="bg-gradient-to-br from-accent to-cyan-500 text-white p-6 pb-8 rounded-b-[3rem]">
         <div className="flex justify-between items-center">
           <Link href="/rider/dashboard" className="text-3xl font-black tracking-tighter">MIIAM</Link>
         </div>
@@ -132,16 +132,16 @@ export default function RiderTrainingPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-lg">
           <div className="flex items-center justify-between mb-3">
             <h3 className="font-bold text-[var(--color-on-surface)]">Your Progress</h3>
-            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">
+            <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full">
               {watchedCount}/{videos.length} completed
             </span>
           </div>
           <div className="w-full bg-[var(--color-surface-container)] rounded-full h-3 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full" style={{ width: `${(watchedCount / videos.length) * 100}%` }} />
+            <div className="h-full bg-gradient-to-r from-accent to-cyan-500 rounded-full" style={{ width: `${(watchedCount / videos.length) * 100}%` }} />
           </div>
           <div className="flex justify-between mt-2 text-xs">
             <span className="text-[var(--color-outline-variant)]">Keep learning!</span>
-            <span className="text-blue-600 font-bold">{pointsEarned} points earned</span>
+            <span className="text-accent font-bold">{pointsEarned} points earned</span>
           </div>
         </div>
 
@@ -222,10 +222,10 @@ export default function RiderTrainingPage() {
         </div>
 
         {/* Certificate */}
-        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-5 rounded-2xl border border-purple-100 text-center">
+        <div className="bg-gradient-to-r from-deal to-accent/70 p-5 rounded-2xl border border-accent/40 text-center">
           <div className="text-4xl mb-2">🏆</div>
-          <h3 className="font-bold text-purple-800">Complete All Training</h3>
-          <p className="text-xs text-purple-600 mb-3">Get your official MIIAM rider certificate</p>
+          <h3 className="font-bold text-accent">Complete All Training</h3>
+          <p className="text-xs text-accent mb-3">Get your official MIIAM rider certificate</p>
           <button onClick={() => {
             if (watchedCount === videos.length) {
               // Generate certificate as downloadable HTML
@@ -241,7 +241,7 @@ export default function RiderTrainingPage() {
             } else {
               import("@/lib/store/toastStore").then(m => m.useToastStore.getState().addToast(`Complete all ${videos.length} videos to unlock your certificate (${watchedCount}/${videos.length})`, "info"));
             }
-          }} className="px-6 py-2 bg-purple-500 text-white font-bold rounded-full text-sm">
+          }} className="px-6 py-2 bg-accent text-white font-bold rounded-full text-sm">
             {watchedCount === videos.length ? "Download Certificate 🎉" : `${watchedCount}/${videos.length} Videos`}
           </button>
         </div>
@@ -259,7 +259,7 @@ export default function RiderTrainingPage() {
               <p className="text-sm text-[var(--color-outline)] mb-4">{selectedVideo.description}</p>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-[var(--color-outline-variant)]">{selectedVideo.duration}</span>
-                <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">{selectedVideo.category}</span>
+                <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded">{selectedVideo.category}</span>
               </div>
               <button 
                 onClick={completeVideo}

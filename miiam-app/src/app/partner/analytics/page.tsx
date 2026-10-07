@@ -361,7 +361,7 @@ export default function VendorAnalytics() {
                 <div key={h.hour} className="flex items-center gap-3">
                   <span className="text-xs text-[var(--color-outline)] w-12 font-medium">{label}</span>
                   <div className="flex-1 h-5 bg-[var(--color-surface-subtle)] rounded-lg overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-lg transition-all" style={{ width: `${Math.max(pct, 2)}%` }} />
+                    <div className="h-full bg-gradient-to-r from-accent to-accent/70 rounded-lg transition-all" style={{ width: `${Math.max(pct, 2)}%` }} />
                   </div>
                   <span className="text-xs text-[var(--color-outline)] w-16 text-right font-medium">{h.orders} orders</span>
                   <span className="text-xs text-[var(--color-outline-variant)] w-16 text-right">₹{h.revenue.toFixed(0)}</span>
@@ -408,10 +408,10 @@ export default function VendorAnalytics() {
                     : "Insufficient data for recommendation"}
                 </p>
               </div>
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-center">
-                <p className="text-xs text-blue-600 dark:text-blue-400 mb-1 font-bold uppercase tracking-wider">Avg Prep Time</p>
-                <p className="text-3xl font-black text-blue-700 dark:text-blue-300">{avgPrepTime ?? "—"}</p>
-                <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">minutes</p>
+              <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl text-center">
+                <p className="text-xs text-accent mb-1 font-bold uppercase tracking-wider">Avg Prep Time</p>
+                <p className="text-3xl font-black text-accent dark:text-accent">{avgPrepTime ?? "—"}</p>
+                <p className="text-xs text-accent dark:text-accent mt-1">minutes</p>
               </div>
               <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
                 <p className="text-xs text-green-600 dark:text-green-400 mb-1 font-bold uppercase tracking-wider">On-time Rate</p>
@@ -477,7 +477,7 @@ export default function VendorAnalytics() {
             </div>
             <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
               <p className="text-xs text-[var(--color-outline)] mb-1">Delivery Time</p>
-              <p className="text-2xl font-black text-blue-600">
+              <p className="text-2xl font-black text-accent">
                 {vendor?.delivery_time_min || vendor?.delivery_time_minutes || "30"} min
               </p>
               <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">vs avg {avgCompetitorDeliveryMin} min</p>
@@ -488,7 +488,7 @@ export default function VendorAnalytics() {
             </div>
             <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
               <p className="text-xs text-[var(--color-outline)] mb-1">Reviews</p>
-              <p className="text-2xl font-black text-purple-600">{vendor?.review_count || 0}</p>
+              <p className="text-2xl font-black text-accent">{vendor?.review_count || 0}</p>
               <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">competitors in area</p>
             </div>
           </div>
@@ -524,14 +524,14 @@ export default function VendorAnalytics() {
       {forecast && (
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Demand forecast by day of week">
           <div className="flex items-center gap-2 mb-4">
-            <span className="material-symbols-outlined text-purple-500">trending_up</span>
+            <span className="material-symbols-outlined text-accent">trending_up</span>
             <h3 className="font-bold text-[var(--color-on-surface)]">Demand Forecast</h3>
             <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Based on last 90 days</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-xl text-center">
-              <p className="text-xs text-purple-600 dark:text-purple-400 mb-1">Avg Daily Orders</p>
-              <p className="text-2xl font-black text-purple-700 dark:text-purple-300">{forecast.avgDailyOrders}</p>
+            <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl text-center">
+              <p className="text-xs text-accent dark:text-accent mb-1">Avg Daily Orders</p>
+              <p className="text-2xl font-black text-accent dark:text-accent">{forecast.avgDailyOrders}</p>
             </div>
             <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
               <p className="text-xs text-green-600 dark:text-green-400 mb-1">Busiest Day</p>
@@ -543,10 +543,10 @@ export default function VendorAnalytics() {
               <p className="text-2xl font-black text-amber-700 dark:text-amber-300">{forecast.slowDay.name}</p>
               <p className="text-[10px] text-amber-500 dark:text-amber-400">{forecast.slowDay.orders} orders</p>
             </div>
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-center">
-              <p className="text-xs text-blue-600 dark:text-blue-400 mb-1">Projected Weekly</p>
-              <p className="text-2xl font-black text-blue-700 dark:text-blue-300">{forecast.projectedWeekly}</p>
-              <p className="text-[10px] text-blue-500 dark:text-blue-400">orders</p>
+            <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl text-center">
+              <p className="text-xs text-accent mb-1">Projected Weekly</p>
+              <p className="text-2xl font-black text-accent dark:text-accent">{forecast.projectedWeekly}</p>
+              <p className="text-[10px] text-accent dark:text-accent">orders</p>
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2">
@@ -556,7 +556,7 @@ export default function VendorAnalytics() {
                 <div key={d.day} className="flex flex-col items-center gap-2 min-w-[60px]">
                   <span className="text-xs font-bold text-[var(--color-outline)]">{d.day}</span>
                   <div className="w-8 h-24 bg-[var(--color-surface-container)] rounded-lg overflow-hidden relative">
-                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-purple-500 to-purple-300 rounded-lg transition-all" style={{ height: `${(d.orders / maxOrders) * 100}%` }} />
+                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-deal to-deal/70 rounded-lg transition-all" style={{ height: `${(d.orders / maxOrders) * 100}%` }} />
                   </div>
                   <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)]">{d.orders}</span>
                 </div>
@@ -638,7 +638,7 @@ export default function VendorAnalytics() {
         return reorderItems.length > 0 ? (
           <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
             <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-indigo-500">replay</span>
+              <span className="material-symbols-outlined text-accent">replay</span>
               <h3 className="font-bold text-[var(--color-on-surface)]">Re-order Analysis</h3>
               <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Customer favorites</span>
             </div>
@@ -655,7 +655,7 @@ export default function VendorAnalytics() {
                   {reorderItems.map((item) => (
                     <tr key={item.name} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
                       <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">{item.name}</td>
-                      <td className="p-3 text-sm font-bold text-indigo-600 text-right">{item.repeatCustomers}/{item.totalCustomers}</td>
+                      <td className="p-3 text-sm font-bold text-accent text-right">{item.repeatCustomers}/{item.totalCustomers}</td>
                       <td className="p-3 text-right">
                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                           item.reorderRate >= 50 ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
@@ -680,7 +680,7 @@ export default function VendorAnalytics() {
             { status: "delivered", label: "Delivered", textClass: "text-green-600 dark:text-green-400" },
             { status: "cancelled", label: "Cancelled", textClass: "text-red-600 dark:text-red-400" },
             { status: "pending", label: "Pending", textClass: "text-amber-600 dark:text-amber-400" },
-            { status: "accepted", label: "In Progress", textClass: "text-blue-600 dark:text-blue-400" },
+            { status: "accepted", label: "In Progress", textClass: "text-accent" },
           ] as const).map((s) => {
             const count = filteredOrders.filter((o) => o.status === s.status).length;
             const pct = filteredOrders.length > 0 ? (count / filteredOrders.length) * 100 : 0;

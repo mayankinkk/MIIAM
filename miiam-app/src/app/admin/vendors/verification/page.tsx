@@ -211,8 +211,8 @@ export default function VerificationPage() {
                     <td className="p-4">
                       <div className="flex gap-1">
                         {vendor.gst_number && <span className="w-5 h-5 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 flex items-center justify-center text-[10px] font-bold" title={`GST: ${vendor.gst_number}`}>G</span>}
-                        {vendor.fssai_number && <span className="w-5 h-5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 flex items-center justify-center text-[10px] font-bold" title={`FSSAI: ${vendor.fssai_number}`}>F</span>}
-                        {vendor.pan_number && <span className="w-5 h-5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 flex items-center justify-center text-[10px] font-bold" title={`PAN: ${vendor.pan_number}`}>P</span>}
+                        {vendor.fssai_number && <span className="w-5 h-5 rounded bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent flex items-center justify-center text-[10px] font-bold" title={`FSSAI: ${vendor.fssai_number}`}>F</span>}
+                        {vendor.pan_number && <span className="w-5 h-5 rounded bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent flex items-center justify-center text-[10px] font-bold" title={`PAN: ${vendor.pan_number}`}>P</span>}
                         {!vendor.gst_number && !vendor.fssai_number && !vendor.pan_number && (
                           <span className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">None</span>
                         )}

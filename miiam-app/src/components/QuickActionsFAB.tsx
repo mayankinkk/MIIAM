@@ -13,9 +13,9 @@ interface QuickAction {
 
 const defaultActions: QuickAction[] = [
   { icon: "restaurant", label: "Order Food", href: "/app/food", color: "bg-emerald-500" },
-  { icon: "home_repair_service", label: "Book Service", href: "/app/services", color: "bg-blue-500" },
+  { icon: "home_repair_service", label: "Book Service", href: "/app/services", color: "bg-accent" },
   { icon: "receipt_long", label: "My Orders", href: "/app/orders", color: "bg-amber-500" },
-  { icon: "support_agent", label: "Get Help", href: "/app/support", color: "bg-purple-500" },
+  { icon: "support_agent", label: "Get Help", href: "/app/support", color: "bg-accent" },
 ];
 
 interface QuickActionsFABProps {

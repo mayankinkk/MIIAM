@@ -24,8 +24,8 @@ interface StoreItem {
 const BUCKET_OPTIONS = [
   { value: "under_99", label: "Under ₹99", emoji: "🔥", color: "bg-orange-100 text-orange-700 border-orange-200" },
   { value: "under_149", label: "Under ₹149", emoji: "💰", color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
-  { value: "under_199", label: "Under ₹199", emoji: "⭐", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { value: "under_249", label: "Under ₹249", emoji: "🎯", color: "bg-purple-100 text-purple-700 border-purple-200" },
+  { value: "under_199", label: "Under ₹199", emoji: "⭐", color: "bg-deal/10 text-deal border-accent/30" },
+  { value: "under_249", label: "Under ₹249", emoji: "🎯", color: "bg-accent/10 text-accent border-accent/20" },
 ];
 
 const EMPTY_FORM = {
@@ -269,7 +269,7 @@ export default function StoreItemsAdmin() {
             {csvUploading ? "Importing..." : "Import CSV"}
             <input type="file" accept=".csv" onChange={handleCsvUpload} className="hidden" disabled={csvUploading} />
           </label>
-          <button onClick={openCreateModal} className="px-5 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all shadow-md shadow-blue-600/20 flex items-center gap-2">
+          <button onClick={openCreateModal} className="px-5 py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:bg-primary-hover active:scale-95 transition-all shadow-md shadow-accent/20 flex items-center gap-2">
             <span className="material-symbols-outlined text-lg">add</span>
             Add Item
           </button>
@@ -294,7 +294,7 @@ export default function StoreItemsAdmin() {
       <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm mb-4 flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[200px]">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg">search</span>
-          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search items or vendors..." className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500" />
+          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search items or vendors..." className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-accent/40" />
         </div>
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => setFilterCategory("all")} className={`px-3 py-2 rounded-lg text-xs font-bold transition-all ${filterCategory === "all" ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>All</button>
@@ -309,7 +309,7 @@ export default function StoreItemsAdmin() {
       {/* Items Table */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-accent/30 border-t-primary rounded-full animate-spin" />
         </div>
       ) : filteredItems.length === 0 ? (
         <div className="bg-white rounded-2xl p-10 text-center border border-gray-100 shadow-sm">
@@ -369,13 +369,13 @@ export default function StoreItemsAdmin() {
                         <span className="text-xs text-gray-500">{item.vendor_name || "—"}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <button onClick={() => handleToggleActive(item)} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${item.is_active ? "bg-blue-600" : "bg-gray-300"}`}>
+                        <button onClick={() => handleToggleActive(item)} className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${item.is_active ? "bg-accent" : "bg-gray-300"}`}>
                           <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${item.is_active ? "translate-x-4.5" : "translate-x-0.5"}`} />
                         </button>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => openEditModal(item)} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                          <button onClick={() => openEditModal(item)} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-accent/10 hover:text-accent transition-colors">
                             <span className="material-symbols-outlined text-sm">edit</span>
                           </button>
                           <button onClick={() => handleDelete(item)} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors">
@@ -436,24 +436,24 @@ export default function StoreItemsAdmin() {
               {/* Name */}
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Item Name *</label>
-                <input type="text" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500" placeholder="e.g. Chicken Biryani" />
+                <input type="text" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-accent/40" placeholder="e.g. Chicken Biryani" />
               </div>
 
               {/* Description */}
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Description</label>
-                <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 resize-none" placeholder="Short description..." />
+                <textarea value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} rows={2} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-accent/40 resize-none" placeholder="Short description..." />
               </div>
 
               {/* Price Row */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Price (₹) *</label>
-                  <input type="number" value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500" placeholder="99" min="0" />
+                  <input type="number" value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-accent/40" placeholder="99" min="0" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Original Price (₹)</label>
-                  <input type="number" value={form.original_price} onChange={(e) => setForm((p) => ({ ...p, original_price: e.target.value }))} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500" placeholder="149 (for strikethrough)" min="0" />
+                  <input type="number" value={form.original_price} onChange={(e) => setForm((p) => ({ ...p, original_price: e.target.value }))} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-accent/40" placeholder="149 (for strikethrough)" min="0" />
                 </div>
               </div>
 
@@ -473,11 +473,11 @@ export default function StoreItemsAdmin() {
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">Vendor / Restaurant</label>
                 <div className="relative">
-                  <input type="text" value={form.vendor_name || vendorSearch} onChange={(e) => { setVendorSearch(e.target.value); setForm((p) => ({ ...p, vendor_name: "", vendor_id: "" })); }} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500" placeholder="Search restaurant name..." />
+                  <input type="text" value={form.vendor_name || vendorSearch} onChange={(e) => { setVendorSearch(e.target.value); setForm((p) => ({ ...p, vendor_name: "", vendor_id: "" })); }} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-accent/40" placeholder="Search restaurant name..." />
                   {vendorResults.length > 0 && !form.vendor_id && (
                     <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-10 max-h-48 overflow-y-auto">
                       {vendorResults.map((v) => (
-                        <button key={v.id} onClick={() => { setForm((p) => ({ ...p, vendor_id: v.id, vendor_name: v.shop_name })); setVendorResults([]); setVendorSearch(""); }} className="w-full text-left px-4 py-2.5 text-sm hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0">
+                        <button key={v.id} onClick={() => { setForm((p) => ({ ...p, vendor_id: v.id, vendor_name: v.shop_name })); setVendorResults([]); setVendorSearch(""); }} className="w-full text-left px-4 py-2.5 text-sm hover:bg-accent/10 transition-colors border-b border-gray-50 last:border-0">
                           {v.shop_name}
                         </button>
                       ))}
@@ -486,7 +486,7 @@ export default function StoreItemsAdmin() {
                 </div>
                 {form.vendor_id && (
                   <div className="mt-1.5 flex items-center gap-2">
-                    <span className="text-xs text-blue-600 font-bold">{form.vendor_name}</span>
+                    <span className="text-xs text-accent font-bold">{form.vendor_name}</span>
                     <button onClick={() => setForm((p) => ({ ...p, vendor_id: "", vendor_name: "" }))} className="text-xs text-gray-400 hover:text-red-500">✕</button>
                   </div>
                 )}
@@ -501,14 +501,14 @@ export default function StoreItemsAdmin() {
                   <span className="text-sm font-bold text-gray-700">Veg</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
-                  <div onClick={() => setForm((p) => ({ ...p, is_active: !p.is_active }))} className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? "bg-blue-600" : "bg-gray-300"}`}>
+                  <div onClick={() => setForm((p) => ({ ...p, is_active: !p.is_active }))} className={`relative w-10 h-6 rounded-full transition-colors ${form.is_active ? "bg-accent" : "bg-gray-300"}`}>
                     <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${form.is_active ? "left-[18px]" : "left-0.5"}`} />
                   </div>
                   <span className="text-sm font-bold text-gray-700">Active</span>
                 </label>
                 <div className="flex-1">
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Sort</label>
-                  <input type="number" value={form.sort_order} onChange={(e) => setForm((p) => ({ ...p, sort_order: e.target.value }))} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" placeholder="0" />
+                  <input type="number" value={form.sort_order} onChange={(e) => setForm((p) => ({ ...p, sort_order: e.target.value }))} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-accent/40" placeholder="0" />
                 </div>
               </div>
             </div>
@@ -516,7 +516,7 @@ export default function StoreItemsAdmin() {
             {/* Footer */}
             <div className="sticky bottom-0 bg-white border-t border-gray-100 px-6 py-4 flex gap-3">
               <button onClick={() => setShowModal(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm hover:bg-gray-200 transition-all">Cancel</button>
-              <button onClick={handleSave} disabled={uploading} className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm hover:bg-blue-700 transition-all disabled:opacity-50 shadow-md shadow-blue-600/20">
+              <button onClick={handleSave} disabled={uploading} className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:bg-primary-hover transition-all disabled:opacity-50 shadow-md shadow-accent/20">
                 {editingItem ? "Update" : "Create"}
               </button>
             </div>

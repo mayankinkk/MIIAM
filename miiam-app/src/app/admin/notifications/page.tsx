@@ -226,12 +226,12 @@ export default function NotificationCenter() {
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className={`p-4 flex items-start gap-4 hover:bg-[var(--color-surface-subtle)] transition-colors ${!notification.is_read ? "bg-blue-50/30 dark:bg-blue-900/10" : ""}`}
+              className={`p-4 flex items-start gap-4 hover:bg-[var(--color-surface-subtle)] transition-colors ${!notification.is_read ? "bg-accent/10 dark:bg-accent/20" : ""}`}
             >
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center ${
                   notification.type === "order"
-                    ? "bg-blue-100 dark:bg-blue-900/30"
+                    ? "bg-accent/10 dark:bg-accent/20"
                     : notification.type === "promo"
                       ? "bg-amber-100 dark:bg-amber-900/30"
                       : "bg-[var(--color-surface-container)]"
@@ -240,7 +240,7 @@ export default function NotificationCenter() {
                 <span
                   className={`material-symbols-outlined ${
                     notification.type === "order"
-                      ? "text-blue-600 dark:text-blue-400"
+                      ? "text-accent"
                       : notification.type === "promo"
                         ? "text-amber-600 dark:text-amber-400"
                         : "text-[var(--color-on-surface-variant)]"
@@ -436,14 +436,14 @@ export default function NotificationCenter() {
                 <div className="flex items-start gap-3">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
                     newNotification.type === "order"
-                      ? "bg-blue-100 dark:bg-blue-900/30"
+                      ? "bg-accent/10 dark:bg-accent/20"
                       : newNotification.type === "promo"
                         ? "bg-amber-100 dark:bg-amber-900/30"
                         : "bg-[var(--color-surface-container)]"
                   }`}>
                     <span className={`material-symbols-outlined text-sm ${
                       newNotification.type === "order"
-                        ? "text-blue-600 dark:text-blue-400"
+                        ? "text-accent"
                         : newNotification.type === "promo"
                           ? "text-amber-600 dark:text-amber-400"
                           : "text-[var(--color-on-surface-variant)]"

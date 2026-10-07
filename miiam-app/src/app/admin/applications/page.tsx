@@ -112,7 +112,7 @@ export default function AdminApplicationsPage() {
         {[
           { label: "Total Applications", value: stats.total, color: "bg-slate-800", icon: "assignments" },
           { label: "Pending", value: stats.pending, color: "bg-amber-500", icon: "pending" },
-          { label: "Reviewed", value: stats.reviewed, color: "bg-blue-500", icon: "fact_check" },
+          { label: "Reviewed", value: stats.reviewed, color: "bg-accent", icon: "fact_check" },
           { label: "Hired", value: stats.hired, color: "bg-green-500", icon: "check_circle" },
         ].map((stat) => (
           <div key={stat.label} className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
@@ -196,7 +196,7 @@ export default function AdminApplicationsPage() {
                           app.status === "pending" 
                             ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" 
                             : app.status === "reviewed"
-                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                            ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
                             : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                         }`}
                       >
@@ -376,7 +376,7 @@ export default function AdminApplicationsPage() {
               <div className="flex gap-4 pt-4 border-t">
                 <button
                   onClick={() => { updateStatus(selectedApp.id, "reviewed"); setSelectedApp(null); }}
-                  className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700"
+                  className="flex-1 py-3 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-hover"
                 >
                   Mark Reviewed
                 </button>

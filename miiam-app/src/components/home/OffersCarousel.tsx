@@ -1,4 +1,6 @@
 import Link from "next/link";
+import BlurImage from "@/components/BlurImage";
+import { normalizeGradientClass } from "@/lib/gradient-utils";
 
 interface Offer {
   id: string;
@@ -6,6 +8,8 @@ interface Offer {
   subtitle: string;
   gradient: string;
   badge: string;
+  link_url?: string | null;
+  image_url?: string | null;
 }
 
 interface OffersCarouselProps {
@@ -21,10 +25,16 @@ export default function OffersCarousel({ offers }: OffersCarouselProps) {
         {offers.map((offer) => (
           <Link
             key={offer.id}
-            href="/app/home"
+            href={offer.link_url || "/app/home"}
             className="snap-start shrink-0 w-[calc(100%-40px)] sm:w-80"
           >
-            <div className={`relative h-36 rounded-xl overflow-hidden bg-gradient-to-r ${offer.gradient} shadow-[0_2px_8px_rgba(0,0,0,0.08)]`}>
+            <div className={`relative h-36 rounded-xl overflow-hidden bg-gradient-to-r ${normalizeGradientClass(offer.gradient)} shadow-[0_2px_8px_rgba(0,0,0,0.08)]`}>
+              {offer.image_url && (
+                <>
+                  <BlurImage src={offer.image_url} alt={offer.title} fill className="object-cover" sizes="(max-width: 640px) 100vw, 320px" />
+                  <div className="absolute inset-0 bg-black/35" />
+                </>
+              )}
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIi8+PC9zdmc+')] opacity-50" />
               <div className="absolute top-4 left-5">
                 <span className="text-[10px] font-black bg-white/20 backdrop-blur-sm text-white px-2.5 py-1 rounded-full uppercase tracking-wider">

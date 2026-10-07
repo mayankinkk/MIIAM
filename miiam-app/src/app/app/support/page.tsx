@@ -14,10 +14,10 @@ interface ChatMessage {
 }
 
 const quickActions = [
-  { id: "track", icon: "local_shipping", label: "Track my order", color: "bg-blue-100 text-blue-700" },
+  { id: "track", icon: "local_shipping", label: "Track my order", color: "bg-deal/10 text-deal" },
   { id: "cancel", icon: "cancel", label: "Cancel order", color: "bg-red-100 text-red-700" },
   { id: "refund", icon: "currency_exchange", label: "Request refund", color: "bg-amber-100 text-amber-700" },
-  { id: "report", icon: "report_problem", label: "Report an issue", color: "bg-purple-100 text-purple-700" },
+  { id: "report", icon: "report_problem", label: "Report an issue", color: "bg-accent/10 text-accent" },
   { id: "review", icon: "star", label: "Write a review", color: "bg-green-100 text-green-700" },
   { id: "more", icon: "more_horiz", label: "More help", color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" },
 ];

@@ -20,7 +20,7 @@ export default function RecentlyViewed({ items }: RecentlyViewedProps) {
     <div className="px-4 pb-3">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-blue-500" style={{ fontVariationSettings: "'FILL' 1" }}>history</span>
+          <span className="material-symbols-outlined text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>history</span>
           <h2 className="text-lg font-bold text-on-surface">Recently Viewed</h2>
         </div>
       </div>

@@ -180,9 +180,9 @@ export default function FlowersItemsPage() {
           <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL ITEMS</p>
           <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
         </div>
-        <div className="bg-purple-50 p-4 rounded-xl border border-purple-200">
-          <p className="text-purple-600 text-xs font-bold">CATEGORIES</p>
-          <p className="text-2xl font-black text-purple-700 mt-1">{stats.categories}</p>
+        <div className="bg-accent/10 p-4 rounded-xl border border-accent/20">
+          <p className="text-accent text-xs font-bold">CATEGORIES</p>
+          <p className="text-2xl font-black text-accent mt-1">{stats.categories}</p>
         </div>
         <div className="bg-rose-50 p-4 rounded-xl border border-rose-200">
           <p className="text-rose-600 text-xs font-bold">BOUQUETS</p>

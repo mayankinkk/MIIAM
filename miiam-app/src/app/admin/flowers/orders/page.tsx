@@ -8,15 +8,15 @@ import { useToastStore } from "@/lib/store/toastStore";
 
 const statusColors: Record<string, string> = {
   delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-  preparing: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  shipped: "bg-purple-100 text-purple-700",
+  preparing: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
+  shipped: "bg-accent/10 text-accent",
   cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
   pending: "bg-yellow-100 text-yellow-700",
 };
 
 const typeColors: Record<string, string> = {
   bouquet: "bg-rose-100 text-rose-700",
-  arrangement: "bg-purple-100 text-purple-700",
+  arrangement: "bg-accent/10 text-accent",
   combo: "bg-pink-100 text-pink-700",
   hamper: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
 };

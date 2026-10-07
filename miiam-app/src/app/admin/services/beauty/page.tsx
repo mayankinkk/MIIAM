@@ -113,8 +113,8 @@ export default function BeautyServicesAdmin() {
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <span className="material-symbols-outlined text-purple-600">event</span>
+            <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+              <span className="material-symbols-outlined text-accent">event</span>
             </div>
             <div>
               <div className="text-2xl font-black text-[var(--color-on-surface)]">{todaysBookings}</div>

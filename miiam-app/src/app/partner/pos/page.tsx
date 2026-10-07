@@ -187,16 +187,16 @@ export default function PartnerPOS() {
   const statusActions: Record<string, { label: string; next: OrderStatus; color: string }[] | null> = {
     pending: [{ label: "Accept Order", next: "accepted", color: "bg-green-600 hover:bg-green-700" }],
     accepted: [{ label: "Start Preparing", next: "preparing", color: "bg-amber-600 hover:bg-amber-700" }],
-    preparing: [{ label: "Mark Ready for Pickup", next: "ready_for_pickup", color: "bg-indigo-600 hover:bg-indigo-700" }],
+    preparing: [{ label: "Mark Ready for Pickup", next: "ready_for_pickup", color: "bg-accent hover:bg-primary-hover" }],
     ready_for_pickup: null,
     on_the_way: null,
   };
 
   const statusBadge: Record<string, string> = {
     pending: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
-    accepted: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-    preparing: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300",
-    ready_for_pickup: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300",
+    accepted: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
+    preparing: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
+    ready_for_pickup: "bg-accent/10 text-accent dark:bg-accent/20 dark:text-accent",
     on_the_way: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300",
     delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
     cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
@@ -251,15 +251,15 @@ export default function PartnerPOS() {
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Ready for Pickup</p>
-          <p className="text-4xl font-black text-purple-600">{orders.filter((o) => o.status === "ready_for_pickup").length}</p>
+          <p className="text-4xl font-black text-accent">{orders.filter((o) => o.status === "ready_for_pickup").length}</p>
         </div>
         <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
           <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
         </div>
-        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-indigo-50 border-indigo-300 dark:bg-indigo-900/20 dark:border-indigo-700" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
+        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-accent/10 border-accent/40 dark:bg-accent/20 dark:border-accent/40" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
           <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
-          <p className="text-4xl font-black text-indigo-600">{scheduledOrders.length}</p>
+          <p className="text-4xl font-black text-accent">{scheduledOrders.length}</p>
         </button>
       </div>
 
@@ -268,7 +268,7 @@ export default function PartnerPOS() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2">
-              <span className="material-symbols-outlined text-indigo-500">calendar_month</span>
+              <span className="material-symbols-outlined text-accent">calendar_month</span>
               Scheduled Orders
             </h2>
             <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Upcoming</span>
@@ -281,21 +281,21 @@ export default function PartnerPOS() {
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
               {scheduledOrders.map((order) => (
-                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-5 shadow-sm border border-indigo-100 border-l-4 border-l-indigo-500">
+                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-5 shadow-sm border border-accent/40 border-l-4 border-l-accent">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <span className="text-lg font-black text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="material-symbols-outlined text-sm text-indigo-500">schedule</span>
-                        <span className="text-sm font-bold text-indigo-600">
+                        <span className="material-symbols-outlined text-sm text-accent">schedule</span>
+                        <span className="text-sm font-bold text-accent">
                           {order.scheduled_delivery ? new Date(order.scheduled_delivery).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) : "N/A"}
                         </span>
-                        <span className="text-sm text-indigo-400">
+                        <span className="text-sm text-accent">
                           {order.scheduled_delivery ? new Date(order.scheduled_delivery).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                         </span>
                       </div>
                     </div>
-                    <p className="text-xl font-black text-indigo-600">₹{order.total_amount.toFixed(2)}</p>
+                    <p className="text-xl font-black text-accent">₹{order.total_amount.toFixed(2)}</p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {order.items?.map((item, idx) => (
@@ -518,7 +518,7 @@ export default function PartnerPOS() {
                         </button>
                       ))
                     ) : order.status === "ready_for_pickup" ? (
-                      <div className="flex-1 text-center py-4 rounded-xl bg-purple-50 text-purple-700 font-bold text-sm border border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800">
+                      <div className="flex-1 text-center py-4 rounded-xl bg-accent/10 text-accent font-bold text-sm border border-accent/20 dark:bg-accent/20 dark:text-accent dark:border-accent/40">
                         <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
                         Waiting for Rider to Pick Up
                       </div>

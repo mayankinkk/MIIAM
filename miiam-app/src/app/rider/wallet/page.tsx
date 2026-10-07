@@ -349,7 +349,7 @@ export default function RiderWalletPage() {
                   <p className="text-[9px] text-[var(--color-outline)]">Earned</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-black text-blue-600">{todayDeliveries}</p>
+                  <p className="text-2xl font-black text-accent">{todayDeliveries}</p>
                   <p className="text-[9px] text-[var(--color-outline)]">Deliveries</p>
                 </div>
                 <div>
@@ -368,12 +368,12 @@ export default function RiderWalletPage() {
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       txn.type === "earning" ? "bg-green-100" : 
                       txn.type === "expense" ? "bg-red-100" :
-                      txn.type === "instant_payout" ? "bg-yellow-100" : "bg-blue-100"
+                      txn.type === "instant_payout" ? "bg-yellow-100" : "bg-accent/10"
                     }`}>
                       <span className={`material-symbols-outlined ${
                         txn.type === "earning" ? "text-green-600" : 
                         txn.type === "expense" ? "text-red-600" :
-                        txn.type === "instant_payout" ? "text-yellow-600" : "text-blue-600"
+                        txn.type === "instant_payout" ? "text-yellow-600" : "text-accent"
                       }`}>
                         {txn.type === "earning" ? "trending_up" : 
                          txn.type === "expense" ? "shopping_cart" :
@@ -489,7 +489,7 @@ export default function RiderWalletPage() {
                 ]).map((day) => (
                   <div key={day.date} className="flex-1 flex flex-col items-center gap-2">
                     <div 
-                      className="w-full bg-gradient-to-t from-brand-secondary to-blue-400 rounded-t-lg"
+                      className="w-full bg-gradient-to-t from-brand-secondary to-accent/70 rounded-t-lg"
                       style={{ height: `${(day.earnings / 1100) * 100}%`, minHeight: "8px" }}
                     />
                     <span className="text-[10px] text-[var(--color-outline-variant)]">{day.date}</span>
@@ -523,8 +523,8 @@ export default function RiderWalletPage() {
               <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Bank Details</h3>
               <div className="bg-[var(--color-surface-subtle)] p-4 rounded-xl flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <span className="material-symbols-outlined text-blue-600">account_balance</span>
+                  <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center">
+                    <span className="material-symbols-outlined text-accent">account_balance</span>
                   </div>
                   <div>
                     <p className="font-bold">Primary Account</p>

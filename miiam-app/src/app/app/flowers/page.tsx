@@ -7,7 +7,7 @@ const flowerCategories = [
   { id: "bouquets", name: "Bouquets", icon: "\uD83D\uDC90", color: "bg-pink-100" },
   { id: "arrangements", name: "Arrangements", icon: "\uD83D\uDC90", color: "bg-rose-100" },
   { id: "single", name: "Single Stems", icon: "\uD83C\uDF39", color: "bg-red-100" },
-  { id: "gifts", name: "Gift Sets", icon: "\uD83C\uDF81", color: "bg-purple-100" },
+  { id: "gifts", name: "Gift Sets", icon: "\uD83C\uDF81", color: "bg-accent/10" },
   { id: "ceremony", name: "Ceremony", icon: "\uD83D\uDC92", color: "bg-amber-100" },
 ];
 

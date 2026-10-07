@@ -322,7 +322,7 @@ export default function RiderVehiclePage() {
             }}
             className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-sm flex items-center gap-3"
           >
-            <span className="material-symbols-outlined text-blue-600">policy</span>
+            <span className="material-symbols-outlined text-accent">policy</span>
             <span className="font-bold text-sm">Insurance</span>
           </button>
           <button

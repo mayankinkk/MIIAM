@@ -10,7 +10,7 @@ interface Department {
 const DEPARTMENTS: Department[] = [
   { id: "food", label: "Food", icon: "restaurant", color: "from-orange-400 to-red-400" },
   { id: "store", label: "Grocery", icon: "storefront", color: "from-emerald-400 to-teal-500" },
-  { id: "services", label: "Services", icon: "handyman", color: "from-blue-400 to-indigo-500" },
+  { id: "services", label: "Services", icon: "handyman", color: "from-accent to-accent/70" },
   { id: "flowers", label: "Flowers", icon: "local_florist", color: "from-pink-400 to-rose-500" },
 ];
 
