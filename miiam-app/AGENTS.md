@@ -92,6 +92,7 @@ src/
 - PR title must match conventional commit format
 - Squash merge to main
 - No force pushes to shared branches
+- **Always push to production**: after pushing any feature branch, fast-forward `main` to it and push `origin/main` too — Vercel Production deploys only from `main`
 
 ## Performance
 - Use `next/image` for all images (auto-optimization)
