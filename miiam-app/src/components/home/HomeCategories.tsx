@@ -27,8 +27,10 @@ export default function HomeCategories({ categories }: HomeCategoriesProps) {
             className="group flex flex-col items-center gap-1.5"
             style={{ animationDelay: `${index * 50}ms` }}
           >
-            <div className={`w-full aspect-square rounded-lg bg-gradient-to-br ${cat.color || "from-primary to-primary-dim"} flex items-center justify-center overflow-hidden group-hover:shadow-md group-active:scale-95 transition-all duration-200`}>
-              <span className="material-symbols-outlined text-white text-[22px] drop-shadow-sm group-hover:scale-110 transition-transform duration-200">{cat.icon}</span>
+            <div className="w-full aspect-[6/5] rounded-xl bg-surface-container-lowest border border-outline-variant/70 flex items-center justify-center overflow-hidden group-hover:border-outline-variant group-hover:shadow-sm group-active:scale-95 transition-all duration-200">
+              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat.color || "from-primary to-primary-dim"} flex items-center justify-center`}>
+                <span className="material-symbols-outlined text-white text-xl group-hover:scale-110 transition-transform duration-200">{cat.icon}</span>
+              </div>
             </div>
             <span className="text-[10px] font-semibold text-on-surface text-center leading-tight line-clamp-2 w-full">{cat.label}</span>
           </Link>

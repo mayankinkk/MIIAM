@@ -32,51 +32,37 @@ export default function CombosSection({ combos }: CombosSectionProps) {
         </div>
         <Link href="/app/food?filter=combos" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2.5">
         {combos.map((combo) => (
           <Link
             key={combo.id}
             href={`/app/food/combo/${combo.id}`}
-            className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.97] transition-transform"
+            className="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/40 active:scale-[0.97] transition-transform"
           >
-            <div className="relative h-28 overflow-hidden">
+            <div className="relative h-24 overflow-hidden">
               {combo.image_url ? (
                 <BlurImage src={combo.image_url} alt={combo.name} fill className="object-cover" sizes="192px" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-to-br from-orange-100 to-amber-50">🎉</div>
               )}
-              <div className="absolute top-2 right-2 bg-status-error text-white text-[9px] font-black px-2 py-1 rounded-full shadow-md">
+              <div className="absolute top-1.5 right-1.5 bg-deal text-white text-[8px] font-black px-1.5 py-0.5 rounded-md shadow-sm">
                 {Math.round(((combo.original_price - combo.combo_price) / combo.original_price) * 100)}% OFF
               </div>
             </div>
-            <div className="p-3">
-              <h3 className="font-bold text-sm text-on-surface line-clamp-2">{combo.name}</h3>
-              <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <div className="p-2.5">
+              <h3 className="font-bold text-xs text-on-surface line-clamp-2 leading-snug">{combo.name}</h3>
+              <div className="flex items-center gap-2 mt-1 text-[9px] font-bold text-on-surface-variant truncate">
                 {combo.rating && combo.rating > 0 && (
-                  <div className="flex items-center gap-1">
-                    <span className="text-yellow-500 text-xs">★</span>
-                    <span className="text-xs font-bold text-on-surface">{combo.rating.toFixed(1)}</span>
-                  </div>
-                )}
-                {combo.order_count && combo.order_count > 0 && (
-                  <span className="text-[9px] font-bold text-on-surface-variant bg-surface-container-high px-1.5 py-0.5 rounded-full">
-                    {combo.order_count}+ ordered
+                  <span className="flex items-center gap-0.5 text-on-surface flex-shrink-0">
+                    <span className="text-yellow-500">★</span>
+                    {combo.rating.toFixed(1)}
                   </span>
                 )}
+                {combo.items && combo.items.length > 0 && <span>{combo.items.length} items</span>}
               </div>
-              {combo.category && (
-                <span className="inline-block mt-2 px-2 py-0.5 bg-primary/10 text-accent text-[9px] font-bold rounded-full">
-                  {combo.category}
-                </span>
-              )}
-              {combo.items && combo.items.length > 0 && (
-                <span className="inline-block mt-2 ml-1 px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[9px] font-bold rounded-full">
-                  {combo.items.length} items
-                </span>
-              )}
-              <div className="flex flex-col items-start mt-2 leading-tight">
-                <span className="text-sm font-black text-on-surface">₹{combo.combo_price}</span>
-                <span className="text-xs text-on-surface-variant line-through">₹{combo.original_price}</span>
+              <div className="flex flex-col items-start mt-1.5 leading-tight">
+                <span className="text-xs font-black text-on-surface">₹{combo.combo_price}</span>
+                <span className="text-[10px] text-on-surface-variant line-through">₹{combo.original_price}</span>
               </div>
             </div>
           </Link>
