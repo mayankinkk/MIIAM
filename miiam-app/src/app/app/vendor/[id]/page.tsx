@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import { useRecentlyViewed } from "@/lib/hooks/useRecentlyViewed";
 import CustomizationModal from "@/components/food/CustomizationModal";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import VegFilterPill from "@/components/VegFilterPill";
 import { getCurrentMenuSlot } from "@/lib/menuSlots";
@@ -234,8 +233,41 @@ export default function VendorPage() {
 
   return (
     <div className="min-h-screen bg-surface pb-28">
-      {/* Hero Section */}
-      <div className="relative h-64 overflow-hidden">
+      {/* Sticky header — back / shop + cuisine / search + cart */}
+      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
+        <div className="h-14 flex items-center gap-1 px-2">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <div className="flex-1 min-w-0 px-1">
+            <p className="text-[13px] font-bold text-on-surface truncate">{vendor.shop_name}</p>
+            <p className="text-[11px] text-on-surface-variant truncate">
+              {vendor.cuisine}{vendor.address ? ` • ${vendor.address}` : ""}
+            </p>
+          </div>
+          <Link
+            href="/app/search"
+            aria-label="Search"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+          >
+            <span className="material-symbols-outlined">search</span>
+          </Link>
+          <Link
+            href="/app/cart"
+            aria-label="Go to cart"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+          >
+            <span className="material-symbols-outlined">shopping_cart</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Cover image — flat, no overlay */}
+      <div className="relative h-44 sm:h-52 overflow-hidden bg-surface-container">
         <BlurImage
           src={vendor.banner_url || vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"}
           alt={vendor.shop_name}
@@ -244,59 +276,29 @@ export default function VendorPage() {
           sizes="100vw"
           fallbackSrc="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-
-        {/* Top Nav */}
-        <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 pt-12 pb-3">
-          <button
-            onClick={() => router.back()}
-            aria-label="Go back"
-            className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20 active:scale-90 transition-transform"
-          >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
-          </button>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/app/search"
-              className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20"
-            >
-              <span className="material-symbols-outlined text-xl">search</span>
-            </Link>
-            <Link
-              href="/app/cart"
-              className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/20"
-            >
-              <span className="material-symbols-outlined text-xl">shopping_cart</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Bottom Info */}
-        <div className="absolute bottom-0 left-0 right-0 p-5">
-          <div className="flex items-end justify-between">
-            <div className="flex-1 min-w-0">
-              {vendor.is_featured && (
-                <span className="inline-block bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">
-                  Featured
-                </span>
-              )}
-              <h1 className="text-white font-black text-2xl leading-tight truncate">{vendor.shop_name}</h1>
-              <p className="text-white/70 text-sm mt-1 truncate">{vendor.cuisine} {vendor.address ? `\u2022 ${vendor.address}` : ""}</p>
-            </div>
-            <div className="flex-shrink-0 ml-3 bg-white/15 backdrop-blur-md rounded-2xl px-4 py-2.5 text-center border border-white/10">
-              <p className="text-white font-black text-xl">{avgRating}</p>
-              <div className="flex justify-center gap-0.5 mt-0.5">
-                {[1,2,3,4,5].map((s) => (
-                  <span key={s} className={`text-[10px] ${s <= Math.round(parseFloat(avgRating)) ? "text-amber-400" : "text-white/30"}`}>★</span>
-                ))}
-              </div>
-              <p className="text-white/50 text-[9px] mt-0.5">{reviews.length || vendor.review_count || 0} reviews</p>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: vendor.shop_name }]} />
+      {/* Title + rating */}
+      <section className="px-4 py-4 border-b border-outline-variant/60">
+        {vendor.is_featured && (
+          <span className="inline-block bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">
+            Featured
+          </span>
+        )}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-black text-on-surface leading-tight truncate">{vendor.shop_name}</h1>
+            <p className="text-sm text-on-surface-variant mt-1 truncate">
+              {vendor.cuisine}{vendor.address ? ` • ${vendor.address}` : ""}
+            </p>
+          </div>
+          <span className="flex-shrink-0 inline-flex items-center gap-1 bg-white border border-outline-variant/60 shadow-sm rounded-lg px-2.5 py-1.5 text-xs font-black text-accent">
+            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            {avgRating}
+            <span className="text-on-surface-variant font-medium">({reviews.length || vendor.review_count || 0})</span>
+          </span>
+        </div>
+      </section>
 
       {/* Info Chips */}
       <div className="bg-surface-container-lowest px-4 py-3 border-b border-outline-variant/20">
@@ -329,7 +331,7 @@ export default function VendorPage() {
 
       {/* Closed Banner */}
       {!isOpen && (
-        <div className="mx-4 mt-4 bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
+        <div className="bg-red-50 border-b border-red-200 px-4 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-red-500">schedule</span>
           <div>
             <p className="font-bold text-red-700 text-sm">Restaurant is currently closed</p>
@@ -339,8 +341,8 @@ export default function VendorPage() {
       )}
 
       {/* Address & Hours */}
-      <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20">
-        <div className="flex items-start gap-3 mb-3">
+      <section className="px-4 py-4 border-b border-outline-variant/60 space-y-3">
+        <div className="flex items-start gap-3">
           <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
             <span className="material-symbols-outlined text-accent text-lg">location_on</span>
           </div>
@@ -358,11 +360,11 @@ export default function VendorPage() {
             <p className="text-xs text-on-surface-variant mt-0.5">Today</p>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Reviews Summary */}
       {reviews.length > 0 && (
-        <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant/20">
+        <section className="px-4 py-4 border-b border-outline-variant/60">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-base font-bold text-on-surface">Reviews</h2>
             <Link href={`/app/vendor/${vendorId}/reviews`} className="text-xs font-bold text-accent">
@@ -400,11 +402,11 @@ export default function VendorPage() {
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Sticky Menu Filter */}
-      <div className="sticky top-0 z-20 bg-surface-container-lowest border-b border-outline-variant/20">
+      <div className="sticky top-14 z-20 bg-surface-container-lowest border-b border-outline-variant/20">
         <div className="px-4 pt-3 pb-2">
           <div className="flex items-center justify-between mb-2.5">
             <h2 className="text-lg font-black text-on-surface">Menu</h2>
@@ -434,7 +436,7 @@ export default function VendorPage() {
       </div>
 
       {/* Menu Items */}
-      <div className="p-4 space-y-3">
+      <div className="px-4 py-1">
         {filteredItems.length === 0 ? (
           <div className="bg-surface-container-lowest rounded-2xl p-10 text-center border border-outline-variant/20 shadow-sm">
             <span className="material-symbols-outlined text-4xl text-outline mb-2">restaurant_menu</span>
@@ -451,9 +453,9 @@ export default function VendorPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-outline-variant/20"
+                className="border-b border-outline-variant/40 last:border-0 py-3"
               >
-                <div className="flex p-3 gap-3">
+                <div className="flex gap-3">
                   {/* Image */}
                   <div
                     className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative cursor-pointer"

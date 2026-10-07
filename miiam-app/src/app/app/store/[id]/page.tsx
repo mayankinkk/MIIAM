@@ -6,7 +6,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cartStore";
 import BlurImage from "@/components/BlurImage";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import { motion } from "framer-motion";
 
 interface StoreItem {
@@ -97,8 +96,19 @@ export default function StoreItemDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div className="min-h-screen bg-surface">
+        <div className="h-14 border-b border-outline-variant/60 flex items-center gap-3 px-3">
+          <div className="w-10 h-10 rounded-full bg-surface-container-high animate-pulse" />
+          <div className="space-y-1.5">
+            <div className="h-3 w-32 bg-surface-container-high animate-pulse rounded" />
+            <div className="h-2.5 w-24 bg-surface-container-high animate-pulse rounded" />
+          </div>
+        </div>
+        <div className="w-full aspect-square max-h-[70vh] bg-surface-container-high animate-pulse" />
+        <div className="px-4 py-4 space-y-3">
+          <div className="h-5 w-3/4 bg-surface-container-high animate-pulse rounded" />
+          <div className="h-3 w-1/2 bg-surface-container-high animate-pulse rounded" />
+        </div>
       </div>
     );
   }
@@ -115,11 +125,31 @@ export default function StoreItemDetailPage() {
   }
 
   const bucket = BUCKET_LABELS[item.category];
+  const savings = item.original_price ? item.original_price - item.price : 0;
+  const discountPct = item.original_price ? Math.round((savings / item.original_price) * 100) : 0;
 
   return (
-    <div className="min-h-screen bg-surface pb-36">
-      {/* Hero Image */}
-      <div className="relative h-72 bg-surface-container overflow-hidden">
+    <div className="min-h-screen bg-surface pb-44 md:pb-32">
+      {/* Sticky header — back / item + vendor */}
+      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
+        <div className="h-14 flex items-center gap-1 px-2">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <div className="flex-1 min-w-0 px-1">
+            <p className="text-[13px] font-bold text-on-surface truncate">{item.name}</p>
+            <p className="text-[11px] text-on-surface-variant truncate">{item.vendor_name || "MIIAM Store"}</p>
+          </div>
+          <div className="w-10 shrink-0" />
+        </div>
+      </header>
+
+      {/* Full-bleed product image with overlay chips */}
+      <div className="relative w-full aspect-square max-h-[70vh] overflow-hidden bg-surface-container">
         <BlurImage
           src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80"}
           alt={item.name}
@@ -128,153 +158,153 @@ export default function StoreItemDetailPage() {
           sizes="100vw"
           fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-        {/* Back button */}
-        <button
-          onClick={() => router.back()}
-          className="absolute top-4 left-4 w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white z-10"
-        >
-          <span className="material-symbols-outlined">arrow_back</span>
-        </button>
-
-        {/* Veg badge */}
-        <div className="absolute top-4 right-4 z-10">
-          <span className={`w-7 h-7 border-2 ${item.is_veg ? "border-green-500 bg-white" : "border-red-500 bg-white"} rounded-sm flex items-center justify-center shadow-lg`}>
-            <span className={`w-3 h-3 ${item.is_veg ? "bg-green-500" : "bg-red-500"} rounded-full`} />
-          </span>
-        </div>
-
-        {/* Category badge */}
-        {bucket && (
-          <div className="absolute bottom-4 left-4 z-10">
-            <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${bucket.color} backdrop-blur-sm`}>
+        <div className="absolute bottom-3 left-3 flex flex-wrap items-center gap-1.5">
+          {discountPct > 0 && (
+            <span className="bg-status-error text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md">
+              {discountPct}% OFF
+            </span>
+          )}
+          {bucket && (
+            <span className={`text-xs font-bold px-2.5 py-1 rounded-full shadow-md ${bucket.color}`}>
               {bucket.emoji} {bucket.label}
             </span>
-          </div>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="px-5 -mt-4 relative z-10">
-        <div className="bg-surface-container-lowest rounded-2xl p-5 shadow-sm">
-          {/* Title + Price */}
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex-1">
-              <h1 className="text-xl font-black text-on-surface leading-tight">{item.name}</h1>
-              {item.vendor_name && (
-                <p className="text-sm text-on-surface-variant mt-1">{item.vendor_name}</p>
-              )}
-            </div>
-            <div className="text-right flex-shrink-0">
-              <span className="text-2xl font-black text-on-surface">₹{item.price}</span>
-              {item.original_price && (
-                <div className="flex items-center gap-1 justify-end mt-0.5">
-                  <span className="text-sm text-on-surface-variant line-through">₹{item.original_price}</span>
-                  <span className="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
-                    {Math.round(((item.original_price - item.price) / item.original_price) * 100)}% OFF
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Description */}
-          {item.description && (
-            <p className="text-sm text-on-surface-variant leading-relaxed mt-3 pt-3 border-t border-outline-variant/20">
-              {item.description}
-            </p>
           )}
         </div>
+      </div>
 
-        {/* Delivery Info */}
-        <div className="bg-surface-container-lowest rounded-2xl p-4 mt-3 shadow-sm flex items-center gap-3">
-          <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-green-600 text-lg">local_shipping</span>
+      {/* Title */}
+      <section className="px-4 py-4 border-b border-outline-variant/60">
+        <div className="flex items-start gap-2">
+          <span
+            aria-label={item.is_veg ? "Veg" : "Non-veg"}
+            className={`w-4 h-4 mt-0.5 shrink-0 border-2 rounded-[3px] flex items-center justify-center ${item.is_veg ? "border-green-600" : "border-red-600"}`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${item.is_veg ? "bg-green-600" : "bg-red-600"}`} />
+          </span>
+          <h1 className="text-[17px] font-bold text-on-surface leading-snug flex-1">{item.name}</h1>
+        </div>
+        {item.vendor_name && (
+          <p className="text-sm text-on-surface-variant mt-1.5">{item.vendor_name}</p>
+        )}
+      </section>
+
+      {/* Description */}
+      {item.description && (
+        <section className="px-4 py-4 border-b border-outline-variant/60">
+          <p className="text-sm text-on-surface-variant leading-relaxed">{item.description}</p>
+        </section>
+      )}
+
+      {/* Delivery Info */}
+      <section className="px-4 py-4 border-b border-outline-variant/60">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="material-symbols-outlined text-accent text-lg">local_shipping</span>
           </div>
           <div>
             <p className="text-sm font-bold text-on-surface">Free Delivery</p>
             <p className="text-xs text-on-surface-variant">Delivered in 30-45 minutes</p>
           </div>
         </div>
+      </section>
 
-        {/* Related Items */}
-        {relatedItems.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-base font-bold text-on-surface mb-3">Similar Items</h2>
-            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              {relatedItems.map((ri) => (
-                <Link
-                  key={ri.id}
-                  href={`/app/store/${ri.id}`}
-                  className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm active:scale-[0.97] transition-transform"
-                >
-                  <div className="relative h-20 bg-surface-container overflow-hidden">
-                    <BlurImage
-                      src={ri.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
-                      alt={ri.name}
-                      fill
-                      className="w-full h-full"
-                      sizes="128px"
-                      fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
-                    />
-                    <span className="absolute bottom-1 right-1 bg-deal text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">₹{ri.price}</span>
-                  </div>
-                  <div className="p-2">
-                    <h3 className="font-bold text-on-surface text-[10px] truncate">{ri.name}</h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Sticky Add to Cart Bar — sits above bottom nav */}
-      <div className="fixed bottom-[80px] md:bottom-6 left-3 right-3 md:left-auto md:right-6 md:max-w-sm bg-surface-container-lowest/95 backdrop-blur-xl border border-outline-variant/10 p-3.5 rounded-2xl z-40 shadow-xl" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 14px)" }}>
-        {qty === 0 ? (
-          <motion.button
-            onClick={handleAdd}
-            whileTap={{ scale: 0.97 }}
-            className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-black text-sm shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
-          >
-            <span className="material-symbols-outlined text-lg">add_shopping_cart</span>
-            Add to Cart — ₹{item.price}
-          </motion.button>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1 bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
-              <motion.button
-                onClick={() => updateQuantity(item.id, qty - 1)}
-                whileTap={{ scale: 0.8 }}
-                className="bg-primary text-on-primary font-bold w-9 h-9 flex items-center justify-center hover:brightness-95 transition-colors"
-              >
-                −
-              </motion.button>
-              <motion.span
-                key={qty}
-                initial={{ scale: 1.3 }}
-                animate={{ scale: 1 }}
-                className="text-on-surface font-extrabold text-sm min-w-[24px] text-center"
-              >
-                {qty}
-              </motion.span>
-              <motion.button
-                onClick={handleAdd}
-                whileTap={{ scale: 1.2 }}
-                className="bg-primary text-on-primary font-bold w-9 h-9 flex items-center justify-center hover:brightness-95 transition-colors"
-              >
-                +
-              </motion.button>
-            </div>
-            <Link
-              href="/app/cart"
-              className="flex-1 ml-3 py-3.5 bg-primary text-on-primary rounded-xl font-black text-sm text-center shadow-lg shadow-primary/20"
-            >
-              View Cart — ₹{(item.price * qty).toFixed(0)}
+      {/* Related Items */}
+      {relatedItems.length > 0 && (
+        <section className="px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[15px] font-bold text-on-surface">Similar Items</h2>
+            <Link href="/app/store" className="text-xs font-bold text-accent hover:underline">
+              View All
             </Link>
           </div>
-        )}
+          <div className="flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+            {relatedItems.map((ri) => (
+              <Link
+                key={ri.id}
+                href={`/app/store/${ri.id}`}
+                className="flex-shrink-0 w-32 bg-surface-container-low rounded-xl overflow-hidden shadow-sm border border-outline-variant/30 active:scale-[0.97] transition-transform"
+              >
+                <div className="relative h-20 bg-surface-container overflow-hidden">
+                  <BlurImage
+                    src={ri.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                    alt={ri.name}
+                    fill
+                    className="w-full h-full"
+                    sizes="128px"
+                    fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                  />
+                  <span className="absolute bottom-1 right-1 bg-deal text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">₹{ri.price}</span>
+                </div>
+                <div className="p-2">
+                  <h3 className="font-bold text-on-surface text-[10px] truncate">{ri.name}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Sticky bottom bar — price + Add to cart (Blinkit style), sits above bottom nav */}
+      <div className="fixed bottom-[80px] left-0 right-0 md:left-auto md:right-6 md:max-w-md z-40 bg-surface-container-lowest border-t md:border md:rounded-2xl border-outline-variant/60 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:shadow-xl">
+        <div className="flex items-center justify-between gap-3 px-4 py-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}>
+          {qty === 0 ? (
+            <>
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-lg font-black text-on-surface">₹{item.price}</span>
+                  {item.original_price && (
+                    <span className="text-sm text-on-surface-variant line-through">₹{item.original_price}</span>
+                  )}
+                </div>
+                <p className="text-[11px] font-bold leading-tight text-green-600">
+                  {discountPct > 0 ? `You save ₹${savings}` : "Inclusive of all taxes"}
+                </p>
+              </div>
+              <motion.button
+                onClick={handleAdd}
+                whileTap={{ scale: 0.97 }}
+                className="shrink-0 bg-primary text-on-primary px-6 py-3 rounded-xl font-black text-sm shadow-md shadow-primary/20 hover:brightness-95 transition-all"
+              >
+                Add to cart
+              </motion.button>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-1 bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
+                <motion.button
+                  onClick={() => updateQuantity(item.id, qty - 1)}
+                  whileTap={{ scale: 0.8 }}
+                  aria-label="Decrease quantity"
+                  className="bg-primary text-on-primary font-bold w-10 h-10 flex items-center justify-center hover:brightness-95 transition-colors"
+                >
+                  −
+                </motion.button>
+                <motion.span
+                  key={qty}
+                  initial={{ scale: 1.3 }}
+                  animate={{ scale: 1 }}
+                  className="text-on-surface font-extrabold text-sm min-w-[24px] text-center"
+                >
+                  {qty}
+                </motion.span>
+                <motion.button
+                  onClick={handleAdd}
+                  whileTap={{ scale: 1.2 }}
+                  aria-label="Increase quantity"
+                  className="bg-primary text-on-primary font-bold w-10 h-10 flex items-center justify-center hover:brightness-95 transition-colors"
+                >
+                  +
+                </motion.button>
+              </div>
+              <Link
+                href="/app/cart"
+                className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-black text-sm text-center shadow-lg shadow-primary/20 active:scale-95 transition-all"
+              >
+                View Cart — ₹{(item.price * qty).toFixed(0)}
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

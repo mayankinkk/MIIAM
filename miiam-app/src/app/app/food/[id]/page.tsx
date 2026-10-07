@@ -12,7 +12,6 @@ import logger from "@/lib/logger";
 import { parseIsOpen } from "@/lib/vendor-hours";
 import { useInfiniteScroll } from "@/lib/hooks/useInfiniteScroll";
 import { ProfileSkeleton, MenuItemSkeleton } from "@/components/Skeleton";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import ClosingCountdown from "@/components/ClosingCountdown";
 
@@ -280,7 +279,7 @@ function CartFloater() {
   const { items, totalPrice, totalItems } = useCartStore();
   if (items.length === 0) return null;
   return (
-    <div className="fixed bottom-6 left-4 right-4 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <div className="fixed bottom-[80px] left-4 right-4 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <Link
         href="/app/cart"
         className="flex items-center justify-between bg-primary text-on-primary px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
@@ -451,69 +450,69 @@ export default function RestaurantProfilePage() {
   }));
 
   return (
-    <div className="min-h-screen bg-surface pb-32">
-      {/* Hero Cover */}
-      <div className="relative h-52 sm:h-72 overflow-hidden">
+    <div className="min-h-screen bg-surface pb-44 md:pb-32">
+      {/* Sticky header — back / shop + cuisine / favorite + cart */}
+      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
+        <div className="h-14 flex items-center gap-1 px-2">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </button>
+          <div className="flex-1 min-w-0 px-1">
+            <p className="text-[13px] font-bold text-on-surface truncate">{vendor.shop_name}</p>
+            <p className="text-[11px] text-on-surface-variant truncate">{vendor.cuisine}</p>
+          </div>
+          <button
+            onClick={handleToggleFavorite}
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            <span className={`material-symbols-outlined ${isFavorite ? "text-red-500" : "text-on-surface"}`} style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+          </button>
+          <Link
+            href="/app/cart"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            aria-label="Go to cart"
+          >
+            <span className="material-symbols-outlined">shopping_cart</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Cover image — flat, no overlay */}
+      <div className="relative h-44 sm:h-56 overflow-hidden bg-surface-container">
         <BlurImage
           src={coverImage}
           alt={vendor.shop_name}
           className="w-full h-full object-cover scale-105"
           fill
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/10" />
-
-        {/* Floating top nav */}
-        <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 pt-12 sm:pt-4">
-          <button
-            onClick={() => router.back()}
-            aria-label="Go back"
-            className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-          </button>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleToggleFavorite}
-              className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
-              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-            >
-              <span className={`material-symbols-outlined ${isFavorite ? "text-red-500" : "text-white"}`} style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
-            </button>
-            <Link
-              href="/app/cart"
-              className="w-10 h-10 bg-black/40 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/60 transition-colors active:scale-90"
-              aria-label="Go to cart"
-            >
-              <span className="material-symbols-outlined">shopping_cart</span>
-            </Link>
-          </div>
-        </div>
-
-        {/* Restaurant Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-5">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              {vendor.is_featured && (
-                <span className="bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-flex items-center gap-1">
-                  <span className="text-xs">⭐</span> Featured
-                </span>
-              )}
-              <h1 className="text-white font-black text-2xl sm:text-3xl leading-tight drop-shadow-lg">{vendor.shop_name}</h1>
-              <p className="text-white/80 text-sm mt-1 font-medium">{vendor.cuisine}</p>
-            </div>
-            <div className="bg-white/15 backdrop-blur-md rounded-2xl px-4 py-3 text-center flex-shrink-0 border border-white/20">
-              <p className="text-white font-black text-xl">{avgRating}</p>
-              <div className="flex text-amber-400 text-xs gap-0.5">{'★'.repeat(5)}</div>
-              <p className="text-white/70 text-[10px] mt-1">{reviews.length || vendor.review_count || 0} reviews</p>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Food', href: '/app/food' }, { label: vendor.shop_name }]} />
+      {/* Title + rating */}
+      <section className="px-4 py-4 border-b border-outline-variant/60">
+        {vendor.is_featured && (
+          <span className="bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-flex items-center gap-1">
+            <span className="text-xs">⭐</span> Featured
+          </span>
+        )}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-black text-on-surface leading-tight">{vendor.shop_name}</h1>
+            <p className="text-sm text-on-surface-variant mt-1 font-medium">{vendor.cuisine}</p>
+          </div>
+          <span className="flex-shrink-0 inline-flex flex-col items-center bg-white border border-outline-variant/60 shadow-sm rounded-lg px-2.5 py-1.5">
+            <span className="text-xs font-black text-accent">{avgRating} ★</span>
+            <span className="text-[10px] text-on-surface-variant mt-0.5">{reviews.length || vendor.review_count || 0} reviews</span>
+          </span>
+        </div>
+      </section>
 
       {/* Info Strip */}
-      <div className="bg-surface-container-lowest px-5 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar shadow-sm border-b border-outline-variant">
+      <div className="bg-surface-container-lowest px-4 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar border-b border-outline-variant/60">
         <span className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
           isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
         }`}>
@@ -548,7 +547,7 @@ export default function RestaurantProfilePage() {
 
       {/* Closed Banner */}
       {!isOpen && (
-        <div className="mx-4 mt-4 bg-red-50 border border-red-200 rounded-2xl p-4 flex items-center gap-3">
+        <div className="bg-red-50 border-b border-red-200 px-4 py-3 flex items-center gap-3">
           <span className="material-symbols-outlined text-red-500 text-2xl">schedule</span>
           <div>
             <p className="font-bold text-red-700 text-sm">Restaurant is currently closed</p>
@@ -559,7 +558,7 @@ export default function RestaurantProfilePage() {
 
       {/* Schedule Delivery */}
       {isOpen && (
-        <div className="mx-4 mt-4 bg-surface-container-lowest rounded-2xl p-4 shadow-sm border border-outline-variant">
+        <section className="px-4 py-4 border-b border-outline-variant/60">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-accent text-xl">event</span>
@@ -595,24 +594,24 @@ export default function RestaurantProfilePage() {
               />
             </div>
           )}
-        </div>
+        </section>
       )}
 
       {/* Description */}
       {vendor.description && (
-        <div className="bg-surface-container-lowest mx-4 mt-4 rounded-2xl p-4 shadow-sm border border-outline-variant">
+        <section className="px-4 py-4 border-b border-outline-variant/60">
           <p className="text-sm text-on-surface-variant leading-relaxed">{vendor.description}</p>
-        </div>
+        </section>
       )}
 
       {/* Chef's Specials */}
       {specials.length > 0 && (
-        <section className="mt-5 px-4">
+        <section className="px-4 py-4 border-b border-outline-variant/60">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xl">⭐</span>
-            <h2 className="text-lg font-black text-on-surface">{t.food.chefSpecials}</h2>
+            <span className="text-lg">⭐</span>
+            <h2 className="text-[15px] font-bold text-on-surface">{t.food.chefSpecials}</h2>
           </div>
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4">
             {specials.map((item) => (
               <div key={item.id} className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
                 <div className="h-20 overflow-hidden bg-surface-container">
@@ -643,9 +642,9 @@ export default function RestaurantProfilePage() {
       )}
 
       {/* Menu Tabs */}
-      <section className="mt-5">
-        <div className="px-4 mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-black text-on-surface">{t.food.fullMenu}</h2>
+      <section className="border-b border-outline-variant/60">
+        <div className="px-4 pt-4 mb-3 flex items-center justify-between gap-3">
+          <h2 className="text-[15px] font-bold text-on-surface">{t.food.fullMenu}</h2>
           <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-xs font-bold transition-all ${
             vegOnly ? "bg-green-600 text-white" : "bg-surface-container-low text-green-700 border border-green-200"
           }`}>
@@ -677,7 +676,7 @@ export default function RestaurantProfilePage() {
         </div>
 
         {/* Category tabs */}
-        <div className="sticky top-0 z-20 bg-surface pt-2 pb-1 -mx-4 px-4">
+        <div className="sticky top-14 z-20 bg-surface pt-2 pb-1 -mx-4 px-4">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {availableCategories.map((cat) => (
               <button
@@ -719,15 +718,15 @@ export default function RestaurantProfilePage() {
         </div>
 
         {/* Menu Items */}
-        <div className="px-4 mt-3 space-y-3">
+        <div className="px-4">
           {filteredMenu.length === 0 ? (
-            <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-outline shadow-sm">
+            <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-outline shadow-sm my-4">
               {menuSearch ? `${t.food.noResults} "${menuSearch}"` : t.food.noItemsInCategory}
             </div>
           ) : (
             <>
               {visibleMenuItems.map((item) => (
-                <div key={item.id} className="bg-surface-container-lowest rounded-2xl p-3 shadow-sm flex items-center gap-3">
+                <div key={item.id} className="py-3 border-b border-outline-variant/40 last:border-0 flex items-center gap-3">
                   <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
                     <BlurImage
                       src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
@@ -788,12 +787,12 @@ export default function RestaurantProfilePage() {
 
       {/* Frequently Ordered Together */}
       {menuItems.length > 2 && (
-        <section className="mt-6 px-4">
+        <section className="px-4 py-4 border-b border-outline-variant/60">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-lg">🤝</span>
-            <h2 className="text-lg font-black text-on-surface">Frequently Ordered Together</h2>
+            <h2 className="text-[15px] font-bold text-on-surface">Frequently Ordered Together</h2>
           </div>
-          <div className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+          <div className="border border-outline-variant/40 rounded-xl p-4">
             {(() => {
               const popular = [...menuItems]
                 .sort((a, b) => (b.order_count || 0) - (a.order_count || 0))
@@ -847,9 +846,9 @@ export default function RestaurantProfilePage() {
       )}
 
       {/* Reviews */}
-      <section className="mt-6 px-4">
+      <section className="px-4 py-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-black text-on-surface">{t.food.reviews}</h2>
+          <h2 className="text-[15px] font-bold text-on-surface">{t.food.reviews}</h2>
           <button
             onClick={() => setShowReviewModal(true)}
             className="text-sm font-bold text-accent bg-surface px-3 py-1.5 rounded-lg hover:bg-[#fff7e0] transition-colors active:scale-95"
@@ -860,8 +859,8 @@ export default function RestaurantProfilePage() {
 
         {reviews.length > 0 ? (
           <>
-            {/* Rating Summary Card */}
-            <div className="bg-surface-container-lowest rounded-2xl p-5 shadow-sm mb-4">
+            {/* Rating Summary */}
+            <div className="mb-4">
               <div className="flex items-center gap-6">
                 <div className="text-center">
                   <p className="text-5xl font-black text-on-surface">{avgRating}</p>
@@ -886,10 +885,10 @@ export default function RestaurantProfilePage() {
               </div>
             </div>
 
-            {/* Review cards */}
-            <div className="space-y-3">
+            {/* Review list */}
+            <div>
               {reviews.map((review) => (
-                <div key={review.id} className="bg-surface-container-lowest rounded-2xl p-4 shadow-sm">
+                <div key={review.id} className="py-3 border-b border-outline-variant/40 last:border-0">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary font-black text-sm flex-shrink-0">
                       {review.user_name?.charAt(0).toUpperCase() || "U"}
