@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n/useTranslation";
-import { useLanguageStore, type Language } from "@/lib/store/languageStore";
-import { useThemeStore } from "@/lib/store/themeStore";
 
 interface HomeHeaderProps {
   userName: string;
@@ -18,8 +16,6 @@ interface HomeHeaderProps {
 
 export default function HomeHeader({ userName, greeting, timeIcon, location, unreadCount, onLocationClick, onNotificationsClick }: HomeHeaderProps) {
   const { t } = useTranslation();
-  const { language, setLanguage } = useLanguageStore();
-  const { theme, setTheme } = useThemeStore();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -29,77 +25,50 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "bg-surface/80 backdrop-blur-xl shadow-lg shadow-black/5 border-b border-outline-variant/5" : "bg-surface border-b border-outline-variant/10"}`}>
-      <div className="px-5 pt-5 pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-lg font-black text-accent">{userName.charAt(0).toUpperCase()}</span>
-            </div>
-            <div>
-              <p className="text-xs text-on-surface-variant font-medium">{greeting} {timeIcon}</p>
-              <h1 className="text-xl font-black text-on-surface capitalize leading-tight">{userName}</h1>
-            </div>
+    <header className={`sticky top-0 z-50 bg-surface transition-all duration-200 ${scrolled ? "shadow-[0_2px_12px_rgba(0,0,0,0.08)]" : "border-b border-border-subtle"}`}>
+      <div className="px-5 pt-3 pb-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-[17px] leading-snug font-extrabold text-on-surface truncate capitalize">
+              {greeting}, {userName} {timeIcon}
+            </h1>
           </div>
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="h-8 px-2.5 rounded-full bg-surface-container-high text-on-surface text-[11px] font-bold border border-outline-variant/15 flex items-center gap-1 active:scale-95 transition-transform"
-              aria-label="Toggle dark mode"
-            >
-              <span className="material-symbols-outlined text-[14px]">{theme === "dark" ? "light_mode" : "dark_mode"}</span>
-            </button>
-            <button
-              onClick={() => {
-                const langs: Language[] = ["en", "hi", "as", "bn"];
-                const idx = langs.indexOf(language);
-                setLanguage(langs[(idx + 1) % langs.length]);
-              }}
-              className="h-8 px-2.5 rounded-full bg-surface-container-high text-on-surface text-[11px] font-bold border border-outline-variant/15 flex items-center gap-1 active:scale-95 transition-transform"
-              aria-label="Toggle language"
-            >
-              <span className="material-symbols-outlined text-[14px]">translate</span>
-              {language.toUpperCase()}
-            </button>
-            <button
-              aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
-              onClick={onNotificationsClick}
-              className="relative w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center active:scale-95 transition-all border border-outline-variant/10"
-            >
-              <span className="material-symbols-outlined text-[20px] text-on-surface-variant" aria-hidden="true" style={{ fontVariationSettings: unreadCount > 0 ? "'FILL' 1" : "'FILL' 0" }}>notifications</span>
-              {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-status-error rounded-full border-2 border-surface flex items-center justify-center animate-bounce">
-                  <span className="text-[9px] text-white font-black leading-none px-0.5">{unreadCount > 9 ? "9+" : unreadCount}</span>
-                </span>
-              )}
-            </button>
-          </div>
+          <button
+            aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
+            onClick={onNotificationsClick}
+            className="relative w-9 h-9 rounded-full bg-surface-container flex items-center justify-center shrink-0 active:scale-95 transition-all"
+          >
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant" aria-hidden="true" style={{ fontVariationSettings: unreadCount > 0 ? "'FILL' 1" : "'FILL' 0" }}>notifications</span>
+            {unreadCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 bg-status-error rounded-full border-2 border-surface flex items-center justify-center animate-bounce">
+                <span className="text-[9px] text-white font-black leading-none px-0.5">{unreadCount > 9 ? "9+" : unreadCount}</span>
+              </span>
+            )}
+          </button>
+          <Link
+            href="/app/profile"
+            aria-label="Profile"
+            className="w-9 h-9 rounded-full bg-surface-container border border-border-subtle flex items-center justify-center shrink-0 active:scale-95 transition-all"
+          >
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">person</span>
+          </Link>
         </div>
-      </div>
 
-      {/* Location Quick Switch */}
-      <div className="px-5 pb-3">
+        {/* Address row */}
         <button
           onClick={onLocationClick}
-          className="flex items-center gap-3 hover:bg-surface-container-high px-4 py-2.5 rounded-xl w-full transition-colors border border-border-subtle"
+          className="group flex items-center w-full mt-0.5 text-left"
+          aria-label="Change delivery location"
         >
-          <div className="w-8 h-8 bg-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-on-surface text-lg">location_on</span>
-          </div>
-          <div className="flex-1 text-left min-w-0">
-            <p className="text-[10px] text-accent font-bold uppercase tracking-wider">{t.home.deliveringTo}</p>
-            <p className="font-bold text-on-surface text-sm truncate">{location}</p>
-          </div>
-          <span className="material-symbols-outlined text-on-surface-variant text-xl">unfold_more</span>
+          <span className="text-[13px] text-on-surface-variant truncate group-hover:text-on-surface transition-colors">{location}</span>
+          <span className="material-symbols-outlined text-[18px] text-on-surface-variant shrink-0">arrow_drop_down</span>
         </button>
-      </div>
 
-      {/* Search */}
-      <div className="px-5 pb-4">
-        <Link href="/app/search" className="flex items-center w-full h-11 bg-surface-container-high rounded-xl px-4 hover:bg-surface-container-highest transition-all active:scale-[0.99]">
+        {/* Search */}
+        <Link href="/app/search" className="mt-2.5 flex items-center w-full h-11 bg-surface-container-high rounded-[10px] px-3.5 gap-3 hover:bg-surface-container-highest transition-all active:scale-[0.99]">
           <span className="material-symbols-outlined text-on-surface-variant text-xl">search</span>
-          <span className="ml-3 text-on-surface-variant/70 text-sm flex-1">{t.home.searchPlaceholder}</span>
-          <span className="material-symbols-outlined text-on-surface-variant/40 text-lg">mic</span>
+          <span className="text-on-surface-variant/80 text-sm flex-1 truncate">{t.home.searchPlaceholder}</span>
+          <span className="material-symbols-outlined text-on-surface-variant/60 text-lg">mic</span>
         </Link>
       </div>
     </header>

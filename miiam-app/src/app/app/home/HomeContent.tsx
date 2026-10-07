@@ -505,8 +505,6 @@ export default function HomePage() {
         }}
       />
 
-      <OffersCarousel offers={offers} currentOffer={currentOffer} />
-
       {activeOrder && (
         <ActiveOrderBubble
           activeOrder={activeOrder}
@@ -526,6 +524,8 @@ export default function HomePage() {
       <PullToRefresh onRefresh={async () => { setRetryKey((k) => k + 1); }}>
         <HomeCategories categories={categories} />
       </PullToRefresh>
+
+      <OffersCarousel offers={offers} currentOffer={currentOffer} />
 
       {lastOrder && <QuickReorder order={lastOrder} />}
 
