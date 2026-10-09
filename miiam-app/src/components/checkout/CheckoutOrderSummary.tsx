@@ -53,7 +53,7 @@ export default function CheckoutOrderSummary({
       <div className="space-y-2.5">
         {/* Items */}
         <div className="flex justify-between gap-2 text-sm">
-          <span className="text-on-surface-variant">Items ({items.length})</span>
+          <span className="text-on-surface-variant">{t.checkout.itemsLabel.replace("{count}", String(items.length))}</span>
           <span className="font-semibold text-on-surface">₹{subtotal.toFixed(2)}</span>
         </div>
 

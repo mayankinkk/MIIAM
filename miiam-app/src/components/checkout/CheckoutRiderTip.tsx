@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "@/lib/i18n/useTranslation";
 import { RiderTipSelector, TipThankYou } from "@/components/RiderTip";
 
 interface CheckoutRiderTipProps {
@@ -12,6 +13,7 @@ interface CheckoutRiderTipProps {
 }
 
 export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSelect, onSkipTip, onEditTip, subtotal }: CheckoutRiderTipProps) {
+  const { t } = useTranslation();
   return (
     <div className="py-3 border-t border-dashed border-outline-variant/30">
       {showTipSelector ? (
@@ -23,10 +25,10 @@ export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSele
       ) : tipAmount > 0 ? (
         <div className="space-y-2">
           <div className="flex justify-between items-center text-sm">
-            <span className="font-bold text-on-surface">Rider Tip</span>
+            <span className="font-bold text-on-surface">{t.checkout.riderTip}</span>
             <div className="flex items-center gap-2">
               <span className="font-semibold text-on-surface">₹{tipAmount}</span>
-              <button onClick={onEditTip} className="text-xs text-accent underline">Edit</button>
+              <button onClick={onEditTip} className="text-xs text-accent underline">{t.checkout.edit}</button>
             </div>
           </div>
           <TipThankYou amount={tipAmount} />

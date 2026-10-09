@@ -224,7 +224,7 @@ export default function CartPage() {
                       onSwipeLeft={() => removeItem(item.id)}
                       onSwipeRight={() => saveForLater(item.id)}
                       leftAction={{ label: "Remove", color: "bg-red-500", icon: "delete" }}
-                      rightAction={{ label: "Save Later", color: "bg-amber-500", icon: "bookmark" }}
+                      rightAction={{ label: t.cart.saveLater, color: "bg-amber-500", icon: "bookmark" }}
                     >
                     <div className="flex items-start gap-3 py-3 border-t border-outline-variant/40 first:border-t-0">
                       <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container border border-outline-variant/40">
@@ -279,7 +279,7 @@ export default function CartPage() {
                             onClick={() => saveForLater(item.id)}
                             className="text-[10px] font-bold text-on-surface-variant hover:text-accent transition-colors uppercase tracking-wide"
                           >
-                            Save Later
+                            {t.cart.saveLater}
                           </button>
                           <button
                             onClick={() => removeItem(item.id)}
@@ -304,7 +304,7 @@ export default function CartPage() {
               <section className="px-4 py-4 border-b border-outline-variant/60">
                 <h3 className="text-[15px] font-bold mb-3 flex items-center gap-2 text-on-surface">
                   <span className="material-symbols-outlined text-[18px] text-accent">bookmark</span>
-                  Saved for Later ({savedItems.length})
+                  {t.cart.savedForLater} ({savedItems.length})
                 </h3>
                 <div>
                   {savedItems.map((item) => (
@@ -324,7 +324,7 @@ export default function CartPage() {
                         onClick={() => moveToCart(item.id)}
                         className="text-[10px] font-bold text-accent hover:underline uppercase tracking-wide"
                       >
-                        Move to Cart
+                        {t.cart.moveToCart}
                       </button>
                       <button
                         onClick={() => removeSaved(item.id)}

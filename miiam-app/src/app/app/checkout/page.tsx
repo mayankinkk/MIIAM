@@ -127,12 +127,12 @@ export default function CheckoutPage() {
       } else {
         setPromoCode("");
         setDiscount(0);
-        setPromoError(data.error || "Invalid promo code");
+        setPromoError(data.error || t.checkout.invalidPromo);
       }
     } catch {
       setPromoCode("");
       setDiscount(0);
-      setPromoError("Could not validate promo code. Please try again.");
+        setPromoError(t.checkout.validateFailed);
     }
     setApplyingPromo(false);
   };
@@ -162,7 +162,7 @@ export default function CheckoutPage() {
         } else {
           setPromoCode("");
           setDiscount(0);
-          setPromoError(data.error || "Promo code no longer applies");
+          setPromoError(t.checkout.noLongerApplies);
         }
       } catch {
         /* keep last known discount; server re-validates at order time */
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
             {/* Contact phone */}
             <section className="px-4 py-4 border-b border-outline-variant/60">
               <label htmlFor="customer-phone" className="text-[15px] font-bold text-on-surface block">
-                Phone number <span className="text-status-error">*</span>
+                {t.checkout.phoneLabel} <span className="text-status-error">{t.checkout.phoneRequired}</span>
               </label>
               <div className="relative mt-2.5">
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">call</span>
@@ -293,7 +293,7 @@ export default function CheckoutPage() {
                   maxLength={16}
                   required
                   className="w-full pl-10 pr-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm"
-                  placeholder="98765 43210"
+                  placeholder={t.checkout.phonePlaceholder}
                   value={phone}
                   onChange={(e) => { setPhone(e.target.value); setPhoneError(false); }}
                   aria-describedby="customer-phone-help"
@@ -305,7 +305,7 @@ export default function CheckoutPage() {
                 className={`mt-1.5 text-xs font-semibold ${phoneError ? "text-status-error" : "text-on-surface-variant"}`}
                 role={phoneError ? "alert" : undefined}
               >
-                {phoneError ? "Enter a valid 10-digit mobile number" : "We'll only use this to update you about the order."}
+                {phoneError ? t.checkout.phoneInvalid : t.checkout.phoneHelp}
               </p>
             </section>
 
@@ -343,7 +343,7 @@ export default function CheckoutPage() {
             {hasClosedVendor && (
               <section className="px-4 py-3 bg-status-error/10 border-b border-outline-variant/60 flex items-start gap-2">
                 <span className="material-symbols-outlined text-status-error text-[18px] mt-0.5">schedule</span>
-                <p className="text-sm font-medium text-status-error">One or more restaurants in your cart are currently closed. Please remove their items or try again later.</p>
+                <p className="text-sm font-medium text-status-error">{t.checkout.closedVendorWarning}</p>
               </section>
             )}
 
@@ -360,8 +360,8 @@ export default function CheckoutPage() {
                     <span className="text-sm font-bold text-accent truncate">{promoCode}</span>
                     <span className="text-xs font-semibold text-accent">-₹{computedDiscount.toFixed(2)}</span>
                   </div>
-                  <button onClick={removePromo} className="text-xs font-semibold text-on-surface-variant hover:text-on-surface shrink-0" aria-label="Remove promo code">
-                    Remove
+                  <button onClick={removePromo} className="text-xs font-semibold text-on-surface-variant hover:text-on-surface shrink-0" aria-label={t.checkout.removePromo}>
+                    {t.cart.remove}
                   </button>
                 </div>
               ) : (
@@ -370,7 +370,7 @@ export default function CheckoutPage() {
                     id="promo-code"
                     type="text"
                     className="flex-1 min-w-0 px-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm uppercase"
-                    placeholder="Enter code"
+                    placeholder={t.checkout.enterCode}
                     value={promoInput}
                     onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
                     autoComplete="off"
@@ -380,7 +380,7 @@ export default function CheckoutPage() {
                     disabled={applyingPromo || !promoInput.trim()}
                     className="px-5 py-3 bg-primary text-on-primary rounded-xl text-sm font-black hover:bg-primary-dim active:scale-95 transition-all disabled:opacity-50 shrink-0"
                   >
-                    {applyingPromo ? "..." : "Apply"}
+                    {applyingPromo ? "..." : t.checkout.apply}
                   </button>
                 </div>
               )}
@@ -392,13 +392,13 @@ export default function CheckoutPage() {
             {/* Special instructions */}
             <section className="px-4 py-4 border-b border-outline-variant/60">
               <label htmlFor="special-instructions" className="text-[15px] font-bold text-on-surface block">
-                Special Instructions <span className="text-xs font-medium text-on-surface-variant">(optional)</span>
+                {t.checkout.specialInstructions} <span className="text-xs font-medium text-on-surface-variant">{t.checkout.optional}</span>
               </label>
               <textarea
                 id="special-instructions"
                 className="w-full mt-2.5 px-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm resize-none"
                 rows={2}
-                placeholder="E.g. Ring bell, leave at door, no onions..."
+                placeholder={t.checkout.specialInstructionsPlaceholder}
                 value={specialInstructions}
                 onChange={(e) => setSpecialInstructions(e.target.value)}
               />
@@ -430,7 +430,7 @@ export default function CheckoutPage() {
         <div className="fixed bottom-0 left-0 right-0 md:left-auto md:bottom-6 md:right-6 md:max-w-md z-40 bg-surface-container-lowest border-t md:border md:rounded-2xl border-outline-variant/60 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:shadow-xl">
           {(showAddressWarning || phoneError) && (
             <p className="px-4 pt-2 text-xs font-semibold text-status-error text-center" role="alert">
-              {!deliveryAddress ? "Please select a delivery address first" : "Enter a valid 10-digit mobile number"}
+              {!deliveryAddress ? t.checkout.selectAddressFirst : t.checkout.phoneInvalid}
             </p>
           )}
           <div className="flex items-center gap-3 px-4 py-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}>

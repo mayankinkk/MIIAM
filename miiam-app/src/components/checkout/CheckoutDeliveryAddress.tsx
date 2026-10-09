@@ -25,7 +25,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
           onClick={onChangeAddress}
           className="shrink-0 text-[13px] font-bold text-accent hover:underline"
         >
-          Change
+          {t.checkout.change}
         </button>
       </div>
 
@@ -39,7 +39,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
           </span>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-on-surface text-sm flex items-center gap-2 flex-wrap">
-              <span className="truncate">{deliveryAddress.label || "Home"}</span>
+              <span className="truncate">{deliveryAddress.label || t.checkout.homeLabel}</span>
               {deliveryAddress.lat && (
                 <span className="text-[10px] bg-status-success/10 text-accent px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 shrink-0">
                   <span className="material-symbols-outlined text-[10px]">gps_fixed</span>GPS
@@ -50,7 +50,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
               {[deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(", ")}
             </p>
             {deliveryAddress.landmark && (
-              <p className="text-xs text-on-surface-variant mt-0.5 break-words">Near {deliveryAddress.landmark}</p>
+              <p className="text-xs text-on-surface-variant mt-0.5 break-words">{t.checkout.nearLandmark.replace("{landmark}", deliveryAddress.landmark)}</p>
             )}
           </div>
           <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
