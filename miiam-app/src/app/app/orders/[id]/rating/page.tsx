@@ -147,6 +147,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
   const [hoverRider, setHoverRider] = useState(0);
   const [feedback, setFeedback] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [reviewPhotos, setReviewPhotos] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const { addToast } = useToastStore();
@@ -221,6 +222,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           review_text: feedback,
           tags: selectedTags,
           type: "food",
+          photos: reviewPhotos,
         };
         if (dimTaste > 0) reviewData.food_quality = dimTaste;
         if (dimPackaging > 0) reviewData.packaging = dimPackaging;
@@ -455,6 +457,49 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             className="w-full bg-[var(--color-surface-container-lowest)] rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(0,0,0,0.02)] resize-none"
             placeholder={t.rating.shareExperience}
           />
+          {/* Photo attachments */}
+          <div className="flex items-center gap-2 flex-wrap px-2">
+            {reviewPhotos.map((photo, idx) => (
+              <div key={idx} className="relative w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/40">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={photo} alt={`Review photo ${idx + 1}`} className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setReviewPhotos((prev) => prev.filter((_, i) => i !== idx))}
+                  className="absolute top-0.5 right-0.5 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center text-white"
+                  aria-label="Remove photo"
+                >
+                  <span className="material-symbols-outlined text-xs">close</span>
+                </button>
+              </div>
+            ))}
+            {reviewPhotos.length < 3 && (
+              <label className="w-16 h-16 rounded-lg border-2 border-dashed border-outline-variant/50 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors text-on-surface-variant">
+                <span className="material-symbols-outlined text-lg">add_a_photo</span>
+                <span className="text-[9px] font-bold">Add</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []).slice(0, 3 - reviewPhotos.length);
+                    files.forEach((file) => {
+                      const reader = new FileReader();
+                      reader.onload = () => {
+                        const result = reader.result;
+                        if (typeof result === "string") {
+                          setReviewPhotos((prev) => prev.length < 3 ? [...prev, result] : prev);
+                        }
+                      };
+                      reader.readAsDataURL(file);
+                    });
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+            )}
+          </div>
         </section>
 
         <section className="flex flex-wrap gap-2">

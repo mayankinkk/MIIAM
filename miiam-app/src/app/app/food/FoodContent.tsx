@@ -24,6 +24,7 @@ import { EmptyState } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import VegFilterPill from "@/components/VegFilterPill";
+import { QuickCommerceToggle } from "@/components/QuickCommerceToggle";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
@@ -388,6 +389,7 @@ export default function FoodPageContent() {
     return "all";
   });
   const [sortBy, setSortBy] = useState<SortOption>("rating");
+  const [quickOnly, setQuickOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(1000);
@@ -587,11 +589,16 @@ export default function FoodPageContent() {
       return price >= priceMin && price <= priceMax;
     })
     .filter((r) => {
+      if (!quickOnly) return true;
+      // Express: vendor must promise ≤ 20 min max delivery
+      return (r.delivery_time_max ?? r.delivery_time_min ?? 999) <= 20;
+    })
+    .filter((r) => {
       if (vegFilter === "all") return true;
       const vendorItems = menuItems.filter((item) => item.vendor_id === r.id);
       if (vendorItems.length === 0) return true;
       return vendorItems.some((item) => item.is_veg === (vegFilter === "veg"));
-    }), [sortedRestaurants, selectedCategory, priceMin, priceMax, vegFilter, menuItems]);
+    }), [sortedRestaurants, selectedCategory, priceMin, priceMax, quickOnly, vegFilter, menuItems]);
 
   const searchedRestaurants = searchQuery
     ? filteredRestaurants.filter((r) => r.shop_name?.toLowerCase().includes(searchQuery.toLowerCase()) || r.cuisine?.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -752,9 +759,10 @@ export default function FoodPageContent() {
         />
       </div>
 
-      {/* Veg/Non-veg Filter + Sort — Sticky */}
+      {/* Veg/Non-veg Filter + Express + Sort — Sticky */}
       <div className="sticky top-0 z-20 bg-surface/95 backdrop-blur-lg px-4 py-3 flex flex-wrap gap-2 border-b border-outline/5">
         <VegFilterPill value={vegFilter} onChange={setVegFilter} />
+        <QuickCommerceToggle onToggle={(on) => { setQuickOnly(on); }} />
         <SortDropdown sort={sortBy} setSort={setSortBy} />
         <PriceRangeFilter onApply={(min, max) => { setPriceMin(min); setPriceMax(max); }} />
       </div>

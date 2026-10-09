@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface OrderActionsProps {
   order: {
@@ -26,6 +29,31 @@ interface OrderActionsProps {
 export default function OrderActions({ order, canCancel, showHelp, onToggleHelp, onShowCancelReason }: OrderActionsProps) {
   const { t } = useTranslation();
   const router = useRouter();
+  const addToast = useToastStore((s) => s.addToast);
+  const [downloadingInvoice, setDownloadingInvoice] = useState(false);
+
+  const downloadInvoice = async () => {
+    setDownloadingInvoice(true);
+    try {
+      const res = await fetch(`/api/orders/${order.id}/invoice`);
+      if (!res.ok) throw new Error("Invoice request failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `invoice-${order.id.slice(0, 8)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      addToast("Invoice downloaded", "success");
+    } catch (err) {
+      logger.error({ err }, "Invoice download failed");
+      addToast("Could not download invoice. Please try again.", "error");
+    } finally {
+      setDownloadingInvoice(false);
+    }
+  };
 
   return (
     <>
@@ -109,6 +137,17 @@ export default function OrderActions({ order, canCancel, showHelp, onToggleHelp,
                 >
                   <span className="material-symbols-outlined">cancel</span>
                   {t.orders.cancelOrder}
+                </button>
+              )}
+
+              {order.status === "delivered" && (
+                <button
+                  onClick={downloadInvoice}
+                  disabled={downloadingInvoice}
+                  className="w-full p-4 bg-surface-container-high text-on-surface rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  <span className="material-symbols-outlined">download</span>
+                  {downloadingInvoice ? "Preparing…" : "Download Invoice"}
                 </button>
               )}
             </div>

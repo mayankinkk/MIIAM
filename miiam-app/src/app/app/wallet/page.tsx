@@ -6,6 +6,9 @@ import Link from "next/link";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PullToRefresh from "@/components/PullToRefresh";
 import { useTranslation } from "@/lib/i18n/useTranslation";
+import { redeemGiftCard, getUserGiftCards, type GiftCard } from "@/lib/gift-cards";
+import { useToastStore } from "@/lib/store/toastStore";
+import logger from "@/lib/logger";
 
 interface WalletTransaction {
   id: string;
@@ -23,6 +26,8 @@ export default function WalletPage() {
   const [loading, setLoading] = useState(true);
   const [giftCode, setGiftCode] = useState("");
   const [redeeming, setRedeeming] = useState(false);
+  const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
+  const addToast = useToastStore((s) => s.addToast);
 
   useEffect(() => {
     loadWallet();
@@ -50,33 +55,34 @@ export default function WalletPage() {
         .limit(50);
 
       if (txns) setTransactions(txns);
+
+      const cards = await getUserGiftCards(user.id);
+      setGiftCards(cards);
     } catch {
       // Wallet table may not exist yet
     }
     setLoading(false);
   }
 
-  async function redeemGiftCard() {
+  async function redeemGiftCardCode() {
     if (!giftCode.trim() || redeeming) return;
     setRedeeming(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const res = await fetch("/api/wallet/redeem", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: giftCode.trim(), userId: user.id }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setBalance(prev => prev + data.amount);
+      // Amount of 0 means "redeem full balance into wallet"
+      const result = await redeemGiftCard(giftCode.trim(), user.id, 0);
+      if (result.success) {
+        addToast(`Gift card redeemed! Balance: ₹${result.discount}`, "success");
         setGiftCode("");
         loadWallet();
+      } else {
+        addToast(result.error || "Failed to redeem gift card", "error");
       }
-    } catch {
-      // Gift card redemption not available yet
+    } catch (err) {
+      logger.error({ err }, "Gift card redemption failed");
+      addToast("Failed to redeem gift card", "error");
     }
     setRedeeming(false);
   }
@@ -118,7 +124,7 @@ export default function WalletPage() {
                 className="flex-1 px-4 py-3 bg-surface-container rounded-xl border border-outline-variant/20 focus:border-primary outline-none text-sm font-mono tracking-wider"
               />
               <button
-                onClick={redeemGiftCard}
+                onClick={redeemGiftCardCode}
                 disabled={!giftCode.trim() || redeeming}
                 className="px-5 py-3 bg-primary text-on-primary font-bold rounded-xl text-sm disabled:opacity-50 active:scale-95 transition-all"
               >
@@ -126,6 +132,34 @@ export default function WalletPage() {
               </button>
             </div>
           </div>
+
+          {/* Gift Cards */}
+          {giftCards.length > 0 && (
+            <div>
+              <h2 className="font-bold text-on-surface mb-3">Your Gift Cards</h2>
+              <div className="space-y-2">
+                {giftCards.map((card) => (
+                  <div key={card.id} className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-3 border border-outline-variant/5">
+                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
+                      <span className="material-symbols-outlined text-amber-600">card_giftcard</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-on-surface font-mono tracking-wider">{card.code}</p>
+                      <p className="text-xs text-on-surface-variant">
+                        {card.status === "active" ? `Balance ₹${card.balance}` : card.status}
+                        {card.expires_at && new Date(card.expires_at) < new Date() ? " (expired)" : ""}
+                      </p>
+                    </div>
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                      card.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                    }`}>
+                      {card.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Transactions */}
           <div>

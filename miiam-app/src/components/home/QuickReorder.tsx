@@ -1,4 +1,12 @@
-import Link from "next/link";
+"use client";
+
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { useCartStore } from "@/lib/store/cartStore";
+import { useToastStore } from "@/lib/store/toastStore";
+import { getVendorMenuTable } from "@/lib/vendor";
+import logger from "@/lib/logger";
 
 interface LastOrder {
   id: string;
@@ -14,27 +22,79 @@ interface QuickReorderProps {
 }
 
 export default function QuickReorder({ order }: QuickReorderProps) {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+  const addItem = useCartStore((s) => s.addItem);
+  const addToast = useToastStore((s) => s.addToast);
+  const [reordering, setReordering] = useState(false);
+
+  const handleReorder = async () => {
+    setReordering(true);
+    try {
+      type ReorderItem = { menu_item_id: string; name?: string; quantity: number; unit_price: number };
+      const { data: orderItems } = await supabase
+        .from("order_items")
+        .select("menu_item_id, name, quantity, unit_price")
+        .eq("order_id", order.id);
+
+      const items: ReorderItem[] = (orderItems as ReorderItem[] | null) || [];
+      if (items.length === 0) {
+        addToast("Could not load items from that order.", "error");
+        return;
+      }
+
+      const table = await getVendorMenuTable(order.vendor_id);
+      const ids = items.map((i) => i.menu_item_id);
+      const { data: menuItems } = await supabase
+        .from(table)
+        .select("id, name, image_url")
+        .in("id", ids);
+
+      const menuMap = new Map<string, { name: string; image_url?: string }>();
+      if (menuItems) {
+        menuItems.forEach((mi: { id: string; name: string; image_url?: string }) => menuMap.set(mi.id, mi));
+      }
+
+      for (const item of items) {
+        const mi = menuMap.get(item.menu_item_id);
+        for (let i = 0; i < item.quantity; i++) {
+          addItem({
+            id: item.menu_item_id,
+            menu_item_id: item.menu_item_id,
+            vendor_id: order.vendor_id,
+            vendor_name: order.vendor_name,
+            name: mi?.name || item.name || "Item",
+            price: item.unit_price,
+            image_url: mi?.image_url || undefined,
+          });
+        }
+      }
+
+      addToast(`${items.length} item${items.length > 1 ? "s" : ""} added to cart`, "success");
+      try { navigator.vibrate?.([10, 50, 20]); } catch { /* ignore */ }
+      router.push("/app/cart");
+    } catch (error) {
+      logger.error({ err: error }, "Home quick reorder failed");
+      addToast("Failed to reorder. Please try again.", "error");
+    } finally {
+      setReordering(false);
+    }
+  };
+
   return (
-    <div className="px-4 pt-2 pb-1">
-      <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-4 border border-primary/10">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="material-symbols-outlined text-accent text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>replay</span>
-          <span className="text-xs font-bold text-accent uppercase tracking-wider">Order again</span>
-        </div>
-        <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="font-bold text-on-surface text-sm truncate">{order.vendor_name}</p>
-            <p className="text-[11px] text-on-surface-variant truncate mt-0.5">{order.items}</p>
-            <p className="text-[10px] text-on-surface-variant/60 mt-0.5">₹{order.total} · {new Date(order.placed_at).toLocaleDateString()}</p>
-          </div>
-          <Link
-            href={`/app/vendor/${order.vendor_id}`}
-            className="flex-shrink-0 bg-primary text-on-primary text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm"
-          >
-            Reorder
-          </Link>
-        </div>
-      </div>
-    </div>
+    <button
+      onClick={handleReorder}
+      disabled={reordering}
+      className="flex-shrink-0 bg-primary text-on-primary text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm disabled:opacity-60 flex items-center gap-1.5"
+    >
+      {reordering ? (
+        <>
+          <span className="w-3 h-3 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+          Adding…
+        </>
+      ) : (
+        "Reorder"
+      )}
+    </button>
   );
 }

@@ -15,6 +15,7 @@ import { useRecentlyViewed } from "@/lib/hooks/useRecentlyViewed";
 
 import HomeHeader from "@/components/home/HomeHeader";
 import OffersCarousel from "@/components/home/OffersCarousel";
+import FloatingPromo from "@/components/FloatingPromo";
 import ActiveOrderBubble from "@/components/home/ActiveOrderBubble";
 import ServiceabilityChip from "@/components/home/ServiceabilityChip";
 import HomeCategories from "@/components/home/HomeCategories";
@@ -557,6 +558,16 @@ export default function HomePage() {
       </PullToRefresh>
 
       <OffersCarousel offers={offers} />
+
+      {offers[0] && (
+        <FloatingPromo
+          key={offers[0].id}
+          message={offers[0].title + (offers[0].subtitle ? ` — ${offers[0].subtitle}` : "")}
+          icon="local_offer"
+          href={offers[0].link_url || undefined}
+          duration={10000}
+        />
+      )}
 
       {lastOrder && <QuickReorder order={lastOrder} />}
 

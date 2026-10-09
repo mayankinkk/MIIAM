@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { ListSkeleton } from "@/components/Skeleton";
+import TechnicianTracker from "@/components/services/TechnicianTracker";
 
 interface ServiceBooking {
   id: string;
@@ -16,6 +17,9 @@ interface ServiceBooking {
   scheduled_date?: string | null;
   scheduled_time?: string | null;
   amount?: number | null;
+  address?: string | null;
+  lat?: number | null;
+  lng?: number | null;
 }
 
 export default function BookingTrackPage() {
@@ -116,40 +120,34 @@ export default function BookingTrackPage() {
           <p className="text-on-surface-variant text-sm mt-1">{booking.sub_service || booking.service_type}</p>
         </div>
 
-        {/* Technician Card or Status Card */}
-        {hasTechnician ? (
-          <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-green-500 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-              <h2 className="text-sm font-bold text-green-600">Technician Assigned</h2>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="material-symbols-outlined text-accent text-2xl">person</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-on-surface text-base">{booking.technician_name}</p>
-                {booking.technician_phone && (
-                  <p className="text-sm text-on-surface-variant mt-0.5">{booking.technician_phone}</p>
-                )}
-              </div>
-              {booking.technician_phone && (
-                <a
-                  href={`tel:${booking.technician_phone}`}
-                  className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center text-green-600 hover:bg-green-200 active:scale-95 transition-all"
-                >
-                  <span className="material-symbols-outlined">call</span>
-                </a>
-              )}
-            </div>
-          </div>
-        ) : activeConfig ? (
+        {/* Live technician tracking (map + ETA + contact) */}
+        {(hasTechnician || ["confirmed", "in_progress", "pending"].includes(booking.status)) && (
+          <TechnicianTracker
+            booking={{
+              id: booking.id,
+              status: booking.status,
+              address: booking.address || null,
+              technician_name: booking.technician_name || null,
+              technician_phone: booking.technician_phone || null,
+              scheduled_date: booking.scheduled_date || null,
+              scheduled_time: booking.scheduled_time || null,
+              amount: booking.amount || null,
+              sub_service: booking.sub_service || null,
+              service_type: booking.service_type || null,
+              lat: booking.lat || null,
+              lng: booking.lng || null,
+            }}
+          />
+        )}
+
+        {/* Fallback status card for non-active states without tracker */}
+        {!hasTechnician && !["confirmed", "in_progress", "pending"].includes(booking.status) && activeConfig && (
           <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
             <span className={`material-symbols-outlined text-5xl ${activeConfig.iconColor} mb-3 block`}>{activeConfig.icon}</span>
             <h2 className="text-lg font-bold text-on-surface mb-2">{activeConfig.title}</h2>
             <p className="text-on-surface-variant text-sm">{activeConfig.message}</p>
           </div>
-        ) : null}
+        )}
 
         {/* Booking Details */}
         <div className="mt-6 bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10">

@@ -22,12 +22,16 @@ interface ReviewData {
   review_text: string | null;
   tags: string[] | null;
   vendor_reply: string | null;
+  photos: string[] | null;
+  item_name: string | null;
   created_at: string;
   profile: {
     full_name: string | null;
     avatar_url: string | null;
   } | null;
 }
+
+type SortKey = "newest" | "highest" | "lowest";
 
 export default function VendorReviewsPage() {
   const { t } = useTranslation();
@@ -39,6 +43,8 @@ export default function VendorReviewsPage() {
   const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "5" | "4" | "3" | "2" | "1">("all");
+  const [sort, setSort] = useState<SortKey>("newest");
+  const [lightboxPhoto, setLightboxPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -62,9 +68,16 @@ export default function VendorReviewsPage() {
     loadData();
   }, [vendorId]);
 
-  const filteredReviews = filter === "all" 
-    ? reviews 
-    : reviews.filter((r) => r.rating === parseInt(filter));
+  const filteredReviews = (() => {
+    const base = filter === "all"
+      ? reviews
+      : reviews.filter((r) => r.rating === parseInt(filter));
+    const sorted = [...base];
+    if (sort === "newest") sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    if (sort === "highest") sorted.sort((a, b) => b.rating - a.rating || new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    if (sort === "lowest") sorted.sort((a, b) => a.rating - b.rating || new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    return sorted;
+  })();
 
   const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
     star,
@@ -116,9 +129,9 @@ export default function VendorReviewsPage() {
         </div>
       </div>
 
-      {/* Filter */}
-      <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-3 overflow-x-auto">
-        <div className="flex gap-2">
+      {/* Filter + Sort */}
+      <div className="bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-4 py-3 space-y-2">
+        <div className="flex gap-2 overflow-x-auto">
           {(["all", "5", "4", "3", "2", "1"] as const).map((f) => (
             <button
               key={f}
@@ -128,6 +141,20 @@ export default function VendorReviewsPage() {
               }`}
             >
               {f === "all" ? t.food.all : `${f} ★`}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-2 overflow-x-auto">
+          {([["newest", "Newest"], ["highest", "Highest rated"], ["lowest", "Lowest rated"]] as const).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setSort(key)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap flex items-center gap-1 ${
+                sort === key ? "bg-accent/15 text-accent" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+              }`}
+            >
+              {sort === key && <span className="material-symbols-outlined text-xs">check</span>}
+              {label}
             </button>
           ))}
         </div>
@@ -164,8 +191,29 @@ export default function VendorReviewsPage() {
                       </span>
                     ))}
                   </div>
+                  {review.item_name && (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-primary/15 text-accent px-2 py-0.5 rounded-full mt-1.5">
+                      <span className="material-symbols-outlined text-[11px]">restaurant</span>
+                      {review.item_name}
+                    </span>
+                  )}
                   {review.review_text && (
                     <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">{review.review_text}</p>
+                  )}
+                  {review.photos && review.photos.length > 0 && (
+                    <div className="flex gap-2 mt-2.5 flex-wrap">
+                      {review.photos.map((photo, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setLightboxPhoto(photo)}
+                          className="w-16 h-16 rounded-lg overflow-hidden border border-[var(--color-border-subtle)] hover:opacity-80 transition-opacity"
+                          aria-label="View review photo"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={photo} alt="Review photo" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
                   )}
                   {review.tags && review.tags.length > 0 && (
                     <div className="flex gap-2 mt-2 flex-wrap">
@@ -188,6 +236,32 @@ export default function VendorReviewsPage() {
           ))
         )}
       </div>
+
+      {/* Photo lightbox */}
+      {lightboxPhoto && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          onClick={() => setLightboxPhoto(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Review photo"
+        >
+          <button
+            onClick={() => setLightboxPhoto(null)}
+            className="absolute top-4 right-4 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white"
+            aria-label="Close"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxPhoto}
+            alt="Review photo enlarged"
+            className="max-w-full max-h-[80vh] rounded-2xl object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }
