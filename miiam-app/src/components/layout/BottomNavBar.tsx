@@ -13,7 +13,7 @@ export default function BottomNavBar() {
   const unreadCount = useNotificationStore((s) => s.unreadCount());
   const { t } = useTranslation();
 
-  const hideOnRoutes = ["/app/checkout", "/app/payment", "/app/vendor-failure", "/app/support/chat"];
+  const hideOnRoutes = ["/app/checkout", "/app/cart", "/app/payment", "/app/vendor-failure", "/app/support/chat"];
   if (hideOnRoutes.some((r) => pathname.startsWith(r))) return null;
 
   const navItems = [

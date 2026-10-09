@@ -8,10 +8,8 @@ import PullToRefresh from "@/components/PullToRefresh";
 import { useCartStore } from "@/lib/store/cartStore";
 import { EmptyCart } from "@/components/ui/EmptyStates";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
 import CartCrossSell from "@/components/CartCrossSell";
 import { useTranslation } from "@/lib/i18n/useTranslation";
@@ -34,7 +32,6 @@ export default function CartPage() {
   const removeItem = useCartStore((s) => s.removeItem);
   const totalPrice = useCartStore((s) => s.totalPrice);
   const subtotalByVendor = useCartStore((s) => s.subtotalByVendor);
-  const clearCart = useCartStore((s) => s.clearCart);
   const addItem = useCartStore((s) => s.addItem);
   const saveForLater = useCartStore((s) => s.saveForLater);
   const savedItems = useCartStore((s) => s.savedItems);
@@ -44,7 +41,6 @@ export default function CartPage() {
   const [showReorderModal, setShowReorderModal] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [loadingOrders, setLoadingOrders] = useState(false);
-  const router = useRouter();
   const { addToast } = useToastStore();
 
   const [hydrated, setHydrated] = useState(false);
@@ -82,7 +78,7 @@ export default function CartPage() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
+      <div className="min-h-screen bg-surface p-4" aria-label="Loading...">
         <ListSkeleton count={4} />
       </div>
     );
@@ -100,7 +96,6 @@ export default function CartPage() {
 
   const total = totalPrice();
 
-  const vendorIds = Array.from(new Set(safeItems.map((i) => i.vendor_id).filter(Boolean)));
   const grandTotal = Math.max(0, total + serviceCharge);
 
   const fetchPastOrders = async () => {
@@ -169,56 +164,41 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
-      {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 py-3 bg-surface/90 dark:bg-[var(--color-surface)]/90 backdrop-blur-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.06)]"
-        style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
+    <div className="min-h-screen bg-surface pb-28">
+      <header className="sticky top-0 z-40 h-14 flex items-center gap-3 px-4 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        <div className="flex items-center gap-3">
-          <Link href="/app/home" className="p-2 rounded-full hover:bg-surface-container dark:hover:bg-[var(--color-surface-container)] transition-all" aria-label="Back">
-            <span className="material-symbols-outlined text-on-surface dark:text-[var(--color-on-surface)] text-[22px]">arrow_back</span>
-          </Link>
-          <span className="text-xl font-extrabold tracking-tighter text-accent">MIIAM</span>
+        <Link href="/app/home" className="p-2 -ml-2 rounded-full hover:bg-surface-container transition-colors" aria-label="Back">
+          <span className="material-symbols-outlined text-on-surface text-[22px]">arrow_back</span>
+        </Link>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-[17px] font-bold text-on-surface leading-tight truncate">{t.cart.title}</h1>
+          <p className="text-xs text-on-surface-variant leading-tight">
+            {safeItems.length > 0 ? `${safeItems.length} item${safeItems.length > 1 ? "s" : ""}` : t.cart.subtitle}
+          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/app/notifications" aria-label="Notifications" className="p-2 rounded-full hover:bg-surface-container dark:hover:bg-[var(--color-surface-container)] transition-all">
-            <span className="material-symbols-outlined text-on-surface dark:text-[var(--color-on-surface)] text-[22px]">notifications</span>
-          </Link>
-          <Link href="/app/profile" aria-label="Profile" className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary-container dark:border-[var(--color-primary-container)] bg-primary-container dark:bg-[var(--color-primary-container)] flex items-center justify-center">
-            <span className="material-symbols-outlined text-on-primary text-[20px]">person</span>
-          </Link>
-        </div>
+        {safeItems.length > 0 && (
+          <button
+            onClick={async () => {
+              await fetchPastOrders();
+              setShowReorderModal(true);
+            }}
+            className="shrink-0 text-xs font-bold text-accent px-2 py-1.5 rounded-lg hover:bg-accent/10 transition-colors"
+          >
+            {t.cart.reorder}
+          </button>
+        )}
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Cart' }]} />
-
-      <main className="pt-4 pb-40 px-3 sm:px-4 max-w-2xl mx-auto">
+      <main className="pb-4 max-w-2xl mx-auto">
         <PullToRefresh onRefresh={handleRefresh}>
-        <section className="mb-6">
-          <div className="flex items-center justify-between gap-2">
-            <div className="min-w-0">
-              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-on-surface">{t.cart.title}</h1>
-              <p className="text-[var(--color-on-surface-variant)] dark:text-[var(--color-outline)] text-xs mt-0.5">{t.cart.subtitle}</p>
-            </div>
-            <button
-              onClick={async () => {
-                await fetchPastOrders();
-                setShowReorderModal(true);
-              }}
-              className="shrink-0 text-xs font-bold text-accent bg-primary/5 px-3 py-2 rounded-lg hover:bg-primary hover:text-on-primary/10 transition-colors"
-            >
-              {t.cart.reorder}
-            </button>
-          </div>
-        </section>
-
         {hasMultipleVendors && (
-          <div className="mb-4 bg-surface-container-low dark:bg-[var(--color-surface-container)] border border-amber-200 dark:border-amber-800 rounded-xl p-3">
+          <div className="bg-primary/10 border-b border-outline-variant/60 px-4 py-3">
             <div className="flex items-start gap-2">
-              <span className="material-symbols-outlined text-amber-600 text-[18px] mt-0.5">warning</span>
+              <span className="material-symbols-outlined text-primary-dim text-[18px] mt-0.5">warning</span>
               <div className="flex-1">
-                <p className="font-bold text-amber-800 text-sm">{t.cart.multiVendor}</p>
-                <p className="text-xs text-amber-700 mt-0.5">{t.cart.multiVendorDesc}</p>
+                <p className="font-bold text-on-surface text-sm">{t.cart.multiVendor}</p>
+                <p className="text-xs text-on-surface-variant mt-0.5">{t.cart.multiVendorDesc}</p>
               </div>
             </div>
           </div>
@@ -227,24 +207,17 @@ export default function CartPage() {
         {safeItems.length === 0 ? (
           <EmptyCart />
         ) : (
-          <div className="space-y-4">
+          <div className="bg-surface-container-lowest">
             {vendors.map((vendor) => (
-              <div key={vendor.id} className="bg-surface-container-low dark:bg-[var(--color-surface-container)] rounded-xl p-3 sm:p-4 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-2">
-                  <span className="material-symbols-outlined text-accent/10 text-6xl absolute -top-2 -right-2">lunch_dining</span>
-                </div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-on-primary text-[18px]">
-                      restaurant
-                    </span>
-                  </div>
+              <section key={vendor.id} className="px-4 py-4 border-b border-outline-variant/60">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="material-symbols-outlined text-on-surface text-[20px]">restaurant</span>
                   <div className="min-w-0">
-                    <h2 className="text-base font-bold tracking-tight truncate">{vendor.name}</h2>
-                    <p className="text-[10px] font-medium text-accent uppercase tracking-widest">{t.cart.priorityDelivery}</p>
+                    <h2 className="text-[15px] font-bold tracking-tight truncate text-on-surface">{vendor.name}</h2>
+                    <p className="text-[10px] font-bold text-accent uppercase tracking-wider">{t.cart.priorityDelivery}</p>
                   </div>
                 </div>
-                <div className="space-y-3 relative z-10">
+                <div className="mt-2">
                   {vendor.items.map((item) => (
                     <SwipeableCard
                       key={item.id}
@@ -253,9 +226,8 @@ export default function CartPage() {
                       leftAction={{ label: "Remove", color: "bg-red-500", icon: "delete" }}
                       rightAction={{ label: "Save Later", color: "bg-amber-500", icon: "bookmark" }}
                     >
-                    <div className="flex items-center gap-2 sm:gap-3 bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-2.5 sm:p-3 rounded-xl shadow-sm">
-                      {/* Thumbnail */}
-                      <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container dark:bg-[var(--color-surface-container)]">
+                    <div className="flex items-start gap-3 py-3 border-t border-outline-variant/40 first:border-t-0">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container border border-outline-variant/40">
                         {item.image_url ? (
                           <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
                         ) : (
@@ -264,25 +236,23 @@ export default function CartPage() {
                           </div>
                         )}
                       </div>
-                      {/* Details */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm truncate">{item.name}</h3>
+                        <h3 className="font-semibold text-on-surface text-sm leading-snug line-clamp-2">{item.name}</h3>
                         {item.special_notes ? (
-                          <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)] truncate">{item.special_notes}</p>
+                          <p className="text-xs text-on-surface-variant truncate mt-0.5">{item.special_notes}</p>
                         ) : null}
-                        <span className="text-on-surface font-bold text-sm">₹{item.price.toFixed(2)}</span>
+                        <p className="font-bold text-on-surface text-sm mt-1">₹{item.price.toFixed(2)}</p>
                       </div>
-                      {/* Controls */}
-                      <div className="flex flex-col items-end gap-1 shrink-0">
-                        <div className="flex items-center bg-surface-container dark:bg-[var(--color-surface-container)] rounded-full">
+                      <div className="flex flex-col items-end gap-2 shrink-0">
+                        <div className="flex items-center border border-primary rounded-lg overflow-hidden bg-primary/5">
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
                             aria-label={`Decrease quantity of ${item.name}`}
-                            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
+                            className="w-9 h-9 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors"
                           >
-                            <span className="material-symbols-outlined text-sm" aria-hidden="true">remove</span>
+                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">remove</span>
                           </button>
-                          <span className="px-2 font-bold text-sm w-8 text-center" aria-live="polite" aria-atomic="true">
+                          <span className="px-1 font-bold text-sm w-7 text-center text-on-surface" aria-live="polite" aria-atomic="true">
                             <AnimatePresence mode="popLayout">
                               <motion.span
                                 key={item.quantity}
@@ -299,21 +269,21 @@ export default function CartPage() {
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
                             aria-label={`Increase quantity of ${item.name}`}
-                            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-lowest transition-colors"
+                            className="w-9 h-9 flex items-center justify-center bg-primary text-on-primary hover:bg-primary-dim transition-colors"
                           >
-                            <span className="material-symbols-outlined text-sm" aria-hidden="true">add</span>
+                            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">add</span>
                           </button>
                         </div>
                         <div className="flex items-center gap-3">
                           <button
                             onClick={() => saveForLater(item.id)}
-                            className="text-[9px] font-bold text-on-surface-variant dark:text-[var(--color-outline)] hover:text-accent transition-colors uppercase tracking-wider"
+                            className="text-[10px] font-bold text-on-surface-variant hover:text-accent transition-colors uppercase tracking-wide"
                           >
                             Save Later
                           </button>
                           <button
                             onClick={() => removeItem(item.id)}
-                            className="text-[9px] font-bold text-on-surface-variant dark:text-[var(--color-outline)] hover:text-accent transition-colors uppercase tracking-wider"
+                            className="text-[10px] font-bold text-on-surface-variant hover:text-accent transition-colors uppercase tracking-wide"
                           >
                             {t.cart.remove}
                           </button>
@@ -323,23 +293,22 @@ export default function CartPage() {
                     </SwipeableCard>
                   ))}
                 </div>
-                <div className="mt-4 flex justify-between items-center text-xs border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 pt-3">
-                  <span className="text-on-surface-variant dark:text-[var(--color-outline)]">{t.cart.subtotal} ({vendor.name})</span>
-                  <span className="font-bold">₹{subtotalByVendor(vendor.id).toFixed(2)}</span>
+                <div className="mt-1 pt-3 border-t border-outline-variant/40 flex justify-between items-center text-sm">
+                  <span className="text-on-surface-variant">{t.cart.subtotal} ({vendor.name})</span>
+                  <span className="font-bold text-on-surface">₹{subtotalByVendor(vendor.id).toFixed(2)}</span>
                 </div>
-              </div>
+              </section>
             ))}
 
-            {/* Saved for Later */}
             {savedItems.length > 0 && (
-              <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.06)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10">
-                <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-sm">bookmark</span>
+              <section className="px-4 py-4 border-b border-outline-variant/60">
+                <h3 className="text-[15px] font-bold mb-3 flex items-center gap-2 text-on-surface">
+                  <span className="material-symbols-outlined text-[18px] text-accent">bookmark</span>
                   Saved for Later ({savedItems.length})
                 </h3>
-                <div className="space-y-3">
+                <div>
                   {savedItems.map((item) => (
-                    <div key={item.id} className="flex items-center gap-3 p-2 rounded-lg bg-surface/50 dark:bg-[var(--color-surface)]/50">
+                    <div key={item.id} className="flex items-center gap-3 py-3 border-t border-outline-variant/40 first:border-t-0">
                       <BlurImage
                         src={item.image_url || "https://ui-avatars.com/api/?name=" + encodeURIComponent(item.name) + "&background=f3f4f6&color=6b7280"}
                         alt={item.name}
@@ -348,52 +317,48 @@ export default function CartPage() {
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-on-surface dark:text-[var(--color-on-surface)] truncate">{item.name}</p>
-                        <p className="text-[10px] text-on-surface-variant dark:text-[var(--color-outline)]">₹{item.price}</p>
+                        <p className="text-xs font-semibold text-on-surface truncate">{item.name}</p>
+                        <p className="text-[11px] font-bold text-on-surface">₹{item.price}</p>
                       </div>
                       <button
                         onClick={() => moveToCart(item.id)}
-                        className="text-[9px] font-bold text-accent hover:underline uppercase tracking-wider"
+                        className="text-[10px] font-bold text-accent hover:underline uppercase tracking-wide"
                       >
                         Move to Cart
                       </button>
                       <button
                         onClick={() => removeSaved(item.id)}
                         aria-label="Remove saved item"
-                        className="text-on-surface-variant dark:text-[var(--color-outline)] hover:text-red-500"
+                        className="w-8 h-8 flex items-center justify-center text-on-surface-variant hover:text-red-500"
                       >
-                        <span className="material-symbols-outlined text-sm">close</span>
+                        <span className="material-symbols-outlined text-[18px]">close</span>
                       </button>
                     </div>
                   ))}
                 </div>
-              </div>
+              </section>
             )}
 
-            {/* Cross-sell suggestions */}
             <CartCrossSell />
 
-            {/* Order Summary */}
-            <section className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.06)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10">
-              <h3 className="text-base font-bold mb-4">{t.cart.paymentSummary}</h3>
-              <div className="space-y-3 text-on-surface-variant dark:text-[var(--color-outline)] text-sm">
+            <section className="px-4 py-4">
+              <h3 className="text-[15px] font-bold mb-3 text-on-surface">{t.cart.paymentSummary}</h3>
+              <div className="space-y-2.5 text-sm">
                 <div className="flex justify-between gap-2">
-                  <span>{t.cart.itemsSubtotal}</span>
-                  <span className="text-on-surface dark:text-[var(--color-on-surface)] font-semibold truncate">₹{total.toFixed(2)}</span>
+                  <span className="text-on-surface-variant">{t.cart.itemsSubtotal}</span>
+                  <span className="font-semibold text-on-surface truncate">₹{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>{t.cart.deliveryFee}</span>
+                  <span className="text-on-surface-variant">{t.cart.deliveryFee}</span>
                   <span className="text-green-600 font-semibold">FREE</span>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <span>{t.cart.serviceCharge}</span>
-                  <span className="text-on-surface font-semibold truncate">₹{serviceCharge.toFixed(2)}</span>
+                  <span className="text-on-surface-variant">{t.cart.serviceCharge}</span>
+                  <span className="font-semibold text-on-surface truncate">₹{serviceCharge.toFixed(2)}</span>
                 </div>
-                <div className="pt-4 border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 flex justify-between items-center gap-2">
-                  <div className="min-w-0">
-                    <p className="text-xs uppercase tracking-widest font-bold text-on-surface dark:text-[var(--color-on-surface)]">{t.cart.totalBalance}</p>
-                    <p className="text-2xl sm:text-3xl font-extrabold text-on-surface tracking-tighter truncate">₹{grandTotal.toFixed(2)}</p>
-                  </div>
+                <div className="pt-3 mt-1 border-t border-outline-variant/40 flex justify-between items-center gap-2">
+                  <span className="font-bold text-on-surface">{t.cart.totalBalance}</span>
+                  <span className="font-bold text-on-surface truncate">₹{grandTotal.toFixed(2)}</span>
                 </div>
               </div>
             </section>
@@ -402,10 +367,10 @@ export default function CartPage() {
 
         {showReorderModal && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-end justify-center animate-fade-in" role="dialog" aria-modal="true" aria-labelledby="reorder-modal-title" onClick={(e) => { if (e.target === e.currentTarget) setShowReorderModal(false); }} onKeyDown={(e) => { if (e.key === "Escape") setShowReorderModal(false); }}>
-            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
-              <div className="p-4 border-b border-outline-variant dark:border-[var(--color-border-subtle)] flex items-center justify-between">
-                <h3 id="reorder-modal-title" className="text-base font-bold text-on-surface dark:text-[var(--color-on-surface)]">{t.cart.reorderFromPast}</h3>
-                <button onClick={() => setShowReorderModal(false)} aria-label="Close" className="w-11 h-11 bg-surface-container dark:bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+            <div className="bg-surface-container-lowest rounded-t-2xl w-full max-h-[80vh] overflow-hidden">
+              <div className="p-4 border-b border-outline-variant/60 flex items-center justify-between">
+                <h3 id="reorder-modal-title" className="text-base font-bold text-on-surface">{t.cart.reorderFromPast}</h3>
+                <button onClick={() => setShowReorderModal(false)} aria-label="Close" className="w-11 h-11 -mr-2 bg-surface-container rounded-full flex items-center justify-center">
                   <span className="material-symbols-outlined text-[18px]">close</span>
                 </button>
               </div>
@@ -415,19 +380,19 @@ export default function CartPage() {
                     <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
                   </div>
                 ) : pastOrders.length === 0 ? (
-                  <div className="text-center py-8 text-on-surface-variant dark:text-[var(--color-outline)] text-sm">{t.cart.noPastOrders}</div>
+                  <div className="text-center py-8 text-on-surface-variant text-sm">{t.cart.noPastOrders}</div>
                 ) : (
                   <div className="space-y-3">
                     {pastOrders.map((order) => (
-                      <div key={order.id} className="border border-outline-variant dark:border-[var(--color-border-subtle)] rounded-xl p-3">
+                      <div key={order.id} className="border border-outline-variant/60 rounded-xl p-3">
                         <div className="flex items-center justify-between mb-2">
                           <div>
-                            <p className="font-bold text-on-surface dark:text-[var(--color-on-surface)] text-sm">{order.vendors?.shop_name || t.cart.restaurant}</p>
-                            <p className="text-xs text-on-surface-variant dark:text-[var(--color-outline)]">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
+                            <p className="font-bold text-on-surface text-sm">{order.vendors?.shop_name || t.cart.restaurant}</p>
+                            <p className="text-xs text-on-surface-variant">{new Date(order.placed_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                           </div>
                           <p className="font-bold text-on-surface text-sm">₹{order.total_amount?.toFixed(2)}</p>
                         </div>
-                        <button onClick={() => handleReorder(order.id)} disabled={reordering} className="w-full mt-1 py-2 bg-primary text-on-primary text-xs font-bold rounded-lg hover:opacity-90 disabled:opacity-60">
+                        <button onClick={() => handleReorder(order.id)} disabled={reordering} className="w-full mt-1 py-2.5 bg-primary text-on-primary text-xs font-bold rounded-lg hover:bg-primary-dim disabled:opacity-60 transition-colors">
                           {reordering ? t.cart.adding : t.cart.addToCart}
                         </button>
                       </div>
@@ -442,20 +407,20 @@ export default function CartPage() {
       </main>
 
       {safeItems.length > 0 && (
-        <div className="fixed bottom-20 left-0 right-0 z-40 bg-surface/95 dark:bg-[var(--color-surface)]/95 backdrop-blur-xl border-t border-outline-variant/20 dark:border-t-[var(--color-border-subtle)]/20 shadow-[0px_-10px_30px_rgba(0,0,0,0.08)]"
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest border-t border-outline-variant/60 md:left-auto md:right-6 md:bottom-6 md:max-w-md md:border md:rounded-2xl md:shadow-xl"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         >
-          <div className="max-w-2xl mx-auto px-3 sm:px-4 py-3 flex items-center gap-3 sm:gap-4">
+          <div className="px-4 py-3 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] text-[var(--color-on-surface-variant)] dark:text-[var(--color-outline)] font-semibold uppercase tracking-wider">{t.cart.total}</p>
-              <p className="text-lg sm:text-xl font-extrabold text-on-surface truncate">₹{grandTotal.toFixed(2)}</p>
+              <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">{t.cart.total}</p>
+              <p className="text-lg font-extrabold text-on-surface truncate">₹{grandTotal.toFixed(2)}</p>
             </div>
             <Link
               href="/app/checkout"
-              className="shrink-0 px-5 sm:px-8 py-3 sm:py-3.5 bg-primary text-on-primary rounded-xl font-extrabold text-sm sm:text-base shadow-md hover:brightness-95 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
+              className="shrink-0 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm hover:bg-primary-dim active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
             >
               {t.cart.proceed}
-              <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </Link>
           </div>
         </div>

@@ -73,18 +73,18 @@ export default function CartCrossSell() {
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-[0px_4px_20px_rgba(0,0,0,0.06)] border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10">
-      <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-        <span className="material-symbols-outlined text-sm">recommend</span>
+    <section className="px-4 py-4 border-b border-outline-variant/60">
+      <h3 className="text-[15px] font-bold mb-3 flex items-center gap-2 text-on-surface">
+        <span className="material-symbols-outlined text-[18px] text-accent">recommend</span>
         You might also like
       </h3>
       <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-hide">
         {suggestions.map((item) => (
           <div
             key={item.id}
-            className="snap-start shrink-0 w-[140px] bg-surface dark:bg-[var(--color-surface)] rounded-xl overflow-hidden border border-outline-variant/10 dark:border-[var(--color-border-subtle)]/10"
+            className="snap-start shrink-0 w-[140px] bg-surface rounded-xl overflow-hidden border border-outline-variant/60"
           >
-            <div className="relative w-full h-24 bg-surface-container dark:bg-[var(--color-surface-container)]">
+            <div className="relative w-full h-24 bg-surface-container">
               {item.image_url ? (
                 <Image
                   src={item.image_url}
@@ -104,10 +104,10 @@ export default function CartCrossSell() {
               </div>
             </div>
             <div className="p-2.5">
-              <p className="text-xs font-bold text-on-surface dark:text-[var(--color-on-surface)] truncate leading-tight">
+              <p className="text-xs font-bold text-on-surface truncate leading-tight">
                 {item.name}
               </p>
-              <p className="text-[11px] text-on-surface-variant dark:text-[var(--color-outline)] mt-0.5 truncate">
+              <p className="text-[11px] text-on-surface-variant mt-0.5 truncate">
                 {item.vendor_name}
               </p>
               <div className="flex items-center justify-between mt-2">
@@ -125,7 +125,7 @@ export default function CartCrossSell() {
                       is_veg: item.is_veg,
                     })
                   }
-                  className="w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-sm hover:scale-105 active:scale-95 transition-all"
+                  className="w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center hover:bg-primary-dim active:scale-95 transition-all"
                   aria-label={`Add ${item.name} to cart`}
                 >
                   <span className="material-symbols-outlined text-sm">add</span>
@@ -135,6 +135,6 @@ export default function CartCrossSell() {
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
