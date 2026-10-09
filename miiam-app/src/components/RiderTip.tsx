@@ -33,72 +33,72 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
   };
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 bg-brand-secondary/10 rounded-full flex items-center justify-center">
-          <span className="material-symbols-outlined text-2xl text-brand-secondary">directions_bike</span>
+    <div>
+      <div className="flex items-center gap-2.5 mb-3">
+        <div className="w-9 h-9 bg-accent/10 rounded-full flex items-center justify-center shrink-0">
+          <span className="material-symbols-outlined text-lg text-accent">directions_bike</span>
         </div>
-        <div>
-          <h3 className="font-bold text-[var(--color-on-surface)]">Tip your Rider</h3>
-          <p className="text-sm text-[var(--color-outline)]">100% goes to your delivery hero</p>
+        <div className="min-w-0">
+          <h3 className="font-bold text-sm text-on-surface">Tip your Rider</h3>
+          <p className="text-xs text-on-surface-variant">100% goes to your delivery hero</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3 mb-4">
+      <div className="grid grid-cols-4 gap-2 mb-3">
         {tipOptions.map(({ percent, label }) => {
           const amount = calculateTip(percent);
           const isSelected = selectedTip === percent;
-          
+
           return (
             <button
               key={percent}
               onClick={() => handleSelect(percent)}
-              className={`p-3 rounded-xl border-2 text-center transition-all ${
+              className={`py-2 rounded-lg border text-center transition-all ${
                 isSelected
-                  ? "border-[var(--color-primary)] bg-red-50"
-                  : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
+                  ? "border-primary bg-primary/15"
+                  : "border-outline-variant/40 hover:border-primary"
               }`}
             >
-              <div className="text-sm font-bold text-[var(--color-on-surface)]">{label}</div>
-              {amount > 0 && <div className="text-xs text-[var(--color-accent)]">₹{amount}</div>}
+              <div className="text-[13px] font-bold text-on-surface">{label}</div>
+              {amount > 0 && <div className="text-[11px] font-semibold text-accent">₹{amount}</div>}
             </button>
           );
         })}
       </div>
 
-      <div className="mb-6">
-        <label className="text-sm text-[var(--color-on-surface-variant)] mb-2 block">Custom amount</label>
+      <div className="mb-3">
+        <label className="text-xs font-bold text-on-surface-variant mb-1.5 block">Custom amount</label>
         <div className="flex gap-2">
           <div className="flex-1 relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline)]">₹</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">₹</span>
             <input
               type="number"
               value={customAmount}
               onChange={(e) => setCustomAmount(e.target.value)}
               placeholder="Enter amount"
-              className="w-full pl-8 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className="w-full pl-8 pr-4 py-2.5 border border-outline-variant/40 rounded-lg bg-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm"
             />
           </div>
           <button
             onClick={handleCustomTip}
-            className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg font-bold"
+            className="px-4 py-2.5 bg-primary text-on-primary rounded-lg font-black text-sm hover:bg-primary-dim transition-colors"
           >
             Add
           </button>
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <button
           onClick={onSkip}
-          className="flex-1 py-3 text-[var(--color-on-surface-variant)] font-bold rounded-xl border border-[var(--color-border-subtle)]"
+          className="flex-1 py-2.5 text-sm text-on-surface-variant font-bold rounded-lg border border-outline-variant/40 hover:border-outline-variant transition-colors"
         >
           Skip
         </button>
         <button
           onClick={() => selectedTip !== null && handleSelect(selectedTip)}
           disabled={selectedTip === null}
-          className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl disabled:opacity-50"
+          className="flex-1 py-2.5 bg-primary text-on-primary text-sm font-black rounded-lg disabled:opacity-50 hover:bg-primary-dim transition-colors"
         >
           Add ₹{selectedTip !== null && selectedTip >= 0 ? calculateTip(selectedTip) : selectedTip === -1 ? customAmount : 0} Tip
         </button>
@@ -109,13 +109,11 @@ export function RiderTipSelector({ orderAmount, onTipSelect, onSkip }: RiderTipP
 
 export function TipThankYou({ amount }: { amount: number }) {
   return (
-    <div className="bg-status-success/10 rounded-xl p-4 flex items-center gap-3">
-      <div className="w-10 h-10 bg-status-success/20 rounded-full flex items-center justify-center">
-        <span className="material-symbols-outlined text-status-success">favorite</span>
-      </div>
-      <div>
-        <p className="font-bold text-status-success">Thanks for your generosity!</p>
-        <p className="text-sm text-status-success">₹{amount} tip added for your rider</p>
+    <div className="bg-status-success/10 rounded-lg p-2.5 flex items-center gap-2.5">
+      <span className="material-symbols-outlined text-status-success" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+      <div className="min-w-0">
+        <p className="font-bold text-status-success text-sm">Thanks for your generosity!</p>
+        <p className="text-xs text-status-success">₹{amount} tip added for your rider</p>
       </div>
     </div>
   );

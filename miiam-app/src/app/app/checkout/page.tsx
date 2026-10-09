@@ -10,7 +10,6 @@ import CheckoutScheduledServices from "@/components/checkout/CheckoutScheduledSe
 import CheckoutScheduledDelivery from "@/components/checkout/CheckoutScheduledDelivery";
 import CheckoutPaymentMethods from "@/components/checkout/CheckoutPaymentMethods";
 import CheckoutOrderSummary from "@/components/checkout/CheckoutOrderSummary";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import { SERVICES_VENDOR_ID } from "@/lib/constants";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { Skeleton } from "@/components/Skeleton";
@@ -100,9 +99,7 @@ export default function CheckoutPage() {
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
   const serviceVendorIds = vendorIds.filter((id) => id !== SERVICES_VENDOR_ID);
 
-  const hasClosedVendor = useMemo(() => {
-    return serviceVendorIds.some((id) => vendorHours[id] && !isVendorOpen(vendorHours[id]).open);
-  }, [serviceVendorIds, vendorHours]);
+  const hasClosedVendor = serviceVendorIds.some((id) => vendorHours[id] && !isVendorOpen(vendorHours[id]).open);
 
   const { discount: computedDiscount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
     subtotal,
@@ -185,68 +182,137 @@ export default function CheckoutPage() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 max-w-7xl mx-auto">
-          <div className="lg:col-span-8 space-y-5 sm:space-y-8">
-            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 sm:p-6 rounded-2xl shadow-sm space-y-4">
-              <Skeleton className="h-5 w-32" />
-              <Skeleton className="h-12 w-full rounded-xl" />
-            </div>
-            <div className="bg-surface-container-lowest dark:bg-[var(--color-surface-container-lowest)] p-4 sm:p-6 rounded-2xl shadow-sm space-y-4">
-              <Skeleton className="h-5 w-40" />
-              <Skeleton className="h-12 w-full rounded-xl" />
-            </div>
-          </div>
-          <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <div className="bg-surface-container-low dark:bg-[var(--color-surface-container)] p-5 sm:p-8 rounded-2xl shadow-sm space-y-4">
-              <Skeleton className="h-5 w-36" />
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-10 w-full rounded-xl" />
-              <Skeleton className="h-12 w-full rounded-xl" />
-            </div>
-          </div>
+      <div className="min-h-screen bg-surface p-4" aria-label="Loading...">
+        <div className="max-w-2xl mx-auto space-y-4">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-44 w-full" />
+          <Skeleton className="h-32 w-full" />
         </div>
       </div>
     );
   }
 
+  const handlePlaceOrder = () => {
+    if (!deliveryAddress) {
+      setShowAddressWarning(true);
+      setTimeout(() => setShowAddressWarning(false), 3000);
+      return;
+    }
+    if (!isValidPhone(phone)) {
+      setPhoneError(true);
+      setTimeout(() => setPhoneError(false), 3000);
+      return;
+    }
+    if (placing || items.length === 0 || hasClosedVendor) return;
+    setPlacing(true);
+
+    const phoneE164 = normalizePhone(phone);
+    const orderArgs = {
+      deliveryAddress,
+      paymentMethod,
+      discount: computedDiscount,
+      subtotal,
+      deliveryFee: totalDeliveryFee,
+      promoCode,
+      scheduledDate,
+      scheduledTime,
+      specialInstructions,
+      tipAmount,
+      isRecurring,
+      recurringFrequency,
+      recurringDayOfWeek,
+      phone: phoneE164,
+      serviceCharge,
+    };
+
+    placeOrder(orderArgs)
+      .then((ok) => {
+        if (ok) {
+          try { window.localStorage.setItem("miiam_customer_phone", phoneE164); } catch { /* ignore */ }
+        }
+      })
+      .finally(() => setPlacing(false));
+  };
+
   return (
-    <>
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-4 sm:px-6 py-3 sm:py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-sm">
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Link href="/app/cart" aria-label="Back to cart" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container dark:hover:bg-[var(--color-surface-container)] transition-all">
-            <span className="material-symbols-outlined text-accent">arrow_back</span>
+    <div className="min-h-screen bg-surface pb-28 md:pb-32">
+      {/* Sticky header — Blinkit style */}
+      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
+        <div className="h-14 flex items-center gap-1 px-2" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
+          <Link
+            href="/app/cart"
+            aria-label="Back to cart"
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <span className="text-xl sm:text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
-        </div>
-        <span className="text-on-surface dark:text-[var(--color-on-surface)] font-semibold hidden md:block">Checkout</span>
-      </nav>
-
-      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Cart", href: "/app/cart" }, { label: "Checkout" }]} />
-
-      <main className="pt-20 sm:pt-24 pb-24 px-3 sm:px-6 max-w-7xl mx-auto bg-background dark:bg-[var(--color-surface)] text-on-background dark:text-[var(--color-on-surface)]">
-        <header className="mb-6 sm:mb-12">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-on-surface dark:text-[var(--color-on-surface)] mb-2 break-words">{t.checkout.title}</h1>
-          <p className="text-sm sm:text-base text-on-surface-variant dark:text-[var(--color-outline)]">{t.checkout.subtitle}</p>
-        </header>
-
-        {items.length === 0 ? (
-          <div className="text-center py-20">
-            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">shopping_cart</span>
-            <h2 className="text-xl font-black text-[var(--color-on-surface-variant)] mt-4">{t.checkout.cartEmpty}</h2>
-            <p className="text-sm text-[var(--color-outline-variant)] mt-2">{t.checkout.cartEmptyDesc}</p>
-            <Link href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">{t.checkout.browseMenu}</Link>
+          <div className="flex-1 min-w-0 px-1">
+            <p className="text-[13px] font-bold text-on-surface truncate">{t.checkout.title}</p>
+            <p className="text-[11px] text-on-surface-variant truncate">{t.checkout.subtitle}</p>
           </div>
-        ) : (
+          <span className="w-10 h-10 shrink-0 flex items-center justify-center text-on-surface-variant" aria-hidden="true">
+            <span className="material-symbols-outlined text-[20px]">lock</span>
+          </span>
+        </div>
+      </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
-          <div className="lg:col-span-8 space-y-5 sm:space-y-8">
+      <div className="max-w-2xl mx-auto">
+        {items.length === 0 ? (
+          <section className="px-4 py-16 text-center">
+            <span className="material-symbols-outlined text-6xl text-outline-variant/60">shopping_cart</span>
+            <h2 className="text-base font-bold text-on-surface mt-4">{t.checkout.cartEmpty}</h2>
+            <p className="text-sm text-on-surface-variant mt-1">{t.checkout.cartEmptyDesc}</p>
+            <Link
+              href="/app/home"
+              className="inline-block mt-5 px-6 py-3 bg-primary text-on-primary rounded-xl font-black text-sm shadow-md shadow-primary/20 active:scale-95 transition-all"
+            >
+              {t.checkout.browseMenu}
+            </Link>
+          </section>
+        ) : (
+          <>
+            {/* Delivery address */}
             <CheckoutDeliveryAddress
               deliveryAddress={deliveryAddress}
               onChangeAddress={() => setShowAddressPicker(true)}
             />
-            <CheckoutScheduledServices items={items} />
-            {!items.some(i => i.vendor_id === SERVICES_VENDOR_ID) && (
+
+            {/* Contact phone */}
+            <section className="px-4 py-4 border-b border-outline-variant/60">
+              <label htmlFor="customer-phone" className="text-[15px] font-bold text-on-surface block">
+                Phone number <span className="text-status-error">*</span>
+              </label>
+              <div className="relative mt-2.5">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">call</span>
+                <input
+                  id="customer-phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  maxLength={16}
+                  required
+                  className="w-full pl-10 pr-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm"
+                  placeholder="98765 43210"
+                  value={phone}
+                  onChange={(e) => { setPhone(e.target.value); setPhoneError(false); }}
+                  aria-describedby="customer-phone-help"
+                  aria-invalid={phoneError}
+                />
+              </div>
+              <p
+                id="customer-phone-help"
+                className={`mt-1.5 text-xs font-semibold ${phoneError ? "text-status-error" : "text-on-surface-variant"}`}
+                role={phoneError ? "alert" : undefined}
+              >
+                {phoneError ? "Enter a valid 10-digit mobile number" : "We'll only use this to update you about the order."}
+              </p>
+            </section>
+
+            {/* Schedule */}
+            {items.some((i) => i.vendor_id === SERVICES_VENDOR_ID) ? (
+              <CheckoutScheduledServices items={items} />
+            ) : (
               <CheckoutScheduledDelivery
                 scheduledDate={scheduledDate}
                 onScheduledDateChange={setScheduledDate}
@@ -266,188 +332,129 @@ export default function CheckoutPage() {
                 onClearSchedule={() => { setScheduledDate(""); setScheduledTime(""); setIsRecurring(false); }}
               />
             )}
+
+            {/* Payment method */}
             <CheckoutPaymentMethods
               paymentMethod={paymentMethod}
               onChange={setPaymentMethod}
             />
-          </div>
 
-          <div className="lg:col-span-4 lg:sticky lg:top-24">
-            <aside className="bg-surface-container-low dark:bg-[var(--color-surface-container)] p-5 sm:p-8 rounded-2xl shadow-sm relative">
-              <CheckoutOrderSummary
-                items={items}
-                subtotal={subtotal}
-                discount={computedDiscount}
-                totalDeliveryFee={totalDeliveryFee}
-                totalServiceCharge={totalServiceCharge}
-                gstAmount={gstAmount}
-                packagingFee={packagingFee}
-                platformFee={platformFee}
-                grand={grand}
-                showTipSelector={showTipSelector}
-                tipAmount={tipAmount}
-                onTipSelect={(amount) => { setTipAmount(amount); setShowTipSelector(false); }}
-                onSkipTip={() => { setTipAmount(0); setShowTipSelector(false); }}
-                onEditTip={() => setShowTipSelector(true)}
-              />
+            {/* Closed vendor warning */}
+            {hasClosedVendor && (
+              <section className="px-4 py-3 bg-status-error/10 border-b border-outline-variant/60 flex items-start gap-2">
+                <span className="material-symbols-outlined text-status-error text-[18px] mt-0.5">schedule</span>
+                <p className="text-sm font-medium text-status-error">One or more restaurants in your cart are currently closed. Please remove their items or try again later.</p>
+              </section>
+            )}
 
-              {/* Promo Code */}
-              <div className="mb-3">
-                <label htmlFor="promo-code" className="text-xs font-bold text-on-surface-variant mb-1.5 block">Promo Code</label>
-                {promoCode ? (
-                  <div className="flex items-center justify-between gap-2 px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="material-symbols-outlined text-green-600 text-lg">verified</span>
-                      <span className="text-sm font-bold text-green-700 dark:text-green-400 truncate">{promoCode}</span>
-                      <span className="text-xs font-semibold text-green-600">-₹{computedDiscount.toFixed(2)}</span>
-                    </div>
-                    <button onClick={removePromo} className="text-xs font-semibold text-on-surface-variant hover:text-on-surface shrink-0" aria-label="Remove promo code">
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <input
-                      id="promo-code"
-                      type="text"
-                      className="flex-1 min-w-0 px-4 py-3 bg-surface-subtle rounded-xl border border-outline/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm uppercase"
-                      placeholder="Enter code"
-                      value={promoInput}
-                      onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
-                      autoComplete="off"
-                    />
-                    <button
-                      onClick={applyPromo}
-                      disabled={applyingPromo || !promoInput.trim()}
-                      className="px-4 py-3 bg-primary text-on-primary rounded-xl text-sm font-bold hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 shrink-0"
-                    >
-                      {applyingPromo ? "..." : "Apply"}
-                    </button>
-                  </div>
-                )}
-                {promoError && (
-                  <p className="mt-1.5 text-xs text-red-500 font-semibold" role="alert">{promoError}</p>
-                )}
+            {/* Promo code */}
+            <section className="px-4 py-4 border-b border-outline-variant/60">
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="material-symbols-outlined text-accent text-[20px]">local_offer</span>
+                <h2 className="text-[15px] font-bold text-on-surface">{t.checkout.promoCode}</h2>
               </div>
-
-              {/* Special Instructions */}
-              <div className="mb-3">
-                <label className="text-xs font-bold text-on-surface-variant mb-1.5 block">Special Instructions (optional)</label>
-                <textarea
-                  className="w-full px-4 py-3 bg-surface-subtle rounded-xl border border-outline/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm resize-none"
-                  rows={2}
-                  placeholder="E.g. Ring bell, leave at door, no onions..."
-                  value={specialInstructions}
-                  onChange={(e) => setSpecialInstructions(e.target.value)}
-                  aria-label="Special instructions"
-                />
-              </div>
-
-              {hasClosedVendor && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-3 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-red-500 text-lg">schedule</span>
-                  <p className="text-red-700 text-sm font-medium">One or more restaurants in your cart are currently closed. Please remove their items or try again later.</p>
+              {promoCode ? (
+                <div className="flex items-center justify-between gap-2 px-4 py-3 bg-status-success/10 border border-status-success/30 rounded-xl">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="material-symbols-outlined text-accent text-lg">verified</span>
+                    <span className="text-sm font-bold text-accent truncate">{promoCode}</span>
+                    <span className="text-xs font-semibold text-accent">-₹{computedDiscount.toFixed(2)}</span>
+                  </div>
+                  <button onClick={removePromo} className="text-xs font-semibold text-on-surface-variant hover:text-on-surface shrink-0" aria-label="Remove promo code">
+                    Remove
+                  </button>
                 </div>
-              )}
-
-              {/* Phone number — required so the vendor/rider can reach the customer */}
-              <div className="mb-3">
-                <label htmlFor="customer-phone" className="text-xs font-bold text-on-surface-variant mb-1.5 block">
-                  Phone number <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-lg">call</span>
+              ) : (
+                <div className="flex gap-2">
                   <input
-                    id="customer-phone"
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    maxLength={16}
-                    required
-                    className="w-full pl-11 pr-4 py-3 bg-surface-subtle rounded-xl border border-outline/20 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-sm"
-                    placeholder="98765 43210"
-                    value={phone}
-                    onChange={(e) => { setPhone(e.target.value); setPhoneError(false); }}
-                    aria-describedby="customer-phone-help"
-                    aria-invalid={phoneError}
+                    id="promo-code"
+                    type="text"
+                    className="flex-1 min-w-0 px-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm uppercase"
+                    placeholder="Enter code"
+                    value={promoInput}
+                    onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
+                    autoComplete="off"
                   />
+                  <button
+                    onClick={applyPromo}
+                    disabled={applyingPromo || !promoInput.trim()}
+                    className="px-5 py-3 bg-primary text-on-primary rounded-xl text-sm font-black hover:bg-primary-dim active:scale-95 transition-all disabled:opacity-50 shrink-0"
+                  >
+                    {applyingPromo ? "..." : "Apply"}
+                  </button>
                 </div>
-                <p
-                  id="customer-phone-help"
-                  className={`mt-1.5 text-xs font-semibold ${phoneError ? "text-red-500" : "text-on-surface-variant"}`}
-                  role={phoneError ? "alert" : undefined}
-                >
-                  {phoneError ? "Enter a valid 10-digit mobile number" : "We'll only use this to update you about the order."}
-                </p>
-              </div>
-
-              <button
-                onClick={() => {
-                  if (!deliveryAddress) {
-                    setShowAddressWarning(true);
-                    setTimeout(() => setShowAddressWarning(false), 3000);
-                    return;
-                  }
-                  if (!isValidPhone(phone)) {
-                    setPhoneError(true);
-                    setTimeout(() => setPhoneError(false), 3000);
-                    return;
-                  }
-                  setPlacing(true);
-
-                  const phoneE164 = normalizePhone(phone);
-                  const orderArgs = {
-                    deliveryAddress,
-                    paymentMethod,
-                    discount: computedDiscount,
-                    subtotal,
-                    deliveryFee: totalDeliveryFee,
-                    promoCode,
-                    scheduledDate,
-                    scheduledTime,
-                    specialInstructions,
-                    tipAmount,
-                    isRecurring,
-                    recurringFrequency,
-                    recurringDayOfWeek,
-                    phone: phoneE164,
-                    serviceCharge,
-                  };
-
-                  placeOrder(orderArgs)
-                    .then((ok) => {
-                      if (ok) {
-                        try { window.localStorage.setItem("miiam_customer_phone", phoneE164); } catch { /* ignore */ }
-                      }
-                    })
-                    .finally(() => setPlacing(false));
-                }}
-                disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
-                className="w-full bg-primary text-on-primary py-4 sm:py-5 rounded-xl text-base sm:text-lg font-extrabold shadow-md hover:brightness-95 active:scale-95 transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
-              >
-                {placing ? (
-                  <>
-                    <span className="w-5 h-5 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
-                    {t.checkout.placingOrder}
-                  </>
-                ) : t.checkout.placeOrder}
-                {!placing && <span className="material-symbols-outlined">shield</span>}
-              </button>
-
-              {showAddressWarning && (
-                <p className="text-center mt-3 text-xs text-red-500 font-semibold animate-pulse">Please select a delivery address first</p>
               )}
+              {promoError && (
+                <p className="mt-1.5 text-xs text-status-error font-semibold" role="alert">{promoError}</p>
+              )}
+            </section>
 
-              <p className="text-center mt-6 text-xs text-on-surface-variant dark:text-[var(--color-outline)] flex items-center justify-center gap-2">
-                <span className="material-symbols-outlined text-sm">lock</span>
-                {t.checkout.securePayment}
-              </p>
-            </aside>
+            {/* Special instructions */}
+            <section className="px-4 py-4 border-b border-outline-variant/60">
+              <label htmlFor="special-instructions" className="text-[15px] font-bold text-on-surface block">
+                Special Instructions <span className="text-xs font-medium text-on-surface-variant">(optional)</span>
+              </label>
+              <textarea
+                id="special-instructions"
+                className="w-full mt-2.5 px-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm resize-none"
+                rows={2}
+                placeholder="E.g. Ring bell, leave at door, no onions..."
+                value={specialInstructions}
+                onChange={(e) => setSpecialInstructions(e.target.value)}
+              />
+            </section>
+
+            {/* Bill details */}
+            <CheckoutOrderSummary
+              items={items}
+              subtotal={subtotal}
+              discount={computedDiscount}
+              totalDeliveryFee={totalDeliveryFee}
+              totalServiceCharge={totalServiceCharge}
+              gstAmount={gstAmount}
+              packagingFee={packagingFee}
+              platformFee={platformFee}
+              grand={grand}
+              showTipSelector={showTipSelector}
+              tipAmount={tipAmount}
+              onTipSelect={(amount) => { setTipAmount(amount); setShowTipSelector(false); }}
+              onSkipTip={() => { setTipAmount(0); setShowTipSelector(false); }}
+              onEditTip={() => setShowTipSelector(true)}
+            />
+          </>
+        )}
+      </div>
+
+      {/* Sticky bottom bar — price + Place Order (Blinkit style). Bottom nav is hidden on checkout, so the bar sits at the viewport edge. */}
+      {items.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 md:left-auto md:bottom-6 md:right-6 md:max-w-md z-40 bg-surface-container-lowest border-t md:border md:rounded-2xl border-outline-variant/60 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:shadow-xl">
+          {(showAddressWarning || phoneError) && (
+            <p className="px-4 pt-2 text-xs font-semibold text-status-error text-center" role="alert">
+              {!deliveryAddress ? "Please select a delivery address first" : "Enter a valid 10-digit mobile number"}
+            </p>
+          )}
+          <div className="flex items-center gap-3 px-4 py-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}>
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant truncate">{t.checkout.totalAmount}</p>
+              <p className="text-lg font-black text-on-surface truncate">₹{grand.toFixed(2)}</p>
+            </div>
+            <button
+              onClick={handlePlaceOrder}
+              disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
+              className="flex-1 min-w-0 bg-primary text-on-primary py-3 rounded-xl font-black text-sm hover:bg-primary-dim active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-md shadow-primary/20"
+            >
+              {placing ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+                  {t.checkout.placingOrder}
+                </>
+              ) : (
+                t.checkout.placeOrder
+              )}
+            </button>
           </div>
         </div>
-        )}
-
-      </main>
+      )}
 
       {showAddressPicker && (
         <AddressPickerSheet
@@ -466,6 +473,6 @@ export default function CheckoutPage() {
           onClose={() => setShowAddressPicker(false)}
         />
       )}
-    </>
+    </div>
   );
 }

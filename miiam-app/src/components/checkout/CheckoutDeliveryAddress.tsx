@@ -12,57 +12,58 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
   const { t } = useTranslation();
 
   return (
-    <section className="bg-surface-container-lowest p-4 sm:p-6 rounded-2xl shadow-sm">
-      <div className="flex items-center gap-3 mb-4 sm:mb-5">
-        <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-          <span className="material-symbols-outlined text-accent">location_on</span>
-        </div>
-        <div className="flex-1">
-          <h2 className="text-lg font-extrabold text-on-surface">{t.checkout.deliveryAddress}</h2>
-          <p className="text-xs text-on-surface-variant">{t.checkout.whereToDeliver}</p>
+    <section className="px-4 py-4 border-b border-outline-variant/60">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="material-symbols-outlined text-accent text-[20px] shrink-0">location_on</span>
+          <div className="min-w-0">
+            <h2 className="text-[15px] font-bold text-on-surface truncate">{t.checkout.deliveryAddress}</h2>
+            <p className="text-xs text-on-surface-variant truncate">{t.checkout.whereToDeliver}</p>
+          </div>
         </div>
         <button
           onClick={onChangeAddress}
-          className="text-accent font-bold text-sm bg-surface px-3 py-1.5 rounded-lg hover:bg-surface-container transition-colors"
+          className="shrink-0 text-[13px] font-bold text-accent hover:underline"
         >
           Change
         </button>
       </div>
 
       {deliveryAddress ? (
-        <div className="p-3 sm:p-4 rounded-xl border-2 border-primary bg-primary/5 flex items-start gap-3 sm:gap-4">
-          <div className="w-11 h-11 rounded-xl bg-surface-container flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>
-              {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}
-            </span>
-          </div>
+        <div className="p-3 rounded-xl border-2 border-primary bg-primary/5 flex items-start gap-3">
+          <span
+            className="material-symbols-outlined text-accent text-[22px] mt-0.5 shrink-0"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            {deliveryAddress.type === "office" ? "business" : deliveryAddress.type === "other" ? "place" : "home"}
+          </span>
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-on-surface flex items-center gap-2 flex-wrap">
+            <p className="font-bold text-on-surface text-sm flex items-center gap-2 flex-wrap">
               <span className="truncate">{deliveryAddress.label || "Home"}</span>
               {deliveryAddress.lat && (
-                <span className="text-[10px] bg-status-success/10 text-status-success px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 shrink-0">
+                <span className="text-[10px] bg-status-success/10 text-accent px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 shrink-0">
                   <span className="material-symbols-outlined text-[10px]">gps_fixed</span>GPS
                 </span>
               )}
             </p>
-            <p className="text-sm text-on-surface-variant mt-1 leading-relaxed break-words">
+            <p className="text-[13px] text-on-surface-variant mt-0.5 leading-relaxed break-words">
               {[deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state].filter(Boolean).join(", ")}
             </p>
             {deliveryAddress.landmark && (
-              <p className="text-xs text-[var(--color-outline-variant)] mt-1 break-words">📍 Near {deliveryAddress.landmark}</p>
+              <p className="text-xs text-on-surface-variant mt-0.5 break-words">Near {deliveryAddress.landmark}</p>
             )}
           </div>
-          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-on-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
+          <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+            <span className="material-symbols-outlined text-on-primary text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check</span>
           </div>
         </div>
       ) : (
         <button
           onClick={onChangeAddress}
-          className="w-full p-4 sm:p-5 rounded-xl border-2 border-dashed border-outline-variant/50 flex flex-col items-center gap-2 text-on-surface-variant hover:border-primary hover:text-accent hover:bg-surface transition-all"
+          className="w-full py-4 rounded-xl border border-dashed border-outline-variant/50 flex flex-col items-center gap-1.5 text-on-surface-variant hover:border-primary hover:bg-primary/5 transition-all"
         >
-          <span className="material-symbols-outlined text-3xl">add_location</span>
-          <span className="font-bold text-sm sm:text-base">{t.checkout.addAddress}</span>
+          <span className="material-symbols-outlined text-2xl">add_location</span>
+          <span className="font-bold text-sm">{t.checkout.addAddress}</span>
           <span className="text-xs">{t.checkout.gpsAutoDetect}</span>
         </button>
       )}
@@ -70,7 +71,7 @@ export default function CheckoutDeliveryAddress({ deliveryAddress, onChangeAddre
       {deliveryAddress && (
         <button
           onClick={onChangeAddress}
-          className="mt-3 w-full py-3 rounded-xl border-2 border-dashed border-outline-variant/40 text-xs sm:text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent flex items-center justify-center gap-2 transition-all"
+          className="mt-2.5 w-full py-2.5 rounded-xl border border-dashed border-outline-variant/40 text-xs font-bold text-on-surface-variant hover:border-primary hover:text-accent flex items-center justify-center gap-1.5 transition-all"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           {t.checkout.useDifferentAddress}

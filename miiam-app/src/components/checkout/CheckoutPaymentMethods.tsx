@@ -11,40 +11,34 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
   const { t } = useTranslation();
 
   const methods = [
-    { id: "cod", label: "Cash on Delivery", sub: "Pay when you receive the order", icon: "payments" },
+    { id: "cod", label: t.checkout.cashOnDelivery, sub: t.checkout.codDesc, icon: "payments" },
   ];
 
   return (
-    <section className="bg-surface-container-lowest p-5 sm:p-8 rounded-2xl shadow-sm">
-      <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
-          <span className="material-symbols-outlined">payments</span>
-        </div>
-        <h2 className="text-xl sm:text-2xl font-bold">{t.checkout.paymentMethod}</h2>
+    <section className="px-4 py-4 border-b border-outline-variant/60">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="material-symbols-outlined text-accent text-[20px]">payments</span>
+        <h2 className="text-[15px] font-bold text-on-surface">{t.checkout.paymentMethod}</h2>
       </div>
-      <div className="space-y-3 sm:space-y-4">
+      <div className="divide-y divide-outline-variant/40">
         {methods.map((pm) => (
           <label
             key={pm.id}
-            className={`flex items-center justify-between p-4 sm:p-6 rounded-lg cursor-pointer transition-all ${
-              paymentMethod === pm.id
-                ? "bg-surface-container-low border-2 border-primary"
-                : "hover:bg-surface-container-low border-2 border-transparent"
+            className={`flex items-center gap-3 py-3 cursor-pointer transition-colors ${
+              paymentMethod === pm.id ? "" : "opacity-70 hover:opacity-100"
             }`}
           >
-            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-              <input
-                type="radio"
-                name="payment"
-                checked={paymentMethod === pm.id}
-                onChange={() => onChange(pm.id)}
-                className="w-5 h-5 text-accent shrink-0"
-              />
-              <span className="material-symbols-outlined text-secondary shrink-0">{pm.icon}</span>
-              <div className="min-w-0">
-                <p className="font-bold text-sm sm:text-base truncate">{pm.label}</p>
-                <p className="text-xs text-on-surface-variant truncate">{pm.sub}</p>
-              </div>
+            <input
+              type="radio"
+              name="payment"
+              checked={paymentMethod === pm.id}
+              onChange={() => onChange(pm.id)}
+              className="w-5 h-5 text-accent accent-[var(--color-accent)] shrink-0"
+            />
+            <span className="material-symbols-outlined text-on-surface-variant shrink-0">{pm.icon}</span>
+            <div className="min-w-0">
+              <p className={`text-sm truncate ${paymentMethod === pm.id ? "font-bold text-on-surface" : "font-medium text-on-surface"}`}>{pm.label}</p>
+              <p className="text-xs text-on-surface-variant truncate">{pm.sub}</p>
             </div>
           </label>
         ))}
