@@ -310,7 +310,7 @@ export default function VendorPage() {
           <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
           <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
             <span className="material-symbols-outlined text-[14px]">schedule</span>
-            {vendor.delivery_time_min || 30}\u2013{vendor.delivery_time_max || 45} min
+            {vendor.delivery_time_min || 30}–{vendor.delivery_time_max || 45} min
           </span>
           <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
           <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
