@@ -16,6 +16,7 @@ interface SearchAutocompleteProps {
   onSelect?: (query: string) => void;
   preventNavigation?: boolean;
   className?: string;
+  placeholder?: string;
 }
 
 const popularSearches = [
@@ -36,7 +37,7 @@ const cuisineIcons: Record<string, string> = {
   "Momos": "🥟",
 };
 
-export function SearchAutocomplete({ onSelect, preventNavigation = false, className = "" }: SearchAutocompleteProps) {
+export function SearchAutocomplete({ onSelect, preventNavigation = false, className = "", placeholder = "Search for dishes, cuisines, restaurants..." }: SearchAutocompleteProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -193,7 +194,7 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
           onChange={(e) => { setQuery(e.target.value); setActiveIndex(-1); }}
           onFocus={() => query.trim() && setShowDropdown(true)}
           onKeyDown={handleKeyDown}
-          placeholder="Search for dishes, cuisines, restaurants..."
+          placeholder={placeholder}
           aria-label="Search restaurants and dishes"
           role="combobox"
           aria-expanded={showDropdown}

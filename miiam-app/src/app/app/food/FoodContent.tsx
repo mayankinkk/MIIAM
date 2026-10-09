@@ -366,65 +366,6 @@ function AddToCartButton({
   );
 }
 
-function CartFloater() {
-  const { t } = useTranslation();
-  const { items, totalPrice, totalItems } = useCartStore();
-  const [showAnimation, setShowAnimation] = useState(false);
-  const itemCount = useMemo(() => totalItems(), [items]);
-  const [prevCount, setPrevCount] = useState(itemCount);
-  
-  useEffect(() => {
-    if (itemCount > prevCount) {
-      setShowAnimation(true);
-      const timer = setTimeout(() => setShowAnimation(false), 500);
-      setPrevCount(itemCount);
-      return () => clearTimeout(timer);
-    }
-    setPrevCount(itemCount);
-  }, [itemCount, prevCount]);
-  
-  if (items.length === 0) return null;
-  return (
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.5 }}
-      className="fixed bottom-6 left-4 right-4 z-50"
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-    >
-      <Link
-        href="/app/cart"
-        className="flex items-center justify-between bg-primary text-on-primary px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40"
-      >
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <motion.span
-              animate={showAnimation ? { scale: [1, 1.3, 1] } : { scale: 1 }}
-              transition={{ duration: 0.4 }}
-              className="bg-surface-container-lowest text-accent font-black text-xs px-2 py-0.5 rounded-full inline-block"
-            >
-              {itemCount}
-            </motion.span>
-            {showAnimation && (
-              <motion.span
-                initial={{ scale: 1, opacity: 1 }}
-                animate={{ scale: 2, opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full"
-              />
-            )}
-          </div>
-          <span className="font-bold">{t.common.viewCart}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-black text-lg">₹{totalPrice().toFixed(2)}</span>
-          <span className="material-symbols-outlined text-white/80">arrow_forward</span>
-        </div>
-      </Link>
-    </motion.div>
-  );
-}
-
 export default function FoodPageContent() {
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
@@ -1240,7 +1181,6 @@ export default function FoodPageContent() {
           </>
         )}
       </main>
-      <CartFloater />
       <QuickActionsFAB />
       </PullToRefresh>
     );

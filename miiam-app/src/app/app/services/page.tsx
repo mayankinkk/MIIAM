@@ -342,6 +342,7 @@ function ServicesContent() {
             onSelect={(term) => setSearchQuery(term)}
             preventNavigation
             className="w-full"
+            placeholder="Search for services..."
           />
         </div>
       </header>
