@@ -28,10 +28,7 @@ export default function CartCrossSell() {
     [items]
   );
 
-  const existingItemIds = useMemo(
-    () => new Set(items.map((i) => i.menu_item_id)),
-    [items]
-  );
+  const existingItemIds = useMemo(() => new Set(items.map((i) => i.menu_item_id)), [items]);
 
   useEffect(() => {
     if (vendorIds.length === 0) return;
@@ -49,17 +46,15 @@ export default function CartCrossSell() {
           .limit(10);
 
         if (menuItems) {
-          const mapped = menuItems
-            .slice(0, 6)
-            .map((item: Record<string, unknown>) => ({
-              id: item.id as string,
-              name: item.name as string,
-              price: item.price as number,
-              image_url: item.image_url as string | null,
-              is_veg: (item.is_veg as boolean) ?? false,
-              vendor_id: item.vendor_id as string,
-              vendor_name: (item.vendors as { shop_name: string } | null)?.shop_name ?? "",
-            }));
+          const mapped = menuItems.slice(0, 6).map((item: Record<string, unknown>) => ({
+            id: item.id as string,
+            name: item.name as string,
+            price: item.price as number,
+            image_url: item.image_url as string | null,
+            is_veg: (item.is_veg as boolean) ?? false,
+            vendor_id: item.vendor_id as string,
+            vendor_name: (item.vendors as { shop_name: string } | null)?.shop_name ?? "",
+          }));
           setSuggestions(mapped);
         }
       } catch {
@@ -73,18 +68,18 @@ export default function CartCrossSell() {
   if (suggestions.length === 0) return null;
 
   return (
-    <section className="px-4 py-4 border-b border-outline-variant/60">
-      <h3 className="text-[15px] font-bold mb-3 flex items-center gap-2 text-on-surface">
-        <span className="material-symbols-outlined text-[18px] text-accent">recommend</span>
+    <section className="border-outline-variant/60 border-b px-4 py-4">
+      <h3 className="text-on-surface mb-3 flex items-center gap-2 text-[15px] font-bold">
+        <span className="material-symbols-outlined text-accent text-[18px]">recommend</span>
         You might also like
       </h3>
-      <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory scrollbar-hide">
+      <div className="scrollbar-hide -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2">
         {suggestions.map((item) => (
           <div
             key={item.id}
-            className="snap-start shrink-0 w-[140px] bg-surface rounded-xl overflow-hidden border border-outline-variant/60"
+            className="bg-surface border-outline-variant/60 w-[140px] shrink-0 snap-start overflow-hidden rounded-xl border"
           >
-            <div className="relative w-full h-24 bg-surface-container">
+            <div className="bg-surface-container relative h-24 w-full">
               {item.image_url ? (
                 <Image
                   src={item.image_url}
@@ -95,23 +90,29 @@ export default function CartCrossSell() {
                   unoptimized={!canOptimizeImage(item.image_url)}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="material-symbols-outlined text-outline-variant text-2xl">fastfood</span>
+                <div className="flex h-full w-full items-center justify-center">
+                  <span className="material-symbols-outlined text-outline-variant text-2xl">
+                    fastfood
+                  </span>
                 </div>
               )}
               <div className="absolute top-1.5 left-1.5">
-                <VegNonVegBadge isVeg={item.is_veg} size="sm" className="bg-white/90 dark:bg-black/70 backdrop-blur-sm rounded-sm p-[1px]" />
+                <VegNonVegBadge
+                  isVeg={item.is_veg}
+                  size="sm"
+                  className="rounded-sm bg-white/90 p-[1px] backdrop-blur-sm dark:bg-black/70"
+                />
               </div>
             </div>
             <div className="p-2.5">
-              <p className="text-xs font-bold text-on-surface truncate leading-tight">
+              <p className="text-on-surface truncate text-xs leading-tight font-bold">
                 {item.name}
               </p>
-              <p className="text-[11px] text-on-surface-variant mt-0.5 truncate">
+              <p className="text-on-surface-variant mt-0.5 truncate text-[11px]">
                 {item.vendor_name}
               </p>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-xs font-bold text-on-surface">₹{item.price}</span>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-on-surface text-xs font-bold">₹{item.price}</span>
                 <button
                   onClick={() =>
                     addItem({
@@ -125,7 +126,7 @@ export default function CartCrossSell() {
                       is_veg: item.is_veg,
                     })
                   }
-                  className="w-7 h-7 bg-primary text-on-primary rounded-full flex items-center justify-center hover:bg-primary-dim active:scale-95 transition-all"
+                  className="bg-primary text-on-primary hover:bg-primary-dim flex h-7 w-7 items-center justify-center rounded-full transition-all active:scale-95"
                   aria-label={`Add ${item.name} to cart`}
                 >
                   <span className="material-symbols-outlined text-sm">add</span>

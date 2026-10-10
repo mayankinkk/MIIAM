@@ -55,7 +55,10 @@ describe("guestOrders", () => {
   });
 
   it("drops malformed entries and unreadable payloads", () => {
-    window.localStorage.setItem(KEY, JSON.stringify([{ id: "ok", phone: "+911" }, { bogus: true }, 7]));
+    window.localStorage.setItem(
+      KEY,
+      JSON.stringify([{ id: "ok", phone: "+911" }, { bogus: true }, 7])
+    );
     expect(readGuestOrders().map((r) => r.id)).toEqual(["ok"]);
 
     window.localStorage.setItem(KEY, "{not json");

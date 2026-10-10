@@ -18,7 +18,10 @@ const locationSchema = z.object({
 export async function POST(request: Request) {
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -84,7 +87,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Tech location API error");
+    logger.error(
+      { err: error instanceof Error ? error : new Error(String(error)) },
+      "Tech location API error"
+    );
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

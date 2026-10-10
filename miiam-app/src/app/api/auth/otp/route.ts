@@ -1,14 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { randomInt } from "crypto";
-import { checkVerifyRateLimit, incrementVerifyAttempts, checkIpRateLimit, getClientIp } from "@/lib/security";
+import {
+  checkVerifyRateLimit,
+  incrementVerifyAttempts,
+  checkIpRateLimit,
+  getClientIp,
+} from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW = 10 * 60 * 1000;
 const VERIFY_ATTEMPT_LIMIT = 5;
 
-async function checkRateLimit(supabase: ReturnType<typeof createAdminClient>, phone: string): Promise<boolean> {
+async function checkRateLimit(
+  supabase: ReturnType<typeof createAdminClient>,
+  phone: string
+): Promise<boolean> {
   const logger = createRouteLogger("auth/otp");
   const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW).toISOString();
   const { count, error } = await supabase
@@ -34,7 +42,10 @@ function isValidPhoneNumber(phone: string): boolean {
   return phoneRegex.test(phone);
 }
 
-async function sendSMS(phoneNumber: string, message: string): Promise<{ success: boolean; error?: string }> {
+async function sendSMS(
+  phoneNumber: string,
+  message: string
+): Promise<{ success: boolean; error?: string }> {
   const apiKey = process.env.SMS_API_KEY;
   const apiUrl = process.env.SMS_API_URL;
 
@@ -47,8 +58,8 @@ async function sendSMS(phoneNumber: string, message: string): Promise<{ success:
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
-          "authorization": apiKey,
-          "Content-Type": "application/x-www-form-urlencoded"
+          authorization: apiKey,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({
           sender_id: "FSTSMS",
@@ -56,7 +67,7 @@ async function sendSMS(phoneNumber: string, message: string): Promise<{ success:
           language: "english",
           route: "p",
           numbers: phoneNumber,
-        })
+        }),
       });
 
       const data = await response.json();
@@ -82,7 +93,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, 10, 60_000)) {
+    if (!(await checkIpRateLimit(ip, 10, 60_000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
@@ -93,13 +104,19 @@ export async function POST(request: NextRequest) {
     }
 
     const cleanPhone = phoneNumber.replace(/\D/g, "");
-    
+
     if (!isValidPhoneNumber(cleanPhone)) {
-      return NextResponse.json({ error: "Invalid phone number. Use 10 digits starting with 6-9" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid phone number. Use 10 digits starting with 6-9" },
+        { status: 400 }
+      );
     }
 
     if (!(await checkRateLimit(supabase, cleanPhone))) {
-      return NextResponse.json({ error: "Too many requests. Please try again after 10 minutes." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many requests. Please try again after 10 minutes." },
+        { status: 429 }
+      );
     }
 
     const otp = generateOTP();
@@ -112,7 +129,13 @@ export async function POST(request: NextRequest) {
     const { error: upsertError } = await supabase
       .from("phone_otp_verification")
       .upsert(
-        { phone_number: cleanPhone, otp_code: otpHash, purpose: purpose || "signup", expires_at: expiresAt, attempts: 0 },
+        {
+          phone_number: cleanPhone,
+          otp_code: otpHash,
+          purpose: purpose || "signup",
+          expires_at: expiresAt,
+          attempts: 0,
+        },
         { onConflict: "phone_number,purpose" }
       );
 
@@ -153,8 +176,13 @@ export async function PUT(request: NextRequest) {
     const cleanPhone = phoneNumber.replace(/\D/g, "");
 
     // Rate limit verification attempts
-    if (!(await checkVerifyRateLimit(supabase, "phone_otp_verification", cleanPhone, "phone_number"))) {
-      return NextResponse.json({ error: "Too many verification attempts. Please request a new OTP." }, { status: 429 });
+    if (
+      !(await checkVerifyRateLimit(supabase, "phone_otp_verification", cleanPhone, "phone_number"))
+    ) {
+      return NextResponse.json(
+        { error: "Too many verification attempts. Please request a new OTP." },
+        { status: 429 }
+      );
     }
 
     // Fetch OTP from database

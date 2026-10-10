@@ -10,14 +10,21 @@
 export function sanitizeText(input: string): string {
   return input
     .replace(/<[^>]*>/g, "") // Remove HTML tags
-    .replace(/[<>"'&]/g, (char) => { // Escape remaining dangerous chars
+    .replace(/[<>"'&]/g, (char) => {
+      // Escape remaining dangerous chars
       switch (char) {
-        case "<": return "&lt;";
-        case ">": return "&gt;";
-        case '"': return "&quot;";
-        case "'": return "&#x27;";
-        case "&": return "&amp;";
-        default: return char;
+        case "<":
+          return "&lt;";
+        case ">":
+          return "&gt;";
+        case '"':
+          return "&quot;";
+        case "'":
+          return "&#x27;";
+        case "&":
+          return "&amp;";
+        default:
+          return char;
       }
     })
     .trim();
@@ -85,7 +92,9 @@ export function sanitizeObject<T extends Record<string, unknown>>(obj: T): T {
     if (typeof value === "string") {
       (sanitized as Record<string, unknown>)[key] = sanitizeText(value);
     } else if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-      (sanitized as Record<string, unknown>)[key] = sanitizeObject(value as Record<string, unknown>);
+      (sanitized as Record<string, unknown>)[key] = sanitizeObject(
+        value as Record<string, unknown>
+      );
     }
   }
   return sanitized;

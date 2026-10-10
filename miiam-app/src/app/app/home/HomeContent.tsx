@@ -94,16 +94,56 @@ export default function HomePage() {
   const { recentlyViewed } = useRecentlyViewed();
 
   const defaultCategories = [
-    { id: "food?filter=under_99", label: "Under ₹99", icon: "local_fire_department", color: "from-orange-400 to-red-400" },
-    { id: "food?filter=under_149", label: "Under ₹149", icon: "savings", color: "from-emerald-400 to-teal-400" },
-    { id: "food?filter=under_199", label: "Under ₹199", icon: "star", color: "from-accent to-accent/70" },
-    { id: "food?filter=under_249", label: "Under ₹249", icon: "new_releases", color: "from-deal to-deal/70" },
-    { id: "food?filter=combos", label: "Combos", icon: "merge", color: "from-amber-400 to-orange-400" },
-    { id: "food?filter=bakery", label: "Bakery", icon: "bakery_dining", color: "from-pink-400 to-rose-400" },
+    {
+      id: "food?filter=under_99",
+      label: "Under ₹99",
+      icon: "local_fire_department",
+      color: "from-orange-400 to-red-400",
+    },
+    {
+      id: "food?filter=under_149",
+      label: "Under ₹149",
+      icon: "savings",
+      color: "from-emerald-400 to-teal-400",
+    },
+    {
+      id: "food?filter=under_199",
+      label: "Under ₹199",
+      icon: "star",
+      color: "from-accent to-accent/70",
+    },
+    {
+      id: "food?filter=under_249",
+      label: "Under ₹249",
+      icon: "new_releases",
+      color: "from-deal to-deal/70",
+    },
+    {
+      id: "food?filter=combos",
+      label: "Combos",
+      icon: "merge",
+      color: "from-amber-400 to-orange-400",
+    },
+    {
+      id: "food?filter=bakery",
+      label: "Bakery",
+      icon: "bakery_dining",
+      color: "from-pink-400 to-rose-400",
+    },
   ];
   const [categories, setCategories] = useState(defaultCategories);
 
-  const [dbOffers, setDbOffers] = useState<Array<{ id: string; title: string; subtitle: string; gradient: string; badge: string; link_url?: string | null; image_url?: string | null }>>([]);
+  const [dbOffers, setDbOffers] = useState<
+    Array<{
+      id: string;
+      title: string;
+      subtitle: string;
+      gradient: string;
+      badge: string;
+      link_url?: string | null;
+      image_url?: string | null;
+    }>
+  >([]);
   const offers = dbOffers;
 
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -128,7 +168,17 @@ export default function HomePage() {
       .filter((t): t is number => typeof t === "number" && t > 0);
     return times.length ? Math.min(...times) : 25;
   }, [nearbyRestaurants]);
-  const [combos, setCombos] = useState<{ id: string; name: string; description: string; image_url: string; original_price: number; combo_price: number; items: string[] }[]>(() => {
+  const [combos, setCombos] = useState<
+    {
+      id: string;
+      name: string;
+      description: string;
+      image_url: string;
+      original_price: number;
+      combo_price: number;
+      items: string[];
+    }[]
+  >(() => {
     if (typeof window !== "undefined") {
       const cached = localStorage.getItem("miiam_combos_cache");
       if (cached) {
@@ -145,7 +195,14 @@ export default function HomePage() {
   const [dataError, setDataError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
   const userPincode = locationStore.pincode;
-  const [lastOrder, setLastOrder] = useState<{ id: string; vendor_id: string; vendor_name: string; items: string; total: number; placed_at: string } | null>(null);
+  const [lastOrder, setLastOrder] = useState<{
+    id: string;
+    vendor_id: string;
+    vendor_name: string;
+    items: string;
+    total: number;
+    placed_at: string;
+  } | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -161,7 +218,13 @@ export default function HomePage() {
       const [userResult, vendorsResult, sponsoredResult] = await Promise.all([
         supabase.auth.getUser(),
         pincode
-          ? supabase.from("vendors").select("id, shop_name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city").order("shop_name", { ascending: true }).limit(50)
+          ? supabase
+              .from("vendors")
+              .select(
+                "id, shop_name, cuisine, image_url, cover_image_url, rating, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, is_new, is_featured, is_promoted, status, type, pincode, city"
+              )
+              .order("shop_name", { ascending: true })
+              .limit(50)
           : Promise.resolve({ data: null }),
         supabase
           .from("sponsored_listings")
@@ -176,11 +239,9 @@ export default function HomePage() {
       const { user } = userResult.data;
       if (!user) return;
       const [profileResult, notifsResult] = await Promise.all([
-        supabase.from("profiles")
-          .select("full_name")
-          .eq("id", user.id)
-          .maybeSingle(),
-        supabase.from("notifications")
+        supabase.from("profiles").select("full_name").eq("id", user.id).maybeSingle(),
+        supabase
+          .from("notifications")
           .select("*")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
@@ -189,7 +250,10 @@ export default function HomePage() {
 
       setUser({
         ...user,
-        profile_name: profileResult.data?.full_name || user.user_metadata?.full_name || user.user_metadata?.name
+        profile_name:
+          profileResult.data?.full_name ||
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name,
       });
 
       const { data: lastOrderData } = await supabase
@@ -203,7 +267,11 @@ export default function HomePage() {
       if (lastOrderData) {
         let vendorName = "Restaurant";
         if (lastOrderData.vendor_id) {
-          const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", lastOrderData.vendor_id).maybeSingle();
+          const { data: v } = await supabase
+            .from("vendors")
+            .select("shop_name")
+            .eq("id", lastOrderData.vendor_id)
+            .maybeSingle();
           if (v?.shop_name) vendorName = v.shop_name;
         }
         const { data: lastItems } = await supabase
@@ -211,9 +279,10 @@ export default function HomePage() {
           .select("name")
           .eq("order_id", lastOrderData.id)
           .limit(6);
-        const itemsList = lastItems && lastItems.length > 0
-          ? lastItems.map((i: { name?: string }) => i.name || "Item").join(", ")
-          : "Previous order";
+        const itemsList =
+          lastItems && lastItems.length > 0
+            ? lastItems.map((i: { name?: string }) => i.name || "Item").join(", ")
+            : "Previous order";
         setLastOrder({
           id: lastOrderData.id,
           vendor_id: lastOrderData.vendor_id || "",
@@ -237,9 +306,9 @@ export default function HomePage() {
         setLoading(false);
         return;
       }
-      
+
       setCheckingPincode(true);
-      
+
       const vendors = vendorsResult.data;
       if (vendors) {
         const userCity = locationStore.city?.toLowerCase() || "";
@@ -250,7 +319,11 @@ export default function HomePage() {
         });
         setLocalServiceable(local.length > 0);
         setNearbyRestaurants(local);
-        setFeaturedRestaurants(local.filter((v: HomeVendor) => v.is_featured || v.is_promoted || sponsoredIds.has(v.id)).slice(0, 6));
+        setFeaturedRestaurants(
+          local
+            .filter((v: HomeVendor) => v.is_featured || v.is_promoted || sponsoredIds.has(v.id))
+            .slice(0, 6)
+        );
         setSpotlightRestaurant(local.find((v: HomeVendor) => v.is_featured) || null);
       }
 
@@ -262,7 +335,10 @@ export default function HomePage() {
         .limit(10);
       if (comboData) {
         setCombos(comboData);
-        localStorage.setItem("miiam_combos_cache", JSON.stringify({ data: comboData, timestamp: Date.now() }));
+        localStorage.setItem(
+          "miiam_combos_cache",
+          JSON.stringify({ data: comboData, timestamp: Date.now() })
+        );
       }
 
       setCheckingPincode(false);
@@ -274,63 +350,111 @@ export default function HomePage() {
       setLoading(false);
     });
 
-      async function fetchActiveOrder() {
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) return;
-          const { data: active } = await supabase
-            .from("orders")
-            .select("id, status, total_amount, placed_at, vendor_id")
-            .eq("user_id", user.id)
-            .in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "picking_up", "on_the_way"])
-            .order("placed_at", { ascending: false })
-            .limit(1)
-            .maybeSingle();
-          if (active) {
-            let vendorName = "Restaurant";
-            if (active.vendor_id) {
-              const { data: v } = await supabase.from("vendors").select("shop_name").eq("id", active.vendor_id).maybeSingle();
-              if (v?.shop_name) vendorName = v.shop_name;
-            }
-            setActiveOrder({
-              id: active.id,
-              vendor: vendorName,
-              items: t.home.orderInProgress,
-              steps: [
-                { id: 1, label: t.home.orderPlaced, completed: true, time: new Date(active.placed_at).toLocaleTimeString() },
-                { id: 2, label: t.home.accepted, completed: ["accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "picking_up", "on_the_way"].includes(active.status), time: "" },
-                { id: 3, label: t.home.onTheWay, completed: ["shopping", "picked_up", "on_the_way"].includes(active.status), time: "" },
-              ],
-              eta: ["shopping", "picked_up", "on_the_way"].includes(active.status) ? "5-10 min" : "20-30 min",
-            });
+    async function fetchActiveOrder() {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data: active } = await supabase
+          .from("orders")
+          .select("id, status, total_amount, placed_at, vendor_id")
+          .eq("user_id", user.id)
+          .in("status", [
+            "pending",
+            "accepted",
+            "preparing",
+            "ready_for_pickup",
+            "shopping",
+            "picked_up",
+            "picking_up",
+            "on_the_way",
+          ])
+          .order("placed_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (active) {
+          let vendorName = "Restaurant";
+          if (active.vendor_id) {
+            const { data: v } = await supabase
+              .from("vendors")
+              .select("shop_name")
+              .eq("id", active.vendor_id)
+              .maybeSingle();
+            if (v?.shop_name) vendorName = v.shop_name;
           }
-        } catch (err) {
-          logger.error({ err: err }, "Failed to fetch active order");
+          setActiveOrder({
+            id: active.id,
+            vendor: vendorName,
+            items: t.home.orderInProgress,
+            steps: [
+              {
+                id: 1,
+                label: t.home.orderPlaced,
+                completed: true,
+                time: new Date(active.placed_at).toLocaleTimeString(),
+              },
+              {
+                id: 2,
+                label: t.home.accepted,
+                completed: [
+                  "accepted",
+                  "preparing",
+                  "ready_for_pickup",
+                  "shopping",
+                  "picked_up",
+                  "picking_up",
+                  "on_the_way",
+                ].includes(active.status),
+                time: "",
+              },
+              {
+                id: 3,
+                label: t.home.onTheWay,
+                completed: ["shopping", "picked_up", "on_the_way"].includes(active.status),
+                time: "",
+              },
+            ],
+            eta: ["shopping", "picked_up", "on_the_way"].includes(active.status)
+              ? "5-10 min"
+              : "20-30 min",
+          });
         }
+      } catch (err) {
+        logger.error({ err: err }, "Failed to fetch active order");
       }
-      fetchActiveOrder();
+    }
+    fetchActiveOrder();
 
-      let cancelled = false;
-      const channelPromise = supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
+    let cancelled = false;
+    const channelPromise = supabase.auth
+      .getUser()
+      .then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
         if (!user || cancelled) return null;
         const channel = supabase
           .channel(`notifications-${user.id}`)
-          .on("postgres_changes", {
-            event: "INSERT",
-            schema: "public",
-            table: "notifications",
-            filter: `user_id=eq.${user.id}`,
-          }, (payload: { new: HomeNotification }) => {
-            setNotifications(prev => [payload.new, ...prev]);
-            setUnreadCount(prev => prev + 1);
-          })
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table: "notifications",
+              filter: `user_id=eq.${user.id}`,
+            },
+            (payload: { new: HomeNotification }) => {
+              setNotifications((prev) => [payload.new, ...prev]);
+              setUnreadCount((prev) => prev + 1);
+            }
+          )
           .subscribe();
         return channel;
       });
 
     return () => {
       cancelled = true;
-      channelPromise.then((ch: ReturnType<typeof supabase.channel> | null) => { if (ch) supabase.removeChannel(ch); });
+      channelPromise.then((ch: ReturnType<typeof supabase.channel> | null) => {
+        if (ch) supabase.removeChannel(ch);
+      });
     };
   }, [locationStore.pincode, locationStore.city, retryKey]);
 
@@ -350,7 +474,9 @@ export default function HomePage() {
     setTimeIcon(icon);
   }, [t]);
 
-  const resolvePincodeToArea = async (pin: string): Promise<{ area: string; city: string; state: string }> => {
+  const resolvePincodeToArea = async (
+    pin: string
+  ): Promise<{ area: string; city: string; state: string }> => {
     try {
       const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
       const data = await res.json();
@@ -361,7 +487,9 @@ export default function HomePage() {
         const state = po.State || "";
         return { area, city, state };
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     return { area: "", city: "", state: "" };
   };
 
@@ -393,9 +521,7 @@ export default function HomePage() {
     }
 
     const { area, city, state } = await resolvePincodeToArea(pin);
-    const displayName = area
-      ? state ? `${area}, ${state}` : area
-      : `PIN: ${pin}`;
+    const displayName = area ? (state ? `${area}, ${state}` : area) : `PIN: ${pin}`;
 
     setLocation(displayName);
     locationStore.setLocation({
@@ -467,23 +593,42 @@ export default function HomePage() {
             .eq("is_active", true)
             .order("position"),
         ]);
-        const promoOffers = (promosRes.data || []).map((p: { id: string; badge: string | null; title: string; subtitle: string | null; gradient: string | null; link_url: string | null }) => ({
-          id: p.id,
-          badge: p.badge || "",
-          title: p.title,
-          subtitle: p.subtitle || "",
-          gradient: p.gradient || "from-accent to-accent/70",
-          link_url: p.link_url,
-        }));
-        const bannerOffers = (bannersRes.data || []).map((b: { id: string; badge: string | null; title: string; subtitle: string | null; gradient: string | null; link_url: string | null; image_url: string | null }) => ({
-          id: b.id,
-          badge: b.badge || "",
-          title: b.title,
-          subtitle: b.subtitle || "",
-          gradient: b.gradient || "from-accent to-accent/70",
-          link_url: b.link_url,
-          image_url: b.image_url,
-        }));
+        const promoOffers = (promosRes.data || []).map(
+          (p: {
+            id: string;
+            badge: string | null;
+            title: string;
+            subtitle: string | null;
+            gradient: string | null;
+            link_url: string | null;
+          }) => ({
+            id: p.id,
+            badge: p.badge || "",
+            title: p.title,
+            subtitle: p.subtitle || "",
+            gradient: p.gradient || "from-accent to-accent/70",
+            link_url: p.link_url,
+          })
+        );
+        const bannerOffers = (bannersRes.data || []).map(
+          (b: {
+            id: string;
+            badge: string | null;
+            title: string;
+            subtitle: string | null;
+            gradient: string | null;
+            link_url: string | null;
+            image_url: string | null;
+          }) => ({
+            id: b.id,
+            badge: b.badge || "",
+            title: b.title,
+            subtitle: b.subtitle || "",
+            gradient: b.gradient || "from-accent to-accent/70",
+            link_url: b.link_url,
+            image_url: b.image_url,
+          })
+        );
         if (promoOffers.length > 0 || bannerOffers.length > 0) {
           setDbOffers([...promoOffers, ...bannerOffers]);
         }
@@ -497,7 +642,11 @@ export default function HomePage() {
   useEffect(() => {
     async function loadCategories() {
       try {
-        const { data } = await supabase.from("site_settings").select("value").eq("key", "home_categories").maybeSingle();
+        const { data } = await supabase
+          .from("site_settings")
+          .select("value")
+          .eq("key", "home_categories")
+          .maybeSingle();
         if (data?.value) {
           const parsed = typeof data.value === "string" ? JSON.parse(data.value) : data.value;
           if (Array.isArray(parsed) && parsed.length > 0) setCategories(parsed);
@@ -511,14 +660,20 @@ export default function HomePage() {
 
   if (dataError) {
     return (
-      <div className="min-h-screen bg-surface text-on-background flex items-center justify-center px-6 pb-24">
-        <NetworkError onRetry={() => { setDataError(null); setLoading(true); setRetryKey((k) => k + 1); }} />
+      <div className="bg-surface text-on-background flex min-h-screen items-center justify-center px-6 pb-24">
+        <NetworkError
+          onRetry={() => {
+            setDataError(null);
+            setLoading(true);
+            setRetryKey((k) => k + 1);
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface text-on-background pb-24">
+    <div className="bg-surface text-on-background min-h-screen pb-24">
       <HomeHeader
         userName={userName}
         greeting={greeting}
@@ -531,7 +686,11 @@ export default function HomePage() {
           setShowNotifications(!showNotifications);
           if (unreadCount > 0 && user) {
             setUnreadCount(0);
-            void supabase.from("notifications").update({ is_read: true }).eq("user_id", user.id).eq("is_read", false);
+            void supabase
+              .from("notifications")
+              .update({ is_read: true })
+              .eq("user_id", user.id)
+              .eq("is_read", false);
           }
         }}
       />
@@ -552,7 +711,11 @@ export default function HomePage() {
         checkingPincode={checkingPincode}
       />
 
-      <PullToRefresh onRefresh={async () => { setRetryKey((k) => k + 1); }}>
+      <PullToRefresh
+        onRefresh={async () => {
+          setRetryKey((k) => k + 1);
+        }}
+      >
         <HomeDepartments />
         <HomeCategories categories={categories} />
       </PullToRefresh>
@@ -585,7 +748,10 @@ export default function HomePage() {
         isOpen={showLocationModal}
         onClose={() => setShowLocationModal(false)}
         manualPincode={manualPincode}
-        onPincodeChange={(value) => { setManualPincode(value); setPincodeError(""); }}
+        onPincodeChange={(value) => {
+          setManualPincode(value);
+          setPincodeError("");
+        }}
         pincodeError={pincodeError}
         isLoadingLocation={isLoadingLocation}
         onCheckAvailability={handleManualLocation}

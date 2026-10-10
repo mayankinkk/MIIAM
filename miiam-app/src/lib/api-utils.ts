@@ -3,12 +3,19 @@ import { checkIpRateLimit, getClientIp } from "@/lib/security";
 
 export type RouteContext = { params: Promise<Record<string, string>> };
 
-type RouteHandler = (request: NextRequest, context: RouteContext) => Promise<NextResponse | Response>;
+type RouteHandler = (
+  request: NextRequest,
+  context: RouteContext
+) => Promise<NextResponse | Response>;
 
-export function withRateLimit(handler: RouteHandler, maxRequests = 30, windowMs = 60 * 1000): RouteHandler {
+export function withRateLimit(
+  handler: RouteHandler,
+  maxRequests = 30,
+  windowMs = 60 * 1000
+): RouteHandler {
   return async (request: NextRequest, context: RouteContext) => {
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, maxRequests, windowMs)) {
+    if (!(await checkIpRateLimit(ip, maxRequests, windowMs))) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
         { status: 429 }

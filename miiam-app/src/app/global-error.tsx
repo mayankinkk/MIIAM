@@ -18,33 +18,37 @@ export default function GlobalError({
 
   return (
     <html>
-      <body className="bg-[var(--color-surface-container-lowest)] min-h-screen">
-        <div className="min-h-screen flex flex-col items-center justify-center p-6">
-          <div className="max-w-md w-full text-center">
-            <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+      <body className="min-h-screen bg-[var(--color-surface-container-lowest)]">
+        <div className="flex min-h-screen flex-col items-center justify-center p-6">
+          <div className="w-full max-w-md text-center">
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-red-100">
               <span className="material-symbols-outlined text-5xl text-red-600">error</span>
             </div>
-            <h1 className="text-2xl font-black text-[var(--color-on-surface)] mb-2">Something went wrong</h1>
-            <p className="text-[var(--color-on-surface-variant)] mb-2">
+            <h1 className="mb-2 text-2xl font-black text-[var(--color-on-surface)]">
+              Something went wrong
+            </h1>
+            <p className="mb-2 text-[var(--color-on-surface-variant)]">
               An unexpected error occurred. Our team has been notified.
             </p>
-            
+
             {error.digest && (
-              <p className="text-xs text-[var(--color-outline-variant)] mb-4">Error ID: {error.digest}</p>
+              <p className="mb-4 text-xs text-[var(--color-outline-variant)]">
+                Error ID: {error.digest}
+              </p>
             )}
-            
+
             {showDetails && (
-              <div className="bg-[var(--color-surface-container)] p-4 rounded-xl text-left mb-4 overflow-auto max-h-32">
-                <p className="text-xs text-[var(--color-on-surface-variant)] font-mono break-words">
+              <div className="mb-4 max-h-32 overflow-auto rounded-xl bg-[var(--color-surface-container)] p-4 text-left">
+                <p className="font-mono text-xs break-words text-[var(--color-on-surface-variant)]">
                   {error.message || "Unknown error"}
                 </p>
               </div>
             )}
-            
+
             <div className="flex flex-col gap-3">
               <button
                 onClick={() => reset()}
-                className="px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity"
+                className="text-on-primary rounded-xl bg-[var(--color-primary)] px-6 py-3 font-bold transition-opacity hover:opacity-90"
               >
                 Try Again
               </button>
@@ -56,7 +60,7 @@ export default function GlobalError({
               </button>
               <Link
                 href="/"
-                className="text-sm text-[var(--color-accent)] font-bold hover:underline"
+                className="text-sm font-bold text-[var(--color-accent)] hover:underline"
               >
                 Go to Home
               </Link>

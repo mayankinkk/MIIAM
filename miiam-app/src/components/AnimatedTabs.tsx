@@ -9,13 +9,18 @@ interface AnimatedTabsProps {
   className?: string;
 }
 
-export default function AnimatedTabs({ tabs, active, onChange, className = "" }: AnimatedTabsProps) {
+export default function AnimatedTabs({
+  tabs,
+  active,
+  onChange,
+  className = "",
+}: AnimatedTabsProps) {
   return (
-    <div className={`relative flex gap-1 bg-surface-container rounded-xl p-1 ${className}`}>
+    <div className={`bg-surface-container relative flex gap-1 rounded-xl p-1 ${className}`}>
       {/* Sliding indicator */}
       <motion.div
         layoutId="tab-indicator"
-        className="absolute top-1 bottom-1 bg-primary rounded-lg shadow-sm"
+        className="bg-primary absolute top-1 bottom-1 rounded-lg shadow-sm"
         style={{
           left: `${tabs.indexOf(active) * (100 / tabs.length)}%`,
           width: `${100 / tabs.length}%`,
@@ -27,7 +32,7 @@ export default function AnimatedTabs({ tabs, active, onChange, className = "" }:
         <button
           key={tab}
           onClick={() => onChange(tab)}
-          className={`relative z-10 flex-1 py-2.5 px-3 text-xs font-bold rounded-lg transition-colors ${
+          className={`relative z-10 flex-1 rounded-lg px-3 py-2.5 text-xs font-bold transition-colors ${
             active === tab ? "text-on-primary" : "text-on-surface-variant"
           }`}
         >

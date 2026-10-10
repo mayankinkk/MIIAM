@@ -9,7 +9,10 @@ const logger = createRouteLogger("notifications");
 const createNotificationSchema = z.object({
   user_id: z.string().uuid("Invalid user ID format"),
   title: z.string().min(1, "Title is required").max(200, "Title must be at most 200 characters"),
-  body: z.string().min(1, "Message body is required").max(1000, "Message must be at most 1000 characters"),
+  body: z
+    .string()
+    .min(1, "Message body is required")
+    .max(1000, "Message must be at most 1000 characters"),
   data: z.record(z.string(), z.string()).optional(),
   type: z.enum(["general", "order", "promotion", "system"]).default("general"),
 });
@@ -17,7 +20,9 @@ const createNotificationSchema = z.object({
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -25,7 +30,10 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = createNotificationSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
 
     const { user_id, title, body: message, data, type } = parsed.data;
@@ -57,26 +65,22 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
     if (error) {
       logger.error({ err: error }, "Failed to create notification");
-      return NextResponse.json(
-        { error: "Failed to create notification" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Failed to create notification" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, notification });
   } catch (error) {
     logger.error({ err: error }, "Notification API error");
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });
 
 export const GET = withRateLimit(async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -107,18 +111,12 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
 
     if (error) {
       logger.error({ err: error }, "Failed to fetch notifications");
-      return NextResponse.json(
-        { error: "Failed to fetch notifications" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: "Failed to fetch notifications" }, { status: 500 });
     }
 
     return NextResponse.json({ notifications });
   } catch (error) {
     logger.error({ err: error }, "Notification fetch error");
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 });

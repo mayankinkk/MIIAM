@@ -9,7 +9,12 @@ interface CategoryChipsProps {
   className?: string;
 }
 
-export default function CategoryChips({ categories, active, onChange, className = "" }: CategoryChipsProps) {
+export default function CategoryChips({
+  categories,
+  active,
+  onChange,
+  className = "",
+}: CategoryChipsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(false);
@@ -36,25 +41,22 @@ export default function CategoryChips({ categories, active, onChange, className 
     <div className={`relative ${className}`}>
       {/* Left fade */}
       {showLeft && (
-        <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none" />
+        <div className="from-surface pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-8 bg-gradient-to-r to-transparent" />
       )}
 
       {/* Right fade */}
       {showRight && (
-        <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-surface to-transparent z-10 pointer-events-none" />
+        <div className="from-surface pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-8 bg-gradient-to-l to-transparent" />
       )}
 
-      <div
-        ref={scrollRef}
-        className="flex gap-2 overflow-x-auto no-scrollbar scroll-smooth py-1"
-      >
+      <div ref={scrollRef} className="no-scrollbar flex gap-2 overflow-x-auto scroll-smooth py-1">
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => onChange(cat.id)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
+            className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold whitespace-nowrap transition-all ${
               active === cat.id
-                ? "bg-primary text-on-primary shadow-md shadow-primary/20"
+                ? "bg-primary text-on-primary shadow-primary/20 shadow-md"
                 : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
             }`}
           >

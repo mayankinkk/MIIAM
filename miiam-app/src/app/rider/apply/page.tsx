@@ -48,7 +48,7 @@ export default function RiderApplyPage() {
       });
 
       const result = await res.json();
-      
+
       if (!res.ok) {
         setError(result.error || "Failed to submit application");
         setLoading(false);
@@ -65,18 +65,26 @@ export default function RiderApplyPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-12 max-w-lg w-full text-center shadow-xl">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="material-symbols-outlined text-green-600 text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)] p-6">
+        <div className="w-full max-w-lg rounded-3xl bg-[var(--color-surface-container-lowest)] p-12 text-center shadow-xl">
+          <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+            <span
+              className="material-symbols-outlined text-4xl text-green-600"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              check_circle
+            </span>
           </div>
-          <h1 className="text-3xl font-black text-[var(--color-on-surface)] mb-4">Application Submitted!</h1>
-          <p className="text-[var(--color-on-surface-variant)] mb-8">
-            Thank you for applying to join MIIAM Fleet. We'll review your application and get back to you within 24-48 hours.
+          <h1 className="mb-4 text-3xl font-black text-[var(--color-on-surface)]">
+            Application Submitted!
+          </h1>
+          <p className="mb-8 text-[var(--color-on-surface-variant)]">
+            Thank you for applying to join MIIAM Fleet. We'll review your application and get back
+            to you within 24-48 hours.
           </p>
-          <Link 
-            href="/rider/login" 
-            className="block w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-center hover:bg-primary-dim transition-all"
+          <Link
+            href="/rider/login"
+            className="bg-primary text-on-primary hover:bg-primary-dim block w-full rounded-xl py-4 text-center font-bold transition-all"
           >
             Back to Login
           </Link>
@@ -86,73 +94,93 @@ export default function RiderApplyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex flex-col md:flex-row">
-      <div className="md:w-1/2 p-12 md:p-24 flex flex-col justify-center relative bg-white dark:bg-[var(--color-surface)]">
-        <Link href="/" className="absolute top-8 left-8 text-3xl font-black text-[var(--color-primary)] tracking-tighter">
+    <div className="flex min-h-screen flex-col bg-[var(--color-surface-container-lowest)] md:flex-row">
+      <div className="relative flex flex-col justify-center bg-white p-12 md:w-1/2 md:p-24 dark:bg-[var(--color-surface)]">
+        <Link
+          href="/"
+          className="absolute top-8 left-8 text-3xl font-black tracking-tighter text-[var(--color-primary)]"
+        >
           MIIAM
         </Link>
-        <Link href="/rider/login" className="absolute top-8 right-8 text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]">
+        <Link
+          href="/rider/login"
+          className="absolute top-8 right-8 text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-primary)]"
+        >
           Already have an account? Login
         </Link>
-        <div className="max-w-md w-full mx-auto">
-          <span className="text-brand-secondary font-bold text-sm tracking-widest uppercase mb-4 block">Fleet Network</span>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-[var(--color-on-surface)] mb-4 tracking-tight">
-            Join the <br/> fleet.
+        <div className="mx-auto w-full max-w-md">
+          <span className="text-brand-secondary mb-4 block text-sm font-bold tracking-widest uppercase">
+            Fleet Network
+          </span>
+          <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)] md:text-5xl">
+            Join the <br /> fleet.
           </h1>
-          <p className="text-[var(--color-on-surface-variant)] text-lg mb-8">Complete the form below to apply as a MIIAM rider.</p>
+          <p className="mb-8 text-lg text-[var(--color-on-surface-variant)]">
+            Complete the form below to apply as a MIIAM rider.
+          </p>
 
           {/* Progress Steps */}
-          <div className="flex gap-2 mb-8">
+          <div className="mb-8 flex gap-2">
             {["details", "docs", "vehicle"].map((s, i) => (
-              <div 
-                key={s} 
-                className={`flex-1 h-2 rounded-full transition-all ${
-                  step === s ? "bg-[var(--color-primary)]" : 
-                  (step === "docs" && s === "details") || (step === "vehicle" && s !== "vehicle") ? "bg-outline-variant" : "bg-surface-container-high"
+              <div
+                key={s}
+                className={`h-2 flex-1 rounded-full transition-all ${
+                  step === s
+                    ? "bg-[var(--color-primary)]"
+                    : (step === "docs" && s === "details") ||
+                        (step === "vehicle" && s !== "vehicle")
+                      ? "bg-outline-variant"
+                      : "bg-surface-container-high"
                 }`}
               />
             ))}
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-error-container/10 border border-error-container/30 rounded-xl text-error text-sm font-medium">
+            <div className="bg-error-container/10 border-error-container/30 text-error mb-6 rounded-xl border p-4 text-sm font-medium">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {step === "details" && (
-              <div className="space-y-5 animate-[slideUp_0.3s_ease-out]">
+              <div className="animate-[slideUp_0.3s_ease-out] space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Full Name</label>
+                  <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
+                    className="bg-surface-container-low border-outline-variant/30 focus:ring-primary/40 text-on-surface w-full rounded-xl border px-5 py-4 text-lg font-semibold transition-all focus:ring-2 focus:outline-none"
                     placeholder="Enter your full name"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Email Address</label>
+                  <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
+                    className="bg-surface-container-low border-outline-variant/30 focus:ring-primary/40 text-on-surface w-full rounded-xl border px-5 py-4 text-lg font-semibold transition-all focus:ring-2 focus:outline-none"
                     placeholder="your@email.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Phone Number</label>
+                  <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                    Phone Number
+                  </label>
                   <input
                     type="tel"
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
+                    className="bg-surface-container-low border-outline-variant/30 focus:ring-primary/40 text-on-surface w-full rounded-xl border px-5 py-4 text-lg font-semibold transition-all focus:ring-2 focus:outline-none"
                     placeholder="+91XXXXXXXXXX"
                   />
                 </div>
@@ -160,7 +188,7 @@ export default function RiderApplyPage() {
                   type="button"
                   onClick={() => setStep("docs")}
                   disabled={!formData.full_name || !formData.email || !formData.phone}
-                  className="w-full bento-gradient-blue text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-brand-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+                  className="bento-gradient-blue shadow-brand-secondary/20 w-full rounded-xl py-5 text-lg font-bold text-white shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
                 >
                   Continue
                 </button>
@@ -168,39 +196,59 @@ export default function RiderApplyPage() {
             )}
 
             {step === "docs" && (
-              <div className="space-y-5 animate-[slideUp_0.3s_ease-out]">
+              <div className="animate-[slideUp_0.3s_ease-out] space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Profile Photo</label>
-                  <div className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-6 text-center hover:bg-[var(--color-surface-container-lowest)] transition-colors">
+                  <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                    Profile Photo
+                  </label>
+                  <div className="rounded-xl border-2 border-dashed border-[var(--color-outline-variant)] p-6 text-center transition-colors hover:bg-[var(--color-surface-container-lowest)]">
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setFormData({ ...formData, profile_photo: e.target.files?.[0] || null })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, profile_photo: e.target.files?.[0] || null })
+                      }
                       className="hidden"
                       id="profile-upload"
                     />
                     <label htmlFor="profile-upload" className="cursor-pointer">
                       {formData.profile_photo ? (
                         <div className="flex items-center justify-center gap-3">
-                          <span className="material-symbols-outlined text-green-600">check_circle</span>
-                          <span className="font-bold text-[var(--color-on-surface)]">{formData.profile_photo.name}</span>
+                          <span className="material-symbols-outlined text-green-600">
+                            check_circle
+                          </span>
+                          <span className="font-bold text-[var(--color-on-surface)]">
+                            {formData.profile_photo.name}
+                          </span>
                         </div>
                       ) : (
                         <div>
-                          <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">add_a_photo</span>
-                          <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">Tap to upload photo</p>
+                          <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">
+                            add_a_photo
+                          </span>
+                          <p className="mt-2 text-sm text-[var(--color-on-surface-variant)]">
+                            Tap to upload photo
+                          </p>
                         </div>
                       )}
                     </label>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">ID Proof Type</label>
+                  <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                    ID Proof Type
+                  </label>
                   <select
                     required
                     value={formData.id_proof_type}
-                    onChange={(e) => setFormData({ ...formData, id_proof_type: e.target.value, id_proof_image: null })}
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        id_proof_type: e.target.value,
+                        id_proof_image: null,
+                      })
+                    }
+                    className="bg-surface-container-low border-outline-variant/30 focus:ring-primary/40 text-on-surface w-full rounded-xl border px-5 py-4 text-lg font-semibold transition-all focus:ring-2 focus:outline-none"
                   >
                     <option value="">Select ID type</option>
                     <option value="aadhar">Aadhar Card</option>
@@ -211,25 +259,37 @@ export default function RiderApplyPage() {
                 </div>
                 {formData.id_proof_type && (
                   <div>
-                    <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Upload {formData.id_proof_type.toUpperCase()}</label>
-                    <div className="border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl p-6 text-center hover:bg-[var(--color-surface-container-lowest)] transition-colors">
+                    <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                      Upload {formData.id_proof_type.toUpperCase()}
+                    </label>
+                    <div className="rounded-xl border-2 border-dashed border-[var(--color-outline-variant)] p-6 text-center transition-colors hover:bg-[var(--color-surface-container-lowest)]">
                       <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => setFormData({ ...formData, id_proof_image: e.target.files?.[0] || null })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, id_proof_image: e.target.files?.[0] || null })
+                        }
                         className="hidden"
                         id="id-upload"
                       />
                       <label htmlFor="id-upload" className="cursor-pointer">
                         {formData.id_proof_image ? (
                           <div className="flex items-center justify-center gap-3">
-                            <span className="material-symbols-outlined text-green-600">check_circle</span>
-                            <span className="font-bold text-[var(--color-on-surface)]">{formData.id_proof_image.name}</span>
+                            <span className="material-symbols-outlined text-green-600">
+                              check_circle
+                            </span>
+                            <span className="font-bold text-[var(--color-on-surface)]">
+                              {formData.id_proof_image.name}
+                            </span>
                           </div>
                         ) : (
                           <div>
-                            <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">badge</span>
-                            <p className="text-sm text-[var(--color-on-surface-variant)] mt-2">Tap to upload ID document</p>
+                            <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]">
+                              badge
+                            </span>
+                            <p className="mt-2 text-sm text-[var(--color-on-surface-variant)]">
+                              Tap to upload ID document
+                            </p>
                           </div>
                         )}
                       </label>
@@ -240,15 +300,17 @@ export default function RiderApplyPage() {
                   <button
                     type="button"
                     onClick={() => setStep("details")}
-                    className="flex-1 py-5 bg-surface-container-high text-on-surface rounded-xl font-bold hover:bg-outline-variant transition-all"
+                    className="bg-surface-container-high text-on-surface hover:bg-outline-variant flex-1 rounded-xl py-5 font-bold transition-all"
                   >
                     Back
                   </button>
                   <button
                     type="button"
                     onClick={() => setStep("vehicle")}
-                    disabled={!formData.profile_photo || !formData.id_proof_type || !formData.id_proof_image}
-                    className="flex-1 bento-gradient-blue text-white rounded-xl font-bold shadow-lg shadow-brand-secondary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+                    disabled={
+                      !formData.profile_photo || !formData.id_proof_type || !formData.id_proof_image
+                    }
+                    className="bento-gradient-blue shadow-brand-secondary/20 flex-1 rounded-xl font-bold text-white shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
                   >
                     Continue
                   </button>
@@ -257,14 +319,18 @@ export default function RiderApplyPage() {
             )}
 
             {step === "vehicle" && (
-              <div className="space-y-5 animate-[slideUp_0.3s_ease-out]">
+              <div className="animate-[slideUp_0.3s_ease-out] space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Vehicle Type</label>
+                  <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                    Vehicle Type
+                  </label>
                   <select
                     required
                     value={formData.vehicle_type}
-                    onChange={(e) => setFormData({ ...formData, vehicle_type: e.target.value, vehicle_number: "" })}
-                    className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
+                    onChange={(e) =>
+                      setFormData({ ...formData, vehicle_type: e.target.value, vehicle_number: "" })
+                    }
+                    className="bg-surface-container-low border-outline-variant/30 focus:ring-primary/40 text-on-surface w-full rounded-xl border px-5 py-4 text-lg font-semibold transition-all focus:ring-2 focus:outline-none"
                   >
                     <option value="motorcycle">Motorcycle</option>
                     <option value="scooty">Scooty</option>
@@ -273,13 +339,17 @@ export default function RiderApplyPage() {
                 </div>
                 {(formData.vehicle_type === "motorcycle" || formData.vehicle_type === "scooty") && (
                   <div>
-                    <label className="block text-xs font-bold text-[var(--color-on-surface)] mb-2 uppercase tracking-widest px-1">Vehicle Number</label>
+                    <label className="mb-2 block px-1 text-xs font-bold tracking-widest text-[var(--color-on-surface)] uppercase">
+                      Vehicle Number
+                    </label>
                     <input
                       type="text"
                       required
                       value={formData.vehicle_number}
-                      onChange={(e) => setFormData({ ...formData, vehicle_number: e.target.value.toUpperCase() })}
-                      className="w-full bg-surface-container-low border border-outline-variant/30 rounded-xl px-5 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all text-on-surface"
+                      onChange={(e) =>
+                        setFormData({ ...formData, vehicle_number: e.target.value.toUpperCase() })
+                      }
+                      className="bg-surface-container-low border-outline-variant/30 focus:ring-primary/40 text-on-surface w-full rounded-xl border px-5 py-4 text-lg font-semibold transition-all focus:ring-2 focus:outline-none"
                       placeholder="AS 01 AB 1234"
                     />
                   </div>
@@ -288,14 +358,16 @@ export default function RiderApplyPage() {
                   <button
                     type="button"
                     onClick={() => setStep("docs")}
-                    className="flex-1 py-5 bg-surface-container-high text-on-surface rounded-xl font-bold hover:bg-outline-variant transition-all"
+                    className="bg-surface-container-high text-on-surface hover:bg-outline-variant flex-1 rounded-xl py-5 font-bold transition-all"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
-                    disabled={loading || (formData.vehicle_type !== "bicycle" && !formData.vehicle_number)}
-                    className="flex-1 bento-gradient-red text-white rounded-xl py-5 text-lg font-bold shadow-lg shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-70 disabled:pointer-events-none"
+                    disabled={
+                      loading || (formData.vehicle_type !== "bicycle" && !formData.vehicle_number)
+                    }
+                    className="bento-gradient-red flex-1 rounded-xl py-5 text-lg font-bold text-white shadow-[var(--color-primary)]/20 shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
                   >
                     {loading ? "Submitting..." : "Submit Application"}
                   </button>
@@ -305,29 +377,44 @@ export default function RiderApplyPage() {
           </form>
         </div>
       </div>
-      <div className="hidden md:block md:w-1/2 bg-[var(--color-primary)] relative overflow-hidden">
+      <div className="relative hidden overflow-hidden bg-[var(--color-primary)] md:block md:w-1/2">
         <div className="absolute inset-0 opacity-30 mix-blend-overlay">
           <BlurImage
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMs7iF1l6q72X44B4k_1288bT7cR8iT6ApejS0e_P22k1uYx9YI9zTXXP7Z8T39H5Q0A9f_2WbI6Qe9q8A1D3Yt_E1yZtBqZ2W5TfO27vC-w4m12yX_Y1239O9U2I97Y3yI6C6O28c4w09o5IqD9Z288Q3oU2D1G375_C1P31Z_pP7Y78I6T_7oA_XW2X8t3oGZ"
             alt="Rider on motorcycle"
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
             fill
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute bottom-12 left-12 right-12">
-          <h2 className="text-white text-3xl font-black mb-4">Earn on your own terms</h2>
+        <div className="absolute right-12 bottom-12 left-12">
+          <h2 className="mb-4 text-3xl font-black text-white">Earn on your own terms</h2>
           <div className="space-y-4 text-white/80">
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>schedule</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                schedule
+              </span>
               <span>Flexible hours</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                payments
+              </span>
               <span>Daily earnings</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>support_agent</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                support_agent
+              </span>
               <span>24/7 support</span>
             </div>
           </div>

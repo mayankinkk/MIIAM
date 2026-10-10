@@ -16,8 +16,13 @@ export default function RiderNotificationsPage() {
     setLoading(true);
     setError(null);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       setUserId(user.id);
 
       const { data, error: notifError } = await supabase
@@ -48,21 +53,25 @@ export default function RiderNotificationsPage() {
       .update({ read: true })
       .eq("rider_id", userId)
       .eq("read", false);
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-4">
-        <div className="text-center max-w-sm">
-          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-          <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
-          <p className="text-[var(--color-outline)] mb-6">{error}</p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)] p-4">
+        <div className="max-w-sm text-center">
+          <span className="material-symbols-outlined mb-4 block text-5xl text-red-400">
+            wifi_off
+          </span>
+          <h2 className="mb-2 text-xl font-bold text-[var(--color-on-surface)]">
+            Something went wrong
+          </h2>
+          <p className="mb-6 text-[var(--color-outline)]">{error}</p>
           <button
             onClick={() => loadNotifications()}
-            className="px-6 py-3 bg-brand-secondary text-white rounded-xl font-bold"
+            className="bg-brand-secondary rounded-xl px-6 py-3 font-bold text-white"
           >
             Try Again
           </button>
@@ -71,61 +80,71 @@ export default function RiderNotificationsPage() {
     );
   }
 
-  if (loading) return (
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
-      <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
+        <div className="border-brand-secondary h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+      </div>
+    );
 
   return (
     <>
-    <PullToRefresh onRefresh={loadNotifications}>
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-brand-secondary text-white p-6 pb-8 rounded-b-[3rem]">
-        <div className="flex items-center justify-between">
-          <Link href="/rider/account" className="text-white" aria-label="Go back">
-            <span className="material-symbols-outlined">arrow_back</span>
-          </Link>
-          <h1 className="text-2xl font-black tracking-tighter">Notifications</h1>
-          {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-sm font-bold bg-[var(--color-surface-container-lowest)]/20 px-4 py-2.5 rounded-full">
-              Clear All
-            </button>
-          )}
-        </div>
-        {unreadCount > 0 && (
-          <p className="text-sm text-white/70 mt-2">{unreadCount} unread notification{unreadCount > 1 ? "s" : ""}</p>
-        )}
-      </header>
-
-      <main className="p-6 space-y-4 pb-32">
-        {notifications.length === 0 ? (
-          <div className="text-center py-8 text-[var(--color-outline)]">
-            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">notifications_off</span>
-            <p className="mt-4">No notifications yet</p>
-          </div>
-        ) : notifications.map((notif) => (
-          <div
-            key={notif.id}
-            className={`bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl shadow-lg ${notif.read ? "opacity-75" : ""}`}
-          >
-            <div className="flex items-start gap-3">
-              {!notif.read && (
-                <span className="w-3 h-3 bg-brand-secondary rounded-full mt-2"></span>
+      <PullToRefresh onRefresh={loadNotifications}>
+        <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
+          <header className="bg-brand-secondary rounded-b-[3rem] p-6 pb-8 text-white">
+            <div className="flex items-center justify-between">
+              <Link href="/rider/account" className="text-white" aria-label="Go back">
+                <span className="material-symbols-outlined">arrow_back</span>
+              </Link>
+              <h1 className="text-2xl font-black tracking-tighter">Notifications</h1>
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllRead}
+                  className="rounded-full bg-[var(--color-surface-container-lowest)]/20 px-4 py-2.5 text-sm font-bold"
+                >
+                  Clear All
+                </button>
               )}
-              <div className="flex-1">
-                <h3 className="font-bold text-[var(--color-on-surface)]">{notif.title}</h3>
-                <p className="text-sm text-[var(--color-outline)] mt-1">{notif.message}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-2">{new Date(notif.created_at).toLocaleString()}</p>
-              </div>
             </div>
-          </div>
-        ))}
-      </main>
+            {unreadCount > 0 && (
+              <p className="mt-2 text-sm text-white/70">
+                {unreadCount} unread notification{unreadCount > 1 ? "s" : ""}
+              </p>
+            )}
+          </header>
 
-    </div>
-    </PullToRefresh>
-
+          <main className="space-y-4 p-6 pb-32">
+            {notifications.length === 0 ? (
+              <div className="py-8 text-center text-[var(--color-outline)]">
+                <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">
+                  notifications_off
+                </span>
+                <p className="mt-4">No notifications yet</p>
+              </div>
+            ) : (
+              notifications.map((notif) => (
+                <div
+                  key={notif.id}
+                  className={`rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 shadow-lg ${notif.read ? "opacity-75" : ""}`}
+                >
+                  <div className="flex items-start gap-3">
+                    {!notif.read && (
+                      <span className="bg-brand-secondary mt-2 h-3 w-3 rounded-full"></span>
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-bold text-[var(--color-on-surface)]">{notif.title}</h3>
+                      <p className="mt-1 text-sm text-[var(--color-outline)]">{notif.message}</p>
+                      <p className="mt-2 text-xs text-[var(--color-outline-variant)]">
+                        {new Date(notif.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </main>
+        </div>
+      </PullToRefresh>
     </>
   );
 }

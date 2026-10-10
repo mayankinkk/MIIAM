@@ -25,25 +25,27 @@ export default function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[100] p-4 md:p-6">
-      <div className="bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant/10 p-5 max-w-2xl mx-auto">
+    <div className="fixed right-0 bottom-0 left-0 z-[100] p-4 md:p-6">
+      <div className="bg-surface-container-lowest border-outline-variant/10 mx-auto max-w-2xl rounded-2xl border p-5 shadow-2xl">
         <div className="flex items-start gap-4">
-          <span className="material-symbols-outlined text-accent text-2xl mt-0.5">cookie</span>
+          <span className="material-symbols-outlined text-accent mt-0.5 text-2xl">cookie</span>
           <div className="flex-1">
-            <h3 className="font-bold text-on-surface text-sm mb-1">We use cookies</h3>
+            <h3 className="text-on-surface mb-1 text-sm font-bold">We use cookies</h3>
             <p className="text-on-surface-variant text-xs leading-relaxed">
-              MIIAM uses cookies to provide our services, improve your experience, and analyze traffic. By clicking &quot;Accept&quot;, you agree to our use of cookies for essential functionality and analytics.
+              MIIAM uses cookies to provide our services, improve your experience, and analyze
+              traffic. By clicking &quot;Accept&quot;, you agree to our use of cookies for essential
+              functionality and analytics.
             </p>
-            <div className="flex gap-2 mt-4">
+            <div className="mt-4 flex gap-2">
               <button
                 onClick={decline}
-                className="px-4 py-2 bg-surface-container rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-colors"
+                className="bg-surface-container text-on-surface-variant hover:bg-surface-container-high rounded-xl px-4 py-2 text-xs font-bold transition-colors"
               >
                 Decline
               </button>
               <button
                 onClick={accept}
-                className="px-4 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 active:scale-95 transition-all"
+                className="bg-primary text-on-primary rounded-xl px-4 py-2 text-xs font-bold transition-all hover:opacity-90 active:scale-95"
               >
                 Accept All
               </button>

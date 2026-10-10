@@ -24,47 +24,81 @@ interface WhatsAppMessage {
   };
 }
 
-const messageTemplates: Record<string, { name: string; language: string; components: WhatsAppComponent[] }> = {
+const messageTemplates: Record<
+  string,
+  { name: string; language: string; components: WhatsAppComponent[] }
+> = {
   order_confirmed: {
     name: "order_confirmed",
     language: "en_US",
     components: [
-      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }, { type: "text", text: "" }] },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+        ],
+      },
     ],
   },
   booking_reminder: {
     name: "booking_reminder",
     language: "en_US",
     components: [
-      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }, { type: "text", text: "" }] },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+        ],
+      },
     ],
   },
   service_completed: {
     name: "service_completed",
     language: "en_US",
     components: [
-      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }] },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+        ],
+      },
     ],
   },
   promo_offer: {
     name: "promo_offer",
     language: "en_US",
     components: [
-      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }, { type: "text", text: "" }] },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+        ],
+      },
     ],
   },
   prescription_approved: {
     name: "prescription_approved",
     language: "en_US",
-    components: [
-      { type: "body", parameters: [{ type: "text", text: "" }] },
-    ],
+    components: [{ type: "body", parameters: [{ type: "text", text: "" }] }],
   },
   prescription_rejected: {
     name: "prescription_rejected",
     language: "en_US",
     components: [
-      { type: "body", parameters: [{ type: "text", text: "" }, { type: "text", text: "" }] },
+      {
+        type: "body",
+        parameters: [
+          { type: "text", text: "" },
+          { type: "text", text: "" },
+        ],
+      },
     ],
   },
 };
@@ -73,20 +107,26 @@ export async function POST(request: NextRequest) {
   const logger = createRouteLogger("whatsapp/send");
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const supabaseAdmin = createAdminClient();
-    const { data: profile } = await supabaseAdmin.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
     if (!profile || profile.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // Rate limit: max 10 messages per minute per IP
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, 10, 60 * 1000)) {
+    if (!(await checkIpRateLimit(ip, 10, 60 * 1000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
@@ -131,17 +171,14 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    const response = await fetch(
-      `${WHATSAPP_CLOUD_API_URL}/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      }
-    );
+    const response = await fetch(`${WHATSAPP_CLOUD_API_URL}/${WHATSAPP_PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
 
     const data = await response.json();
 
@@ -156,8 +193,13 @@ export async function POST(request: NextRequest) {
           error_message: data.error?.message || "API error",
           sent_at: new Date().toISOString(),
         });
-      } catch { /* whatsapp_messages table may not exist */ }
-      return NextResponse.json({ success: false, error: data.error?.message || "WhatsApp API error" }, { status: 502 });
+      } catch {
+        /* whatsapp_messages table may not exist */
+      }
+      return NextResponse.json(
+        { success: false, error: data.error?.message || "WhatsApp API error" },
+        { status: 502 }
+      );
     }
 
     const messageId = data.messages?.[0]?.id;
@@ -170,7 +212,9 @@ export async function POST(request: NextRequest) {
         whatsapp_message_id: messageId,
         sent_at: new Date().toISOString(),
       });
-    } catch { /* whatsapp_messages table may not exist */ }
+    } catch {
+      /* whatsapp_messages table may not exist */
+    }
 
     return NextResponse.json({ success: true, messageId });
   } catch (error) {

@@ -12,23 +12,28 @@ interface CheckoutRiderTipProps {
   subtotal: number;
 }
 
-export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSelect, onSkipTip, onEditTip, subtotal }: CheckoutRiderTipProps) {
+export default function CheckoutRiderTip({
+  showTipSelector,
+  tipAmount,
+  onTipSelect,
+  onSkipTip,
+  onEditTip,
+  subtotal,
+}: CheckoutRiderTipProps) {
   const { t } = useTranslation();
   return (
-    <div className="py-3 border-t border-dashed border-outline-variant/30">
+    <div className="border-outline-variant/30 border-t border-dashed py-3">
       {showTipSelector ? (
-        <RiderTipSelector
-          orderAmount={subtotal}
-          onTipSelect={onTipSelect}
-          onSkip={onSkipTip}
-        />
+        <RiderTipSelector orderAmount={subtotal} onTipSelect={onTipSelect} onSkip={onSkipTip} />
       ) : tipAmount > 0 ? (
         <div className="space-y-2">
-          <div className="flex justify-between items-center text-sm">
-            <span className="font-bold text-on-surface">{t.checkout.riderTip}</span>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-on-surface font-bold">{t.checkout.riderTip}</span>
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-on-surface">₹{tipAmount}</span>
-              <button onClick={onEditTip} className="text-xs text-accent underline">{t.checkout.edit}</button>
+              <span className="text-on-surface font-semibold">₹{tipAmount}</span>
+              <button onClick={onEditTip} className="text-accent text-xs underline">
+                {t.checkout.edit}
+              </button>
             </div>
           </div>
           <TipThankYou amount={tipAmount} />
@@ -36,7 +41,7 @@ export default function CheckoutRiderTip({ showTipSelector, tipAmount, onTipSele
       ) : (
         <button
           onClick={onEditTip}
-          className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-on-surface-variant hover:text-accent transition-colors"
+          className="text-on-surface-variant hover:text-accent flex w-full items-center justify-center gap-2 py-2.5 text-sm font-semibold transition-colors"
         >
           <span className="material-symbols-outlined text-[18px]">favorite</span>
           Add tip for your rider

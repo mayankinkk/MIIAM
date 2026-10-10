@@ -11,10 +11,10 @@ export default function RootPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
+    <div className="flex min-h-screen items-center justify-center bg-white">
       <div className="text-center">
-        <div className="w-10 h-10 border-4 border-[#0c831f] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-slate-500 font-medium text-sm">Redirecting to app...</p>
+        <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#0c831f] border-t-transparent" />
+        <p className="text-sm font-medium text-slate-500">Redirecting to app...</p>
       </div>
     </div>
   );

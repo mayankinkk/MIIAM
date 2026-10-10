@@ -9,11 +9,19 @@ import { motion } from "framer-motion";
 
 export default function BottomNavBar() {
   const pathname = usePathname();
-  const totalItems = useCartStore((s) => Array.isArray(s.items) ? s.items.reduce((sum, i) => sum + i.quantity, 0) : 0);
+  const totalItems = useCartStore((s) =>
+    Array.isArray(s.items) ? s.items.reduce((sum, i) => sum + i.quantity, 0) : 0
+  );
   const unreadCount = useNotificationStore((s) => s.unreadCount());
   const { t } = useTranslation();
 
-  const hideOnRoutes = ["/app/checkout", "/app/cart", "/app/payment", "/app/vendor-failure", "/app/support/chat"];
+  const hideOnRoutes = [
+    "/app/checkout",
+    "/app/cart",
+    "/app/payment",
+    "/app/vendor-failure",
+    "/app/support/chat",
+  ];
   if (hideOnRoutes.some((r) => pathname.startsWith(r))) return null;
 
   const navItems = [
@@ -25,8 +33,9 @@ export default function BottomNavBar() {
   ];
 
   return (
-    <nav aria-label="Main navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-surface border-t-2 border-border-default"
+    <nav
+      aria-label="Main navigation"
+      className="bg-surface border-border-default fixed right-0 bottom-0 left-0 z-50 border-t-2 md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="flex h-14 items-stretch">
@@ -45,7 +54,7 @@ export default function BottomNavBar() {
               {isActive && (
                 <motion.div
                   layoutId="nav-pill"
-                  className="absolute inset-x-1.5 inset-y-1 rounded-lg bg-primary"
+                  className="bg-primary absolute inset-x-1.5 inset-y-1 rounded-lg"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
@@ -64,7 +73,7 @@ export default function BottomNavBar() {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     suppressHydrationWarning
-                    className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-error rounded-full text-white text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface px-1"
+                    className="bg-error border-surface absolute -top-1.5 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border-2 px-1 text-[9px] font-black text-white shadow-md"
                   >
                     {totalItems > 9 ? "9+" : totalItems}
                   </motion.span>
@@ -77,14 +86,16 @@ export default function BottomNavBar() {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     suppressHydrationWarning
-                    className="absolute -top-1.5 -right-2 min-w-[18px] h-[18px] bg-error rounded-full text-white text-[9px] font-black flex items-center justify-center shadow-md border-2 border-surface px-1"
+                    className="bg-error border-surface absolute -top-1.5 -right-2 flex h-[18px] min-w-[18px] items-center justify-center rounded-full border-2 px-1 text-[9px] font-black text-white shadow-md"
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.span>
                 )}
               </div>
 
-              <span className={`relative z-10 text-[10px] font-bold whitespace-nowrap transition-colors duration-200 ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}>
+              <span
+                className={`relative z-10 text-[10px] font-bold whitespace-nowrap transition-colors duration-200 ${isActive ? "text-on-surface" : "text-on-surface-variant"}`}
+              >
                 {item.label}
               </span>
             </Link>

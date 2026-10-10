@@ -46,8 +46,8 @@ async function activateScheduledOrders() {
   }
 
   if (activatedOrderIds.length > 0) {
-    const notificationsToInsert = activatedOrderIds.map(orderId => {
-      const order = scheduledOrders.find(o => o.id === orderId);
+    const notificationsToInsert = activatedOrderIds.map((orderId) => {
+      const order = scheduledOrders.find((o) => o.id === orderId);
       return {
         user_id: order?.user_id,
         title: "Order Being Activated!",
@@ -73,7 +73,10 @@ export async function POST(request: NextRequest) {
     return await activateScheduledOrders();
   } catch (error: unknown) {
     logger.error({ err: error }, "Error activating scheduled orders");
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Server error" },
+      { status: 500 }
+    );
   }
 }
 
@@ -86,6 +89,9 @@ export async function GET(request: NextRequest) {
     return await activateScheduledOrders();
   } catch (error: unknown) {
     logger.error({ err: error }, "Error activating scheduled orders");
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Server error" },
+      { status: 500 }
+    );
   }
 }

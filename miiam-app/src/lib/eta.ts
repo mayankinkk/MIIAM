@@ -72,7 +72,16 @@ export function calculateEta(params: {
 
 export async function getVendorCoordinates(
   vendorId: string,
-  supabase: { from: (table: string) => { select: (cols: string) => { eq: (col: string, val: string) => { maybeSingle: () => Promise<{ data: { lat: number; lng: number } | null }> } } } },
+  supabase: {
+    from: (table: string) => {
+      select: (cols: string) => {
+        eq: (
+          col: string,
+          val: string
+        ) => { maybeSingle: () => Promise<{ data: { lat: number; lng: number } | null }> };
+      };
+    };
+  }
 ): Promise<{ lat: number; lng: number } | null> {
   try {
     const { data } = await supabase

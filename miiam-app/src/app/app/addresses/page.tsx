@@ -37,18 +37,32 @@ interface AddressCardProps {
 function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: AddressCardProps) {
   const { t } = useTranslation();
   const labelColors = {
-    Home: { bg: "bg-accent/10 dark:bg-accent/20", text: "text-accent dark:text-accent", accent: "from-accent to-accent/70" },
-    Office: { bg: "bg-accent/10 dark:bg-accent/20", text: "text-accent dark:text-accent", accent: "from-deal to-deal/70" },
-    Other: { bg: "bg-[var(--color-surface-container)]", text: "text-[var(--color-on-surface)]", accent: "from-slate-500 to-slate-600" },
+    Home: {
+      bg: "bg-accent/10 dark:bg-accent/20",
+      text: "text-accent dark:text-accent",
+      accent: "from-accent to-accent/70",
+    },
+    Office: {
+      bg: "bg-accent/10 dark:bg-accent/20",
+      text: "text-accent dark:text-accent",
+      accent: "from-deal to-deal/70",
+    },
+    Other: {
+      bg: "bg-[var(--color-surface-container)]",
+      text: "text-[var(--color-on-surface)]",
+      accent: "from-slate-500 to-slate-600",
+    },
   };
-  
+
   const colors = labelColors[address.label as keyof typeof labelColors] || labelColors.Other;
-  
+
   return (
-    <div className={`bg-[var(--color-surface-container-lowest)] rounded-2xl overflow-hidden shadow-sm transition-all group ${address.is_default ? "ring-2 ring-primary" : ""}`}>
+    <div
+      className={`group overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-sm transition-all ${address.is_default ? "ring-primary ring-2" : ""}`}
+    >
       {/* Default badge */}
       {address.is_default && (
-        <div className="bg-primary text-on-primary text-xs font-bold px-4 py-2 flex items-center gap-2">
+        <div className="bg-primary text-on-primary flex items-center gap-2 px-4 py-2 text-xs font-bold">
           <span className="material-symbols-outlined text-sm">check_circle</span>
           Default Address
         </div>
@@ -56,11 +70,11 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 
       <div className="p-4">
         {/* Map Preview */}
-        <div className="relative mb-4 rounded-xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200 dark:from-gray-800 dark:to-gray-700 h-32 group-hover:shadow-md transition-shadow">
+        <div className="relative mb-4 h-32 overflow-hidden rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 transition-shadow group-hover:shadow-md dark:from-gray-800 dark:to-gray-700">
           {/* Static map placeholder with location marker */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="absolute inset-0 opacity-30">
-              <svg className="w-full h-full" viewBox="0 0 400 150">
+              <svg className="h-full w-full" viewBox="0 0 400 150">
                 {/* Grid lines to simulate map */}
                 <line x1="0" y1="50" x2="400" y2="50" stroke="#94a3b8" strokeWidth="0.5" />
                 <line x1="0" y1="100" x2="400" y2="100" stroke="#94a3b8" strokeWidth="0.5" />
@@ -76,18 +90,23 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
             </div>
             {/* Location marker */}
             <div className="relative z-10">
-              <div className={`w-12 h-12 bg-gradient-to-br ${colors.accent} rounded-full flex items-center justify-center shadow-lg animate-pulse-subtle`}>
-                <span className="material-symbols-outlined text-white text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <div
+                className={`h-12 w-12 bg-gradient-to-br ${colors.accent} animate-pulse-subtle flex items-center justify-center rounded-full shadow-lg`}
+              >
+                <span
+                  className="material-symbols-outlined text-xl text-white"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
                   {address.icon}
                 </span>
               </div>
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-primary rotate-45" />
+              <div className="bg-primary absolute -bottom-1 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45" />
             </div>
           </div>
           {/* Gradient overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
           {/* Coordinates badge */}
-          <div className="absolute top-2 right-2 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-sm px-2 py-1 rounded-lg text-[10px] font-bold text-[var(--color-on-surface-variant)] flex items-center gap-1">
+          <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg bg-[var(--color-surface-container-lowest)]/90 px-2 py-1 text-[10px] font-bold text-[var(--color-on-surface-variant)] backdrop-blur-sm">
             <span className="material-symbols-outlined text-xs">pin_drop</span>
             Gauripur
           </div>
@@ -95,8 +114,11 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 
         {/* Address Info */}
         <div className="flex items-start gap-4">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colors.bg}`}>
-            <span className={`material-symbols-outlined text-xl ${colors.text}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+          <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${colors.bg}`}>
+            <span
+              className={`material-symbols-outlined text-xl ${colors.text}`}
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
               {address.icon}
             </span>
           </div>
@@ -105,19 +127,23 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
             <div className="flex items-center gap-2">
               <h3 className="font-bold text-[var(--color-on-surface)]">{address.label}</h3>
               {address.is_default && (
-                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700 dark:bg-green-900/30 dark:text-green-400">
                   Default
                 </span>
               )}
             </div>
-            <p className="text-sm text-[var(--color-on-surface)] mt-1">{address.name}</p>
-            <p className="text-sm text-[var(--color-on-surface-variant)] mt-0.5 line-clamp-2">
+            <p className="mt-1 text-sm text-[var(--color-on-surface)]">{address.name}</p>
+            <p className="mt-0.5 line-clamp-2 text-sm text-[var(--color-on-surface-variant)]">
               {address.street}, {address.city}
             </p>
-            <p className="text-xs text-[var(--color-outline)]">{address.state} - {address.postal_code}</p>
+            <p className="text-xs text-[var(--color-outline)]">
+              {address.state} - {address.postal_code}
+            </p>
             {address.instructions && (
-              <p className="text-xs text-[var(--color-outline-variant)] mt-2 flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded-lg">
-                <span className="material-symbols-outlined text-sm text-amber-600 dark:text-amber-400">info</span>
+              <p className="mt-2 flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1 text-xs text-[var(--color-outline-variant)] dark:bg-amber-900/20">
+                <span className="material-symbols-outlined text-sm text-amber-600 dark:text-amber-400">
+                  info
+                </span>
                 {address.instructions}
               </p>
             )}
@@ -126,26 +152,32 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
       </div>
 
       {/* Action Buttons */}
-      <div className="border-t border-[var(--color-border-subtle)] flex">
+      <div className="flex border-t border-[var(--color-border-subtle)]">
         <button
           onClick={onSelect}
-          className="flex-1 py-3 text-accent font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-surface transition-colors"
+          className="text-accent hover:bg-surface flex-1 border-r border-[var(--color-border-subtle)] py-3 text-sm font-bold transition-colors"
         >
           Select for Delivery
         </button>
         {!address.is_default && (
           <button
             onClick={onSetDefault}
-            className="flex-1 py-3 text-accent font-bold text-sm border-r border-[var(--color-border-subtle)] hover:bg-accent/10 dark:hover:bg-accent/20 transition-colors"
+            className="text-accent hover:bg-accent/10 dark:hover:bg-accent/20 flex-1 border-r border-[var(--color-border-subtle)] py-3 text-sm font-bold transition-colors"
           >
             Set as Default
           </button>
         )}
-        <button onClick={onEdit} className="py-3 px-4 text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)] transition-colors">
+        <button
+          onClick={onEdit}
+          className="px-4 py-3 text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+        >
           <span className="material-symbols-outlined">edit</span>
           {t.common.change}
         </button>
-        <button onClick={onDelete} className="py-3 px-4 text-red-500 hover:bg-red-50 transition-colors">
+        <button
+          onClick={onDelete}
+          className="px-4 py-3 text-red-500 transition-colors hover:bg-red-50"
+        >
           <span className="material-symbols-outlined">delete</span>
           {t.common.remove}
         </button>
@@ -155,9 +187,24 @@ function AddressCard({ address, onSelect, onEdit, onDelete, onSetDefault }: Addr
 }
 
 const addressTypes = [
-  { id: "home", icon: "home", label: "Home", color: "bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent" },
-  { id: "office", icon: "business", label: "Office", color: "bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent" },
-  { id: "other", icon: "place", label: "Other", color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" },
+  {
+    id: "home",
+    icon: "home",
+    label: "Home",
+    color: "bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent",
+  },
+  {
+    id: "office",
+    icon: "business",
+    label: "Office",
+    color: "bg-accent/10 dark:bg-accent/20 text-accent dark:text-accent",
+  },
+  {
+    id: "other",
+    icon: "place",
+    label: "Other",
+    color: "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]",
+  },
 ];
 
 const defaultAddresses = [
@@ -200,7 +247,9 @@ export default function AddressBookPage() {
   const loadAddresses = useCallback(async () => {
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         const res = await fetch(`/api/addresses?user_id=${user.id}`);
         if (res.ok) {
@@ -272,11 +321,15 @@ export default function AddressBookPage() {
 
       const handleError = (error: GeolocationPositionError) => {
         if (error.code === error.TIMEOUT) {
-          navigator.geolocation.getCurrentPosition(handleSuccess, () => {
-            setLocationError("Location timed out. Using fallback...");
-            setNewAddress((prev) => ({ ...prev, street: "Location unavailable" }));
-            setDetectingLocation(false);
-          }, { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 });
+          navigator.geolocation.getCurrentPosition(
+            handleSuccess,
+            () => {
+              setLocationError("Location timed out. Using fallback...");
+              setNewAddress((prev) => ({ ...prev, street: "Location unavailable" }));
+              setDetectingLocation(false);
+            },
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 }
+          );
           return;
         }
         setLocationError("Unable to detect location. Please enter manually.");
@@ -359,22 +412,22 @@ export default function AddressBookPage() {
   }
 
   const handleSetDefault = async (addressId: string) => {
-    const selectedAddress = addresses.find(addr => addr.id === addressId);
+    const selectedAddress = addresses.find((addr) => addr.id === addressId);
     if (selectedAddress) {
       const fullAddress = `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.postal_code}`;
-      localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
+      localStorage.setItem("miiam_selected_address", JSON.stringify({ address: fullAddress }));
     }
-    
+
     await fetch("/api/addresses", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        id: addressId, 
+      body: JSON.stringify({
+        id: addressId,
         user_id: addresses[0]?.user_id,
-        is_default: true 
+        is_default: true,
       }),
     });
-    
+
     setAddresses(
       addresses.map((addr) => ({
         ...addr,
@@ -383,14 +436,16 @@ export default function AddressBookPage() {
     );
   };
 
-  const handleSelectAddress = (address: typeof addresses[0]) => {
+  const handleSelectAddress = (address: (typeof addresses)[0]) => {
     const fullAddress = `${address.street}, ${address.city}, ${address.state} - ${address.postal_code}`;
-    localStorage.setItem('miiam_selected_address', JSON.stringify({ address: fullAddress }));
-    router.push('/app/checkout');
+    localStorage.setItem("miiam_selected_address", JSON.stringify({ address: fullAddress }));
+    router.push("/app/checkout");
   };
 
   const handleDelete = async (addressId: string) => {
-    if (await confirm({ title: "Delete Address", message: "Delete this address?", variant: "danger" })) {
+    if (
+      await confirm({ title: "Delete Address", message: "Delete this address?", variant: "danger" })
+    ) {
       await fetch(`/api/addresses?id=${addressId}`, { method: "DELETE" });
       setAddresses(addresses.filter((addr) => addr.id !== addressId));
     }
@@ -412,13 +467,17 @@ export default function AddressBookPage() {
       await fetch("/api/addresses", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          id: editingAddress.id, 
+        body: JSON.stringify({
+          id: editingAddress.id,
           user_id: addresses[0]?.user_id,
-          ...addressData 
+          ...addressData,
         }),
       });
-      setAddresses(addresses.map((addr) => (addr.id === editingAddress.id ? { ...addr, ...addressData } : addr)));
+      setAddresses(
+        addresses.map((addr) =>
+          addr.id === editingAddress.id ? { ...addr, ...addressData } : addr
+        )
+      );
     } else {
       const res = await fetch("/api/addresses", {
         method: "POST",
@@ -451,40 +510,56 @@ export default function AddressBookPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f8f8] dark:bg-[var(--color-surface)] p-4" aria-label="Loading...">
+      <div
+        className="min-h-screen bg-[#f8f8f8] p-4 dark:bg-[var(--color-surface)]"
+        aria-label="Loading..."
+      >
         <ListSkeleton count={3} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f8f8] dark:bg-[var(--color-surface)] pb-24">
+    <div className="min-h-screen bg-[#f8f8f8] pb-24 dark:bg-[var(--color-surface)]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] shadow-sm">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/app/profile" className="text-2xl font-black text-accent tracking-tighter">
+      <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-sm dark:bg-[var(--color-surface-container-lowest)]">
+        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
+          <Link href="/app/profile" className="text-accent text-2xl font-black tracking-tighter">
             MIIAM
           </Link>
-          <Link href="/app/profile" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-accent">
+          <Link
+            href="/app/profile"
+            className="hover:text-accent text-sm font-bold text-[var(--color-on-surface-variant)]"
+          >
             Cancel
           </Link>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Profile', href: '/app/profile' }, { label: 'Addresses' }]} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/home" },
+          { label: "Profile", href: "/app/profile" },
+          { label: "Addresses" },
+        ]}
+      />
 
       {/* Content */}
-      <main className="max-w-2xl mx-auto px-4 py-6">
+      <main className="mx-auto max-w-2xl px-4 py-6">
         <section className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] mb-2">My Addresses</h1>
+          <h1 className="mb-2 text-3xl font-extrabold text-[var(--color-on-surface)]">
+            My Addresses
+          </h1>
           <p className="text-[var(--color-outline)]">Manage your delivery addresses</p>
         </section>
 
         {/* Saved Addresses */}
         <section className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-bold text-[var(--color-on-surface)]">Saved Addresses</h2>
-            <span className="text-xs text-[var(--color-outline)]">{addresses.length} addresses</span>
+            <span className="text-xs text-[var(--color-outline)]">
+              {addresses.length} addresses
+            </span>
           </div>
 
           <div className="space-y-4">
@@ -518,14 +593,14 @@ export default function AddressBookPage() {
         <div className="space-y-3">
           <Link
             href="/app/addresses/add"
-            className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim hover:text-on-primary transition-colors shadow-lg shadow-primary/20"
+            className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary shadow-primary/20 flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-extrabold shadow-lg transition-colors"
           >
             <span className="material-symbols-outlined">add_location</span>
             Add New Address
           </Link>
           <Link
             href="/app/addresses/add"
-            className="w-full py-3 bg-secondary text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#096b18] transition-colors"
+            className="bg-secondary flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-bold text-white transition-colors hover:bg-[#096b18]"
           >
             <span className="material-symbols-outlined">my_location</span>
             Auto Detect on Map
@@ -533,12 +608,14 @@ export default function AddressBookPage() {
         </div>
 
         {/* Info */}
-        <div className="mt-8 bg-accent/10 dark:bg-[var(--color-surface-container)] rounded-2xl p-4">
+        <div className="bg-accent/10 mt-8 rounded-2xl p-4 dark:bg-[var(--color-surface-container)]">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-accent">info</span>
             <div>
-              <p className="font-bold text-accent dark:text-[var(--color-on-surface)] text-sm">Delivery Tips</p>
-              <ul className="text-xs text-accent dark:text-[var(--color-outline)] mt-2 space-y-1">
+              <p className="text-accent text-sm font-bold dark:text-[var(--color-on-surface)]">
+                Delivery Tips
+              </p>
+              <ul className="text-accent mt-2 space-y-1 text-xs dark:text-[var(--color-outline)]">
                 <li>• Add clear, complete addresses for smoother deliveries</li>
                 <li>• Include landmark or building name if available</li>
                 <li>• Add delivery instructions (e.g., gate code, floor)</li>
@@ -551,20 +628,41 @@ export default function AddressBookPage() {
 
       {/* Add/Edit Address Modal */}
       {showAddAddress && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="address-modal-title" onKeyDown={(e) => { if (e.key === "Escape") { setShowAddAddress(false); setEditingAddress(null); setOtpSent(false); setOtpCode(""); setPhoneVerified(false); setOtpError(""); } }}>
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => {
-            setShowAddAddress(false);
-            setEditingAddress(null);
-            setOtpSent(false);
-            setOtpCode("");
-            setPhoneVerified(false);
-            setOtpError("");
-          }} />
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center sm:items-center"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="address-modal-title"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") {
+              setShowAddAddress(false);
+              setEditingAddress(null);
+              setOtpSent(false);
+              setOtpCode("");
+              setPhoneVerified(false);
+              setOtpError("");
+            }
+          }}
+        >
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => {
+              setShowAddAddress(false);
+              setEditingAddress(null);
+              setOtpSent(false);
+              setOtpCode("");
+              setPhoneVerified(false);
+              setOtpError("");
+            }}
+          />
 
-          <div className="relative bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container-lowest)] z-10 border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
+          <div className="relative max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-[var(--color-surface-container-lowest)] sm:rounded-3xl dark:bg-[var(--color-surface-container-lowest)]">
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-6 py-4 dark:bg-[var(--color-surface-container-lowest)]">
               <div>
-                <h2 id="address-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
+                <h2
+                  id="address-modal-title"
+                  className="text-xl font-extrabold text-[var(--color-on-surface)]"
+                >
                   {editingAddress ? "Edit Address" : "Add New Address"}
                 </h2>
                 <p className="text-xs text-[var(--color-outline)]">
@@ -581,30 +679,34 @@ export default function AddressBookPage() {
                   setOtpError("");
                 }}
                 aria-label="Close"
-                className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="space-y-5 p-6">
               {/* Address Type */}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)] block mb-3">Address Type</label>
+                <label className="mb-3 block text-sm font-semibold text-[var(--color-on-surface)]">
+                  Address Type
+                </label>
                 <div className="grid grid-cols-3 gap-3">
                   {addressTypes.map((type) => (
                     <button
                       key={type.id}
                       onClick={() => setNewAddress({ ...newAddress, label: type.id })}
-                      className={`py-4 rounded-xl flex flex-col items-center gap-2 border-2 transition-all ${
+                      className={`flex flex-col items-center gap-2 rounded-xl border-2 py-4 transition-all ${
                         newAddress.label === type.id
                           ? `${type.color} border-transparent`
                           : "border-[var(--color-border-subtle)] hover:border-[var(--color-outline-variant)]"
                       }`}
                     >
-                      <span className={`material-symbols-outlined text-xl ${
-                        newAddress.label === type.id ? "" : "text-[var(--color-outline-variant)]"
-                      }`}>
+                      <span
+                        className={`material-symbols-outlined text-xl ${
+                          newAddress.label === type.id ? "" : "text-[var(--color-outline-variant)]"
+                        }`}
+                      >
                         {type.icon}
                       </span>
                       <span className="text-sm font-bold">{type.label}</span>
@@ -615,22 +717,32 @@ export default function AddressBookPage() {
 
               {/* Name */}
               <div>
-                <label htmlFor="full-name" className="text-sm font-semibold text-[var(--color-on-surface)]">Full Name *</label>
+                <label
+                  htmlFor="full-name"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Full Name *
+                </label>
                 <input
                   id="full-name"
                   type="text"
                   value={newAddress.name}
                   onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
                   placeholder="Enter your full name"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                 />
               </div>
 
               {/* Phone */}
               <div>
-                <label htmlFor="phone-number" className="text-sm font-semibold text-[var(--color-on-surface)]">Phone Number *</label>
+                <label
+                  htmlFor="phone-number"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Phone Number *
+                </label>
                 {!phoneVerified ? (
-                  <div className="space-y-2 mt-1">
+                  <div className="mt-1 space-y-2">
                     <div className="flex gap-2">
                       <input
                         id="phone-number"
@@ -638,7 +750,7 @@ export default function AddressBookPage() {
                         value={newAddress.phone}
                         onChange={(e) => handlePhoneChange(e.target.value)}
                         placeholder="10-digit mobile number"
-                        className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                        className="focus:border-primary focus:ring-primary/20 flex-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                         inputMode="numeric"
                         maxLength={10}
                         disabled={otpSent}
@@ -646,20 +758,30 @@ export default function AddressBookPage() {
                       <button
                         type="button"
                         onClick={handleSendOtp}
-                        disabled={sendingOtp || otpCooldown > 0 || newAddress.phone.replace(/\D/g, "").length !== 10}
-                        className="px-4 py-3 rounded-xl text-sm font-bold bg-primary text-on-primary hover:bg-primary hover:text-on-primary/90 transition-all disabled:opacity-50 whitespace-nowrap"
+                        disabled={
+                          sendingOtp ||
+                          otpCooldown > 0 ||
+                          newAddress.phone.replace(/\D/g, "").length !== 10
+                        }
+                        className="bg-primary text-on-primary hover:bg-primary hover:text-on-primary/90 rounded-xl px-4 py-3 text-sm font-bold whitespace-nowrap transition-all disabled:opacity-50"
                       >
-                        {sendingOtp ? "Sending..." : otpCooldown > 0 ? `Retry ${otpCooldown}s` : "Send OTP"}
+                        {sendingOtp
+                          ? "Sending..."
+                          : otpCooldown > 0
+                            ? `Retry ${otpCooldown}s`
+                            : "Send OTP"}
                       </button>
                     </div>
                     {otpSent && (
                       <div className="flex gap-2">
                         <input
                           type="tel"
-                          className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          className="focus:border-primary focus:ring-primary/20 flex-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                           placeholder="Enter 6-digit OTP"
                           value={otpCode}
-                          onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                          onChange={(e) =>
+                            setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                          }
                           inputMode="numeric"
                           maxLength={6}
                         />
@@ -667,22 +789,31 @@ export default function AddressBookPage() {
                           type="button"
                           onClick={handleVerifyOtp}
                           disabled={verifyingOtp || otpCode.length !== 6}
-                          className="px-4 py-3 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition-all disabled:opacity-50 whitespace-nowrap"
+                          className="rounded-xl bg-green-600 px-4 py-3 text-sm font-bold whitespace-nowrap text-white transition-all hover:bg-green-700 disabled:opacity-50"
                         >
                           {verifyingOtp ? "Verifying..." : "Verify"}
                         </button>
                       </div>
                     )}
-                    {otpError && <p className="text-xs text-red-500 font-medium">{otpError}</p>}
+                    {otpError && <p className="text-xs font-medium text-red-500">{otpError}</p>}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-green-300 text-sm font-medium text-green-700">{newAddress.phone}</span>
-                    <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">✓ Verified</span>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className="flex-1 rounded-xl border border-green-300 bg-[var(--color-surface-subtle)] px-4 py-3 text-sm font-medium text-green-700">
+                      {newAddress.phone}
+                    </span>
+                    <span className="rounded-full bg-green-50 px-2 py-1 text-xs font-bold text-green-600">
+                      ✓ Verified
+                    </span>
                     <button
                       type="button"
-                      onClick={() => { setPhoneVerified(false); setOtpSent(false); setOtpCode(""); setNewAddress({ ...newAddress, phone: "" }); }}
-                      className="text-xs text-accent font-bold hover:underline"
+                      onClick={() => {
+                        setPhoneVerified(false);
+                        setOtpSent(false);
+                        setOtpCode("");
+                        setNewAddress({ ...newAddress, phone: "" });
+                      }}
+                      className="text-accent text-xs font-bold hover:underline"
                     >
                       Change
                     </button>
@@ -692,14 +823,19 @@ export default function AddressBookPage() {
 
               {/* Street Address */}
               <div>
-                <label htmlFor="street-address" className="text-sm font-semibold text-[var(--color-on-surface)]">Street Address *</label>
+                <label
+                  htmlFor="street-address"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Street Address *
+                </label>
                 <input
                   id="street-address"
                   type="text"
                   value={newAddress.street}
                   onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
                   placeholder="House/Flat/Building name, Street"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                 />
               </div>
 
@@ -707,72 +843,99 @@ export default function AddressBookPage() {
               <button
                 onClick={handleUseMyLocation}
                 disabled={detectingLocation}
-                className="w-full py-3 bg-[var(--color-surface-container-lowest)] border border-primary text-accent font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-surface transition-colors"
+                className="border-primary text-accent hover:bg-surface flex w-full items-center justify-center gap-2 rounded-xl border bg-[var(--color-surface-container-lowest)] py-3 font-bold transition-colors"
               >
-                <span className="material-symbols-outlined">{detectingLocation ? "sync" : "my_location"}</span>
+                <span className="material-symbols-outlined">
+                  {detectingLocation ? "sync" : "my_location"}
+                </span>
                 {detectingLocation ? "Detecting Location..." : "Use My Current Location"}
               </button>
-              {locationError && (
-                <p className="text-xs text-red-500">{locationError}</p>
-              )}
+              {locationError && <p className="text-xs text-red-500">{locationError}</p>}
 
               {/* City & State */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="city" className="text-sm font-semibold text-[var(--color-on-surface)]">City *</label>
+                  <label
+                    htmlFor="city"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    City *
+                  </label>
                   <input
                     id="city"
                     type="text"
                     value={newAddress.city}
                     onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
                     placeholder="City"
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label htmlFor="state" className="text-sm font-semibold text-[var(--color-on-surface)]">State *</label>
+                  <label
+                    htmlFor="state"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    State *
+                  </label>
                   <input
                     id="state"
                     type="text"
                     value={newAddress.state}
                     onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
                     placeholder="State"
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                   />
                 </div>
               </div>
 
               {/* Postal Code */}
               <div>
-                <label htmlFor="pin-code" className="text-sm font-semibold text-[var(--color-on-surface)]">PIN Code *</label>
+                <label
+                  htmlFor="pin-code"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  PIN Code *
+                </label>
                 <input
                   id="pin-code"
                   type="text"
                   value={newAddress.postal_code}
                   onChange={(e) => setNewAddress({ ...newAddress, postal_code: e.target.value })}
                   placeholder="6-digit PIN code"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  className="focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                 />
               </div>
 
               {/* Delivery Instructions */}
               <div>
-                <label htmlFor="delivery-instructions" className="text-sm font-semibold text-[var(--color-on-surface)]">Delivery Instructions (Optional)</label>
+                <label
+                  htmlFor="delivery-instructions"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Delivery Instructions (Optional)
+                </label>
                 <textarea
                   id="delivery-instructions"
                   value={newAddress.instructions}
                   onChange={(e) => setNewAddress({ ...newAddress, instructions: e.target.value })}
                   placeholder="E.g., Ring bell, call on arrival, near park"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none h-20"
+                  className="focus:border-primary focus:ring-primary/20 mt-1 h-20 w-full resize-none rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:outline-none"
                 />
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">Max 150 characters</p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                  Max 150 characters
+                </p>
               </div>
 
               {/* Save Button */}
               <button
                 onClick={handleSave}
-                disabled={!newAddress.name || !newAddress.street || !newAddress.postal_code || !phoneVerified}
-                className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-primary-dim hover:text-on-primary disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xl shadow-primary/30"
+                disabled={
+                  !newAddress.name ||
+                  !newAddress.street ||
+                  !newAddress.postal_code ||
+                  !phoneVerified
+                }
+                className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary shadow-primary/30 flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-extrabold shadow-xl transition-colors disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <span className="material-symbols-outlined">check</span>
                 {editingAddress ? "Update Address" : "Save Address"}

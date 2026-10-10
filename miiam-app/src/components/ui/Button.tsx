@@ -47,72 +47,75 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "px-7 py-4 text-base rounded-2xl gap-2.5",
 };
 
-const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>(
-  (props, ref) => {
-    const {
-      variant = "primary",
-      size = "md",
-      icon,
-      iconPosition = "left",
-      loading = false,
-      fullWidth = false,
-      className = "",
-      children,
-      ...rest
-    } = props;
+const Button = forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonProps>((props, ref) => {
+  const {
+    variant = "primary",
+    size = "md",
+    icon,
+    iconPosition = "left",
+    loading = false,
+    fullWidth = false,
+    className = "",
+    children,
+    ...rest
+  } = props;
 
-    const classes = [
-      "inline-flex items-center justify-center font-bold no-underline transition-all duration-200 select-none cursor-pointer",
-      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)]",
-      "disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none",
-      variantStyles[variant],
-      sizeStyles[size],
-      fullWidth ? "w-full" : "",
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+  const classes = [
+    "inline-flex items-center justify-center font-bold no-underline transition-all duration-200 select-none cursor-pointer",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-primary)]",
+    "disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none",
+    variantStyles[variant],
+    sizeStyles[size],
+    fullWidth ? "w-full" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-    const iconSpan = icon ? (
-      <span
-        key={icon}
-        className={`material-symbols-outlined text-[1.2em] ${loading ? "animate-spin" : ""}`}
-        style={{ fontVariationSettings: "'FILL' 1" }}
-      >
-        {loading ? "progress_activity" : icon}
-      </span>
-    ) : null;
+  const iconSpan = icon ? (
+    <span
+      key={icon}
+      className={`material-symbols-outlined text-[1.2em] ${loading ? "animate-spin" : ""}`}
+      style={{ fontVariationSettings: "'FILL' 1" }}
+    >
+      {loading ? "progress_activity" : icon}
+    </span>
+  ) : null;
 
-    const content = (
-      <>
-        {loading && !icon && (
-          <span className="material-symbols-outlined text-[1.2em] animate-spin">
-            progress_activity
-          </span>
-        )}
-        {icon && iconPosition === "left" && iconSpan}
-        {children && <span className="truncate">{children}</span>}
-        {icon && iconPosition === "right" && iconSpan}
-      </>
-    );
+  const content = (
+    <>
+      {loading && !icon && (
+        <span className="material-symbols-outlined animate-spin text-[1.2em]">
+          progress_activity
+        </span>
+      )}
+      {icon && iconPosition === "left" && iconSpan}
+      {children && <span className="truncate">{children}</span>}
+      {icon && iconPosition === "right" && iconSpan}
+    </>
+  );
 
-    if ("href" in rest && rest.href) {
-      const { href, ...linkProps } = rest as ButtonAsLink;
-      return (
-        <Link href={href} className={classes} ref={ref as React.Ref<HTMLAnchorElement>} {...linkProps}>
-          {content}
-        </Link>
-      );
-    }
-
-    const { href: _h, ...buttonProps } = rest as ButtonAsButton;
+  if ("href" in rest && rest.href) {
+    const { href, ...linkProps } = rest as ButtonAsLink;
     return (
-      <button className={classes} ref={ref as React.Ref<HTMLButtonElement>} {...buttonProps}>
+      <Link
+        href={href}
+        className={classes}
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        {...linkProps}
+      >
         {content}
-      </button>
+      </Link>
     );
   }
-);
+
+  const { href: _h, ...buttonProps } = rest as ButtonAsButton;
+  return (
+    <button className={classes} ref={ref as React.Ref<HTMLButtonElement>} {...buttonProps}>
+      {content}
+    </button>
+  );
+});
 
 Button.displayName = "Button";
 

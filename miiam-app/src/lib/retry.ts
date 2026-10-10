@@ -10,7 +10,7 @@ export async function withRetry<T>(
     } catch (err) {
       lastError = err;
       if (attempt < maxRetries) {
-        await new Promise(r => setTimeout(r, delayMs * (attempt + 1)));
+        await new Promise((r) => setTimeout(r, delayMs * (attempt + 1)));
       }
     }
   }

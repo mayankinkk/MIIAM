@@ -8,7 +8,13 @@ interface ProfileAvatarProps {
   className?: string;
 }
 
-export default function ProfileAvatar({ name, image, size = "md", online, className = "" }: ProfileAvatarProps) {
+export default function ProfileAvatar({
+  name,
+  image,
+  size = "md",
+  online,
+  className = "",
+}: ProfileAvatarProps) {
   const sizes = {
     sm: "w-8 h-8 text-xs",
     md: "w-12 h-12 text-sm",
@@ -28,18 +34,22 @@ export default function ProfileAvatar({ name, image, size = "md", online, classN
         <img
           src={image}
           alt={name}
-          className={`${sizes[size]} rounded-full object-cover ring-2 ring-surface-container-lowest`}
+          className={`${sizes[size]} ring-surface-container-lowest rounded-full object-cover ring-2`}
         />
       ) : (
-        <div className={`${sizes[size]} rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-surface-container-lowest`}>
-          <span className="font-bold text-accent">{initials}</span>
+        <div
+          className={`${sizes[size]} bg-primary/10 ring-surface-container-lowest flex items-center justify-center rounded-full ring-2`}
+        >
+          <span className="text-accent font-bold">{initials}</span>
         </div>
       )}
 
       {online !== undefined && (
-        <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-surface-container-lowest ${
-          online ? "bg-emerald-500" : "bg-gray-300"
-        }`} />
+        <span
+          className={`border-surface-container-lowest absolute right-0 bottom-0 h-3 w-3 rounded-full border-2 ${
+            online ? "bg-emerald-500" : "bg-gray-300"
+          }`}
+        />
       )}
     </div>
   );

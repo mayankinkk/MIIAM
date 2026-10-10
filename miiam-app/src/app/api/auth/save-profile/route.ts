@@ -7,12 +7,14 @@ const logger = createRouteLogger("auth/save-profile");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 20, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 20, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -55,6 +57,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, userId: user.id });
   } catch (error: unknown) {
     logger.error({ err: error }, "Save profile error");
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Server error" },
+      { status: 500 }
+    );
   }
 }

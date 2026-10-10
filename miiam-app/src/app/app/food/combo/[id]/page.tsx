@@ -61,8 +61,20 @@ export default function ComboDetailPage() {
 
   const heroRef = useRef<HTMLDivElement>(null);
   const addBtnRef = useRef<HTMLButtonElement>(null);
-  const [flyingItems, setFlyingItems] = useState<Array<{ id: number; x: number; y: number; img: string }>>([]);
-  const [confetti, setConfetti] = useState<Array<{ id: number; x: number; y: number; color: string; rotation: number; delay: number; size: number }>>([]);
+  const [flyingItems, setFlyingItems] = useState<
+    Array<{ id: number; x: number; y: number; img: string }>
+  >([]);
+  const [confetti, setConfetti] = useState<
+    Array<{
+      id: number;
+      x: number;
+      y: number;
+      color: string;
+      rotation: number;
+      delay: number;
+      size: number;
+    }>
+  >([]);
   const flyIdRef = useRef(0);
   const confettiIdRef = useRef(0);
 
@@ -124,7 +136,9 @@ export default function ComboDetailPage() {
           comboData.category
             ? supabase
                 .from("combos")
-                .select("id, name, description, image_url, original_price, combo_price, items, vendor_id, category")
+                .select(
+                  "id, name, description, image_url, original_price, combo_price, items, vendor_id, category"
+                )
                 .eq("is_active", true)
                 .eq("category", comboData.category)
                 .neq("id", comboId)
@@ -154,9 +168,7 @@ export default function ComboDetailPage() {
       const endX = btnRect.left + btnRect.width / 2 - 24;
       const endY = btnRect.top + btnRect.height / 2 - 24;
       setFlyingItems((prev) =>
-        prev.map((item) =>
-          item.id === id ? { ...item, x: endX, y: endY } : item
-        )
+        prev.map((item) => (item.id === id ? { ...item, x: endX, y: endY } : item))
       );
     });
     setTimeout(() => {
@@ -169,7 +181,16 @@ export default function ComboDetailPage() {
     const btnRect = addBtnRef.current.getBoundingClientRect();
     const cx = btnRect.left + btnRect.width / 2;
     const cy = btnRect.top;
-    const colors = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#a855f7", "#ec4899", "#f43f5e"];
+    const colors = [
+      "#ef4444",
+      "#f97316",
+      "#eab308",
+      "#22c55e",
+      "#3b82f6",
+      "#a855f7",
+      "#ec4899",
+      "#f43f5e",
+    ];
     const particles = Array.from({ length: 30 }, () => ({
       id: ++confettiIdRef.current,
       x: cx + (Math.random() - 0.5) * 120,
@@ -203,52 +224,58 @@ export default function ComboDetailPage() {
     triggerConfetti();
 
     setTimeout(() => {
-      addItem({
-        id: `combo-${combo.id}`,
-        menu_item_id: `combo-${combo.id}`,
-        vendor_id: vendorId || "",
-        vendor_name: vendorName,
-        name: combo.name,
-        price: combo.combo_price,
-        image_url: combo.image_url,
-        is_veg: true,
-      }, 1);
+      addItem(
+        {
+          id: `combo-${combo.id}`,
+          menu_item_id: `combo-${combo.id}`,
+          vendor_id: vendorId || "",
+          vendor_name: vendorName,
+          name: combo.name,
+          price: combo.combo_price,
+          image_url: combo.image_url,
+          is_veg: true,
+        },
+        1
+      );
     }, 400);
   }, [combo, vendor, cartVendorId, items, addItem, confirm, triggerFlyAnimation, triggerConfetti]);
 
   const handleIncrement = useCallback(() => {
     if (!combo) return;
-    addItem({
-      id: `combo-${combo.id}`,
-      menu_item_id: `combo-${combo.id}`,
-      vendor_id: vendor?.id || combo.vendor_id,
-      vendor_name: vendor?.shop_name || "Combo",
-      name: combo.name,
-      price: combo.combo_price,
-      image_url: combo.image_url,
-      is_veg: true,
-    }, 1);
+    addItem(
+      {
+        id: `combo-${combo.id}`,
+        menu_item_id: `combo-${combo.id}`,
+        vendor_id: vendor?.id || combo.vendor_id,
+        vendor_name: vendor?.shop_name || "Combo",
+        name: combo.name,
+        price: combo.combo_price,
+        image_url: combo.image_url,
+        is_veg: true,
+      },
+      1
+    );
   }, [combo, vendor, addItem]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface">
-        <div className="h-14 border-b border-outline-variant/60 flex items-center gap-3 px-3">
-          <div className="w-10 h-10 rounded-full bg-surface-container-high animate-pulse" />
+      <div className="bg-surface min-h-screen">
+        <div className="border-outline-variant/60 flex h-14 items-center gap-3 border-b px-3">
+          <div className="bg-surface-container-high h-10 w-10 animate-pulse rounded-full" />
           <div className="space-y-1.5">
-            <div className="h-3 w-28 bg-surface-container-high animate-pulse rounded" />
-            <div className="h-2.5 w-40 bg-surface-container-high animate-pulse rounded" />
+            <div className="bg-surface-container-high h-3 w-28 animate-pulse rounded" />
+            <div className="bg-surface-container-high h-2.5 w-40 animate-pulse rounded" />
           </div>
         </div>
-        <div className="w-full aspect-square max-h-[70vh] bg-surface-container-high animate-pulse" />
-        <div className="px-4 py-4 space-y-3 border-b border-outline-variant/60">
-          <div className="h-5 w-3/4 bg-surface-container-high animate-pulse rounded" />
-          <div className="h-3 w-1/2 bg-surface-container-high animate-pulse rounded" />
+        <div className="bg-surface-container-high aspect-square max-h-[70vh] w-full animate-pulse" />
+        <div className="border-outline-variant/60 space-y-3 border-b px-4 py-4">
+          <div className="bg-surface-container-high h-5 w-3/4 animate-pulse rounded" />
+          <div className="bg-surface-container-high h-3 w-1/2 animate-pulse rounded" />
         </div>
-        <div className="px-4 py-4 space-y-2.5">
-          <div className="h-4 w-1/3 bg-surface-container-high animate-pulse rounded" />
-          <div className="h-3 w-2/3 bg-surface-container-high animate-pulse rounded" />
-          <div className="h-3 w-1/2 bg-surface-container-high animate-pulse rounded" />
+        <div className="space-y-2.5 px-4 py-4">
+          <div className="bg-surface-container-high h-4 w-1/3 animate-pulse rounded" />
+          <div className="bg-surface-container-high h-3 w-2/3 animate-pulse rounded" />
+          <div className="bg-surface-container-high h-3 w-1/2 animate-pulse rounded" />
         </div>
       </div>
     );
@@ -256,9 +283,11 @@ export default function ComboDetailPage() {
 
   if (error || !combo) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
-        <p className="text-xl font-black text-on-surface mb-2">Combo not found</p>
-        <Link href="/app/home" className="text-accent font-bold">Go back</Link>
+      <div className="bg-surface flex min-h-screen flex-col items-center justify-center p-6">
+        <p className="text-on-surface mb-2 text-xl font-black">Combo not found</p>
+        <Link href="/app/home" className="text-accent font-bold">
+          Go back
+        </Link>
       </div>
     );
   }
@@ -267,19 +296,26 @@ export default function ComboDetailPage() {
   const discountPct = Math.round((savings / combo.original_price) * 100);
 
   return (
-    <div className="min-h-screen bg-surface pb-44 md:pb-32">
+    <div className="bg-surface min-h-screen pb-44 md:pb-32">
       {/* Flying item animations */}
       {flyingItems.map((item) => (
         <div
           key={item.id}
-          className="fixed z-[9999] pointer-events-none transition-all duration-700 ease-in-out"
+          className="pointer-events-none fixed z-[9999] transition-all duration-700 ease-in-out"
           style={{
             left: item.x,
             top: item.y,
             width: 48,
             height: 48,
-            opacity: flyingItems.find((f) => f.id === item.id && item.y !== flyingItems.find((f2) => f2.id === item.id)?.y) ? 0.3 : 1,
-            transform: item.y !== (heroRef.current?.getBoundingClientRect().top ?? 0) ? "scale(0.2)" : "scale(1)",
+            opacity: flyingItems.find(
+              (f) => f.id === item.id && item.y !== flyingItems.find((f2) => f2.id === item.id)?.y
+            )
+              ? 0.3
+              : 1,
+            transform:
+              item.y !== (heroRef.current?.getBoundingClientRect().top ?? 0)
+                ? "scale(0.2)"
+                : "scale(1)",
             borderRadius: "50%",
             overflow: "hidden",
           }}
@@ -289,7 +325,7 @@ export default function ComboDetailPage() {
             alt=""
             width={48}
             height={48}
-            className="w-full h-full object-cover shadow-lg"
+            className="h-full w-full object-cover shadow-lg"
             unoptimized={!canOptimizeImage(item.img || "")}
           />
         </div>
@@ -299,7 +335,7 @@ export default function ComboDetailPage() {
       {confetti.map((p) => (
         <div
           key={p.id}
-          className="fixed z-[9999] pointer-events-none"
+          className="pointer-events-none fixed z-[9999]"
           style={{
             left: p.x,
             top: p.y,
@@ -314,20 +350,20 @@ export default function ComboDetailPage() {
       ))}
 
       {/* Sticky header — back / vendor + address / share */}
-      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
-        <div className="h-14 flex items-center gap-1 px-2">
+      <header className="bg-surface-container-lowest/95 border-outline-variant/60 sticky top-0 z-30 border-b backdrop-blur-md">
+        <div className="flex h-14 items-center gap-1 px-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <div className="flex-1 min-w-0 px-1">
-            <p className="text-[13px] font-bold text-on-surface truncate">
+          <div className="min-w-0 flex-1 px-1">
+            <p className="text-on-surface truncate text-[13px] font-bold">
               {vendor?.shop_name || combo.name}
             </p>
-            <p className="text-[11px] text-on-surface-variant truncate">
+            <p className="text-on-surface-variant truncate text-[11px]">
               {vendor?.address || vendor?.cuisine || combo.category}
             </p>
           </div>
@@ -345,7 +381,7 @@ export default function ComboDetailPage() {
               }
             }}
             aria-label="Share combo"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">share</span>
           </button>
@@ -353,20 +389,32 @@ export default function ComboDetailPage() {
       </header>
 
       {/* Full-bleed product image with overlay chips */}
-      <div ref={heroRef} className="relative w-full aspect-square max-h-[70vh] overflow-hidden bg-surface-container">
+      <div
+        ref={heroRef}
+        className="bg-surface-container relative aspect-square max-h-[70vh] w-full overflow-hidden"
+      >
         {combo.image_url ? (
-          <Image src={combo.image_url} alt={combo.name} fill className="object-cover" sizes="100vw" unoptimized={!canOptimizeImage(combo.image_url)} />
+          <Image
+            src={combo.image_url}
+            alt={combo.name}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            unoptimized={!canOptimizeImage(combo.image_url)}
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-orange-100 to-amber-50">🎉</div>
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-100 to-amber-50 text-6xl">
+            🎉
+          </div>
         )}
         <div className="absolute bottom-3 left-3 flex flex-wrap items-center gap-1.5">
           {discountPct > 0 && (
-            <span className="bg-status-error text-white text-xs font-black px-2.5 py-1 rounded-full shadow-md">
+            <span className="bg-status-error rounded-full px-2.5 py-1 text-xs font-black text-white shadow-md">
               {discountPct}% OFF
             </span>
           )}
           {vendor?.rating != null && (
-            <span className="bg-white text-accent text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-0.5">
+            <span className="text-accent flex items-center gap-0.5 rounded-full bg-white px-2 py-1 text-xs font-bold shadow-md">
               <span className="material-symbols-outlined text-sm">star</span>
               {vendor.rating}
             </span>
@@ -375,15 +423,21 @@ export default function ComboDetailPage() {
       </div>
 
       {/* Title */}
-      <section className="px-4 py-4 border-b border-outline-variant/60">
+      <section className="border-outline-variant/60 border-b px-4 py-4">
         <div className="flex items-start gap-2">
-          <span aria-label="Veg" className="w-4 h-4 mt-0.5 shrink-0 border-2 border-green-600 rounded-[3px] flex items-center justify-center">
-            <span className="w-1.5 h-1.5 bg-green-600 rounded-full" />
+          <span
+            aria-label="Veg"
+            className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] border-2 border-green-600"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
           </span>
-          <h1 className="text-[17px] font-bold text-on-surface leading-snug">{combo.name}</h1>
+          <h1 className="text-on-surface text-[17px] leading-snug font-bold">{combo.name}</h1>
         </div>
         {vendor && (
-          <Link href={`/app/food/${vendor.id}`} className="text-sm font-medium text-accent mt-1.5 inline-block hover:underline">
+          <Link
+            href={`/app/food/${vendor.id}`}
+            className="text-accent mt-1.5 inline-block text-sm font-medium hover:underline"
+          >
             {vendor.shop_name} · {vendor.cuisine}
           </Link>
         )}
@@ -391,22 +445,22 @@ export default function ComboDetailPage() {
 
       {/* Description */}
       {combo.description && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <p className="text-sm text-on-surface-variant leading-relaxed">{combo.description}</p>
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <p className="text-on-surface-variant text-sm leading-relaxed">{combo.description}</p>
         </section>
       )}
 
       {/* Items included */}
       {combo.items && combo.items.length > 0 && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <h2 className="text-[15px] font-bold text-on-surface mb-3">What&apos;s Included</h2>
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <h2 className="text-on-surface mb-3 text-[15px] font-bold">What&apos;s Included</h2>
           <ul className="space-y-2.5">
             {combo.items.map((item, i) => (
               <li key={i} className="flex items-start gap-2.5">
-                <span className="w-5 h-5 bg-primary/10 text-accent rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="bg-primary/10 text-accent mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full">
                   <span className="material-symbols-outlined text-xs">check</span>
                 </span>
-                <span className="text-sm text-on-surface">{item}</span>
+                <span className="text-on-surface text-sm">{item}</span>
               </li>
             ))}
           </ul>
@@ -415,13 +469,28 @@ export default function ComboDetailPage() {
 
       {/* Vendor row — Blinkit brand row style */}
       {vendor && (
-        <Link href={`/app/food/${vendor.id}`} className="flex items-center gap-3 px-4 py-4 border-b border-outline-variant/60 active:bg-surface-container transition-colors">
-          <div className="w-11 h-11 rounded-lg overflow-hidden bg-surface flex-shrink-0 relative border border-outline-variant/40">
-            <Image src={vendor.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80"} alt={vendor.shop_name} fill className="object-cover" sizes="44px" unoptimized={!canOptimizeImage(vendor.image_url || "")} />
+        <Link
+          href={`/app/food/${vendor.id}`}
+          className="border-outline-variant/60 active:bg-surface-container flex items-center gap-3 border-b px-4 py-4 transition-colors"
+        >
+          <div className="bg-surface border-outline-variant/40 relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-lg border">
+            <Image
+              src={
+                vendor.image_url ||
+                "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80"
+              }
+              alt={vendor.shop_name}
+              fill
+              className="object-cover"
+              sizes="44px"
+              unoptimized={!canOptimizeImage(vendor.image_url || "")}
+            />
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-on-surface text-sm truncate">{vendor.shop_name}</p>
-            <p className="text-xs text-on-surface-variant truncate">View full menu · {vendor.cuisine}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-on-surface truncate text-sm font-bold">{vendor.shop_name}</p>
+            <p className="text-on-surface-variant truncate text-xs">
+              View full menu · {vendor.cuisine}
+            </p>
           </div>
           <span className="material-symbols-outlined text-outline">chevron_right</span>
         </Link>
@@ -429,25 +498,31 @@ export default function ComboDetailPage() {
 
       {/* Restaurant Menu Preview */}
       {menuItems.length > 0 && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-on-surface">Menu from {vendor?.shop_name}</h2>
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-on-surface text-[15px] font-bold">Menu from {vendor?.shop_name}</h2>
             {vendor && (
-              <Link href={`/app/food/${vendor.id}`} className="text-xs font-bold text-accent hover:underline">
+              <Link
+                href={`/app/food/${vendor.id}`}
+                className="text-accent text-xs font-bold hover:underline"
+              >
                 View All
               </Link>
             )}
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+          <div className="scrollbar-hide -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
             {menuItems.map((item) => (
               <Link
                 key={item.id}
                 href={vendor ? `/app/food/${vendor.id}` : "#"}
-                className="flex-shrink-0 w-32 bg-surface-container-low rounded-xl overflow-hidden shadow-sm border border-outline-variant/30 active:scale-[0.98] transition-transform"
+                className="bg-surface-container-low border-outline-variant/30 w-32 flex-shrink-0 overflow-hidden rounded-xl border shadow-sm transition-transform active:scale-[0.98]"
               >
-                <div className="relative h-20 bg-surface-container overflow-hidden">
+                <div className="bg-surface-container relative h-20 overflow-hidden">
                   <Image
-                    src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80"}
+                    src={
+                      item.image_url ||
+                      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80"
+                    }
                     alt={item.name}
                     fill
                     className="object-cover"
@@ -455,14 +530,14 @@ export default function ComboDetailPage() {
                     unoptimized={!canOptimizeImage(item.image_url || "")}
                   />
                   {item.is_veg && (
-                    <span className="absolute top-1 left-1 w-4 h-4 bg-white rounded-sm flex items-center justify-center">
-                      <span className="w-2 h-2 bg-green-600 rounded-full" />
+                    <span className="absolute top-1 left-1 flex h-4 w-4 items-center justify-center rounded-sm bg-white">
+                      <span className="h-2 w-2 rounded-full bg-green-600" />
                     </span>
                   )}
                 </div>
                 <div className="p-2">
-                  <p className="text-xs font-bold text-on-surface truncate">{item.name}</p>
-                  <p className="text-xs font-bold text-on-surface mt-0.5">₹{item.price}</p>
+                  <p className="text-on-surface truncate text-xs font-bold">{item.name}</p>
+                  <p className="text-on-surface mt-0.5 text-xs font-bold">₹{item.price}</p>
                 </div>
               </Link>
             ))}
@@ -472,14 +547,17 @@ export default function ComboDetailPage() {
 
       {/* Similar Combos */}
       {similarCombos.length > 0 && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[15px] font-bold text-on-surface">You Might Also Like</h2>
-            <Link href="/app/food?filter=combos" className="text-xs font-bold text-accent hover:underline">
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-on-surface text-[15px] font-bold">You Might Also Like</h2>
+            <Link
+              href="/app/food?filter=combos"
+              className="text-accent text-xs font-bold hover:underline"
+            >
               View All
             </Link>
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+          <div className="scrollbar-hide -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
             {similarCombos.map((sc) => {
               const scSavings = sc.original_price - sc.combo_price;
               const scDiscount = Math.round((scSavings / sc.original_price) * 100);
@@ -487,11 +565,14 @@ export default function ComboDetailPage() {
                 <Link
                   key={sc.id}
                   href={`/app/food/combo/${sc.id}`}
-                  className="flex-shrink-0 w-40 bg-surface-container-low rounded-xl overflow-hidden shadow-sm border border-outline-variant/30 active:scale-[0.98] transition-transform"
+                  className="bg-surface-container-low border-outline-variant/30 w-40 flex-shrink-0 overflow-hidden rounded-xl border shadow-sm transition-transform active:scale-[0.98]"
                 >
-                  <div className="relative h-24 bg-surface-container overflow-hidden">
+                  <div className="bg-surface-container relative h-24 overflow-hidden">
                     <Image
-                      src={sc.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80"}
+                      src={
+                        sc.image_url ||
+                        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&q=80"
+                      }
                       alt={sc.name}
                       fill
                       className="object-cover"
@@ -499,16 +580,18 @@ export default function ComboDetailPage() {
                       unoptimized={!canOptimizeImage(sc.image_url || "")}
                     />
                     {scDiscount > 0 && (
-                      <span className="absolute top-1 right-1 bg-status-error text-white text-[10px] font-black px-1.5 py-0.5 rounded-full">
+                      <span className="bg-status-error absolute top-1 right-1 rounded-full px-1.5 py-0.5 text-[10px] font-black text-white">
                         {scDiscount}% OFF
                       </span>
                     )}
                   </div>
                   <div className="p-2.5">
-                    <p className="text-xs font-bold text-on-surface truncate">{sc.name}</p>
-                    <div className="flex flex-col items-start mt-1 leading-tight">
-                      <span className="text-xs font-black text-on-surface">₹{sc.combo_price}</span>
-                      <span className="text-[10px] text-on-surface-variant line-through">₹{sc.original_price}</span>
+                    <p className="text-on-surface truncate text-xs font-bold">{sc.name}</p>
+                    <div className="mt-1 flex flex-col items-start leading-tight">
+                      <span className="text-on-surface text-xs font-black">₹{sc.combo_price}</span>
+                      <span className="text-on-surface-variant text-[10px] line-through">
+                        ₹{sc.original_price}
+                      </span>
                     </div>
                   </div>
                 </Link>
@@ -520,26 +603,31 @@ export default function ComboDetailPage() {
 
       {/* Reviews Section */}
       <section className="px-4 py-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[15px] font-bold text-on-surface">Ratings & Reviews</h2>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-on-surface text-[15px] font-bold">Ratings & Reviews</h2>
           {vendor?.rating && (
-            <div className="flex items-center gap-1.5 bg-primary/10 px-2.5 py-1 rounded-full">
-              <span className="material-symbols-outlined text-sm text-accent">star</span>
-              <span className="text-sm font-bold text-accent">{vendor.rating}</span>
+            <div className="bg-primary/10 flex items-center gap-1.5 rounded-full px-2.5 py-1">
+              <span className="material-symbols-outlined text-accent text-sm">star</span>
+              <span className="text-accent text-sm font-bold">{vendor.rating}</span>
               {vendor.rating_count != null && (
-                <span className="text-xs text-on-surface-variant">({vendor.rating_count})</span>
+                <span className="text-on-surface-variant text-xs">({vendor.rating_count})</span>
               )}
             </div>
           )}
         </div>
 
         {reviews.length === 0 ? (
-          <p className="text-sm text-on-surface-variant text-center py-4">No reviews yet. Be the first to review!</p>
+          <p className="text-on-surface-variant py-4 text-center text-sm">
+            No reviews yet. Be the first to review!
+          </p>
         ) : (
           <div className="space-y-3">
             {reviews.map((review) => (
-              <div key={review.id} className="border-b border-outline-variant/40 pb-3 last:border-0 last:pb-0">
-                <div className="flex items-center gap-2 mb-1">
+              <div
+                key={review.id}
+                className="border-outline-variant/40 border-b pb-3 last:border-0 last:pb-0"
+              >
+                <div className="mb-1 flex items-center gap-2">
                   <div className="flex">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span
@@ -550,12 +638,15 @@ export default function ComboDetailPage() {
                       </span>
                     ))}
                   </div>
-                  <span className="text-xs text-on-surface-variant">
-                    {new Date(review.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                  <span className="text-on-surface-variant text-xs">
+                    {new Date(review.created_at).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}
                   </span>
                 </div>
                 {review.comment && (
-                  <p className="text-sm text-on-surface leading-relaxed">{review.comment}</p>
+                  <p className="text-on-surface text-sm leading-relaxed">{review.comment}</p>
                 )}
               </div>
             ))}
@@ -564,51 +655,59 @@ export default function ComboDetailPage() {
       </section>
 
       {/* Sticky bottom bar — price + Add to cart (Blinkit style), sits above bottom nav */}
-      <div className="fixed bottom-[80px] left-0 right-0 md:left-auto md:right-6 md:max-w-md z-40 bg-surface-container-lowest border-t md:border md:rounded-2xl border-outline-variant/60 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:shadow-xl">
-        <div className="flex items-center justify-between gap-3 px-4 py-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}>
+      <div className="bg-surface-container-lowest border-outline-variant/60 fixed right-0 bottom-[80px] left-0 z-40 border-t shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:right-6 md:left-auto md:max-w-md md:rounded-2xl md:border md:shadow-xl">
+        <div
+          className="flex items-center justify-between gap-3 px-4 py-3"
+          style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}
+        >
           {qty === 0 ? (
             <>
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg font-black text-on-surface">₹{combo.combo_price}</span>
-                  <span className="text-sm text-on-surface-variant line-through">₹{combo.original_price}</span>
+                  <span className="text-on-surface text-lg font-black">₹{combo.combo_price}</span>
+                  <span className="text-on-surface-variant text-sm line-through">
+                    ₹{combo.original_price}
+                  </span>
                 </div>
-                <p className="text-[11px] font-bold text-green-600 leading-tight">
+                <p className="text-[11px] leading-tight font-bold text-green-600">
                   You save ₹{savings.toFixed(0)}
                 </p>
               </div>
               <button
                 ref={addBtnRef}
                 onClick={handleAddToCart}
-                className="shrink-0 bg-primary text-on-primary px-6 py-3 rounded-xl font-black text-sm hover:bg-primary-dim hover:text-on-primary active:scale-95 transition-all shadow-md shadow-primary/20"
+                className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary shadow-primary/20 shrink-0 rounded-xl px-6 py-3 text-sm font-black shadow-md transition-all active:scale-95"
               >
                 Add to cart
               </button>
             </>
           ) : (
             <>
-              <div className="flex items-center gap-1 bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
+              <div className="bg-surface-container-lowest border-primary flex items-center gap-1 overflow-hidden rounded-lg border">
                 <button
                   onClick={() => updateQuantity(cartItemId, qty - 1)}
                   aria-label="Decrease quantity"
-                  className="bg-primary text-on-primary font-bold w-10 h-10 flex items-center justify-center hover:brightness-95 transition-colors active:scale-90"
+                  className="bg-primary text-on-primary flex h-10 w-10 items-center justify-center font-bold transition-colors hover:brightness-95 active:scale-90"
                 >
                   −
                 </button>
-                <span key={qty} className="text-on-surface font-extrabold text-sm min-w-[24px] text-center">
+                <span
+                  key={qty}
+                  className="text-on-surface min-w-[24px] text-center text-sm font-extrabold"
+                >
                   {qty}
                 </span>
                 <button
                   onClick={handleIncrement}
                   aria-label="Increase quantity"
-                  className="bg-primary text-on-primary font-bold w-10 h-10 flex items-center justify-center hover:brightness-95 transition-colors active:scale-90"
+                  className="bg-primary text-on-primary flex h-10 w-10 items-center justify-center font-bold transition-colors hover:brightness-95 active:scale-90"
                 >
                   +
                 </button>
               </div>
               <Link
                 href="/app/cart"
-                className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-black text-sm text-center shadow-lg shadow-primary/20 active:scale-95 transition-all"
+                className="bg-primary text-on-primary shadow-primary/20 flex-1 rounded-xl py-3 text-center text-sm font-black shadow-lg transition-all active:scale-95"
               >
                 View Cart — ₹{(combo.combo_price * qty).toFixed(0)}
               </Link>

@@ -9,12 +9,15 @@ const inMemoryCounts = new Map<string, { count: number; windowStart: number }>()
 
 // Cleanup stale entries every 5 minutes to prevent memory leaks
 if (typeof setInterval !== "undefined") {
-  setInterval(() => {
-    const cutoff = Date.now() - 5 * 60 * 1000;
-    for (const [key, entry] of inMemoryCounts) {
-      if (entry.windowStart < cutoff) inMemoryCounts.delete(key);
-    }
-  }, 5 * 60 * 1000);
+  setInterval(
+    () => {
+      const cutoff = Date.now() - 5 * 60 * 1000;
+      for (const [key, entry] of inMemoryCounts) {
+        if (entry.windowStart < cutoff) inMemoryCounts.delete(key);
+      }
+    },
+    5 * 60 * 1000
+  );
 }
 
 async function redisEval(script: string, keys: string[], args: string[]): Promise<string | null> {
@@ -39,7 +42,9 @@ export async function checkIpRateLimit(
 ): Promise<boolean> {
   if (!UPSTASH_URL || !UPSTASH_TOKEN) {
     if (!warnedOnce) {
-      logger.warn("[MIIAM] Rate limiting degraded: UPSTASH not configured. Using in-memory fallback (not effective in serverless).");
+      logger.warn(
+        "[MIIAM] Rate limiting degraded: UPSTASH not configured. Using in-memory fallback (not effective in serverless)."
+      );
       warnedOnce = true;
     }
 
@@ -76,6 +81,10 @@ export async function checkIpRateLimit(
   `;
 
   const now = Date.now();
-  const result = await redisEval(script, [key], [String(windowSec), String(maxRequests), String(now)]);
+  const result = await redisEval(
+    script,
+    [key],
+    [String(windowSec), String(maxRequests), String(now)]
+  );
   return result === "1";
 }

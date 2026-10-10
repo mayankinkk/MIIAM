@@ -56,7 +56,7 @@ export default function AddToCartButton({
       whileTap={{ scale: 0.85 }}
       animate={isAdding ? { scale: [1, 1.15, 1] } : {}}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`relative ${sizeClasses[size]} bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30 z-10 ${className}`}
+      className={`relative ${sizeClasses[size]} bg-primary text-on-primary shadow-primary/30 z-10 flex items-center justify-center rounded-full shadow-lg ${className}`}
       aria-label={ariaLabel || label || "Add to cart"}
     >
       <AnimatePresence mode="wait">

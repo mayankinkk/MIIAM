@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 
-function getClosingInfo(hours: string | null | undefined): { minutesLeft: number; isOpen: boolean } {
+function getClosingInfo(hours: string | null | undefined): {
+  minutesLeft: number;
+  isOpen: boolean;
+} {
   if (!hours) return { minutesLeft: 0, isOpen: true };
   try {
     const to24 = (t: string) => {
@@ -47,25 +50,26 @@ export default function ClosingCountdown({ openingHours }: Props) {
 
   if (info.minutesLeft > 60) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-        Open · {hours > 0 ? `${hours}h ` : ""}{mins > 0 ? `${mins}m` : ""} left
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        Open · {hours > 0 ? `${hours}h ` : ""}
+        {mins > 0 ? `${mins}m` : ""} left
       </span>
     );
   }
 
   if (info.minutesLeft <= 30) {
     return (
-      <span className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full animate-pulse">
-        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+      <span className="inline-flex animate-pulse items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
         Closing in {mins}m
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
-      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-600">
+      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
       Closing in {mins}m
     </span>
   );

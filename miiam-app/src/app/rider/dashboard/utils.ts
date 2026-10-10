@@ -12,7 +12,7 @@ export function isPeakHour(): boolean {
       hour: "numeric",
       hour12: false,
     }),
-    10,
+    10
   );
   return (hour >= 11 && hour <= 14) || (hour >= 18 && hour <= 21);
 }

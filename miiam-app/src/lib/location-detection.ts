@@ -72,11 +72,7 @@ const MAX_AGE_MS = 30_000;
  * Rejects readings that jump > MAX_JUMP_KM from the last accepted position
  * unless the reading is significantly more accurate.
  */
-export function filterLocation(
-  lat: number,
-  lng: number,
-  accuracy: number,
-): FilteredLocation {
+export function filterLocation(lat: number, lng: number, accuracy: number): FilteredLocation {
   const now = Date.now();
 
   // First reading — accept as-is
@@ -140,10 +136,7 @@ interface MultiShotResult {
  * Take N readings and return the one with the best (lowest) accuracy.
  * Falls back to low-accuracy mode if all high-accuracy readings fail.
  */
-export function multiShotDetect(
-  shots = 3,
-  intervalMs = 1200,
-): Promise<MultiShotResult> {
+export function multiShotDetect(shots = 3, intervalMs = 1200): Promise<MultiShotResult> {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       reject(new Error("Geolocation not supported"));
@@ -204,9 +197,7 @@ export function multiShotDetect(
 /**
  * Multi-shot with automatic fallback to low accuracy.
  */
-export async function multiShotDetectWithFallback(
-  shots = 3,
-): Promise<MultiShotResult> {
+export async function multiShotDetectWithFallback(shots = 3): Promise<MultiShotResult> {
   try {
     return await multiShotDetect(shots);
   } catch {
@@ -218,7 +209,7 @@ export async function multiShotDetectWithFallback(
           resolve({ lat: latitude, lng: longitude, accuracy, attempts: 1 });
         },
         reject,
-        LOW_ACCURACY_FALLBACK_OPTIONS,
+        LOW_ACCURACY_FALLBACK_OPTIONS
       );
     });
   }

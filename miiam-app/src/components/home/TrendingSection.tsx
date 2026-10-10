@@ -22,45 +22,56 @@ export default function TrendingSection({ items }: TrendingSectionProps) {
 
   return (
     <div className="px-4 py-3">
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-lg animate-pulse">🔥</span>
-          <h2 className="text-lg font-bold text-on-surface">What&apos;s Trending</h2>
+          <span className="animate-pulse text-lg">🔥</span>
+          <h2 className="text-on-surface text-lg font-bold">What&apos;s Trending</h2>
         </div>
-        <Link href="/app/food" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
+        <Link
+          href="/app/food"
+          className="text-accent bg-primary/10 rounded-full px-3 py-1.5 text-xs font-bold"
+        >
+          See All
+        </Link>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
         {items.map((item, index) => (
           <Link
             key={item.id}
             href={`/app/food`}
-            className="flex-shrink-0 w-40 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-glow active:scale-[0.97] transition-all"
+            className="bg-surface-container-lowest card-glow w-40 flex-shrink-0 overflow-hidden rounded-2xl shadow-sm transition-all active:scale-[0.97]"
           >
             <div className="relative h-28 overflow-hidden">
               <BlurImage
-                src={item.image_url || "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"}
+                src={
+                  item.image_url ||
+                  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
+                }
                 alt={item.name}
                 fill
                 className="object-cover"
                 sizes="160px"
                 fallbackSrc="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
               />
-              <div className="absolute top-2 left-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[9px] font-black px-2 py-1 rounded-full flex items-center gap-1">
-                <span className="text-[8px]">🔥</span>
-                #{index + 1}
+              <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-2 py-1 text-[9px] font-black text-white">
+                <span className="text-[8px]">🔥</span>#{index + 1}
               </div>
               {item.is_veg && (
-                <div className="absolute top-2 right-2 w-4 h-4 border-2 border-green-600 bg-white rounded-sm flex items-center justify-center">
-                  <div className="w-2 h-2 bg-green-600 rounded-full" />
+                <div className="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-sm border-2 border-green-600 bg-white">
+                  <div className="h-2 w-2 rounded-full bg-green-600" />
                 </div>
               )}
             </div>
             <div className="p-3">
-              <h3 className="font-bold text-sm text-on-surface line-clamp-1">{item.name}</h3>
-              <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{item.vendor_name}</p>
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-sm font-black text-on-surface">₹{item.price}</span>
-                <span className="text-[9px] text-on-surface-variant">{item.order_count}+ orders</span>
+              <h3 className="text-on-surface line-clamp-1 text-sm font-bold">{item.name}</h3>
+              <p className="text-on-surface-variant mt-0.5 truncate text-[10px]">
+                {item.vendor_name}
+              </p>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-on-surface text-sm font-black">₹{item.price}</span>
+                <span className="text-on-surface-variant text-[9px]">
+                  {item.order_count}+ orders
+                </span>
               </div>
             </div>
           </Link>

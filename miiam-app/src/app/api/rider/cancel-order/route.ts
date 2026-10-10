@@ -11,7 +11,10 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
 
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -33,7 +36,11 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { error } = await supabase.from("orders").update({ status: "cancelled", rider_id: null }).eq("id", order_id).eq("rider_id", rider_id);
+    const { error } = await supabase
+      .from("orders")
+      .update({ status: "cancelled", rider_id: null })
+      .eq("id", order_id)
+      .eq("rider_id", rider_id);
     if (error) throw error;
     await restoreStock(order_id, supabase);
     await supabase.from("rider_incidents").insert({
@@ -45,6 +52,9 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
     });
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
-    return NextResponse.json({ error: (err instanceof Error ? err.message : "Internal error") }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Internal error" },
+      { status: 500 }
+    );
   }
 });

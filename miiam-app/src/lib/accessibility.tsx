@@ -7,11 +7,7 @@ interface VisuallyHiddenProps {
 }
 
 export function VisuallyHidden({ children }: VisuallyHiddenProps) {
-  return (
-    <span className="sr-only">
-      {children}
-    </span>
-  );
+  return <span className="sr-only">{children}</span>;
 }
 
 interface SkipLinkProps {
@@ -23,7 +19,7 @@ export function SkipLink({ href, children }: SkipLinkProps) {
   return (
     <a
       href={href}
-      className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-[var(--color-primary)] focus:text-on-primary focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold"
+      className="focus:text-on-primary sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-lg focus:bg-[var(--color-primary)] focus:px-4 focus:py-2 focus:font-bold"
     >
       {children}
     </a>
@@ -38,14 +34,15 @@ interface AriaButtonProps {
   disabled?: boolean;
 }
 
-export function AriaButton({ onClick, children, ariaLabel, className = "", disabled }: AriaButtonProps) {
+export function AriaButton({
+  onClick,
+  children,
+  ariaLabel,
+  className = "",
+  disabled,
+}: AriaButtonProps) {
   return (
-    <button
-      onClick={onClick}
-      aria-label={ariaLabel}
-      disabled={disabled}
-      className={className}
-    >
+    <button onClick={onClick} aria-label={ariaLabel} disabled={disabled} className={className}>
       {children}
     </button>
   );

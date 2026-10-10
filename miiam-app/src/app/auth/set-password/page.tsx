@@ -12,7 +12,7 @@ function SetPasswordContent() {
   const supabase = createClient();
   const email = searchParams.get("email") || "";
   const isPasswordReset = searchParams.get("password_reset") === "true";
-  
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,20 +37,32 @@ function SetPasswordContent() {
     if (errors <= 2) return 3;
     return 2;
   };
-  const strengthColors = ["bg-[var(--color-surface-container-high)]", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500"];
+  const strengthColors = [
+    "bg-[var(--color-surface-container-high)]",
+    "bg-red-500",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-green-500",
+  ];
   const strengthLabels = ["", "Weak", "Fair", "Good", "Strong"];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
-    if (!password) { setError("Please enter a password"); return; }
-    if (passwordErrors.length > 0) { 
-      setError(`Password must have: ${passwordErrors.join(", ")}`); 
-      return; 
+
+    if (!password) {
+      setError("Please enter a password");
+      return;
     }
-    if (password !== confirmPassword) { setError("Passwords don't match"); return; }
-    
+    if (passwordErrors.length > 0) {
+      setError(`Password must have: ${passwordErrors.join(", ")}`);
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords don't match");
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (isPasswordReset) {
@@ -60,9 +72,9 @@ function SetPasswordContent() {
           body: JSON.stringify({ email, password }),
         });
         const data = await res.json();
-        if (!res.ok) { 
-          setError(data.error || "Failed to reset password"); 
-          return; 
+        if (!res.ok) {
+          setError(data.error || "Failed to reset password");
+          return;
         }
         router.push("/auth/login?reset=success");
         return;
@@ -74,12 +86,12 @@ function SetPasswordContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const data = await res.json();
-      
-      if (!res.ok) { 
-        setError(data.error || "Failed to create account"); 
-        return; 
+
+      if (!res.ok) {
+        setError(data.error || "Failed to create account");
+        return;
       }
 
       // Step 2: Sign in directly to establish a client-side session
@@ -113,25 +125,34 @@ function SetPasswordContent() {
       }
 
       // Session is now established, go to profile setup
-      const redirParam = searchParams.get("redirect") ? `&redirect=${encodeURIComponent(searchParams.get("redirect")!)}` : "";
+      const redirParam = searchParams.get("redirect")
+        ? `&redirect=${encodeURIComponent(searchParams.get("redirect")!)}`
+        : "";
       router.push(`/auth/profile-setup?email=${encodeURIComponent(email)}${redirParam}`);
-    } catch { setError("Something went wrong"); }
-    finally { setIsLoading(false); }
+    } catch {
+      setError("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-stretch overflow-hidden">
+    <div className="flex min-h-screen items-stretch overflow-hidden">
       {/* Left Side - Form */}
-      <section className="flex-1 flex flex-col justify-center items-center px-6 md:px-16 lg:px-24 bg-[var(--color-surface-container-lowest)] relative z-10">
+      <section className="relative z-10 flex flex-1 flex-col items-center justify-center bg-[var(--color-surface-container-lowest)] px-6 md:px-16 lg:px-24">
         <div className="w-full max-w-md space-y-8">
           <div className="flex flex-col items-start gap-4">
-            <span className="text-2xl font-black tracking-tighter text-[var(--color-primary-dark)]">MIIAM</span>
+            <span className="text-2xl font-black tracking-tighter text-[var(--color-primary-dark)]">
+              MIIAM
+            </span>
             <div className="space-y-2">
-              <h1 className="text-[3rem] leading-[1] tracking-[-0.02em] font-extrabold text-[var(--color-on-surface)]">
+              <h1 className="text-[3rem] leading-[1] font-extrabold tracking-[-0.02em] text-[var(--color-on-surface)]">
                 {isPasswordReset ? "Set New Password" : "Set Your Password"}
               </h1>
-              <p className="text-[var(--color-on-surface)] font-medium">
-                {isPasswordReset ? "Create a new password for your account" : "Create a password to secure your account"}
+              <p className="font-medium text-[var(--color-on-surface)]">
+                {isPasswordReset
+                  ? "Create a new password for your account"
+                  : "Create a password to secure your account"}
               </p>
             </div>
           </div>
@@ -139,67 +160,95 @@ function SetPasswordContent() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-1">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]" htmlFor="password">PASSWORD</label>
+                <label
+                  className="text-[10px] font-bold tracking-[0.3em] text-[var(--color-on-surface)]"
+                  htmlFor="password"
+                >
+                  PASSWORD
+                </label>
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[var(--color-primary)] transition-all placeholder:text-[var(--color-on-surface)]/40"
+                  className="w-full rounded-xl border-none bg-[var(--color-surface-container-lowest)] px-6 py-4 transition-all placeholder:text-[var(--color-on-surface)]/40 focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
                 {password && (
                   <div className="mt-2 space-y-2">
                     <div className="flex gap-1">
-                      {[1,2,3,4].map(i => (
-                        <div key={i} className={`h-1 flex-1 rounded-full ${i <= getStrength() ? strengthColors[getStrength()] : 'bg-[var(--color-surface-container-high)]'}`} />
+                      {[1, 2, 3, 4].map((i) => (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-full ${i <= getStrength() ? strengthColors[getStrength()] : "bg-[var(--color-surface-container-high)]"}`}
+                        />
                       ))}
                     </div>
-                    <p className={`text-xs font-medium ${getStrength() >= 3 ? 'text-green-600' : getStrength() >= 2 ? 'text-orange-600' : 'text-red-500'}`}>
+                    <p
+                      className={`text-xs font-medium ${getStrength() >= 3 ? "text-green-600" : getStrength() >= 2 ? "text-orange-600" : "text-red-500"}`}
+                    >
                       {strengthLabels[getStrength()]}
                     </p>
                   </div>
                 )}
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] tracking-[0.3em] font-bold text-[var(--color-on-surface)]" htmlFor="confirmPassword">CONFIRM PASSWORD</label>
+                <label
+                  className="text-[10px] font-bold tracking-[0.3em] text-[var(--color-on-surface)]"
+                  htmlFor="confirmPassword"
+                >
+                  CONFIRM PASSWORD
+                </label>
                 <input
                   id="confirmPassword"
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-[var(--color-surface-container-lowest)] border-none rounded-xl px-6 py-4 focus:ring-2 focus:ring-[var(--color-primary)] transition-all placeholder:text-[var(--color-on-surface)]/40"
+                  className="w-full rounded-xl border-none bg-[var(--color-surface-container-lowest)] px-6 py-4 transition-all placeholder:text-[var(--color-on-surface)]/40 focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
             <button
               type="submit"
               disabled={!password || !confirmPassword || isLoading || getStrength() < 3}
-              className="w-full bg-[var(--color-primary)] text-on-primary text-[1.5rem] leading-[1.2] font-extrabold py-6 rounded-xl active:scale-95 transition-transform duration-200 disabled:opacity-50"
-              style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)' }}
+              className="text-on-primary w-full rounded-xl bg-[var(--color-primary)] py-6 text-[1.5rem] leading-[1.2] font-extrabold transition-transform duration-200 active:scale-95 disabled:opacity-50"
+              style={{ boxShadow: "0 20px 40px rgba(0, 0, 0, 0.06)" }}
             >
-              {isLoading ? isPasswordReset ? "Updating..." : "Creating Account..." : isPasswordReset ? "Update Password" : "Create Account"}
+              {isLoading
+                ? isPasswordReset
+                  ? "Updating..."
+                  : "Creating Account..."
+                : isPasswordReset
+                  ? "Update Password"
+                  : "Create Account"}
             </button>
           </form>
         </div>
       </section>
 
       {/* Right Side - Imagery */}
-      <section className="hidden md:flex flex-1 relative items-end justify-start p-16 overflow-hidden">
+      <section className="relative hidden flex-1 items-end justify-start overflow-hidden p-16 md:flex">
         <div className="absolute inset-0 z-0">
           <BlurImage
             alt="Food"
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhfOu3V3KkjtmyRfet1cPPZc5-qz3jim-qm5VmrhPYL8E3dmOrFfYXh-HwTGSjO_r4V97XSEBy_beSGU9M8bT8PHCdIIjRAS2rc_9dvc2Hc0LuWrcxV_I-PXDGaYAS5GWX7xtmAFg-bM-_B534tnCSovYO6dgPTnCaTK497B_rF98rPi79CXKVAEP-jNYqV1DnuT2od_QN3lPEPg7WX1sk-MEbB6nBL3aIRWtvXwvBks9fDvVST6zxaQ6UBz0pCnlorp31ipPry8o"
             fill
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#1f1f1f]/80 via-transparent to-transparent" />
         </div>
-        <div className="relative z-10 bg-[var(--color-surface-container-lowest)]/70 backdrop-blur-xl p-10 rounded-lg max-w-lg" style={{ boxShadow: '0 20px 40px rgba(0, 0, 0, 0.06)' }}>
-          <h2 className="text-[3rem] leading-tight tracking-[-0.02em] font-extrabold text-on-surface">Welcome to MIIAM</h2>
-          <p className="text-[var(--color-on-surface)] mt-4">Your journey to premium experiences starts here.</p>
+        <div
+          className="relative z-10 max-w-lg rounded-lg bg-[var(--color-surface-container-lowest)]/70 p-10 backdrop-blur-xl"
+          style={{ boxShadow: "0 20px 40px rgba(0, 0, 0, 0.06)" }}
+        >
+          <h2 className="text-on-surface text-[3rem] leading-tight font-extrabold tracking-[-0.02em]">
+            Welcome to MIIAM
+          </h2>
+          <p className="mt-4 text-[var(--color-on-surface)]">
+            Your journey to premium experiences starts here.
+          </p>
         </div>
       </section>
     </div>
@@ -208,8 +257,8 @@ function SetPasswordContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
+      <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
     </div>
   );
 }

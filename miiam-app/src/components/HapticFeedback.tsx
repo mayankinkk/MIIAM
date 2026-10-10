@@ -35,7 +35,7 @@ export const useHapticStore = create<HapticStore>()(
       triggerHaptic: (type = "medium") => {
         const { settings } = get();
         if (!settings.enabled || !settings[type]) return;
-        
+
         if (typeof navigator !== "undefined" && navigator.vibrate) {
           const patterns: Record<string, number | number[]> = {
             light: 40,
@@ -50,12 +50,12 @@ export const useHapticStore = create<HapticStore>()(
   )
 );
 
-export function HapticToggle({ 
-  label, 
+export function HapticToggle({
+  label,
   description,
   settingKey,
-}: { 
-  label: string; 
+}: {
+  label: string;
   description?: string;
   settingKey: keyof HapticSettings;
 }) {
@@ -65,13 +65,17 @@ export function HapticToggle({
   return (
     <button
       onClick={() => updateSetting(settingKey, !isEnabled)}
-      className="w-full flex items-center justify-between py-4 border-b border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] transition-colors"
+      className="flex w-full items-center justify-between border-b border-[var(--color-border-subtle)] py-4 transition-colors hover:bg-[var(--color-surface-subtle)]"
     >
       <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-          isEnabled ? "bg-[var(--color-primary)]/10" : "bg-[var(--color-surface-container)]"
-        }`}>
-          <span className={`material-symbols-outlined ${isEnabled ? "text-[var(--color-accent)]" : "text-[var(--color-outline-variant)]"}`}>
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${
+            isEnabled ? "bg-[var(--color-primary)]/10" : "bg-[var(--color-surface-container)]"
+          }`}
+        >
+          <span
+            className={`material-symbols-outlined ${isEnabled ? "text-[var(--color-accent)]" : "text-[var(--color-outline-variant)]"}`}
+          >
             vibration
           </span>
         </div>
@@ -80,24 +84,28 @@ export function HapticToggle({
           {description && <p className="text-xs text-[var(--color-outline)]">{description}</p>}
         </div>
       </div>
-      <div className={`w-12 h-7 rounded-full relative transition-colors ${
-        isEnabled ? "bg-[var(--color-primary)]" : "bg-slate-300"
-      }`}>
-        <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${
-          isEnabled ? "left-6" : "left-1"
-        }`} />
+      <div
+        className={`relative h-7 w-12 rounded-full transition-colors ${
+          isEnabled ? "bg-[var(--color-primary)]" : "bg-slate-300"
+        }`}
+      >
+        <div
+          className={`absolute top-1 h-5 w-5 rounded-full bg-[var(--color-surface-container-lowest)] shadow-md transition-all ${
+            isEnabled ? "left-6" : "left-1"
+          }`}
+        />
       </div>
     </button>
   );
 }
 
-export function HapticButton({ 
-  children, 
+export function HapticButton({
+  children,
   onClick,
   type = "medium" as "light" | "medium" | "heavy",
   className = "",
-}: { 
-  children: React.ReactNode; 
+}: {
+  children: React.ReactNode;
   onClick: () => void;
   type?: "light" | "medium" | "heavy";
   className?: string;

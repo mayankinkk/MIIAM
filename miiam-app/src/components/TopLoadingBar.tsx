@@ -18,14 +18,19 @@ export default function TopLoadingBar() {
       setLoading(false);
       setProgress(0);
     }, 500);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
+    };
   }, [pathname]);
 
   if (!loading) return null;
 
   return (
     <div
-      className="fixed top-0 left-0 h-[3px] bg-primary z-[200] transition-all duration-200 ease-out"
+      className="bg-primary fixed top-0 left-0 z-[200] h-[3px] transition-all duration-200 ease-out"
       style={{ width: `${progress}%`, maxWidth: "100%" }}
     />
   );

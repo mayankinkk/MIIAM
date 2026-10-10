@@ -19,11 +19,11 @@ export default function OrderStatusBanner({
 }: OrderStatusBannerProps) {
   if (type === "delay" && delayMinutes && delayMinutes > 0) {
     return (
-      <div className="bg-status-error/10 border border-status-error/20 rounded-xl p-4 flex items-start gap-3">
-        <span className="material-symbols-outlined text-status-error text-2xl mt-0.5">warning</span>
+      <div className="bg-status-error/10 border-status-error/20 flex items-start gap-3 rounded-xl border p-4">
+        <span className="material-symbols-outlined text-status-error mt-0.5 text-2xl">warning</span>
         <div>
-          <p className="font-bold text-status-error">Order is Delayed</p>
-          <p className="text-sm text-status-error">
+          <p className="text-status-error font-bold">Order is Delayed</p>
+          <p className="text-status-error text-sm">
             {delayReason
               ? `${delayReason} — approximately ${delayMinutes} min extra`
               : `Approximately ${delayMinutes} min extra wait time`}
@@ -36,11 +36,13 @@ export default function OrderStatusBanner({
   if (type === "prep_time" && estimatedPrepTime && placedAt) {
     const t = new Date(new Date(placedAt).getTime() + estimatedPrepTime * 60000);
     return (
-      <div className="bg-status-warning/10 border border-status-warning/20 rounded-xl p-4 flex items-start gap-3">
-        <span className="material-symbols-outlined text-status-warning text-2xl mt-0.5">timer</span>
+      <div className="bg-status-warning/10 border-status-warning/20 flex items-start gap-3 rounded-xl border p-4">
+        <span className="material-symbols-outlined text-status-warning mt-0.5 text-2xl">timer</span>
         <div>
-          <p className="font-bold text-status-warning">{preparingLabel || "Preparing your order"}</p>
-          <p className="text-sm text-status-warning">
+          <p className="text-status-warning font-bold">
+            {preparingLabel || "Preparing your order"}
+          </p>
+          <p className="text-status-warning text-sm">
             Estimated ready by {t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </p>
         </div>

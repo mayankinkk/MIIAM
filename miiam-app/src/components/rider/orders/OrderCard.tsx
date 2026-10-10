@@ -14,18 +14,29 @@ export default function OrderCard({ order, onAccept, isSelected, onToggleSelect 
   const estimatedEarning = order.total_amount + (order.delivery_fee || 0);
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg border-2 border-transparent hover:border-brand-secondary/30">
-      <div className="flex justify-between items-start mb-2">
+    <div className="hover:border-brand-secondary/30 rounded-2xl border-2 border-transparent bg-[var(--color-surface-container-lowest)] p-4 shadow-lg">
+      <div className="mb-2 flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <button onClick={onToggleSelect} className={`mt-1 w-10 h-10 rounded-full border-2 flex items-center justify-center ${isSelected ? "bg-brand-secondary border-brand-secondary" : "border-[var(--color-outline-variant)]"}`} aria-label="Select order" aria-pressed={isSelected}>
-            {isSelected && <span className="material-symbols-outlined text-white text-sm">check</span>}
+          <button
+            onClick={onToggleSelect}
+            className={`mt-1 flex h-10 w-10 items-center justify-center rounded-full border-2 ${isSelected ? "bg-brand-secondary border-brand-secondary" : "border-[var(--color-outline-variant)]"}`}
+            aria-label="Select order"
+            aria-pressed={isSelected}
+          >
+            {isSelected && (
+              <span className="material-symbols-outlined text-sm text-white">check</span>
+            )}
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.shop_name || order.vendor?.name}</h3>
-              <span className="text-[10px] font-bold text-brand-secondary bg-secondary-container/50 px-2 py-0.5 rounded-full">For {order.customer_name || "Customer"}</span>
+              <h3 className="font-bold text-[var(--color-on-surface)]">
+                {order.vendor?.shop_name || order.vendor?.name}
+              </h3>
+              <span className="text-brand-secondary bg-secondary-container/50 rounded-full px-2 py-0.5 text-[10px] font-bold">
+                For {order.customer_name || "Customer"}
+              </span>
             </div>
-            <p className="text-xs text-[var(--color-outline-variant)] flex items-center gap-1">
+            <p className="flex items-center gap-1 text-xs text-[var(--color-outline-variant)]">
               <span className="material-symbols-outlined text-xs">store</span>
               {order.vendor?.address}
             </p>
@@ -36,24 +47,30 @@ export default function OrderCard({ order, onAccept, isSelected, onToggleSelect 
           <p className="text-[10px] text-[var(--color-outline-variant)]">{totalItems} items</p>
         </div>
       </div>
-      
-      <div className="bg-[var(--color-surface-subtle)] rounded-lg p-2 mb-3">
-        <p className="text-[10px] text-[var(--color-outline-variant)] mb-1">📍 DELIVER TO:</p>
+
+      <div className="mb-3 rounded-lg bg-[var(--color-surface-subtle)] p-2">
+        <p className="mb-1 text-[10px] text-[var(--color-outline-variant)]">📍 DELIVER TO:</p>
         <p className="text-sm">{order.address?.street}</p>
       </div>
 
       {order.special_instructions && (
-        <div className="bg-status-warning/10 text-status-warning text-xs p-2 rounded-lg mb-3">
+        <div className="bg-status-warning/10 text-status-warning mb-3 rounded-lg p-2 text-xs">
           📝 {order.special_instructions}
         </div>
       )}
 
       <div className="flex gap-2">
-        <a href={`tel:${order.customer_phone}`} className="flex-1 py-2 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] font-bold rounded-lg text-center text-sm flex items-center justify-center gap-1">
+        <a
+          href={`tel:${order.customer_phone}`}
+          className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-[var(--color-surface-container)] py-2 text-center text-sm font-bold text-[var(--color-on-surface)]"
+        >
           <span className="material-symbols-outlined text-sm">call</span>
           Call
         </a>
-        <button onClick={onAccept} className="flex-[2] bg-brand-secondary text-white py-2 rounded-lg font-bold text-sm">
+        <button
+          onClick={onAccept}
+          className="bg-brand-secondary flex-[2] rounded-lg py-2 text-sm font-bold text-white"
+        >
           Start Shopping
         </button>
       </div>

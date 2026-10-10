@@ -6,8 +6,16 @@ import { createClient } from "@/lib/supabase/client";
 import logger from "@/lib/logger";
 
 export type ServiceCategory =
-  | "food" | "flowers" | "beauty"
-  | "ac" | "cleaning" | "plumbing" | "electrical" | "pest" | "car" | "appliance";
+  | "food"
+  | "flowers"
+  | "beauty"
+  | "ac"
+  | "cleaning"
+  | "plumbing"
+  | "electrical"
+  | "pest"
+  | "car"
+  | "appliance";
 
 export interface ServiceHours {
   open: string;
@@ -43,15 +51,78 @@ const defaultHours: ServiceHours = {
 };
 
 const defaultSettings: ServiceSetting[] = [
-  { id: "food", name: "Food Delivery", isEnabled: true, message: "Food delivery is currently under maintenance", icon: "restaurant", hours: defaultHours },
-  { id: "beauty", name: "Beauty & Wellness", isEnabled: true, message: "Beauty service is under maintenance", icon: "spa", hours: defaultHours },
-  { id: "ac", name: "AC Repair", isEnabled: true, message: "AC repair service is under maintenance", icon: "ac_unit", hours: defaultHours },
-  { id: "cleaning", name: "Home Cleaning", isEnabled: true, message: "Home cleaning service is coming soon!", icon: "cleaning_services", hours: defaultHours },
-  { id: "plumbing", name: "Plumbing", isEnabled: true, message: "Plumbing service is under maintenance", icon: "plumbing", hours: defaultHours },
-  { id: "electrical", name: "Electrical", isEnabled: true, message: "Electrical service is coming soon!", icon: "electrical_services", hours: defaultHours },
-  { id: "pest", name: "Pest Control", isEnabled: true, message: "Pest control service is under maintenance", icon: "pest_control", hours: defaultHours },
-  { id: "car", name: "Car Repair", isEnabled: true, message: "Car repair service is coming soon!", icon: "directions_car", hours: defaultHours },
-  { id: "appliance", name: "Appliance Repair", isEnabled: true, message: "Appliance repair is under maintenance", icon: "kitchen", hours: defaultHours },
+  {
+    id: "food",
+    name: "Food Delivery",
+    isEnabled: true,
+    message: "Food delivery is currently under maintenance",
+    icon: "restaurant",
+    hours: defaultHours,
+  },
+  {
+    id: "beauty",
+    name: "Beauty & Wellness",
+    isEnabled: true,
+    message: "Beauty service is under maintenance",
+    icon: "spa",
+    hours: defaultHours,
+  },
+  {
+    id: "ac",
+    name: "AC Repair",
+    isEnabled: true,
+    message: "AC repair service is under maintenance",
+    icon: "ac_unit",
+    hours: defaultHours,
+  },
+  {
+    id: "cleaning",
+    name: "Home Cleaning",
+    isEnabled: true,
+    message: "Home cleaning service is coming soon!",
+    icon: "cleaning_services",
+    hours: defaultHours,
+  },
+  {
+    id: "plumbing",
+    name: "Plumbing",
+    isEnabled: true,
+    message: "Plumbing service is under maintenance",
+    icon: "plumbing",
+    hours: defaultHours,
+  },
+  {
+    id: "electrical",
+    name: "Electrical",
+    isEnabled: true,
+    message: "Electrical service is coming soon!",
+    icon: "electrical_services",
+    hours: defaultHours,
+  },
+  {
+    id: "pest",
+    name: "Pest Control",
+    isEnabled: true,
+    message: "Pest control service is under maintenance",
+    icon: "pest_control",
+    hours: defaultHours,
+  },
+  {
+    id: "car",
+    name: "Car Repair",
+    isEnabled: true,
+    message: "Car repair service is coming soon!",
+    icon: "directions_car",
+    hours: defaultHours,
+  },
+  {
+    id: "appliance",
+    name: "Appliance Repair",
+    isEnabled: true,
+    message: "Appliance repair is under maintenance",
+    icon: "kitchen",
+    hours: defaultHours,
+  },
 ];
 
 export function timeToMinutes(t: string): number {
@@ -82,16 +153,20 @@ export function isServiceOpen(hours: ServiceHours, now: Date = new Date()): bool
 
 let syncTimeout: ReturnType<typeof setTimeout> | null = null;
 
-function scheduleSyncToSupabase(id: ServiceCategory, updates: Partial<ServiceSetting> | Partial<ServiceHours>) {
+function scheduleSyncToSupabase(
+  id: ServiceCategory,
+  updates: Partial<ServiceSetting> | Partial<ServiceHours>
+) {
   if (syncTimeout) clearTimeout(syncTimeout);
   syncTimeout = setTimeout(async () => {
     try {
       const supabase = createClient();
       const payload: Record<string, unknown> = { updated_at: new Date().toISOString() };
-      if ("isEnabled" in updates) payload.is_enabled = (updates as Partial<ServiceSetting>).isEnabled;
+      if ("isEnabled" in updates)
+        payload.is_enabled = (updates as Partial<ServiceSetting>).isEnabled;
       if ("message" in updates) payload.message = (updates as Partial<ServiceSetting>).message;
       if ("hours" in updates) {
-        const h = (updates as Partial<ServiceHours>);
+        const h = updates as Partial<ServiceHours>;
         if (h.open !== undefined) payload.hours_open = h.open;
         if (h.close !== undefined) payload.hours_close = h.close;
         if (h.is24x7 !== undefined) payload.hours_is_24x7 = h.is24x7;
@@ -111,9 +186,7 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
 
       updateSetting: (id, updates) => {
         set((state) => ({
-          settings: state.settings.map((s) =>
-            s.id === id ? { ...s, ...updates } : s
-          ),
+          settings: state.settings.map((s) => (s.id === id ? { ...s, ...updates } : s)),
         }));
         scheduleSyncToSupabase(id, updates);
       },
@@ -121,9 +194,7 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
       updateHours: (id, hours) => {
         set((state) => ({
           settings: state.settings.map((s) =>
-            s.id === id
-              ? { ...s, hours: { ...s.hours, ...hours } }
-              : s
+            s.id === id ? { ...s, hours: { ...s.hours, ...hours } } : s
           ),
         }));
         scheduleSyncToSupabase(id, hours);
@@ -158,18 +229,29 @@ export const useServiceSettingsStore = create<ServiceSettingsStore>()(
             .from("service_settings")
             .select("id, name, is_enabled, message, icon, hours_open, hours_close, hours_is_24x7");
           if (data && data.length > 0) {
-            const synced: ServiceSetting[] = data.map((row: { id: string; name: string; is_enabled: boolean; message: string; icon: string; hours_open: string; hours_close: string; hours_is_24x7: boolean }) => ({
-              id: row.id as ServiceCategory,
-              name: row.name,
-              isEnabled: row.is_enabled,
-              message: row.message,
-              icon: row.icon,
-              hours: {
-                open: row.hours_open,
-                close: row.hours_close,
-                is24x7: row.hours_is_24x7,
-              },
-            }));
+            const synced: ServiceSetting[] = data.map(
+              (row: {
+                id: string;
+                name: string;
+                is_enabled: boolean;
+                message: string;
+                icon: string;
+                hours_open: string;
+                hours_close: string;
+                hours_is_24x7: boolean;
+              }) => ({
+                id: row.id as ServiceCategory,
+                name: row.name,
+                isEnabled: row.is_enabled,
+                message: row.message,
+                icon: row.icon,
+                hours: {
+                  open: row.hours_open,
+                  close: row.hours_close,
+                  is24x7: row.hours_is_24x7,
+                },
+              })
+            );
             set({ settings: synced, _synced: true });
           }
         } catch (e) {

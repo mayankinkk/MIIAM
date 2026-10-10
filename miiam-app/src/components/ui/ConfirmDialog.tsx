@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, createContext, useContext, ReactNode } from "react";
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
 
 interface ConfirmState {
   open: boolean;
@@ -110,9 +118,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   return (
     <ConfirmContext.Provider value={{ confirm }}>
       {children}
-      {state.open && (
-        <ConfirmDialogInner state={state} />
-      )}
+      {state.open && <ConfirmDialogInner state={state} />}
     </ConfirmContext.Provider>
   );
 }
@@ -123,27 +129,32 @@ function ConfirmDialogInner({ state }: { state: ConfirmState }) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="confirm-dialog-title"
     >
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-        <h3 id="confirm-dialog-title" className="font-bold text-lg text-[var(--color-on-surface)] mb-2">{state.title}</h3>
-        <p className="text-sm text-[var(--color-on-surface-variant)] mb-6">{state.message}</p>
+      <div className="w-full max-w-sm rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-2xl">
+        <h3
+          id="confirm-dialog-title"
+          className="mb-2 text-lg font-bold text-[var(--color-on-surface)]"
+        >
+          {state.title}
+        </h3>
+        <p className="mb-6 text-sm text-[var(--color-on-surface-variant)]">{state.message}</p>
         <div className="flex gap-3">
           <button
             onClick={state.onCancel}
-            className="flex-1 py-3 rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] transition-colors"
+            className="flex-1 rounded-xl bg-[var(--color-surface-container)] py-3 text-sm font-bold text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)]"
           >
             {state.cancelText || "Cancel"}
           </button>
           <button
             onClick={state.onConfirm}
-            className={`flex-1 py-3 rounded-xl font-bold text-sm transition-colors ${
+            className={`flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${
               state.variant === "danger"
-                ? "bg-status-error text-white hover:bg-status-error/90"
-                : "bg-[var(--color-primary)] text-on-primary hover:bg-[var(--color-primary-dim)]"
+                ? "bg-status-error hover:bg-status-error/90 text-white"
+                : "text-on-primary bg-[var(--color-primary)] hover:bg-[var(--color-primary-dim)]"
             }`}
           >
             {state.confirmText || "Confirm"}

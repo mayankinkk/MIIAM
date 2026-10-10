@@ -20,9 +20,17 @@ interface ConfettiPiece {
 
 function Confetti() {
   const [pieces, setPieces] = useState<ConfettiPiece[]>([]);
-  
+
   useEffect(() => {
-    const colors = ["var(--color-primary)", "#fce9b0", "#ffc371", "#0c831f", "#38ef7d", "#ffd200", "#ff6a00"];
+    const colors = [
+      "var(--color-primary)",
+      "#fce9b0",
+      "#ffc371",
+      "#0c831f",
+      "#38ef7d",
+      "#ffd200",
+      "#ff6a00",
+    ];
     const confetti = Array.from({ length: 50 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
@@ -35,7 +43,7 @@ function Confetti() {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
       {pieces.map((piece) => (
         <div
           key={piece.id}
@@ -68,7 +76,7 @@ function PaymentStatusContent() {
   const router = useRouter();
   const orderId = searchParams.get("orderId");
   const paymentMethod = searchParams.get("method") || "cod";
-  
+
   const [status, setStatus] = useState<PaymentStatus>("processing");
   const [progress, setProgress] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -121,7 +129,9 @@ function PaymentStatusContent() {
             setStatus("success");
             return;
           }
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         setStatus("pending");
         return;
       }
@@ -154,9 +164,7 @@ function PaymentStatusContent() {
     processing: {
       icon: "sync",
       title: t.checkout.placingOrder,
-      message: paymentMethod === "cod"
-        ? "Confirming your order..."
-        : "Verifying your payment...",
+      message: paymentMethod === "cod" ? "Confirming your order..." : "Verifying your payment...",
       color: "text-accent",
       bgColor: "bg-accent/10",
       borderColor: "border-accent/30",
@@ -191,150 +199,176 @@ function PaymentStatusContent() {
 
   return (
     <>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Cart', href: '/app/cart' }, { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` }]} />
-      <div className="min-h-screen bg-surface flex items-center justify-center p-6">
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/home" },
+          { label: "Cart", href: "/app/cart" },
+          { label: `Payment ${status.charAt(0).toUpperCase() + status.slice(1)}` },
+        ]}
+      />
+      <div className="bg-surface flex min-h-screen items-center justify-center p-6">
         <div className="w-full max-w-md">
-        <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
-          <div className="text-center mb-8">
-            <div className={`w-24 h-24 mx-auto rounded-full ${config.bgColor} flex items-center justify-center mb-6`}>
-              <span className={`material-symbols-outlined text-6xl ${config.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                {config.icon}
-              </span>
-            </div>
-            <h1 className="text-2xl font-extrabold text-on-surface mb-2">{config.title}</h1>
-            <p className="text-on-surface-variant">{config.message}</p>
-          </div>
-
-          {status === "processing" && (
-            <div className="mb-8">
-              <div className="h-3 bg-surface-container-high rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-accent to-accent/70 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <p className="text-center text-sm text-on-surface-variant mt-2">{Math.round(progress)}% complete</p>
-            </div>
-          )}
-
-          {orderId && (
-            <div className={`p-4 rounded-xl ${config.bgColor} border ${config.borderColor} mb-6`}>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Order ID</p>
-                  <p className="font-bold text-on-surface">{orderId.slice(0, 8).toUpperCase()}</p>
-                </div>
-                <Link 
-                  href={`/app/orders/${orderId}`}
-                  className="text-secondary font-bold text-sm hover:underline"
+          <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
+            <div className="mb-8 text-center">
+              <div
+                className={`mx-auto h-24 w-24 rounded-full ${config.bgColor} mb-6 flex items-center justify-center`}
+              >
+                <span
+                  className={`material-symbols-outlined text-6xl ${config.color}`}
+                  style={{ fontVariationSettings: "'FILL' 1" }}
                 >
-                  View Order
+                  {config.icon}
+                </span>
+              </div>
+              <h1 className="text-on-surface mb-2 text-2xl font-extrabold">{config.title}</h1>
+              <p className="text-on-surface-variant">{config.message}</p>
+            </div>
+
+            {status === "processing" && (
+              <div className="mb-8">
+                <div className="bg-surface-container-high h-3 overflow-hidden rounded-full">
+                  <div
+                    className="from-accent to-accent/70 h-full rounded-full bg-gradient-to-r transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <p className="text-on-surface-variant mt-2 text-center text-sm">
+                  {Math.round(progress)}% complete
+                </p>
+              </div>
+            )}
+
+            {orderId && (
+              <div className={`rounded-xl p-4 ${config.bgColor} border ${config.borderColor} mb-6`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-on-surface-variant text-xs font-bold tracking-widest uppercase">
+                      Order ID
+                    </p>
+                    <p className="text-on-surface font-bold">{orderId.slice(0, 8).toUpperCase()}</p>
+                  </div>
+                  <Link
+                    href={`/app/orders/${orderId}`}
+                    className="text-secondary text-sm font-bold hover:underline"
+                  >
+                    View Order
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {status === "failed" && (
+              <div className="mb-6 space-y-3">
+                <button
+                  onClick={() => router.push("/app/checkout")}
+                  className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary w-full rounded-xl py-4 font-bold transition-colors"
+                >
+                  Try Again
+                </button>
+                <Link
+                  href="/app/support"
+                  className="text-accent block w-full py-3 text-center font-bold"
+                >
+                  {t.refund.contactSupport}
                 </Link>
               </div>
-            </div>
-          )}
+            )}
 
-          {status === "failed" && (
-            <div className="space-y-3 mb-6">
-              <button 
-                onClick={() => router.push("/app/checkout")}
-                className="w-full bg-primary text-on-primary py-4 rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-colors"
-              >
-                Try Again
-              </button>
-              <Link 
-                href="/app/support"
-                className="block w-full text-center text-accent font-bold py-3"
-              >
-                {t.refund.contactSupport}
-              </Link>
-            </div>
-          )}
-
-          {status === "success" && (
-            <div className="space-y-3 mb-6">
-              {showCelebration && (
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-4 border border-green-200 animate-bounce-in">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🎉</span>
-                    <div>
-                      <p className="font-bold text-green-700">Order Placed!</p>
-                      <p className="text-xs text-green-600">Your order is being prepared</p>
+            {status === "success" && (
+              <div className="mb-6 space-y-3">
+                {showCelebration && (
+                  <div className="animate-bounce-in mb-4 rounded-xl border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 p-4">
+                    <div className="mb-2 flex items-center gap-3">
+                      <span className="text-3xl">🎉</span>
+                      <div>
+                        <p className="font-bold text-green-700">Order Placed!</p>
+                        <p className="text-xs text-green-600">Your order is being prepared</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-green-600">
+                      <span
+                        className="material-symbols-outlined animate-pulse text-sm"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        local_shipping
+                      </span>
+                      Estimated delivery in 30-40 mins
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-green-600">
-                    <span className="material-symbols-outlined text-sm animate-pulse" style={{ fontVariationSettings: "'FILL' 1" }}>local_shipping</span>
-                    Estimated delivery in 30-40 mins
-                  </div>
-                </div>
-              )}
-              <Link 
-                href={`/app/orders/${orderId}`}
-                className="block w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-center hover:bg-primary-dim hover:text-on-primary transition-colors flex items-center justify-center gap-2"
+                )}
+                <Link
+                  href={`/app/orders/${orderId}`}
+                  className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary block flex w-full items-center justify-center gap-2 rounded-xl py-4 text-center font-bold transition-colors"
+                >
+                  <span className="material-symbols-outlined">order_play</span>
+                  {t.home.trackOrder}
+                </Link>
+                <Link
+                  href="/app/food"
+                  className="text-accent block w-full py-3 text-center font-bold"
+                >
+                  {t.common.seeAll}
+                </Link>
+              </div>
+            )}
+
+            {status === "pending" && (
+              <div className="mb-6 space-y-3">
+                <Link
+                  href={`/app/orders/${orderId}`}
+                  className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary block flex w-full items-center justify-center gap-2 rounded-xl py-4 text-center font-bold transition-colors"
+                >
+                  <span className="material-symbols-outlined">order_play</span>
+                  {t.home.trackOrder}
+                </Link>
+                <Link
+                  href="/app/support"
+                  className="text-accent block w-full py-3 text-center font-bold"
+                >
+                  {t.refund.contactSupport}
+                </Link>
+              </div>
+            )}
+
+            {/* Confetti */}
+            {showConfetti && <Confetti />}
+
+            <div className="border-outline-variant/20 flex justify-center gap-4 border-t pt-6">
+              <Link
+                href="/app/home"
+                className="text-on-surface-variant hover:text-accent flex items-center gap-2 transition-colors"
               >
-                <span className="material-symbols-outlined">order_play</span>
-                {t.home.trackOrder}
+                <span className="material-symbols-outlined">home</span>
+                <span className="text-sm font-bold">{t.common.home}</span>
               </Link>
-              <Link 
-                href="/app/food"
-                className="block w-full text-center text-accent font-bold py-3"
+              <Link
+                href="/app/orders"
+                className="text-on-surface-variant hover:text-accent flex items-center gap-2 transition-colors"
               >
-                {t.common.seeAll}
+                <span className="material-symbols-outlined">receipt_long</span>
+                <span className="text-sm font-bold">{t.nav.orders}</span>
               </Link>
             </div>
-          )}
-
-          {status === "pending" && (
-            <div className="space-y-3 mb-6">
-              <Link 
-                href={`/app/orders/${orderId}`}
-                className="block w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-center hover:bg-primary-dim hover:text-on-primary transition-colors flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined">order_play</span>
-                {t.home.trackOrder}
-              </Link>
-              <Link 
-                href="/app/support"
-                className="block w-full text-center text-accent font-bold py-3"
-              >
-                {t.refund.contactSupport}
-              </Link>
-            </div>
-          )}
-
-          {/* Confetti */}
-          {showConfetti && <Confetti />}
-
-          <div className="flex justify-center gap-4 pt-6 border-t border-outline-variant/20">
-            <Link href="/app/home" className="flex items-center gap-2 text-on-surface-variant hover:text-accent transition-colors">
-              <span className="material-symbols-outlined">home</span>
-              <span className="font-bold text-sm">{t.common.home}</span>
-            </Link>
-            <Link href="/app/orders" className="flex items-center gap-2 text-on-surface-variant hover:text-accent transition-colors">
-              <span className="material-symbols-outlined">receipt_long</span>
-              <span className="font-bold text-sm">{t.nav.orders}</span>
-            </Link>
           </div>
-        </div>
 
-        <p className="text-center mt-6 text-xs text-on-surface-variant">
-          Payment powered by Razorpay
-        </p>
+          <p className="text-on-surface-variant mt-6 text-center text-xs">
+            Payment powered by Razorpay
+          </p>
+        </div>
       </div>
-    </div>
     </>
   );
 }
 
 function Loading() {
   return (
-      <div className="min-h-screen bg-surface flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
+    <div className="bg-surface flex min-h-screen items-center justify-center p-6">
+      <div className="w-full max-w-md">
         <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm">
           <div className="animate-pulse">
-            <div className="w-24 h-24 mx-auto rounded-full bg-[var(--color-surface-container-high)] mb-6"></div>
-            <div className="h-6 bg-[var(--color-surface-container-high)] rounded w-48 mx-auto mb-2"></div>
-            <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-64 mx-auto"></div>
+            <div className="mx-auto mb-6 h-24 w-24 rounded-full bg-[var(--color-surface-container-high)]"></div>
+            <div className="mx-auto mb-2 h-6 w-48 rounded bg-[var(--color-surface-container-high)]"></div>
+            <div className="mx-auto h-4 w-64 rounded bg-[var(--color-surface-container-high)]"></div>
           </div>
         </div>
       </div>

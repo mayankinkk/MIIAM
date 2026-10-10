@@ -35,7 +35,9 @@ function CallbackContent() {
 
     async function handleAuth() {
       // Check if session already exists (auto-exchanged by createBrowserClient init)
-      const { data: { session: existingSession } } = await supabase.auth.getSession();
+      const {
+        data: { session: existingSession },
+      } = await supabase.auth.getSession();
 
       if (existingSession?.user) {
         await handlePostAuth(existingSession.user.id);
@@ -55,7 +57,9 @@ function CallbackContent() {
       if (exchangeError) {
         // Code might have been consumed by auto-exchange race condition
         // Check one more time if session was established
-        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        const {
+          data: { session: retrySession },
+        } = await supabase.auth.getSession();
         if (retrySession?.user) {
           await handlePostAuth(retrySession.user.id);
           return;
@@ -78,10 +82,10 @@ function CallbackContent() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
-        <div className="text-center max-w-md p-8">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
+        <div className="max-w-md p-8 text-center">
           <span className="material-symbols-outlined text-6xl text-red-500">error</span>
-          <p className="mt-4 text-[var(--color-on-surface)] font-medium">Sign-in failed</p>
+          <p className="mt-4 font-medium text-[var(--color-on-surface)]">Sign-in failed</p>
           <p className="mt-2 text-sm text-[var(--color-on-surface)]/60">{error}</p>
           <p className="mt-4 text-sm text-[var(--color-on-surface)]/60">Redirecting to login...</p>
         </div>
@@ -90,10 +94,12 @@ function CallbackContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
       <div className="text-center">
-        <span className="material-symbols-outlined text-6xl text-[var(--color-accent)] animate-spin">sync</span>
-        <p className="mt-4 text-[var(--color-on-surface)] font-medium">Signing you in...</p>
+        <span className="material-symbols-outlined animate-spin text-6xl text-[var(--color-accent)]">
+          sync
+        </span>
+        <p className="mt-4 font-medium text-[var(--color-on-surface)]">Signing you in...</p>
       </div>
     </div>
   );
@@ -101,11 +107,13 @@ function CallbackContent() {
 
 export default function AuthCallback() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]">
-        <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
+        </div>
+      }
+    >
       <CallbackContent />
     </Suspense>
   );

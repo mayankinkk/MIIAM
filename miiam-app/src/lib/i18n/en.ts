@@ -137,7 +137,8 @@ const en = {
     offerFlatOff: "FLAT OFF",
     seeAll: "See All",
     locationRequired: "Location Required",
-    locationRequiredDesc: "Please select your delivery location to view matching restaurants and vendors near you.",
+    locationRequiredDesc:
+      "Please select your delivery location to view matching restaurants and vendors near you.",
     selectPincode: "Select Delivery PIN Code",
     notAvailable: "Not Available in Your Area",
     notAvailableDesc: "We couldn't find any vendors near",
@@ -194,7 +195,8 @@ const en = {
     showAll: "Show All",
     setLocation: "Set Delivery Location",
     locationRequired: "Location Required",
-    locationRequiredDesc: "Please set your delivery location to find restaurants serving your area.",
+    locationRequiredDesc:
+      "Please set your delivery location to find restaurants serving your area.",
     deliveryCharge: "Delivery:",
     chefSpecials: "Chef's Specials",
     fullMenu: "Full Menu",
@@ -230,14 +232,16 @@ const en = {
     loadFailed: "Failed to load. Please check your connection.",
     restaurantNotFound: "Restaurant not found",
     backToFood: "← Back to Food",
-    crossVendorWarning: "Your cart has items from another restaurant. Adding this will create separate orders. Continue?",
+    crossVendorWarning:
+      "Your cart has items from another restaurant. Adding this will create separate orders. Continue?",
     loadError: "Couldn't load restaurants. Please try again.",
     priceRange: "PRICE RANGE",
     min: "Min",
     max: "Max",
     apply: "Apply",
     changeRestaurant: "Different Restaurant",
-    changeRestaurantDesc: "Your cart has items from another restaurant. Adding this will create separate orders. Continue?",
+    changeRestaurantDesc:
+      "Your cart has items from another restaurant. Adding this will create separate orders. Continue?",
     gourmetSelection: "Gourmet Selection",
     gourmetDesc: "Order food from top restaurants near you",
     new: "NEW",
@@ -362,7 +366,8 @@ const en = {
     phoneInvalid: "Enter a valid 10-digit mobile number",
     phoneHelp: "We'll only use this to update you about the order.",
     phonePlaceholder: "98765 43210",
-    closedVendorWarning: "One or more restaurants in your cart are currently closed. Please remove their items or try again later.",
+    closedVendorWarning:
+      "One or more restaurants in your cart are currently closed. Please remove their items or try again later.",
     enterCode: "Enter code",
     apply: "Apply",
     removePromo: "Remove promo code",
@@ -431,7 +436,8 @@ const en = {
     orderCancelled: "Order Cancelled",
     orderCancelledDesc: "This order has been cancelled",
     noRiders: "No Riders Available",
-    noRidersDesc: "No rider could accept your order in time. Please try placing the order again or contact support.",
+    noRidersDesc:
+      "No rider could accept your order in time. Please try placing the order again or contact support.",
     browseRestaurants: "Browse Restaurants",
     printAgain: "Print Again",
     gstInvoice: "GST Invoice (PDF)",
@@ -518,7 +524,8 @@ const en = {
     submitReview: "Submit Review",
     thanksForRating: "Thanks for rating!",
     feedbackHelps: "Your feedback helps us serve you better",
-    feedbackImprove: "Your feedback helps us improve our service and rewards our best performing vendors and riders.",
+    feedbackImprove:
+      "Your feedback helps us improve our service and rewards our best performing vendors and riders.",
     ratingFailed: "Failed to submit rating. Please try again.",
     fastDelivery: "Fast Delivery",
     friendlyRider: "Friendly Rider",
@@ -562,7 +569,8 @@ const en = {
     cancellationSubmitted: "Cancellation Request Submitted",
     refundBeingProcessed: "Your refund is being processed",
     refundTimeline: "Refund Timeline",
-    refundTimelineDesc: "Refunds typically take 2-5 business days to process, depending on your bank.",
+    refundTimelineDesc:
+      "Refunds typically take 2-5 business days to process, depending on your bank.",
     contactSupport: "Contact Support",
     orderNotFound: "Order not found",
     selectReason: "Please select a reason for cancellation",
@@ -584,7 +592,8 @@ const en = {
     unavailable: "Unavailable",
     off: "OFF",
     notServiceable: "Not serviceable at",
-    notServiceableDesc: "Home services are not yet available in your area. You can still browse our services!",
+    notServiceableDesc:
+      "Home services are not yet available in your area. You can still browse our services!",
     providingService: "Providing doorstep home services to",
     selectDate: "Select Date",
     selectTimeSlot: "Select Time Slot",
@@ -603,12 +612,14 @@ const en = {
     time: "Time",
     address: "Address",
     total: "Total",
-    paymentAfterService: "A professional will arrive at your location. Payment can be done after service completion.",
+    paymentAfterService:
+      "A professional will arrive at your location. Payment can be done after service completion.",
     confirmAndBook: "Confirm & Book",
     booking: "Booking...",
     goBack: "Go Back",
     bookingConfirmed: "Booking Confirmed!",
-    bookingConfirmedDesc: "You will receive a confirmation shortly. Our professional will arrive on time.",
+    bookingConfirmedDesc:
+      "You will receive a confirmation shortly. Our professional will arrive on time.",
     loadingServices: "Loading services...",
     cannotBook: "Cannot book: Home services are not serviceable at your selected location!",
     acService: "AC Service",
@@ -708,13 +719,16 @@ const en = {
   },
   shared: {
     yourCartEmpty: "Your cart is empty",
-    cartEmptyDesc: "Looks like you haven't added anything yet. Start exploring to find delicious food!",
+    cartEmptyDesc:
+      "Looks like you haven't added anything yet. Start exploring to find delicious food!",
     exploreFood: "Explore Food",
     noOrdersYet: "No orders yet",
-    noOrdersDesc: "You haven't placed any orders yet. Once you do, they'll appear here with all the details.",
+    noOrdersDesc:
+      "You haven't placed any orders yet. Once you do, they'll appear here with all the details.",
     orderFood: "Order Food",
     noFavorites: "No favorites yet",
-    noFavoritesDesc: "Save your favorite restaurants and they'll appear here for quick access. Start exploring!",
+    noFavoritesDesc:
+      "Save your favorite restaurants and they'll appear here for quick access. Start exploring!",
     discoverRestaurants: "Discover Restaurants",
     noSavedAddresses: "No saved addresses",
     noSavedAddressesDesc: "Add your delivery addresses to quickly checkout on future orders.",
@@ -735,7 +749,8 @@ const en = {
     defaultSort: "Default",
     inStock: "In Stock",
     locationRequired: "Location Required",
-    locationRequiredDesc: "Please set your delivery location to view available products in your area.",
+    locationRequiredDesc:
+      "Please set your delivery location to view available products in your area.",
     setLocation: "Set Location",
     notServiceable: "Not Serviceable",
     notServiceableDesc: "delivery is not yet available in your area. Try a nearby pincode!",
@@ -857,7 +872,8 @@ const en = {
     watermarkCustomPlaceholder: "Custom text (max 24 chars)",
     watermarkOpacity: "Opacity",
     ageWarningTitle: "Age-restricted content",
-    ageWarningBody: "The filename suggests this file may contain {type} material (min age {minAge}). I confirm I am of legal age to print this content.",
+    ageWarningBody:
+      "The filename suggests this file may contain {type} material (min age {minAge}). I confirm I am of legal age to print this content.",
     voiceSearch: "Voice search",
     voiceListening: "Listening…",
     voiceStop: "Stop voice search",
@@ -990,7 +1006,8 @@ const en = {
       soundAlertDesc: "Play sound for new orders",
       vibration: "Vibration",
       vibrationDesc: "Vibrate for new orders",
-      alertsInfo: "Alerts are triggered when you are online and a new order arrives within your zone.",
+      alertsInfo:
+        "Alerts are triggered when you are online and a new order arrives within your zone.",
       developerTools: "Developer Tools",
       clearPendingOrders: "Clear All Pending Orders",
       clearPendingDesc: "Deletes all unassigned pending orders from database.",

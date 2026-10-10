@@ -22,10 +22,19 @@ export default function RiderAnalyticsPage() {
   useEffect(() => {
     async function fetchAnalytics() {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setLoading(false); return; }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
-      const { data: myRider } = await supabase.from("riders").select("*").eq("user_id", user.id).single();
+      const { data: myRider } = await supabase
+        .from("riders")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
       setRider(myRider);
 
       const days = period === "week" ? 7 : period === "month" ? 30 : 365;
@@ -41,8 +50,11 @@ export default function RiderAnalyticsPage() {
 
       if (orders && orders.length > 0) {
         const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const dailyMap: Record<string, { deliveries: number; earnings: number; ratings: number[] }> = {};
-        
+        const dailyMap: Record<
+          string,
+          { deliveries: number; earnings: number; ratings: number[] }
+        > = {};
+
         orders.forEach((order: { placed_at: string; delivery_fee: number | null }) => {
           const date = new Date(order.placed_at);
           const dayKey = dayNames[date.getDay()];
@@ -50,32 +62,33 @@ export default function RiderAnalyticsPage() {
             dailyMap[dayKey] = { deliveries: 0, earnings: 0, ratings: [] };
           }
           dailyMap[dayKey].deliveries += 1;
-          dailyMap[dayKey].earnings += (order.delivery_fee || 0);
+          dailyMap[dayKey].earnings += order.delivery_fee || 0;
         });
 
-        const data = dayNames.map(day => {
+        const data = dayNames.map((day) => {
           const d = dailyMap[day] || { deliveries: 0, earnings: 0, ratings: [] };
-          const avgRating = d.ratings.length > 0 
-            ? d.ratings.reduce((a, b) => a + b, 0) / d.ratings.length 
-            : 5.0;
+          const avgRating =
+            d.ratings.length > 0 ? d.ratings.reduce((a, b) => a + b, 0) / d.ratings.length : 5.0;
           return {
             day,
             deliveries: d.deliveries,
             earnings: d.earnings,
             rating: parseFloat(avgRating.toFixed(1)),
-            time: `${Math.round(d.deliveries * 0.5)}h ${Math.round((d.deliveries * 0.5) * 60 % 60)}m`
+            time: `${Math.round(d.deliveries * 0.5)}h ${Math.round((d.deliveries * 0.5 * 60) % 60)}m`,
           };
         });
         setWeeklyData(data);
       } else {
         const dayNames = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-        setWeeklyData(dayNames.map(day => ({
-          day,
-          deliveries: 0,
-          earnings: 0,
-          rating: 5.0,
-          time: "0h 0m"
-        })));
+        setWeeklyData(
+          dayNames.map((day) => ({
+            day,
+            deliveries: 0,
+            earnings: 0,
+            rating: 5.0,
+            time: "0h 0m",
+          }))
+        );
       }
       setLoading(false);
     }
@@ -86,11 +99,11 @@ export default function RiderAnalyticsPage() {
   const totalEarnings = weeklyData.reduce((s, d) => s + d.earnings, 0);
   const avgRating = rider?.rating?.toFixed(1) || "5.0";
 
-  const chartMax = Math.max(...weeklyData.map(d => d.earnings), 1);
+  const chartMax = Math.max(...weeklyData.map((d) => d.earnings), 1);
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-gradient-to-br from-brand-secondary to-[#0044bf] text-white p-6 pb-12">
+      <header className="from-brand-secondary bg-gradient-to-br to-[#0044bf] p-6 pb-12 text-white">
         <div className="flex items-center gap-4">
           <Link href="/rider/dashboard" className="text-white" aria-label="Go back">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -98,13 +111,15 @@ export default function RiderAnalyticsPage() {
           <h1 className="text-2xl font-black tracking-tighter">Analytics</h1>
         </div>
 
-        <div className="flex gap-2 mt-6 bg-[var(--color-surface-container-lowest)]/10 p-1 rounded-xl">
-          {(["week", "month", "year"] as const).map(p => (
+        <div className="mt-6 flex gap-2 rounded-xl bg-[var(--color-surface-container-lowest)]/10 p-1">
+          {(["week", "month", "year"] as const).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`flex-1 py-2 rounded-lg text-sm font-bold ${
-                period === p ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "text-white/70"
+              className={`flex-1 rounded-lg py-2 text-sm font-bold ${
+                period === p
+                  ? "text-brand-secondary bg-[var(--color-surface-container-lowest)]"
+                  : "text-white/70"
               }`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -113,13 +128,16 @@ export default function RiderAnalyticsPage() {
         </div>
       </header>
 
-      <main className="px-4 -mt-8 space-y-4 pb-24">
+      <main className="-mt-8 space-y-4 px-4 pb-24">
         {loading ? (
           <div className="space-y-3">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 animate-pulse">
-                <div className="h-20 bg-[var(--color-surface-container-high)] rounded mb-2" />
-                <div className="h-4 bg-[var(--color-surface-container-high)] rounded w-3/4" />
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="animate-pulse rounded-xl bg-[var(--color-surface-container-lowest)] p-4"
+              >
+                <div className="mb-2 h-20 rounded bg-[var(--color-surface-container-high)]" />
+                <div className="h-4 w-3/4 rounded bg-[var(--color-surface-container-high)]" />
               </div>
             ))}
           </div>
@@ -127,41 +145,46 @@ export default function RiderAnalyticsPage() {
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
+              <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Total Deliveries</p>
-                <p className="text-3xl font-black text-brand-secondary mt-1">{totalDeliveries}</p>
+                <p className="text-brand-secondary mt-1 text-3xl font-black">{totalDeliveries}</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
+              <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Total Earnings</p>
                 <p className="text-3xl font-black text-green-600">₹{totalEarnings}</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
+              <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Avg Rating</p>
                 <p className="text-3xl font-black text-amber-500">{avgRating} ★</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-sm">
+              <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
                 <p className="text-xs text-[var(--color-outline-variant)]">Avg Earning/Delivery</p>
-                <p className="text-3xl font-black text-brand-secondary">
+                <p className="text-brand-secondary text-3xl font-black">
                   {totalDeliveries > 0 ? `₹${Math.round(totalEarnings / totalDeliveries)}` : "₹0"}
                 </p>
               </div>
             </div>
 
             {/* Earnings Chart */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Earnings This {period.charAt(0).toUpperCase() + period.slice(1)}</h3>
+            <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+              <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">
+                Earnings This {period.charAt(0).toUpperCase() + period.slice(1)}
+              </h3>
               {totalEarnings === 0 ? (
-                <div className="text-center py-8 text-[var(--color-outline-variant)]">
+                <div className="py-8 text-center text-[var(--color-outline-variant)]">
                   <span className="material-symbols-outlined text-4xl">bar_chart</span>
-                  <p className="text-sm mt-2">No deliveries yet this {period}</p>
+                  <p className="mt-2 text-sm">No deliveries yet this {period}</p>
                 </div>
               ) : (
-                <div className="flex items-end gap-1 h-40">
+                <div className="flex h-40 items-end gap-1">
                   {weeklyData.map((d, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full bg-brand-secondary/20 rounded-t-md relative" style={{ height: "100%" }}>
-                        <div 
-                          className="absolute bottom-0 w-full bg-gradient-to-t from-brand-secondary to-[#4489ff] rounded-t-md transition-all"
+                    <div key={i} className="flex flex-1 flex-col items-center gap-1">
+                      <div
+                        className="bg-brand-secondary/20 relative w-full rounded-t-md"
+                        style={{ height: "100%" }}
+                      >
+                        <div
+                          className="from-brand-secondary absolute bottom-0 w-full rounded-t-md bg-gradient-to-t to-[#4489ff] transition-all"
                           style={{ height: `${Math.max((d.earnings / chartMax) * 100, 4)}%` }}
                         />
                       </div>
@@ -169,53 +192,59 @@ export default function RiderAnalyticsPage() {
                   ))}
                 </div>
               )}
-              <div className="flex justify-between mt-2">
+              <div className="mt-2 flex justify-between">
                 {weeklyData.map((d, i) => (
-                  <span key={i} className="text-[10px] text-[var(--color-outline-variant)]">{d.day}</span>
+                  <span key={i} className="text-[10px] text-[var(--color-outline-variant)]">
+                    {d.day}
+                  </span>
                 ))}
               </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm space-y-3">
-              
-
-              <div className="flex items-center justify-between p-3 bg-[var(--color-surface-subtle)] rounded-xl">
+            <div className="space-y-3 rounded-2xl bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+              <div className="flex items-center justify-between rounded-xl bg-[var(--color-surface-subtle)] p-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-100">
                     <span className="material-symbols-outlined text-green-600">route</span>
                   </div>
                   <div>
-                    <p className="font-bold text-sm">Total Distance</p>
+                    <p className="text-sm font-bold">Total Distance</p>
                     <p className="text-xs text-[var(--color-outline-variant)]">This {period}</p>
                   </div>
                 </div>
-                <p className="font-black text-green-600">{totalDeliveries > 0 ? `${Math.round(totalDeliveries * 3)} km` : "0 km"}</p>
+                <p className="font-black text-green-600">
+                  {totalDeliveries > 0 ? `${Math.round(totalDeliveries * 3)} km` : "0 km"}
+                </p>
               </div>
-
-              
             </div>
 
             {/* Rating Breakdown */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 shadow-sm">
-              <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Rating Breakdown</h3>
+            <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+              <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">Rating Breakdown</h3>
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <p className="text-4xl font-black text-amber-500">{avgRating}</p>
-                  <div className="flex mt-1">
-                    {[1,2,3,4,5].map(n => (
-                      <span key={n} className="material-symbols-outlined text-amber-400 text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                  <div className="mt-1 flex">
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <span
+                        key={n}
+                        className="material-symbols-outlined text-sm text-amber-400"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        star
+                      </span>
                     ))}
                   </div>
-                  <p className="text-xs text-[var(--color-outline-variant)] mt-1">{rider?.total_deliveries || 0} ratings</p>
+                  <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                    {rider?.total_deliveries || 0} ratings
+                  </p>
                 </div>
               </div>
             </div>
           </>
         )}
       </main>
-
-
     </div>
   );
 }

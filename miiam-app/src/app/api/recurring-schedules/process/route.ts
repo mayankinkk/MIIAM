@@ -41,7 +41,10 @@ export async function POST(request: NextRequest) {
         image_url?: string;
       }>;
 
-      const vendorTotal = items.reduce((sum: number, i: { price: number; quantity: number }) => sum + i.price * i.quantity, 0);
+      const vendorTotal = items.reduce(
+        (sum: number, i: { price: number; quantity: number }) => sum + i.price * i.quantity,
+        0
+      );
 
       const deliveryFee = 0;
 
@@ -57,7 +60,9 @@ export async function POST(request: NextRequest) {
           payment_method: schedule.payment_method || "card",
           delivery_address: schedule.delivery_address,
           scheduled_delivery: schedule.delivery_time
-            ? new Date(`${schedule.next_delivery_date.split("T")[0]}T${schedule.delivery_time.split(" - ")[0].trim()}`).toISOString()
+            ? new Date(
+                `${schedule.next_delivery_date.split("T")[0]}T${schedule.delivery_time.split(" - ")[0].trim()}`
+              ).toISOString()
             : schedule.next_delivery_date,
           placed_at: new Date().toISOString(),
         })
@@ -88,7 +93,11 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-          const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+          const appUrl =
+            process.env.NEXT_PUBLIC_APP_URL ||
+            (process.env.VERCEL_URL
+              ? `https://${process.env.VERCEL_URL}`
+              : "http://localhost:3000");
           await fetch(`${appUrl}/api/emails/order-confirmation`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

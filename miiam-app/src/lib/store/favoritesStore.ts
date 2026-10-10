@@ -17,9 +17,7 @@ export const useFavoritesStore = create<FavoritesStore>()(
       toggle: (id) => {
         const ids = get().favoriteIds;
         set({
-          favoriteIds: ids.includes(id)
-            ? ids.filter((i) => i !== id)
-            : [...ids, id],
+          favoriteIds: ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id],
         });
       },
       isFavorite: (id) => get().favoriteIds.includes(id),

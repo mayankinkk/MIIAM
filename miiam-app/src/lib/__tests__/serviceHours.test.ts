@@ -35,15 +35,21 @@ describe("isServiceOpen", () => {
   it("handles cross-midnight hours (e.g. 22:00 - 02:00)", () => {
     const beforeMidnight = new Date();
     beforeMidnight.setHours(23, 30, 0, 0);
-    expect(isServiceOpen({ open: "22:00", close: "02:00", is24x7: false }, beforeMidnight)).toBe(true);
+    expect(isServiceOpen({ open: "22:00", close: "02:00", is24x7: false }, beforeMidnight)).toBe(
+      true
+    );
 
     const afterMidnight = new Date();
     afterMidnight.setHours(1, 30, 0, 0);
-    expect(isServiceOpen({ open: "22:00", close: "02:00", is24x7: false }, afterMidnight)).toBe(true);
+    expect(isServiceOpen({ open: "22:00", close: "02:00", is24x7: false }, afterMidnight)).toBe(
+      true
+    );
 
     const lateMorning = new Date();
     lateMorning.setHours(10, 0, 0, 0);
-    expect(isServiceOpen({ open: "22:00", close: "02:00", is24x7: false }, lateMorning)).toBe(false);
+    expect(isServiceOpen({ open: "22:00", close: "02:00", is24x7: false }, lateMorning)).toBe(
+      false
+    );
   });
 });
 

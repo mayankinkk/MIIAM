@@ -16,38 +16,46 @@ interface OrderSummaryProps {
   showHeading?: boolean;
 }
 
-export default function OrderSummary({ items, subtotal, deliveryFee = 0, discount = 0, tax = 0, total, showHeading = true }: OrderSummaryProps) {
+export default function OrderSummary({
+  items,
+  subtotal,
+  deliveryFee = 0,
+  discount = 0,
+  tax = 0,
+  total,
+  showHeading = true,
+}: OrderSummaryProps) {
   const calculatedSubtotal = subtotal ?? items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const calculatedTotal = total ?? calculatedSubtotal + deliveryFee - discount + tax;
 
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-4 space-y-3">
-      {showHeading && (
-        <h3 className="text-sm font-bold text-on-surface">Order Summary</h3>
-      )}
+    <div className="bg-surface-container-lowest space-y-3 rounded-xl p-4">
+      {showHeading && <h3 className="text-on-surface text-sm font-bold">Order Summary</h3>}
 
       {/* Items */}
       <div className="space-y-2">
         {items.map((item, i) => (
-          <div key={i} className="flex justify-between items-center text-xs">
-            <span className="text-on-surface-variant flex-1 min-w-0 truncate">
+          <div key={i} className="flex items-center justify-between text-xs">
+            <span className="text-on-surface-variant min-w-0 flex-1 truncate">
               {item.quantity}× {item.name}
             </span>
-            <span className="font-bold text-on-surface ml-2">₹{(item.price * item.quantity).toFixed(0)}</span>
+            <span className="text-on-surface ml-2 font-bold">
+              ₹{(item.price * item.quantity).toFixed(0)}
+            </span>
           </div>
         ))}
       </div>
 
       {/* Totals */}
-      <div className="border-t border-outline/10 pt-2 space-y-1.5">
+      <div className="border-outline/10 space-y-1.5 border-t pt-2">
         <div className="flex justify-between text-xs">
           <span className="text-on-surface-variant">Subtotal</span>
-          <span className="font-medium text-on-surface">₹{calculatedSubtotal.toFixed(0)}</span>
+          <span className="text-on-surface font-medium">₹{calculatedSubtotal.toFixed(0)}</span>
         </div>
         {deliveryFee > 0 && (
           <div className="flex justify-between text-xs">
             <span className="text-on-surface-variant">Delivery</span>
-            <span className="font-medium text-on-surface">₹{deliveryFee.toFixed(0)}</span>
+            <span className="text-on-surface font-medium">₹{deliveryFee.toFixed(0)}</span>
           </div>
         )}
         {deliveryFee === 0 && (
@@ -65,12 +73,12 @@ export default function OrderSummary({ items, subtotal, deliveryFee = 0, discoun
         {tax > 0 && (
           <div className="flex justify-between text-xs">
             <span className="text-on-surface-variant">Tax</span>
-            <span className="font-medium text-on-surface">₹{tax.toFixed(0)}</span>
+            <span className="text-on-surface font-medium">₹{tax.toFixed(0)}</span>
           </div>
         )}
-        <div className="flex justify-between pt-1 border-t border-outline/10">
-          <span className="text-sm font-bold text-on-surface">Total</span>
-          <span className="text-sm font-black text-on-surface">₹{calculatedTotal.toFixed(0)}</span>
+        <div className="border-outline/10 flex justify-between border-t pt-1">
+          <span className="text-on-surface text-sm font-bold">Total</span>
+          <span className="text-on-surface text-sm font-black">₹{calculatedTotal.toFixed(0)}</span>
         </div>
       </div>
     </div>

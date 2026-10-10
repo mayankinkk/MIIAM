@@ -23,14 +23,19 @@ export function usePushNotifications() {
     setToken(fcmToken);
     setPermission(Notification.permission);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user) {
-      await supabase.from("push_tokens").upsert({
-        user_id: user.id,
-        token: fcmToken,
-        platform: "web",
-        updated_at: new Date().toISOString(),
-      }, { onConflict: "token" });
+      await supabase.from("push_tokens").upsert(
+        {
+          user_id: user.id,
+          token: fcmToken,
+          platform: "web",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "token" }
+      );
     }
 
     return fcmToken;
@@ -40,7 +45,9 @@ export function usePushNotifications() {
     const unsub = onPushMessage((payload) => {
       addToast(payload.body || payload.title || "New notification", "info");
     });
-    return () => { unsub?.(); };
+    return () => {
+      unsub?.();
+    };
   }, [addToast]);
 
   return { subscribe, token, permission };

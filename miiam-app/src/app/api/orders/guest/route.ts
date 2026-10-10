@@ -88,7 +88,10 @@ export async function GET(request: NextRequest) {
 
     const { data: vendors } =
       vendorIds.length > 0
-        ? await admin.from("vendors").select("id, shop_name, address, phone, cover_image_url, latitude, longitude").in("id", vendorIds)
+        ? await admin
+            .from("vendors")
+            .select("id, shop_name, address, phone, cover_image_url, latitude, longitude")
+            .in("id", vendorIds)
         : { data: [] as { id: string }[] };
 
     const { data: riders } =

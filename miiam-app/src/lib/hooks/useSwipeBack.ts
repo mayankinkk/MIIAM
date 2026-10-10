@@ -16,15 +16,18 @@ export function useSwipeBack(options: UseSwipeBackOptions = {}) {
   const touchStartY = useRef(0);
   const isSwiping = useRef(false);
 
-  const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (!enabled) return;
-    const touch = e.touches[0];
-    if (touch.clientX <= edgeWidth) {
-      touchStartX.current = touch.clientX;
-      touchStartY.current = touch.clientY;
-      isSwiping.current = true;
-    }
-  }, [enabled, edgeWidth]);
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      if (!enabled) return;
+      const touch = e.touches[0];
+      if (touch.clientX <= edgeWidth) {
+        touchStartX.current = touch.clientX;
+        touchStartY.current = touch.clientY;
+        isSwiping.current = true;
+      }
+    },
+    [enabled, edgeWidth]
+  );
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!isSwiping.current) return;
@@ -36,15 +39,18 @@ export function useSwipeBack(options: UseSwipeBackOptions = {}) {
     }
   }, []);
 
-  const handleTouchEnd = useCallback((e: TouchEvent) => {
-    if (!isSwiping.current) return;
-    isSwiping.current = false;
-    const touch = e.changedTouches[0];
-    const deltaX = touch.clientX - touchStartX.current;
-    if (deltaX > threshold) {
-      router.back();
-    }
-  }, [router, threshold]);
+  const handleTouchEnd = useCallback(
+    (e: TouchEvent) => {
+      if (!isSwiping.current) return;
+      isSwiping.current = false;
+      const touch = e.changedTouches[0];
+      const deltaX = touch.clientX - touchStartX.current;
+      if (deltaX > threshold) {
+        router.back();
+      }
+    },
+    [router, threshold]
+  );
 
   useEffect(() => {
     if (!enabled) return;

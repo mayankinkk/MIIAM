@@ -34,7 +34,12 @@ const SERVICE_DETAILS: Record<string, ServiceDetail> = {
   electrical: { name: "Electrical", icon: "bolt", color: "amber", bg: "bg-amber-50" },
   cleaning: { name: "Cleaning", icon: "cleaning_services", color: "emerald", bg: "bg-emerald-50" },
   ac: { name: "AC Repair", icon: "ac_unit", color: "cyan", bg: "bg-cyan-50" },
-  appliance: { name: "Appliance Repair", icon: "home_repair_service", color: "purple", bg: "bg-accent/10" },
+  appliance: {
+    name: "Appliance Repair",
+    icon: "home_repair_service",
+    color: "purple",
+    bg: "bg-accent/10",
+  },
   pest: { name: "Pest Control", icon: "bug_report", color: "red", bg: "bg-red-50" },
 };
 
@@ -65,14 +70,30 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   const [techPhone, setTechPhone] = useState("");
   const [assigning, setAssigning] = useState(false);
   const [dbService, setDbService] = useState<ServiceDetail | null>(null);
-  const service = dbService || SERVICE_DETAILS[serviceKey] || { name: serviceKey.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase()), icon: "home_repair_service", color: "blue", bg: "bg-accent/10" };
+  const service = dbService ||
+    SERVICE_DETAILS[serviceKey] || {
+      name: serviceKey.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+      icon: "home_repair_service",
+      color: "blue",
+      bg: "bg-accent/10",
+    };
 
   useEffect(() => {
     loadBookings();
     if (!SERVICE_DETAILS[serviceKey]) {
-      supabase.from("service_categories").select("name, icon").eq("slug", serviceKey).maybeSingle()
+      supabase
+        .from("service_categories")
+        .select("name, icon")
+        .eq("slug", serviceKey)
+        .maybeSingle()
         .then(({ data }: { data: { name: string; icon: string | null } | null }) => {
-          if (data) setDbService({ name: data.name, icon: data.icon || "home_repair_service", color: "blue", bg: "bg-accent/10" });
+          if (data)
+            setDbService({
+              name: data.name,
+              icon: data.icon || "home_repair_service",
+              color: "blue",
+              bg: "bg-accent/10",
+            });
         });
     }
   }, []);
@@ -91,9 +112,9 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   async function handleStatusChange(bookingId: string, newStatus: string) {
     setUpdatingId(bookingId);
     const prev = bookings;
-    setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
+    setBookings((prev) => prev.map((b) => (b.id === bookingId ? { ...b, status: newStatus } : b)));
     try {
-      const booking = bookings.find(b => b.id === bookingId);
+      const booking = bookings.find((b) => b.id === bookingId);
       const { error } = await supabase
         .from("service_bookings")
         .update({ status: newStatus })
@@ -102,10 +123,22 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
 
       if (booking?.user_id) {
         const statusMessages: Record<string, { title: string; body: string }> = {
-          confirmed: { title: "Booking Confirmed ✓", body: `Your ${booking.sub_service || booking.service_type} booking has been confirmed.` },
-          in_progress: { title: "Technician On The Way 🔧", body: `A technician is on the way for your ${booking.sub_service || booking.service_type} service.` },
-          completed: { title: "Service Completed ✓", body: `Your ${booking.sub_service || booking.service_type} service has been completed. Rate your experience!` },
-          cancelled: { title: "Booking Cancelled", body: `Your ${booking.sub_service || booking.service_type} booking has been cancelled.` },
+          confirmed: {
+            title: "Booking Confirmed ✓",
+            body: `Your ${booking.sub_service || booking.service_type} booking has been confirmed.`,
+          },
+          in_progress: {
+            title: "Technician On The Way 🔧",
+            body: `A technician is on the way for your ${booking.sub_service || booking.service_type} service.`,
+          },
+          completed: {
+            title: "Service Completed ✓",
+            body: `Your ${booking.sub_service || booking.service_type} service has been completed. Rate your experience!`,
+          },
+          cancelled: {
+            title: "Booking Cancelled",
+            body: `Your ${booking.sub_service || booking.service_type} booking has been cancelled.`,
+          },
         };
         const notif = statusMessages[newStatus];
         if (notif) {
@@ -129,12 +162,9 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   async function handleDelete(bookingId: string) {
     if (!confirm("Delete this booking? This cannot be undone.")) return;
     const prev = bookings;
-    setBookings(prev => prev.filter(b => b.id !== bookingId));
+    setBookings((prev) => prev.filter((b) => b.id !== bookingId));
     try {
-      const { error } = await supabase
-        .from("service_bookings")
-        .delete()
-        .eq("id", bookingId);
+      const { error } = await supabase.from("service_bookings").delete().eq("id", bookingId);
       if (error) throw error;
     } catch (e) {
       logger.error({ err: e }, "[AdminServiceDetail] Failed to delete booking");
@@ -151,7 +181,13 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
         .update({ technician_name: techName.trim(), technician_phone: techPhone.trim() })
         .eq("id", assignBooking.id);
       if (error) throw error;
-      setBookings(prev => prev.map(b => b.id === assignBooking.id ? { ...b, technician_name: techName.trim(), technician_phone: techPhone.trim() } : b));
+      setBookings((prev) =>
+        prev.map((b) =>
+          b.id === assignBooking.id
+            ? { ...b, technician_name: techName.trim(), technician_phone: techPhone.trim() }
+            : b
+        )
+      );
       if (assignBooking.user_id) {
         await supabase.from("notifications").insert({
           user_id: assignBooking.user_id,
@@ -187,86 +223,143 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Link href="/admin/services" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+        <Link
+          href="/admin/services"
+          className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
+        >
           <span className="material-symbols-outlined">arrow_back</span>
         </Link>
-        <div className={`w-10 h-10 rounded-xl ${service.bg} flex items-center justify-center`}>
-          <span className={`material-symbols-outlined text-xl ${TEXT_COLOR[service.color]}`}>{service.icon}</span>
+        <div className={`h-10 w-10 rounded-xl ${service.bg} flex items-center justify-center`}>
+          <span className={`material-symbols-outlined text-xl ${TEXT_COLOR[service.color]}`}>
+            {service.icon}
+          </span>
         </div>
         <div>
           <h2 className="text-xl font-black text-[var(--color-on-surface)]">{service.name}</h2>
-          <p className="text-xs text-[var(--color-outline-variant)]">Manage bookings and providers</p>
+          <p className="text-xs text-[var(--color-outline-variant)]">
+            Manage bookings and providers
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Total Bookings</p>
-          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : totalBookings}</p>
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+            Total Bookings
+          </p>
+          <p className="mt-1 text-2xl font-black text-[var(--color-on-surface)]">
+            {loading ? "—" : totalBookings}
+          </p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
           <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Revenue</p>
-          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : `₹${totalRevenue.toLocaleString("en-IN")}`}</p>
+          <p className="mt-1 text-2xl font-black text-[var(--color-on-surface)]">
+            {loading ? "—" : `₹${totalRevenue.toLocaleString("en-IN")}`}
+          </p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Completed</p>
-          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : completedCount}</p>
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+            Completed
+          </p>
+          <p className="mt-1 text-2xl font-black text-[var(--color-on-surface)]">
+            {loading ? "—" : completedCount}
+          </p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-5 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Completion Rate</p>
-          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{loading ? "—" : `${completionRate}%`}</p>
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+            Completion Rate
+          </p>
+          <p className="mt-1 text-2xl font-black text-[var(--color-on-surface)]">
+            {loading ? "—" : `${completionRate}%`}
+          </p>
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
-        <div className="p-5 border-b border-slate-50">
-          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Recent Bookings</h3>
+      <div className="overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
+        <div className="border-b border-slate-50 p-5">
+          <h3 className="text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+            Recent Bookings
+          </h3>
         </div>
         {loading ? (
-          <div className="flex items-center justify-center py-12"><div className="w-8 h-8 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full animate-spin" /></div>
+          <div className="flex items-center justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)]" />
+          </div>
         ) : bookings.length === 0 ? (
-          <div className="py-12 text-center text-[var(--color-outline-variant)]">No bookings found</div>
+          <div className="py-12 text-center text-[var(--color-outline-variant)]">
+            No bookings found
+          </div>
         ) : (
           <table className="w-full text-left">
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Customer</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Phone</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Technician</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Amount</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Status</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">Date</th>
-                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase text-right">Actions</th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Customer
+                </th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Phone
+                </th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Technician
+                </th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Amount
+                </th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Status
+                </th>
+                <th className="p-4 text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Date
+                </th>
+                <th className="p-4 text-right text-xs font-black text-[var(--color-outline-variant)] uppercase">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {bookings.map((b: ServiceBooking) => (
                 <tr key={b.id}>
-                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{b.user_name || "—"}</td>
-                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{b.user_phone || "—"}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">
+                    {b.user_name || "—"}
+                  </td>
+                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">
+                    {b.user_phone || "—"}
+                  </td>
                   <td className="p-4">
                     {b.technician_name ? (
                       <div>
-                        <p className="text-sm font-bold text-[var(--color-on-surface)]">{b.technician_name}</p>
-                        {b.technician_phone && <p className="text-xs text-[var(--color-outline-variant)]">{b.technician_phone}</p>}
+                        <p className="text-sm font-bold text-[var(--color-on-surface)]">
+                          {b.technician_name}
+                        </p>
+                        {b.technician_phone && (
+                          <p className="text-xs text-[var(--color-outline-variant)]">
+                            {b.technician_phone}
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <button
-                        onClick={() => { setAssignBooking(b); setTechName(""); setTechPhone(""); }}
-                        className="text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1"
+                        onClick={() => {
+                          setAssignBooking(b);
+                          setTechName("");
+                          setTechPhone("");
+                        }}
+                        className="flex items-center gap-1 text-xs font-bold text-[var(--color-primary)] hover:underline"
                       >
                         <span className="material-symbols-outlined text-sm">person_add</span>
                         Assign
                       </button>
                     )}
                   </td>
-                  <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{(b.amount || 0).toLocaleString("en-IN")}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">
+                    ₹{(b.amount || 0).toLocaleString("en-IN")}
+                  </td>
                   <td className="p-4">
                     <select
                       value={b.status || "pending"}
                       disabled={updatingId === b.id}
                       onChange={(e) => handleStatusChange(b.id, e.target.value)}
-                      className={`text-xs font-bold px-3 py-1.5 rounded-full border-0 cursor-pointer disabled:opacity-50 ${statusColors[b.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}
+                      className={`cursor-pointer rounded-full border-0 px-3 py-1.5 text-xs font-bold disabled:opacity-50 ${statusColors[b.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"}`}
                     >
                       <option value="pending">Pending</option>
                       <option value="confirmed">Confirmed</option>
@@ -275,11 +368,13 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
                       <option value="cancelled">Cancelled</option>
                     </select>
                   </td>
-                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">{b.created_at ? new Date(b.created_at).toLocaleDateString("en-IN") : "—"}</td>
+                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">
+                    {b.created_at ? new Date(b.created_at).toLocaleDateString("en-IN") : "—"}
+                  </td>
                   <td className="p-4 text-right">
                     <button
                       onClick={() => handleDelete(b.id)}
-                      className="p-1.5 text-[var(--color-outline-variant)] hover:text-status-error hover:bg-status-error/10 rounded-lg transition-colors"
+                      className="hover:text-status-error hover:bg-status-error/10 rounded-lg p-1.5 text-[var(--color-outline-variant)] transition-colors"
                       title="Delete booking"
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>
@@ -293,47 +388,62 @@ export default function AdminServiceDetail({ serviceKey }: { serviceKey: string 
       </div>
 
       {assignBooking && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-md rounded-2xl shadow-2xl p-6">
-            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-1">Assign Technician</h3>
-            <p className="text-sm text-[var(--color-outline-variant)] mb-5">{assignBooking.sub_service || assignBooking.service_type} — {assignBooking.user_name || "Customer"}</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-2xl">
+            <h3 className="mb-1 text-lg font-black text-[var(--color-on-surface)]">
+              Assign Technician
+            </h3>
+            <p className="mb-5 text-sm text-[var(--color-outline-variant)]">
+              {assignBooking.sub_service || assignBooking.service_type} —{" "}
+              {assignBooking.user_name || "Customer"}
+            </p>
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface)] block mb-1.5">Technician Name *</label>
+                <label className="mb-1.5 block text-xs font-bold text-[var(--color-on-surface)]">
+                  Technician Name *
+                </label>
                 <input
                   type="text"
                   value={techName}
                   onChange={(e) => setTechName(e.target.value)}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full rounded-xl border-2 border-[var(--color-border-subtle)] px-4 py-3 text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface)] block mb-1.5">Phone Number</label>
+                <label className="mb-1.5 block text-xs font-bold text-[var(--color-on-surface)]">
+                  Phone Number
+                </label>
                 <input
                   type="tel"
                   value={techPhone}
                   onChange={(e) => setTechPhone(e.target.value)}
                   placeholder="e.g. +91 99578 73472"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
+                  className="w-full rounded-xl border-2 border-[var(--color-border-subtle)] px-4 py-3 text-sm font-bold text-[var(--color-on-surface)] focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="mt-6 flex gap-3">
               <button
-                onClick={() => { setAssignBooking(null); setTechName(""); setTechPhone(""); }}
-                className="flex-1 py-3 bg-[var(--color-surface-container)] rounded-xl font-bold text-sm text-[var(--color-on-surface-variant)]"
+                onClick={() => {
+                  setAssignBooking(null);
+                  setTechName("");
+                  setTechPhone("");
+                }}
+                className="flex-1 rounded-xl bg-[var(--color-surface-container)] py-3 text-sm font-bold text-[var(--color-on-surface-variant)]"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAssignTechnician}
                 disabled={!techName.trim() || assigning}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"
+                className="text-on-primary flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] py-3 text-sm font-bold disabled:opacity-50"
               >
-                {assigning ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : null}
+                {assigning ? (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : null}
                 {assigning ? "Assigning..." : "Assign Technician"}
               </button>
             </div>

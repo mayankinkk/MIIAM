@@ -79,9 +79,6 @@ export default function RestaurantMap({
   }, [restaurants, center, zoom, onRestaurantClick]);
 
   return (
-    <div
-      ref={mapRef}
-      className="w-full h-72 rounded-2xl overflow-hidden bg-surface-container"
-    />
+    <div ref={mapRef} className="bg-surface-container h-72 w-full overflow-hidden rounded-2xl" />
   );
 }

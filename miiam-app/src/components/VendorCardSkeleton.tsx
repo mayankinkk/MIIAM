@@ -8,7 +8,7 @@ interface VendorCardSkeletonProps {
 
 export function VendorCardSkeletonGrid({ count = 4 }: VendorCardSkeletonProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {Array.from({ length: count }).map((_, i) => (
         <VendorCardSkeleton key={i} index={i} />
       ))}
@@ -22,20 +22,20 @@ function VendorCardSkeleton({ index = 0 }: { index?: number }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm"
+      className="bg-surface-container-lowest overflow-hidden rounded-2xl shadow-sm"
     >
       {/* Image */}
-      <div className="h-32 bg-surface-container animate-shimmer relative">
-        <div className="absolute bottom-2 left-2 w-12 h-4 bg-black/20 rounded-full animate-shimmer" />
+      <div className="bg-surface-container animate-shimmer relative h-32">
+        <div className="animate-shimmer absolute bottom-2 left-2 h-4 w-12 rounded-full bg-black/20" />
       </div>
 
       {/* Content */}
-      <div className="p-3 space-y-2">
-        <div className="h-4 bg-surface-container rounded-full w-3/4 animate-shimmer" />
-        <div className="h-3 bg-surface-container rounded-full w-1/2 animate-shimmer" />
+      <div className="space-y-2 p-3">
+        <div className="bg-surface-container animate-shimmer h-4 w-3/4 rounded-full" />
+        <div className="bg-surface-container animate-shimmer h-3 w-1/2 rounded-full" />
         <div className="flex items-center gap-2">
-          <div className="h-3 bg-surface-container rounded-full w-8 animate-shimmer" />
-          <div className="h-3 bg-surface-container rounded-full w-12 animate-shimmer" />
+          <div className="bg-surface-container animate-shimmer h-3 w-8 rounded-full" />
+          <div className="bg-surface-container animate-shimmer h-3 w-12 rounded-full" />
         </div>
       </div>
     </motion.div>
@@ -51,12 +51,12 @@ export function StoreItemSkeleton({ count = 8 }: { count?: number }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05 }}
-          className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm"
+          className="bg-surface-container-lowest overflow-hidden rounded-2xl shadow-sm"
         >
-          <div className="h-28 bg-surface-container animate-shimmer" />
-          <div className="p-3 space-y-2">
-            <div className="h-3 bg-surface-container rounded-full w-4/5 animate-shimmer" />
-            <div className="h-3 bg-surface-container rounded-full w-1/3 animate-shimmer" />
+          <div className="bg-surface-container animate-shimmer h-28" />
+          <div className="space-y-2 p-3">
+            <div className="bg-surface-container animate-shimmer h-3 w-4/5 rounded-full" />
+            <div className="bg-surface-container animate-shimmer h-3 w-1/3 rounded-full" />
           </div>
         </motion.div>
       ))}

@@ -6,13 +6,13 @@ import { validatePassword, verifyHmac, getClientIp, checkIpRateLimit } from "@/l
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 5, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 5, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   const supabaseAdmin = createAdminClient();
   const cookieStore = await cookies();
-  
+
   try {
     const { email, password } = await request.json();
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Update password and confirm email
-    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(profile.id, { 
+    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(profile.id, {
       password,
       email_confirm: true,
     });

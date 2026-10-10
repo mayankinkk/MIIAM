@@ -18,7 +18,12 @@ const baseData: InvoiceData = {
     state: "Karnataka (29)",
   },
   lines: [
-    { description: "Print job (B&W, A4, 2-sided, 10 pages)", quantity: 1, unitPrice: 100, amount: 100 },
+    {
+      description: "Print job (B&W, A4, 2-sided, 10 pages)",
+      quantity: 1,
+      unitPrice: 100,
+      amount: 100,
+    },
     { description: "Spiral binding", quantity: 1, unitPrice: 35, amount: 35 },
   ],
   subtotal: 135,

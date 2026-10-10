@@ -15,14 +15,15 @@ interface BentoItemProps {
 }
 
 export function BentoGrid({ children, className = "" }: BentoGridProps) {
-  return (
-    <div className={`grid grid-cols-3 gap-3 auto-rows-auto ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`grid auto-rows-auto grid-cols-3 gap-3 ${className}`}>{children}</div>;
 }
 
-export function BentoItem({ children, span = "auto", height = "auto", className = "" }: BentoItemProps) {
+export function BentoItem({
+  children,
+  span = "auto",
+  height = "auto",
+  className = "",
+}: BentoItemProps) {
   const spanClasses = {
     auto: "",
     full: "col-span-3",
@@ -39,8 +40,6 @@ export function BentoItem({ children, span = "auto", height = "auto", className 
   };
 
   return (
-    <div className={`${spanClasses[span]} ${heightClasses[height]} ${className}`}>
-      {children}
-    </div>
+    <div className={`${spanClasses[span]} ${heightClasses[height]} ${className}`}>{children}</div>
   );
 }

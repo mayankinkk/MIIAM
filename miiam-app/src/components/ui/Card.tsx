@@ -19,12 +19,10 @@ interface CardProps {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  default:
-    "bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)]",
+  default: "bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)]",
   elevated:
     "bg-[var(--color-surface-container-lowest)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-[var(--color-border-subtle)]",
-  outlined:
-    "bg-transparent border-2 border-[var(--color-border-default)]",
+  outlined: "bg-transparent border-2 border-[var(--color-border-default)]",
   glass:
     "bg-[var(--color-surface-container-lowest)] backdrop-blur-xl border border-[var(--color-border-subtle)] shadow-lg",
 };
@@ -52,9 +50,7 @@ function Card({
     "rounded-2xl overflow-hidden transition-all duration-300",
     variantStyles[variant],
     padding !== "none" ? paddingStyles[padding] : "",
-    hover
-      ? "cursor-pointer hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:-translate-y-0.5"
-      : "",
+    hover ? "cursor-pointer hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:-translate-y-0.5" : "",
     className,
   ]
     .filter(Boolean)
@@ -95,11 +91,7 @@ function CardHeader({
   className?: string;
   children?: React.ReactNode;
 }) {
-  return (
-    <div className={`flex items-center justify-between mb-3 ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`mb-3 flex items-center justify-between ${className}`}>{children}</div>;
 }
 
 function CardBody({
@@ -120,7 +112,9 @@ function CardFooter({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`flex items-center gap-3 mt-4 pt-3 border-t border-[var(--color-border-subtle)] ${className}`}>
+    <div
+      className={`mt-4 flex items-center gap-3 border-t border-[var(--color-border-subtle)] pt-3 ${className}`}
+    >
       {children}
     </div>
   );
@@ -138,15 +132,12 @@ function CardMedia({
   className?: string;
 }) {
   return (
-    <div
-      className={`overflow-hidden relative ${className}`}
-      style={{ aspectRatio }}
-    >
+    <div className={`relative overflow-hidden ${className}`} style={{ aspectRatio }}>
       <Image
         src={src}
         alt={alt}
         fill
-        className="object-cover hover:scale-105 transition-transform duration-700"
+        className="object-cover transition-transform duration-700 hover:scale-105"
         loading="lazy"
         onError={(e) => {
           // fallback handled by next/image

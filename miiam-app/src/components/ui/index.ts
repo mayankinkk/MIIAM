@@ -11,5 +11,14 @@ export { Input } from "./Input";
 export type { InputProps } from "./Input";
 
 export { ConfirmProvider, useConfirm } from "./ConfirmDialog";
-export { EmptyState, EmptyCart, EmptyOrders, EmptyFavorites, EmptyAddresses, EmptySearch, EmptyBookings, NetworkError } from "./EmptyStates";
+export {
+  EmptyState,
+  EmptyCart,
+  EmptyOrders,
+  EmptyFavorites,
+  EmptyAddresses,
+  EmptySearch,
+  EmptyBookings,
+  NetworkError,
+} from "./EmptyStates";
 export { default as Toaster } from "./Toaster";

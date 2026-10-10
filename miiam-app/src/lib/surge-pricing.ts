@@ -83,7 +83,7 @@ export function checkSurgePricing(params: {
 
 export function applySurgePricing(
   basePrice: number,
-  surgeMultiplier: number,
+  surgeMultiplier: number
 ): { finalPrice: number; surgeAmount: number } {
   if (surgeMultiplier <= 1) {
     return { finalPrice: basePrice, surgeAmount: 0 };
@@ -95,7 +95,20 @@ export function applySurgePricing(
 
 export async function getVendorSurgeConfig(
   vendorId: string,
-  supabase: { from: (table: string) => { select: (cols: string) => { eq: (col: string, val: string) => { maybeSingle: () => Promise<{ data: { surge_enabled?: boolean; surge_multiplier?: number } | null }> } } } },
+  supabase: {
+    from: (table: string) => {
+      select: (cols: string) => {
+        eq: (
+          col: string,
+          val: string
+        ) => {
+          maybeSingle: () => Promise<{
+            data: { surge_enabled?: boolean; surge_multiplier?: number } | null;
+          }>;
+        };
+      };
+    };
+  }
 ): Promise<SurgeConfig> {
   try {
     const { data } = await supabase

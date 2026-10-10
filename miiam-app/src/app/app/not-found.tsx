@@ -2,12 +2,19 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)] p-6">
       <div className="text-center">
-        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">question_mark</span>
-        <h1 className="text-2xl font-black text-[var(--color-on-surface)] mt-4">Page Not Found</h1>
-        <p className="text-sm text-[var(--color-outline-variant)] mt-2">The page you are looking for does not exist.</p>
-        <Link href="/app/home" className="inline-block mt-6 px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">
+        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">
+          question_mark
+        </span>
+        <h1 className="mt-4 text-2xl font-black text-[var(--color-on-surface)]">Page Not Found</h1>
+        <p className="mt-2 text-sm text-[var(--color-outline-variant)]">
+          The page you are looking for does not exist.
+        </p>
+        <Link
+          href="/app/home"
+          className="bg-primary text-on-primary mt-6 inline-block rounded-xl px-6 py-3 text-sm font-bold"
+        >
           Go Home
         </Link>
       </div>

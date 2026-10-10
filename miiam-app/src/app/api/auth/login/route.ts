@@ -6,7 +6,10 @@ import { createRouteLogger } from "@/lib/logger";
 const LOGIN_RATE_LIMIT_MAX = 5;
 const LOGIN_RATE_LIMIT_WINDOW = 10 * 60 * 1000;
 
-async function checkLoginRateLimit(supabase: ReturnType<typeof createAdminClient>, email: string): Promise<boolean> {
+async function checkLoginRateLimit(
+  supabase: ReturnType<typeof createAdminClient>,
+  email: string
+): Promise<boolean> {
   const windowStart = new Date(Date.now() - LOGIN_RATE_LIMIT_WINDOW).toISOString();
   const { data: profile } = await supabase
     .from("profiles")
@@ -27,7 +30,7 @@ export async function POST(request: NextRequest) {
   const logger = createRouteLogger("auth/login");
   try {
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, 10, 60_000)) {
+    if (!(await checkIpRateLimit(ip, 10, 60_000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
@@ -42,7 +45,10 @@ export async function POST(request: NextRequest) {
 
     // Check rate limit before attempting login
     if (!(await checkLoginRateLimit(supabaseAdmin, cleanEmail))) {
-      return NextResponse.json({ error: "Too many failed attempts. Please try again after 10 minutes." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many failed attempts. Please try again after 10 minutes." },
+        { status: 429 }
+      );
     }
 
     const supabase = await createClient();

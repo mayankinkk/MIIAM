@@ -6,7 +6,12 @@ import { createRouteLogger } from "@/lib/logger";
 
 const logger = createRouteLogger("notify");
 
-async function sendFCMPush(tokens: string[], title: string, body: string, data?: Record<string, string>) {
+async function sendFCMPush(
+  tokens: string[],
+  title: string,
+  body: string,
+  data?: Record<string, string>
+) {
   const serverKey = process.env.FIREBASE_SERVER_KEY;
   if (!serverKey || tokens.length === 0) return;
 
@@ -38,7 +43,9 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -62,16 +69,14 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
       return NextResponse.json({ error: "user_id and title are required" }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
-      .from("notifications")
-      .insert({
-        user_id,
-        title,
-        body,
-        type: type || "system",
-        action_url: action_url || null,
-        is_read: false,
-      });
+    const { error } = await supabaseAdmin.from("notifications").insert({
+      user_id,
+      title,
+      body,
+      type: type || "system",
+      action_url: action_url || null,
+      is_read: false,
+    });
 
     if (error) throw error;
 
@@ -98,6 +103,9 @@ export const POST = withRateLimit(async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
     logger.error({ err: err }, "Notify API error");
-    return NextResponse.json({ error: (err instanceof Error ? err.message : "Internal error") }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Internal error" },
+      { status: 500 }
+    );
   }
 });

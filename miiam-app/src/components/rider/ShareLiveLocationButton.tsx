@@ -25,7 +25,7 @@ export default function ShareLiveLocationButton({ className = "" }: ShareLiveLoc
   return (
     <button
       onClick={handleShare}
-      className={`py-2 bg-status-success/10 text-status-success font-bold rounded-xl flex items-center justify-center gap-2 ${className}`}
+      className={`bg-status-success/10 text-status-success flex items-center justify-center gap-2 rounded-xl py-2 font-bold ${className}`}
     >
       <span className="material-symbols-outlined">share_location</span>
       {t.rider.delivery.shareLiveLocation}

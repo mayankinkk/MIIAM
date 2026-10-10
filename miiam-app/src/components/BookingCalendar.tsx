@@ -19,12 +19,12 @@ interface BookingCalendarProps {
   onBook: (date: string, time: string) => void;
 }
 
-export default function BookingCalendar({ 
-  providerId, 
-  serviceId, 
-  serviceName, 
+export default function BookingCalendar({
+  providerId,
+  serviceId,
+  serviceName,
   price,
-  onBook 
+  onBook,
 }: BookingCalendarProps) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
@@ -45,12 +45,14 @@ export default function BookingCalendar({
   async function loadMonthAvailability() {
     const start = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
     const end = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
-    
+
     const startStr = start.toISOString().split("T")[0];
     const endStr = end.toISOString().split("T")[0];
 
     try {
-      const res = await fetch(`/api/provider/availability?provider_id=${providerId}&start_date=${startStr}&end_date=${endStr}`);
+      const res = await fetch(
+        `/api/provider/availability?provider_id=${providerId}&start_date=${startStr}&end_date=${endStr}`
+      );
       const data = await res.json();
       setAvailability(data.availability || {});
     } catch (err) {
@@ -61,7 +63,7 @@ export default function BookingCalendar({
   async function loadDaySlots(date: string) {
     setLoading(true);
     setSelectedTime(null);
-    
+
     try {
       const res = await fetch(`/api/provider/availability?provider_id=${providerId}&date=${date}`);
       const data = await res.json();
@@ -74,8 +76,19 @@ export default function BookingCalendar({
   }
 
   function generateDefaultSlots(): TimeSlot[] {
-    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-    return times.map(time => ({ time, available: true }));
+    const times = [
+      "09:00",
+      "10:00",
+      "11:00",
+      "12:00",
+      "13:00",
+      "14:00",
+      "15:00",
+      "16:00",
+      "17:00",
+      "18:00",
+    ];
+    return times.map((time) => ({ time, available: true }));
   }
 
   function getDaysInMonth() {
@@ -112,7 +125,7 @@ export default function BookingCalendar({
     today.setHours(0, 0, 0, 0);
     const dateStr = formatDate(date);
     const dayAvail = availability[dateStr];
-    return date >= today && (dayAvail?.available !== false);
+    return date >= today && dayAvail?.available !== false;
   }
 
   function isDateSelected(date: Date): boolean {
@@ -146,11 +159,11 @@ export default function BookingCalendar({
           scheduled_time: selectedTime,
           amount: price,
           address: "",
-        })
+        }),
       });
 
       const data = await res.json();
-      
+
       if (!res.ok) {
         throw new Error(data.error || "Booking failed");
       }
@@ -167,28 +180,38 @@ export default function BookingCalendar({
   const monthName = currentMonth.toLocaleString("default", { month: "long", year: "numeric" });
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg p-6">
-      <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-4">Book Appointment</h3>
+    <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-lg">
+      <h3 className="mb-4 text-lg font-black text-[var(--color-on-surface)]">Book Appointment</h3>
 
-      <div className="flex items-center justify-between mb-4">
-        <button 
-          onClick={() => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)); setSelectedDate(null); setSelectedTime(null); }}
-          className="p-3 hover:bg-[var(--color-surface-container)] rounded-lg"
+      <div className="mb-4 flex items-center justify-between">
+        <button
+          onClick={() => {
+            setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+            setSelectedDate(null);
+            setSelectedTime(null);
+          }}
+          className="rounded-lg p-3 hover:bg-[var(--color-surface-container)]"
         >
           <span className="material-symbols-outlined">chevron_left</span>
         </button>
         <span className="font-bold text-[var(--color-on-surface)]">{monthName}</span>
-        <button 
-          onClick={() => { setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)); setSelectedDate(null); setSelectedTime(null); }}
-          className="p-3 hover:bg-[var(--color-surface-container)] rounded-lg"
+        <button
+          onClick={() => {
+            setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+            setSelectedDate(null);
+            setSelectedTime(null);
+          }}
+          className="rounded-lg p-3 hover:bg-[var(--color-surface-container)]"
         >
           <span className="material-symbols-outlined">chevron_right</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 mb-4 text-center">
+      <div className="mb-4 grid grid-cols-7 gap-1 text-center">
         {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-          <div key={i} className="text-xs font-bold text-[var(--color-outline-variant)] py-2">{d}</div>
+          <div key={i} className="py-2 text-xs font-bold text-[var(--color-outline-variant)]">
+            {d}
+          </div>
         ))}
       </div>
 
@@ -204,14 +227,7 @@ export default function BookingCalendar({
               key={i}
               onClick={() => handleDateSelect(day.date)}
               disabled={!selectable}
-              className={`
-                p-3 text-sm font-bold rounded-lg transition-colors min-w-[44px]
-                ${!day.isCurrentMonth ? "text-[var(--color-outline-variant)]/60" : ""}
-                ${isPast ? "text-[var(--color-outline-variant)]/60 cursor-not-allowed" : ""}
-                ${selected ? "bg-[var(--color-primary)] text-on-primary" : ""}
-                ${selectable && !selected ? "hover:bg-[var(--color-surface-container)] text-[var(--color-on-surface)]" : ""}
-                ${!selectable && day.isCurrentMonth ? "bg-red-50 text-red-300 line-through" : ""}
-              `}
+              className={`min-w-[44px] rounded-lg p-3 text-sm font-bold transition-colors ${!day.isCurrentMonth ? "text-[var(--color-outline-variant)]/60" : ""} ${isPast ? "cursor-not-allowed text-[var(--color-outline-variant)]/60" : ""} ${selected ? "text-on-primary bg-[var(--color-primary)]" : ""} ${selectable && !selected ? "text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container)]" : ""} ${!selectable && day.isCurrentMonth ? "bg-red-50 text-red-300 line-through" : ""} `}
             >
               {day.date.getDate()}
             </button>
@@ -221,34 +237,33 @@ export default function BookingCalendar({
 
       {selectedDate && (
         <div className="mt-6">
-          <p className="text-sm font-bold text-[var(--color-on-surface-variant)] mb-3">
-            Available times for {new Date(selectedDate).toLocaleDateString("en-IN", { 
-              weekday: "long", 
-              month: "short", 
-              day: "numeric" 
+          <p className="mb-3 text-sm font-bold text-[var(--color-on-surface-variant)]">
+            Available times for{" "}
+            {new Date(selectedDate).toLocaleDateString("en-IN", {
+              weekday: "long",
+              month: "short",
+              day: "numeric",
             })}
           </p>
 
           {loading ? (
             <div className="flex justify-center py-8">
-              <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">
-              {slots.map(slot => (
+              {slots.map((slot) => (
                 <button
                   key={slot.time}
                   onClick={() => slot.available && setSelectedTime(slot.time)}
                   disabled={!slot.available}
-                  className={`
-                    py-3 rounded-lg text-sm font-bold transition-colors
-                    ${selectedTime === slot.time 
-                      ? "bg-[var(--color-primary)] text-on-primary" 
-                      : slot.available 
-                        ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]" 
-                        : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)]/60 cursor-not-allowed line-through"
-                    }
-                  `}
+                  className={`rounded-lg py-3 text-sm font-bold transition-colors ${
+                    selectedTime === slot.time
+                      ? "text-on-primary bg-[var(--color-primary)]"
+                      : slot.available
+                        ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]"
+                        : "cursor-not-allowed bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)]/60 line-through"
+                  } `}
                 >
                   {slot.time}
                 </button>
@@ -259,20 +274,23 @@ export default function BookingCalendar({
       )}
 
       {error && (
-        <div className="mt-4 p-3 bg-status-error/10 text-status-error rounded-lg text-sm">{error}</div>
+        <div className="bg-status-error/10 text-status-error mt-4 rounded-lg p-3 text-sm">
+          {error}
+        </div>
       )}
 
       {selectedDate && selectedTime && (
-        <div className="mt-6 p-4 bg-[var(--color-surface-subtle)] rounded-xl">
-          <div className="flex justify-between items-center mb-4">
+        <div className="mt-6 rounded-xl bg-[var(--color-surface-subtle)] p-4">
+          <div className="mb-4 flex items-center justify-between">
             <div>
               <p className="font-bold text-[var(--color-on-surface)]">{serviceName}</p>
               <p className="text-sm text-[var(--color-outline)]">
-                {new Date(selectedDate).toLocaleDateString("en-IN", { 
-                  weekday: "short", 
-                  month: "short", 
-                  day: "numeric" 
-                })} at {selectedTime}
+                {new Date(selectedDate).toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                })}{" "}
+                at {selectedTime}
               </p>
             </div>
             <p className="text-xl font-black text-[var(--color-accent)]">₹{price}</p>
@@ -280,7 +298,7 @@ export default function BookingCalendar({
           <button
             onClick={handleBook}
             disabled={booking}
-            className="w-full py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
+            className="text-on-primary w-full rounded-xl bg-[var(--color-primary)] py-4 font-bold disabled:opacity-50"
           >
             {booking ? "Booking..." : "Confirm Booking"}
           </button>
@@ -288,24 +306,32 @@ export default function BookingCalendar({
       )}
 
       {showConfirmation && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 max-w-sm w-full text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="material-symbols-outlined text-green-600 text-4xl">check_circle</span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+          <div className="w-full max-w-sm rounded-3xl bg-[var(--color-surface-container-lowest)] p-8 text-center">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
+              <span className="material-symbols-outlined text-4xl text-green-600">
+                check_circle
+              </span>
             </div>
-            <h3 className="text-xl font-black text-[var(--color-on-surface)] mb-2">Booking Confirmed!</h3>
-            <p className="text-[var(--color-on-surface-variant)] mb-6">
-              Your appointment for {serviceName} on {new Date(selectedDate!).toLocaleDateString()} at {selectedTime} has been confirmed.
+            <h3 className="mb-2 text-xl font-black text-[var(--color-on-surface)]">
+              Booking Confirmed!
+            </h3>
+            <p className="mb-6 text-[var(--color-on-surface-variant)]">
+              Your appointment for {serviceName} on {new Date(selectedDate!).toLocaleDateString()}{" "}
+              at {selectedTime} has been confirmed.
             </p>
             <button
-              onClick={() => { setShowConfirmation(false); router.push("/app/bookings"); }}
-              className="w-full py-4 bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-xl font-bold mb-2"
+              onClick={() => {
+                setShowConfirmation(false);
+                router.push("/app/bookings");
+              }}
+              className="mb-2 w-full rounded-xl bg-[var(--color-surface-container)] py-4 font-bold text-[var(--color-on-surface)]"
             >
               View Booking
             </button>
             <button
               onClick={() => setShowConfirmation(false)}
-              className="w-full py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold"
+              className="text-on-primary w-full rounded-xl bg-[var(--color-primary)] py-4 font-bold"
             >
               Done
             </button>

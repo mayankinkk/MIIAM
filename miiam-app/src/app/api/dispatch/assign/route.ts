@@ -25,33 +25,39 @@ interface Rider {
 }
 
 function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371; 
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLng/2) * Math.sin(dLng/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 }
 
 function calculateRiderScore(rider: Rider, order: Order): number {
   const vendorDistance = calculateDistance(
-    rider.current_lat, rider.current_lng,
-    order.vendor_lat, order.vendor_lng
+    rider.current_lat,
+    rider.current_lng,
+    order.vendor_lat,
+    order.vendor_lng
   );
-  
+
   const deliveryDistance = calculateDistance(
-    order.vendor_lat, order.vendor_lng,
-    order.delivery_lat, order.delivery_lng
+    order.vendor_lat,
+    order.vendor_lng,
+    order.delivery_lat,
+    order.delivery_lng
   );
-  
+
   const totalDistance = vendorDistance + deliveryDistance;
-  
+
   const baseScore = 100;
   const distancePenalty = Math.min(totalDistance * 2, 50);
-  
+
   return Math.max(0, baseScore - distancePenalty);
 }
 
@@ -64,11 +70,17 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
   // Verify the user is authenticated and is an admin
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
   if (!profile || profile.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -91,17 +103,23 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     }
 
     if (order.rider_id) {
-      return NextResponse.json({ 
-        error: "Order already assigned",
-        assigned_to: order.rider_id 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: "Order already assigned",
+          assigned_to: order.rider_id,
+        },
+        { status: 400 }
+      );
     }
 
     const assignableStatuses = ["pending", "no_rider_available"];
     if (!assignableStatuses.includes(order.status)) {
-      return NextResponse.json({ 
-        error: `Order status "${order.status}" is not assignable` 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: `Order status "${order.status}" is not assignable`,
+        },
+        { status: 400 }
+      );
     }
 
     if (rider_id && !force_assign) {
@@ -116,7 +134,7 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Rider not available" }, { status: 400 });
       }
 
-      const { data: rpcData, error: rpcError } = await supabaseAdmin.rpc('accept_order_as_rider', {
+      const { data: rpcData, error: rpcError } = await supabaseAdmin.rpc("accept_order_as_rider", {
         p_order_id: order_id,
         p_rider_id: rider_id,
       });
@@ -124,13 +142,16 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
       const rpcSuccess = rpcData;
 
       if (rpcError || !rpcSuccess) {
-        return NextResponse.json({ error: "Failed to assign rider — order may already be taken" }, { status: 409 });
+        return NextResponse.json(
+          { error: "Failed to assign rider — order may already be taken" },
+          { status: 409 }
+        );
       }
 
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         message: "Manual assignment successful",
-        rider_id 
+        rider_id,
       });
     }
 
@@ -142,49 +163,57 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
       .eq("verification_status", "verified");
 
     if (!availableRiders || availableRiders.length === 0) {
-      return NextResponse.json({ 
-        error: "No riders available",
-        suggested_action: "queue_order"
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          error: "No riders available",
+          suggested_action: "queue_order",
+        },
+        { status: 404 }
+      );
     }
 
-    const scoredRiders = availableRiders.map(rider => ({
+    const scoredRiders = availableRiders.map((rider) => ({
       ...rider,
-      score: calculateRiderScore(rider, order)
+      score: calculateRiderScore(rider, order),
     }));
 
     scoredRiders.sort((a, b) => b.score - a.score);
 
     const bestRider = scoredRiders[0];
 
-    const { data: rpcData, error: rpcError } = await supabaseAdmin.rpc('accept_order_as_rider', {
+    const { data: rpcData, error: rpcError } = await supabaseAdmin.rpc("accept_order_as_rider", {
       p_order_id: order_id,
       p_rider_id: bestRider.id,
     });
 
     if (rpcError || !rpcData) {
-      return NextResponse.json({ error: "Failed to assign rider — order may already be taken" }, { status: 409 });
+      return NextResponse.json(
+        { error: "Failed to assign rider — order may already be taken" },
+        { status: 409 }
+      );
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       message: "Auto-assignment successful",
       assigned_rider: {
         id: bestRider.id,
         name: bestRider.name,
         phone: bestRider.phone,
-        distance: calculateDistance(
-          bestRider.current_lat, bestRider.current_lng,
-          order.vendor_lat, order.vendor_lng
-        ).toFixed(1) + " km"
+        distance:
+          calculateDistance(
+            bestRider.current_lat,
+            bestRider.current_lng,
+            order.vendor_lat,
+            order.vendor_lng
+          ).toFixed(1) + " km",
       },
-      alternatives: scoredRiders.slice(1, 4).map(r => ({
+      alternatives: scoredRiders.slice(1, 4).map((r) => ({
         id: r.id,
         name: r.name,
-        score: r.score
-      }))
+        score: r.score,
+      })),
     });
-
   } catch (error) {
     logger.error({ err: error }, "Dispatch error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -193,11 +222,18 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
 export const GET = withRateLimit(async function GET() {
   const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
   if (!profile || profile.role !== "admin") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
@@ -219,6 +255,6 @@ export const GET = withRateLimit(async function GET() {
   return NextResponse.json({
     unassigned_orders: pendingOrders?.length || 0,
     available_riders: availableRiders?.length || 0,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });

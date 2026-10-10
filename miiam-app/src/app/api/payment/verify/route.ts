@@ -14,14 +14,16 @@ const verifyPaymentSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  if (!await checkIpRateLimit(ip, 10, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 10, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   const logger = createRouteLogger("payment/verify");
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -42,7 +44,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const parsed = verifyPaymentSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = parsed.data;
@@ -102,9 +107,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: unknown) {
     logger.error({ err: error }, "Payment verification failed");
-    return NextResponse.json(
-      { error: "Payment verification failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Payment verification failed" }, { status: 500 });
   }
 }

@@ -7,7 +7,9 @@ export interface DeviceInfo {
   raw: string;
 }
 
-export function parseUserAgent(ua: string = typeof navigator !== "undefined" ? navigator.userAgent : ""): DeviceInfo {
+export function parseUserAgent(
+  ua: string = typeof navigator !== "undefined" ? navigator.userAgent : ""
+): DeviceInfo {
   const lower = ua.toLowerCase();
 
   let os = "Unknown";
@@ -35,7 +37,8 @@ export function parseUserAgent(ua: string = typeof navigator !== "undefined" ? n
 
   let deviceType: DeviceInfo["deviceType"] = "desktop";
   if (/(tablet|ipad|playbook|silk)/i.test(ua)) deviceType = "tablet";
-  else if (/mobi|android(?!.*tablet)|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua)) deviceType = "mobile";
+  else if (/mobi|android(?!.*tablet)|iphone|ipod|blackberry|iemobile|opera mini/i.test(ua))
+    deviceType = "mobile";
 
   return { os, browser, deviceType, raw: ua };
 }

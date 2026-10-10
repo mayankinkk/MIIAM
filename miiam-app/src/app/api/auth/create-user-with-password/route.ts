@@ -9,12 +9,12 @@ const logger = createRouteLogger("auth/create-user-with-password");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 20, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 20, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   const supabaseAdmin = createAdminClient();
-  
+
   try {
     const { email, password } = await request.json();
 
@@ -42,7 +42,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid verification token" }, { status: 403 });
     }
     if (!verifyHmac(cleanEmail, randomToken, hmac)) {
-      return NextResponse.json({ error: "Verification token does not match email" }, { status: 403 });
+      return NextResponse.json(
+        { error: "Verification token does not match email" },
+        { status: 403 }
+      );
     }
 
     // Find existing user by email via profiles table
@@ -55,15 +58,21 @@ export async function POST(request: NextRequest) {
     let userId = null;
 
     if (existingProfile) {
-      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(existingProfile.id, {
-        email: cleanEmail,
-        password,
-        email_confirm: true,
-      });
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+        existingProfile.id,
+        {
+          email: cleanEmail,
+          password,
+          email_confirm: true,
+        }
+      );
 
       if (updateError) {
         logger.error({ err: updateError }, "Update error");
-        return NextResponse.json({ error: updateError.message || "Failed to update account" }, { status: 500 });
+        return NextResponse.json(
+          { error: updateError.message || "Failed to update account" },
+          { status: 500 }
+        );
       }
 
       userId = existingProfile.id;
@@ -77,7 +86,10 @@ export async function POST(request: NextRequest) {
 
       if (createError) {
         logger.error({ err: createError }, "Create error");
-        return NextResponse.json({ error: createError.message || "Failed to create account" }, { status: 500 });
+        return NextResponse.json(
+          { error: createError.message || "Failed to create account" },
+          { status: 500 }
+        );
       }
 
       userId = newUser.user.id;

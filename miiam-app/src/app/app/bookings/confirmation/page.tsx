@@ -28,7 +28,10 @@ export default function BookingConfirmationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!bookingId) { setLoading(false); return; }
+    if (!bookingId) {
+      setLoading(false);
+      return;
+    }
     async function fetchBooking() {
       const { data } = await supabase
         .from("service_bookings")
@@ -43,65 +46,90 @@ export default function BookingConfirmationPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-outline/30 border-t-primary rounded-full animate-spin" />
+      <div className="bg-surface flex min-h-screen items-center justify-center">
+        <div className="border-outline/30 border-t-primary h-8 w-8 animate-spin rounded-full border-4" />
       </div>
     );
   }
 
   if (!booking) {
     return (
-      <div className="min-h-screen bg-surface flex flex-col items-center justify-center px-6">
-        <span className="material-symbols-outlined text-outline text-6xl mb-4">event_available</span>
-        <h1 className="text-xl font-black text-on-surface mb-1">No Booking Found</h1>
-        <p className="text-sm text-on-surface-variant mb-4">Your booking details will appear here.</p>
-        <Link href="/app/bookings" className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm">View All Bookings</Link>
+      <div className="bg-surface flex min-h-screen flex-col items-center justify-center px-6">
+        <span className="material-symbols-outlined text-outline mb-4 text-6xl">
+          event_available
+        </span>
+        <h1 className="text-on-surface mb-1 text-xl font-black">No Booking Found</h1>
+        <p className="text-on-surface-variant mb-4 text-sm">
+          Your booking details will appear here.
+        </p>
+        <Link
+          href="/app/bookings"
+          className="bg-primary text-on-primary rounded-xl px-6 py-3 text-sm font-bold"
+        >
+          View All Bookings
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col items-center px-4 py-12">
+    <div className="bg-surface flex min-h-screen flex-col items-center px-4 py-12">
       {/* Success Animation */}
       <div className="relative mb-6">
-        <div className="w-24 h-24 bg-accent/15 dark:bg-accent/20 rounded-full flex items-center justify-center animate-bounce-in">
+        <div className="bg-accent/15 dark:bg-accent/20 animate-bounce-in flex h-24 w-24 items-center justify-center rounded-full">
           <span className="material-symbols-outlined text-accent text-5xl">check_circle</span>
         </div>
-        <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center shadow-lg">
-          <span className="material-symbols-outlined text-white text-lg">celebration</span>
+        <div className="bg-accent absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full shadow-lg">
+          <span className="material-symbols-outlined text-lg text-white">celebration</span>
         </div>
       </div>
 
-      <h1 className="text-2xl font-black text-on-surface mb-1">Booking Confirmed!</h1>
-      <p className="text-sm text-on-surface-variant mb-6">We&apos;ll notify you when a technician is assigned</p>
+      <h1 className="text-on-surface mb-1 text-2xl font-black">Booking Confirmed!</h1>
+      <p className="text-on-surface-variant mb-6 text-sm">
+        We&apos;ll notify you when a technician is assigned
+      </p>
 
       {/* Booking Card */}
-      <div className="bg-surface-container-lowest rounded-2xl p-6 w-full max-w-sm shadow-sm border border-outline-variant/20 space-y-4">
+      <div className="bg-surface-container-lowest border-outline-variant/20 w-full max-w-sm space-y-4 rounded-2xl border p-6 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Booking ID</span>
-          <span className="text-sm font-bold text-on-surface">#{booking.id.slice(0, 8).toUpperCase()}</span>
+          <span className="text-on-surface-variant text-[10px] font-bold tracking-wider uppercase">
+            Booking ID
+          </span>
+          <span className="text-on-surface text-sm font-bold">
+            #{booking.id.slice(0, 8).toUpperCase()}
+          </span>
         </div>
 
-        <div className="h-px bg-outline-variant/20" />
+        <div className="bg-outline-variant/20 h-px" />
 
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/20 dark:bg-primary/30 rounded-full flex items-center justify-center flex-shrink-0">
-            <span className="material-symbols-outlined text-on-surface dark:text-primary text-lg">home_repair_service</span>
+          <div className="bg-primary/20 dark:bg-primary/30 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
+            <span className="material-symbols-outlined text-on-surface dark:text-primary text-lg">
+              home_repair_service
+            </span>
           </div>
           <div>
-            <p className="font-bold text-on-surface text-sm">{booking.sub_service || booking.service_type}</p>
-            <p className="text-xs text-on-surface-variant capitalize">{booking.service_type}</p>
+            <p className="text-on-surface text-sm font-bold">
+              {booking.sub_service || booking.service_type}
+            </p>
+            <p className="text-on-surface-variant text-xs capitalize">{booking.service_type}</p>
           </div>
         </div>
 
         {booking.scheduled_date && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-on-surface-variant text-sm">calendar_today</span>
-              <span className="text-xs font-bold text-on-surface-variant">Date</span>
+              <span className="material-symbols-outlined text-on-surface-variant text-sm">
+                calendar_today
+              </span>
+              <span className="text-on-surface-variant text-xs font-bold">Date</span>
             </div>
-            <span className="text-sm font-bold text-on-surface">
-              {new Date(booking.scheduled_date + "T00:00:00").toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
+            <span className="text-on-surface text-sm font-bold">
+              {new Date(booking.scheduled_date + "T00:00:00").toLocaleDateString("en-IN", {
+                weekday: "short",
+                day: "numeric",
+                month: "short",
+              })}
             </span>
           </div>
         )}
@@ -109,40 +137,51 @@ export default function BookingConfirmationPage() {
         {booking.scheduled_time && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
-              <span className="text-xs font-bold text-on-surface-variant">Time</span>
+              <span className="material-symbols-outlined text-on-surface-variant text-sm">
+                schedule
+              </span>
+              <span className="text-on-surface-variant text-xs font-bold">Time</span>
             </div>
-            <span className="text-sm font-bold text-on-surface">{booking.scheduled_time}</span>
+            <span className="text-on-surface text-sm font-bold">{booking.scheduled_time}</span>
           </div>
         )}
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-on-surface-variant text-sm">payments</span>
-            <span className="text-xs font-bold text-on-surface-variant">Amount</span>
+            <span className="material-symbols-outlined text-on-surface-variant text-sm">
+              payments
+            </span>
+            <span className="text-on-surface-variant text-xs font-bold">Amount</span>
           </div>
-          <span className="text-sm font-bold text-on-surface">₹{booking.amount || 0}</span>
+          <span className="text-on-surface text-sm font-bold">₹{booking.amount || 0}</span>
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-on-surface-variant text-sm">info</span>
-            <span className="text-xs font-bold text-on-surface-variant">Status</span>
+            <span className="text-on-surface-variant text-xs font-bold">Status</span>
           </div>
-          <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 capitalize">{booking.status}</span>
+          <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-700 capitalize dark:bg-amber-900/30 dark:text-amber-400">
+            {booking.status}
+          </span>
         </div>
 
         {booking.technician_name && (
           <>
-            <div className="h-px bg-outline-variant/20" />
+            <div className="bg-outline-variant/20 h-px" />
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-accent/15 dark:bg-accent/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="bg-accent/15 dark:bg-accent/20 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
                 <span className="material-symbols-outlined text-accent text-lg">person</span>
               </div>
               <div>
-                <p className="font-bold text-on-surface text-sm">{booking.technician_name}</p>
+                <p className="text-on-surface text-sm font-bold">{booking.technician_name}</p>
                 {booking.technician_phone && (
-                  <a href={`tel:${booking.technician_phone}`} className="text-xs text-accent font-bold">{booking.technician_phone}</a>
+                  <a
+                    href={`tel:${booking.technician_phone}`}
+                    className="text-accent text-xs font-bold"
+                  >
+                    {booking.technician_phone}
+                  </a>
                 )}
               </div>
             </div>
@@ -151,16 +190,25 @@ export default function BookingConfirmationPage() {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3 mt-6 w-full max-w-sm">
-        <Link href="/app/bookings" className="flex-1 py-3 bg-surface-container-low text-on-surface rounded-xl font-bold text-sm text-center hover:bg-surface-container-high transition-all">
+      <div className="mt-6 flex w-full max-w-sm gap-3">
+        <Link
+          href="/app/bookings"
+          className="bg-surface-container-low text-on-surface hover:bg-surface-container-high flex-1 rounded-xl py-3 text-center text-sm font-bold transition-all"
+        >
           View Bookings
         </Link>
-        <Link href="/app/services" className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm text-center hover:bg-primary-hover transition-all shadow-md shadow-primary/20">
+        <Link
+          href="/app/services"
+          className="bg-primary text-on-primary hover:bg-primary-hover shadow-primary/20 flex-1 rounded-xl py-3 text-center text-sm font-bold shadow-md transition-all"
+        >
           Book Another
         </Link>
       </div>
 
-      <Link href="/app/home" className="mt-4 text-sm font-bold text-on-surface-variant hover:text-on-surface">
+      <Link
+        href="/app/home"
+        className="text-on-surface-variant hover:text-on-surface mt-4 text-sm font-bold"
+      >
         Back to Home
       </Link>
     </div>

@@ -18,16 +18,26 @@ export async function GET(request: NextRequest) {
 
     // 2. Check if user is authenticated
     diagnostics.step = "getUser";
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     diagnostics.userAuthenticated = !!user;
     diagnostics.authError = authError?.message ?? null;
 
     if (!user) {
-      return NextResponse.json({ ...diagnostics, conclusion: "User not authenticated. Cookie might not be sent." });
+      return NextResponse.json({
+        ...diagnostics,
+        conclusion: "User not authenticated. Cookie might not be sent.",
+      });
     }
 
     // 3. Check if user is admin
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
     if (!profile || profile.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
@@ -41,7 +51,10 @@ export async function GET(request: NextRequest) {
     } catch (e) {
       diagnostics.createAdminClientOk = false;
       diagnostics.createAdminClientError = e instanceof Error ? e.message : String(e);
-      return NextResponse.json({ ...diagnostics, conclusion: "createAdminClient() crashed — SUPABASE_SERVICE_ROLE_KEY missing?" });
+      return NextResponse.json({
+        ...diagnostics,
+        conclusion: "createAdminClient() crashed — SUPABASE_SERVICE_ROLE_KEY missing?",
+      });
     }
 
     // 4. Check if profiles table is accessible
@@ -52,7 +65,9 @@ export async function GET(request: NextRequest) {
       .eq("id", user.id)
       .maybeSingle();
     diagnostics.profileExists = !!profileData;
-    diagnostics.profileData = profileData ? { role: profileData.role, hasName: !!profileData.full_name, hasEmail: !!profileData.email } : null;
+    diagnostics.profileData = profileData
+      ? { role: profileData.role, hasName: !!profileData.full_name, hasEmail: !!profileData.email }
+      : null;
     diagnostics.profileError = profileError?.message ?? null;
 
     // 5. Check if service_bookings table exists
@@ -62,7 +77,9 @@ export async function GET(request: NextRequest) {
       .select("id")
       .limit(1);
     diagnostics.serviceBookingsTableExists = !tableError;
-    diagnostics.serviceBookingsTableError = tableError ? { code: tableError.code, message: tableError.message, hint: tableError.hint } : null;
+    diagnostics.serviceBookingsTableError = tableError
+      ? { code: tableError.code, message: tableError.message, hint: tableError.hint }
+      : null;
     diagnostics.existingBookingsCount = tableCheck?.length ?? 0;
 
     // 6. Try a test insert and immediately delete it
@@ -85,7 +102,14 @@ export async function GET(request: NextRequest) {
       .select("id")
       .single();
     diagnostics.testInsertOk = !!testBooking;
-    diagnostics.testInsertError = insertError ? { code: insertError.code, message: insertError.message, details: insertError.details, hint: insertError.hint } : null;
+    diagnostics.testInsertError = insertError
+      ? {
+          code: insertError.code,
+          message: insertError.message,
+          details: insertError.details,
+          hint: insertError.hint,
+        }
+      : null;
 
     // Clean up the test row
     if (testBooking) {
@@ -116,9 +140,11 @@ export async function GET(request: NextRequest) {
 
     // Conclusion
     if (diagnostics.testInsertOk) {
-      diagnostics.conclusion = "Everything works! The test insert succeeded. The issue might be with the specific data being sent from the booking form.";
+      diagnostics.conclusion =
+        "Everything works! The test insert succeeded. The issue might be with the specific data being sent from the booking form.";
     } else if (insertError?.code === "23503") {
-      diagnostics.conclusion = "Foreign key violation — your user profile doesn't exist in the profiles table, or provider_id is invalid.";
+      diagnostics.conclusion =
+        "Foreign key violation — your user profile doesn't exist in the profiles table, or provider_id is invalid.";
     } else if (insertError?.code === "42P01") {
       diagnostics.conclusion = "Table service_bookings does not exist! Run the migration SQL.";
     } else {

@@ -17,12 +17,14 @@ export default function VendorInfoChips({ chips, className = "" }: VendorInfoChi
       {chips.map((chip, i) => (
         <div
           key={i}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 bg-surface-container rounded-full"
+          className="bg-surface-container flex items-center gap-1.5 rounded-full px-2.5 py-1.5"
         >
-          <span className={`material-symbols-outlined text-sm ${chip.color || "text-on-surface-variant"}`}>
+          <span
+            className={`material-symbols-outlined text-sm ${chip.color || "text-on-surface-variant"}`}
+          >
             {chip.icon}
           </span>
-          <span className="text-xs font-bold text-on-surface-variant">{chip.label}</span>
+          <span className="text-on-surface-variant text-xs font-bold">{chip.label}</span>
         </div>
       ))}
     </div>

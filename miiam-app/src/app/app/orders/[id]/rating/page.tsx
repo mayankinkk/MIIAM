@@ -12,17 +12,17 @@ import { Skeleton } from "@/components/Skeleton";
 import type { Translations } from "@/lib/i18n";
 import logger from "@/lib/logger";
 
-function AnimatedStarRating({ 
-  rating, 
-  hover, 
-  setHover, 
-  setRating, 
+function AnimatedStarRating({
+  rating,
+  hover,
+  setHover,
+  setRating,
   label,
-  t 
-}: { 
-  rating: number; 
-  hover: number; 
-  setHover: (v: number) => void; 
+  t,
+}: {
+  rating: number;
+  hover: number;
+  setHover: (v: number) => void;
   setRating: (v: number) => void;
   label: string;
   t: Translations;
@@ -54,7 +54,7 @@ function AnimatedStarRating({
                 className={`material-symbols-outlined text-5xl transition-all duration-300 ${
                   isActive ? "text-accent" : "text-outline-variant"
                 } ${hover === star ? "scale-110" : ""}`}
-                style={{ 
+                style={{
                   fontVariationSettings: `'FILL' ${isActive ? 1 : 0}`,
                   filter: isActive ? "drop-shadow(0 0 8px rgba(248, 203, 70, 0.5))" : "none",
                 }}
@@ -66,8 +66,14 @@ function AnimatedStarRating({
         })}
       </div>
       {rating > 0 && (
-        <p className="text-sm text-accent font-bold animate-fade-in">
-          {rating === 5 ? t.rating.excellent : rating >= 4 ? t.rating.great : rating >= 3 ? t.rating.good : t.rating.okay}
+        <p className="text-accent animate-fade-in text-sm font-bold">
+          {rating === 5
+            ? t.rating.excellent
+            : rating >= 4
+              ? t.rating.great
+              : rating >= 3
+                ? t.rating.good
+                : t.rating.okay}
         </p>
       )}
     </div>
@@ -85,7 +91,7 @@ function Confetti() {
   );
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
       {pieces.map((p, i) => (
         <div
           key={i}
@@ -136,7 +142,13 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     vendor_id: string;
     rider_id: string | null;
     vendor?: { shop_name?: string };
-    rider?: { name?: string; full_name?: string; profile_image?: string; rating?: number; total_ratings?: number };
+    rider?: {
+      name?: string;
+      full_name?: string;
+      profile_image?: string;
+      rating?: number;
+      total_ratings?: number;
+    };
   } | null>(null);
   const [foodRating, setFoodRating] = useState(0);
   const [riderRating, setRiderRating] = useState(0);
@@ -248,10 +260,15 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               .eq("id", order.rider_id)
               .single();
             if (fetchErr || !rider) break;
-            const newRating = ((rider.rating || 0) * (rider.total_ratings || 0) + riderRating) / ((rider.total_ratings || 0) + 1);
+            const newRating =
+              ((rider.rating || 0) * (rider.total_ratings || 0) + riderRating) /
+              ((rider.total_ratings || 0) + 1);
             const { error: updateErr } = await supabase
               .from("riders")
-              .update({ rating: Math.round(newRating * 10) / 10, total_ratings: (rider.total_ratings || 0) + 1 })
+              .update({
+                rating: Math.round(newRating * 10) / 10,
+                total_ratings: (rider.total_ratings || 0) + 1,
+              })
               .eq("id", order.rider_id)
               .eq("total_ratings", rider.total_ratings || 0);
             if (!updateErr) break;
@@ -283,24 +300,27 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center p-6" aria-label="Loading...">
+      <div
+        className="bg-surface flex min-h-screen items-center justify-center p-6"
+        aria-label="Loading..."
+      >
         <div className="w-full max-w-md space-y-6">
-          <div className="text-center space-y-2">
-            <Skeleton className="h-12 w-12 rounded-full mx-auto" />
-            <Skeleton className="h-6 w-40 mx-auto" />
-            <Skeleton className="h-4 w-56 mx-auto" />
+          <div className="space-y-2 text-center">
+            <Skeleton className="mx-auto h-12 w-12 rounded-full" />
+            <Skeleton className="mx-auto h-6 w-40" />
+            <Skeleton className="mx-auto h-4 w-56" />
           </div>
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 space-y-4">
-            <Skeleton className="h-5 w-32 mx-auto" />
+          <div className="space-y-4 rounded-xl bg-[var(--color-surface-container-lowest)] p-8">
+            <Skeleton className="mx-auto h-5 w-32" />
             <div className="flex justify-center gap-3">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Skeleton key={i} className="h-10 w-10 rounded-full" />
               ))}
             </div>
-            <Skeleton className="h-4 w-20 mx-auto" />
+            <Skeleton className="mx-auto h-4 w-20" />
           </div>
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 space-y-3">
-            <Skeleton className="h-5 w-36 mx-auto" />
+          <div className="space-y-3 rounded-xl bg-[var(--color-surface-container-lowest)] p-6">
+            <Skeleton className="mx-auto h-5 w-36" />
             {[1, 2, 3].map((i) => (
               <div key={i} className="flex items-center justify-between">
                 <Skeleton className="h-4 w-24" />
@@ -312,9 +332,9 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               </div>
             ))}
           </div>
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 space-y-4">
-            <Skeleton className="h-20 w-20 rounded-full mx-auto" />
-            <Skeleton className="h-5 w-32 mx-auto" />
+          <div className="space-y-4 rounded-xl bg-[var(--color-surface-container-lowest)] p-8">
+            <Skeleton className="mx-auto h-20 w-20 rounded-full" />
+            <Skeleton className="mx-auto h-5 w-32" />
             <div className="flex justify-center gap-3">
               {[1, 2, 3, 4, 5].map((i) => (
                 <Skeleton key={i} className="h-10 w-10 rounded-full" />
@@ -337,16 +357,29 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
     return (
       <>
         <Confetti />
-        <div className="min-h-screen bg-surface flex items-center justify-center p-6">
-          <div className="text-center animate-bounce-in">
-            <div className="w-32 h-32 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-primary/30">
-              <span className="material-symbols-outlined text-on-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+        <div className="bg-surface flex min-h-screen items-center justify-center p-6">
+          <div className="animate-bounce-in text-center">
+            <div className="from-primary to-primary-container shadow-primary/30 mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br shadow-xl">
+              <span
+                className="material-symbols-outlined text-on-primary text-6xl"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                favorite
+              </span>
             </div>
-            <h2 className="text-3xl font-extrabold text-on-surface mb-2">{t.rating.thanksForRating}</h2>
+            <h2 className="text-on-surface mb-2 text-3xl font-extrabold">
+              {t.rating.thanksForRating}
+            </h2>
             <p className="text-on-surface-variant font-medium">{t.rating.feedbackHelps}</p>
             <div className="mt-8 flex justify-center gap-4">
               {[1, 2, 3, 4, 5].map((i) => (
-                <span key={i} className="text-2xl animate-bounce-in" style={{ animationDelay: `${i * 0.1}s` }}>⭐</span>
+                <span
+                  key={i}
+                  className="animate-bounce-in text-2xl"
+                  style={{ animationDelay: `${i * 0.1}s` }}
+                >
+                  ⭐
+                </span>
               ))}
             </div>
           </div>
@@ -357,27 +390,44 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0px_20px_40px_rgba(0,0,0,0.06)]">
-        <div className="flex justify-between items-center w-full px-6 py-4">
+      <header className="bg-surface/80 fixed top-0 z-50 w-full shadow-[0px_20px_40px_rgba(0,0,0,0.06)] backdrop-blur-xl">
+        <div className="flex w-full items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <button onClick={() => router.back()} aria-label="Close" className="hover:opacity-80 transition-opacity">
+            <button
+              onClick={() => router.back()}
+              aria-label="Close"
+              className="transition-opacity hover:opacity-80"
+            >
               <span className="material-symbols-outlined text-on-surface">close</span>
             </button>
-            <span className="text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
+            <span className="text-accent text-2xl font-extrabold tracking-tighter">MIIAM</span>
           </div>
         </div>
       </header>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders', href: '/app/orders' }, { label: t.rating.rateAndReview }]} />
-      <main className="pt-24 pb-12 px-6 max-w-md mx-auto space-y-6">
-        <section className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-surface-container-highest rounded-full mb-4">
-            <span className="material-symbols-outlined text-accent text-4xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/home" },
+          { label: "My Orders", href: "/app/orders" },
+          { label: t.rating.rateAndReview },
+        ]}
+      />
+      <main className="mx-auto max-w-md space-y-6 px-6 pt-24 pb-12">
+        <section className="space-y-2 text-center">
+          <div className="bg-surface-container-highest mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full">
+            <span
+              className="material-symbols-outlined text-accent text-4xl"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              check_circle
+            </span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-on-surface">{t.rating.title}</h1>
+          <h1 className="text-on-surface text-3xl font-extrabold tracking-tight">
+            {t.rating.title}
+          </h1>
           <p className="text-on-surface-variant font-medium">{t.rating.subtitle}</p>
         </section>
 
-        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(0,0,0,0.04)] space-y-6">
+        <section className="space-y-6 rounded-xl bg-[var(--color-surface-container-lowest)] p-8 shadow-[0px_20px_40px_rgba(0,0,0,0.04)]">
           <AnimatedStarRating
             rating={foodRating}
             hover={hoverFood}
@@ -388,8 +438,10 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           />
         </section>
 
-        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-[0px_20px_40px_rgba(0,0,0,0.04)] space-y-4">
-          <h3 className="text-sm font-bold text-on-surface-variant text-center uppercase tracking-wider">{t.rating.rateInDetail}</h3>
+        <section className="space-y-4 rounded-xl bg-[var(--color-surface-container-lowest)] p-6 shadow-[0px_20px_40px_rgba(0,0,0,0.04)]">
+          <h3 className="text-on-surface-variant text-center text-sm font-bold tracking-wider uppercase">
+            {t.rating.rateInDetail}
+          </h3>
           <div className="space-y-3">
             {[
               { label: t.rating.tasteQuality, state: dimTaste, setter: setDimTaste },
@@ -397,7 +449,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               { label: t.rating.deliveryTime, state: dimDelivery, setter: setDimDelivery },
             ].map((dim) => (
               <div key={dim.label} className="flex items-center justify-between">
-                <span className="text-sm font-medium text-on-surface">{dim.label}</span>
+                <span className="text-on-surface text-sm font-medium">{dim.label}</span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -421,23 +473,31 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           </div>
         </section>
 
-        <section className="bg-[var(--color-surface-container-lowest)] rounded-xl p-8 shadow-[0px_20px_40px_rgba(0,0,0,0.04)] space-y-6">
+        <section className="space-y-6 rounded-xl bg-[var(--color-surface-container-lowest)] p-8 shadow-[0px_20px_40px_rgba(0,0,0,0.04)]">
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
-              <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-surface-container">
-                <BlurImage 
-                  alt="Rider" 
+              <div className="border-surface-container h-20 w-20 overflow-hidden rounded-full border-4">
+                <BlurImage
+                  alt="Rider"
                   fill
-                  className="w-full h-full"
+                  className="h-full w-full"
                   sizes="80px"
-                  src={order?.rider?.profile_image || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23e0e0e0'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='32' fill='%239e9e9e'%3E%F0%9F%9A%B5%3C/text%3E%3C/svg%3E"} 
+                  src={
+                    order?.rider?.profile_image ||
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23e0e0e0'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='32' fill='%239e9e9e'%3E%F0%9F%9A%B5%3C/text%3E%3C/svg%3E"
+                  }
                 />
               </div>
-              <div className="absolute -bottom-2 -right-2 bg-secondary text-white rounded-full p-1.5 shadow-md">
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>electric_moped</span>
+              <div className="bg-secondary absolute -right-2 -bottom-2 rounded-full p-1.5 text-white shadow-md">
+                <span
+                  className="material-symbols-outlined text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  electric_moped
+                </span>
               </div>
             </div>
-            <p className="text-sm text-on-surface-variant">{t.rating.rateDelivery}</p>
+            <p className="text-on-surface-variant text-sm">{t.rating.rateDelivery}</p>
           </div>
           <AnimatedStarRating
             rating={riderRating}
@@ -450,23 +510,30 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         </section>
 
         <section className="space-y-4">
-          <label className="block text-lg font-semibold px-2">{t.rating.tellUsMore}</label>
+          <label className="block px-2 text-lg font-semibold">{t.rating.tellUsMore}</label>
           <textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            className="w-full bg-[var(--color-surface-container-lowest)] rounded-xl border-none focus:ring-2 focus:ring-primary/40 p-6 min-h-[120px] text-on-surface shadow-[0px_10px_20px_rgba(0,0,0,0.02)] resize-none"
+            className="focus:ring-primary/40 text-on-surface min-h-[120px] w-full resize-none rounded-xl border-none bg-[var(--color-surface-container-lowest)] p-6 shadow-[0px_10px_20px_rgba(0,0,0,0.02)] focus:ring-2"
             placeholder={t.rating.shareExperience}
           />
           {/* Photo attachments */}
-          <div className="flex items-center gap-2 flex-wrap px-2">
+          <div className="flex flex-wrap items-center gap-2 px-2">
             {reviewPhotos.map((photo, idx) => (
-              <div key={idx} className="relative w-16 h-16 rounded-lg overflow-hidden border border-outline-variant/40">
+              <div
+                key={idx}
+                className="border-outline-variant/40 relative h-16 w-16 overflow-hidden rounded-lg border"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo} alt={`Review photo ${idx + 1}`} className="w-full h-full object-cover" />
+                <img
+                  src={photo}
+                  alt={`Review photo ${idx + 1}`}
+                  className="h-full w-full object-cover"
+                />
                 <button
                   type="button"
                   onClick={() => setReviewPhotos((prev) => prev.filter((_, i) => i !== idx))}
-                  className="absolute top-0.5 right-0.5 w-5 h-5 bg-black/50 rounded-full flex items-center justify-center text-white"
+                  className="absolute top-0.5 right-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-black/50 text-white"
                   aria-label="Remove photo"
                 >
                   <span className="material-symbols-outlined text-xs">close</span>
@@ -474,7 +541,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
               </div>
             ))}
             {reviewPhotos.length < 3 && (
-              <label className="w-16 h-16 rounded-lg border-2 border-dashed border-outline-variant/50 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors text-on-surface-variant">
+              <label className="border-outline-variant/50 hover:border-primary text-on-surface-variant flex h-16 w-16 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors">
                 <span className="material-symbols-outlined text-lg">add_a_photo</span>
                 <span className="text-[9px] font-bold">Add</span>
                 <input
@@ -483,13 +550,16 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
                   multiple
                   className="hidden"
                   onChange={(e) => {
-                    const files = Array.from(e.target.files || []).slice(0, 3 - reviewPhotos.length);
+                    const files = Array.from(e.target.files || []).slice(
+                      0,
+                      3 - reviewPhotos.length
+                    );
                     files.forEach((file) => {
                       const reader = new FileReader();
                       reader.onload = () => {
                         const result = reader.result;
                         if (typeof result === "string") {
-                          setReviewPhotos((prev) => prev.length < 3 ? [...prev, result] : prev);
+                          setReviewPhotos((prev) => (prev.length < 3 ? [...prev, result] : prev));
                         }
                       };
                       reader.readAsDataURL(file);
@@ -507,10 +577,10 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all active:scale-95 ${
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-all active:scale-95 ${
                 selectedTags.includes(tag)
                   ? "bg-primary text-on-primary"
-                  : "bg-[var(--color-surface-container-lowest)] text-on-surface-variant hover:bg-surface-container"
+                  : "text-on-surface-variant hover:bg-surface-container bg-[var(--color-surface-container-lowest)]"
               }`}
             >
               {tag}
@@ -521,11 +591,13 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
         <button
           onClick={handleSubmit}
           disabled={(foodRating === 0 && riderRating === 0) || submitting}
-          className="w-full bg-gradient-to-r from-primary to-[#e5b62e] text-on-primary rounded-xl py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(248,203,70,0.20)] active:scale-[0.98] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+          className="from-primary text-on-primary w-full rounded-xl bg-gradient-to-r to-[#e5b62e] py-5 text-lg font-bold shadow-[0px_15px_30px_rgba(248,203,70,0.20)] transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {submitting ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-xl animate-spin">progress_activity</span>
+              <span className="material-symbols-outlined animate-spin text-xl">
+                progress_activity
+              </span>
               Submitting...
             </span>
           ) : (
@@ -533,7 +605,7 @@ export default function RatingReviewPage({ params }: { params: Promise<{ id: str
           )}
         </button>
 
-        <p className="text-center text-on-surface-variant text-xs px-8 leading-relaxed">
+        <p className="text-on-surface-variant px-8 text-center text-xs leading-relaxed">
           {t.rating.feedbackImprove}
         </p>
       </main>

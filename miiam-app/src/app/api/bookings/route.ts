@@ -7,7 +7,9 @@ const logger = createRouteLogger("bookings");
 
 async function requireAuth() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
   return user;
 }
@@ -22,7 +24,9 @@ async function createServiceBookingsTable(): Promise<boolean> {
     const projectRef = supabaseUrl.replace("https://", "").split(".")[0];
 
     if (!projectRef || !supabasePAT) {
-      logger.error("Cannot auto-create table: missing env vars (need SUPABASE_PERSONAL_ACCESS_TOKEN)");
+      logger.error(
+        "Cannot auto-create table: missing env vars (need SUPABASE_PERSONAL_ACCESS_TOKEN)"
+      );
       return false;
     }
 
@@ -53,14 +57,17 @@ async function createServiceBookingsTable(): Promise<boolean> {
     `;
 
     // Supabase Management API requires a Personal Access Token (PAT), not the service role key
-    const mgmtRes = await fetch(`https://api.supabase.com/v1/projects/${projectRef}/database/query`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${supabasePAT}`,
-      },
-      body: JSON.stringify({ query: DDL }),
-    });
+    const mgmtRes = await fetch(
+      `https://api.supabase.com/v1/projects/${projectRef}/database/query`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${supabasePAT}`,
+        },
+        body: JSON.stringify({ query: DDL }),
+      }
+    );
 
     if (mgmtRes.ok) {
       logger.info("Table created via Management API");
@@ -76,7 +83,10 @@ async function createServiceBookingsTable(): Promise<boolean> {
   }
 }
 
-async function insertBooking(supabase: ReturnType<typeof createAdminClient>, payload: Record<string, unknown>) {
+async function insertBooking(
+  supabase: ReturnType<typeof createAdminClient>,
+  payload: Record<string, unknown>
+) {
   return supabase.from("service_bookings").insert(payload).select().single();
 }
 
@@ -87,7 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, 30, 60_000)) {
+    if (!(await checkIpRateLimit(ip, 30, 60_000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
@@ -97,7 +107,20 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient();
 
     const body = await request.json();
-    const { service_type, sub_service, user_name, user_phone, address, scheduled_date, scheduled_time, amount, notes, provider_id, lat, lng } = body;
+    const {
+      service_type,
+      sub_service,
+      user_name,
+      user_phone,
+      address,
+      scheduled_date,
+      scheduled_time,
+      amount,
+      notes,
+      provider_id,
+      lat,
+      lng,
+    } = body;
 
     if (!service_type || !scheduled_date || !scheduled_time || !address) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -178,9 +201,15 @@ export async function POST(request: NextRequest) {
     }
 
     if (error) {
-      logger.error({ code: error.code, message: error.message, details: error.details, hint: error.hint }, "Insert failed");
+      logger.error(
+        { code: error.code, message: error.message, details: error.details, hint: error.hint },
+        "Insert failed"
+      );
       if (error.code === "23503") {
-        return NextResponse.json({ error: "Account profile incomplete. Please update your profile first." }, { status: 400 });
+        return NextResponse.json(
+          { error: "Account profile incomplete. Please update your profile first." },
+          { status: 400 }
+        );
       }
       if (error.code === "23514") {
         return NextResponse.json({ error: "Invalid booking data." }, { status: 400 });
@@ -190,7 +219,11 @@ export async function POST(request: NextRequest) {
 
     // Send booking confirmation email (best-effort)
     try {
-      const { data: profile } = await supabase.from("profiles").select("email, full_name").eq("id", user_id).single();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email, full_name")
+        .eq("id", user_id)
+        .single();
       if (profile?.email) {
         const { sendBookingConfirmationEmail } = await import("@/lib/email");
         await sendBookingConfirmationEmail({
@@ -232,7 +265,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, 30, 60_000)) {
+    if (!(await checkIpRateLimit(ip, 30, 60_000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
@@ -266,7 +299,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ bookings: [] });
     }
 
-    const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .maybeSingle();
     if (!profile || profile.role !== "admin") {
       return NextResponse.json({ bookings: userBookings || [] });
     }

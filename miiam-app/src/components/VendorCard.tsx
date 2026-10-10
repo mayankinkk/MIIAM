@@ -48,25 +48,33 @@ export default memo(function VendorCard({ vendor, index = 0 }: VendorCardProps) 
     >
       <Link
         href={`/app/food/${vendor.id}`}
-        className="block bg-surface-container-lowest rounded-xl overflow-hidden border border-border-subtle shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
+        className="bg-surface-container-lowest border-border-subtle block overflow-hidden rounded-xl border shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]"
       >
         {/* Image */}
-        <div className="relative h-36 bg-surface-container">
+        <div className="bg-surface-container relative h-36">
           <BlurImage
-            src={vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+            src={
+              vendor.cover_image_url ||
+              vendor.image_url ||
+              "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+            }
             alt={vendor.shop_name}
             fill
-            className="w-full h-full"
+            className="h-full w-full"
             sizes="(max-width: 640px) 50vw, 25vw"
             fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
           />
           {/* Badges */}
           <div className="absolute top-2 left-2 flex gap-1.5">
             {vendor.is_new && (
-              <span className="bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm">NEW</span>
+              <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-black text-white shadow-sm">
+                NEW
+              </span>
             )}
             {vendor.delivery_charge === 0 && (
-              <span className="bg-primary text-on-primary text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm">FREE DEL</span>
+              <span className="bg-primary text-on-primary rounded-full px-2 py-0.5 text-[9px] font-black shadow-sm">
+                FREE DEL
+              </span>
             )}
           </div>
           {/* Status */}
@@ -77,17 +85,24 @@ export default memo(function VendorCard({ vendor, index = 0 }: VendorCardProps) 
 
         {/* Content */}
         <div className="p-3">
-          <h3 className="font-bold text-on-surface text-sm truncate">{vendor.shop_name}</h3>
-          <p className="text-xs text-on-surface-variant/60 truncate mt-0.5">{vendor.cuisine || "Various"}</p>
-          <div className="flex items-center gap-3 mt-2">
+          <h3 className="text-on-surface truncate text-sm font-bold">{vendor.shop_name}</h3>
+          <p className="text-on-surface-variant/60 mt-0.5 truncate text-xs">
+            {vendor.cuisine || "Various"}
+          </p>
+          <div className="mt-2 flex items-center gap-3">
             {vendor.rating && (
-              <span className="flex items-center gap-0.5 text-xs font-bold bg-accent text-white px-1.5 py-0.5 rounded">
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <span className="bg-accent flex items-center gap-0.5 rounded px-1.5 py-0.5 text-xs font-bold text-white">
+                <span
+                  className="material-symbols-outlined text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  star
+                </span>
                 {typeof vendor.rating === "number" ? vendor.rating.toFixed(1) : vendor.rating}
               </span>
             )}
             {vendor.delivery_time_min && vendor.delivery_time_max && (
-              <span className="flex items-center gap-0.5 text-xs text-on-surface-variant">
+              <span className="text-on-surface-variant flex items-center gap-0.5 text-xs">
                 <span className="material-symbols-outlined text-sm">schedule</span>
                 {vendor.delivery_time_min}–{vendor.delivery_time_max} min
               </span>

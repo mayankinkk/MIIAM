@@ -41,7 +41,10 @@ export default function SponsoredListingsPage() {
 
   async function load() {
     setLoading(true);
-    const { data } = await supabase.from("sponsored_listings").select("*").order("created_at", { ascending: false });
+    const { data } = await supabase
+      .from("sponsored_listings")
+      .select("*")
+      .order("created_at", { ascending: false });
     if (data) setItems(data as SponsoredItem[]);
     setLoading(false);
   }
@@ -97,7 +100,11 @@ export default function SponsoredListingsPage() {
   const handleStatusChange = async (id: string, newStatus: string) => {
     try {
       await supabase.from("sponsored_listings").update({ status: newStatus }).eq("id", id);
-      setItems(prev => prev.map(item => item.id === id ? { ...item, status: newStatus as SponsoredItem["status"] } : item));
+      setItems((prev) =>
+        prev.map((item) =>
+          item.id === id ? { ...item, status: newStatus as SponsoredItem["status"] } : item
+        )
+      );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       useToastStore.getState().addToast(`Failed: ${msg}`, "error");
@@ -105,10 +112,17 @@ export default function SponsoredListingsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!await confirm({ title: "Delete", message: "Are you sure you want to delete this sponsored listing?", variant: "danger" })) return;
+    if (
+      !(await confirm({
+        title: "Delete",
+        message: "Are you sure you want to delete this sponsored listing?",
+        variant: "danger",
+      }))
+    )
+      return;
     try {
       await supabase.from("sponsored_listings").delete().eq("id", id);
-      setItems(prev => prev.filter(item => item.id !== id));
+      setItems((prev) => prev.filter((item) => item.id !== id));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Unknown error";
       useToastStore.getState().addToast(`Failed: ${msg}`, "error");
@@ -134,15 +148,19 @@ export default function SponsoredListingsPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">Sponsored Listings</h1>
-          <p className="text-[var(--color-outline)] text-sm mt-1">Manage vendor sponsored placements</p>
+          <h1 className="text-2xl font-extrabold text-[var(--color-on-surface)]">
+            Sponsored Listings
+          </h1>
+          <p className="mt-1 text-sm text-[var(--color-outline)]">
+            Manage vendor sponsored placements
+          </p>
         </div>
         <button
           onClick={openCreateModal}
-          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2"
+          className="text-on-primary flex items-center gap-2 rounded-xl bg-[var(--color-primary)] px-6 py-3 text-sm font-bold"
         >
           <span className="material-symbols-outlined text-sm">add</span>
           New Listing
@@ -150,47 +168,75 @@ export default function SponsoredListingsPage() {
       </div>
 
       {loading ? (
-        <div className="text-center text-[var(--color-outline-variant)] font-medium py-12 animate-pulse">Loading...</div>
+        <div className="animate-pulse py-12 text-center font-medium text-[var(--color-outline-variant)]">
+          Loading...
+        </div>
       ) : items.length === 0 ? (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-12 text-center border border-[var(--color-border-subtle)]">
-          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">campaign</span>
-          <p className="text-[var(--color-outline-variant)] font-medium mt-3">No sponsored listings yet</p>
-          <button onClick={openCreateModal} className="mt-4 text-[var(--color-primary)] font-bold text-sm hover:underline">
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-12 text-center">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">
+            campaign
+          </span>
+          <p className="mt-3 font-medium text-[var(--color-outline-variant)]">
+            No sponsored listings yet
+          </p>
+          <button
+            onClick={openCreateModal}
+            className="mt-4 text-sm font-bold text-[var(--color-primary)] hover:underline"
+          >
             Create your first listing
           </button>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden">
+        <div className="overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)]">
           <table className="w-full text-left">
-            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
+            <thead className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Vendor</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Budget</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Period</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Impressions</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Clicks</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Actions</th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Vendor
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Budget
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Period
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Impressions
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Clicks
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Status
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--color-border-subtle)]">
-              {items.map(item => (
+              {items.map((item) => (
                 <tr key={item.id} className="hover:bg-[var(--color-surface-subtle)]">
-                  <td className="p-4 font-bold text-[var(--color-on-surface)] text-sm">{item.vendor_name}</td>
+                  <td className="p-4 text-sm font-bold text-[var(--color-on-surface)]">
+                    {item.vendor_name}
+                  </td>
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{item.budget}</td>
                   <td className="p-4 text-sm text-[var(--color-outline)]">
-                    {new Date(item.start_date).toLocaleDateString()} – {new Date(item.end_date).toLocaleDateString()}
+                    {new Date(item.start_date).toLocaleDateString()} –{" "}
+                    {new Date(item.end_date).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-sm font-bold">{item.impressions.toLocaleString()}</td>
                   <td className="p-4 text-sm font-bold">{item.clicks.toLocaleString()}</td>
                   <td className="p-4">
                     <select
                       value={item.status}
-                      onChange={e => handleStatusChange(item.id, e.target.value)}
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase border-0 ${
-                        item.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                        item.status === "paused" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                        "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
+                      onChange={(e) => handleStatusChange(item.id, e.target.value)}
+                      className={`rounded-full border-0 px-2.5 py-1 text-[10px] font-bold uppercase ${
+                        item.status === "active"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                          : item.status === "paused"
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                            : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                       }`}
                     >
                       <option value="active">Active</option>
@@ -222,49 +268,87 @@ export default function SponsoredListingsPage() {
       )}
 
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-md p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="font-black text-lg">{editingItem ? "Edit Listing" : "New Sponsored Listing"}</h2>
-              <button onClick={() => { setShowCreateModal(false); setEditingItem(null); }} className="text-[var(--color-outline-variant)]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-[var(--color-surface-container-lowest)] p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-black">
+                {editingItem ? "Edit Listing" : "New Sponsored Listing"}
+              </h2>
+              <button
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setEditingItem(null);
+                }}
+                className="text-[var(--color-outline-variant)]"
+              >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Vendor *</label>
+                <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                  Vendor *
+                </label>
                 <select
                   value={form.vendor_id}
-                  onChange={e => {
-                    const v = vendors.find(v => v.id === e.target.value);
-                    setForm({ ...form, vendor_id: e.target.value, vendor_name: v?.shop_name || "" });
+                  onChange={(e) => {
+                    const v = vendors.find((v) => v.id === e.target.value);
+                    setForm({
+                      ...form,
+                      vendor_id: e.target.value,
+                      vendor_name: v?.shop_name || "",
+                    });
                   }}
-                  className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm"
                 >
                   <option value="">Select vendor...</option>
-                  {vendors.map(v => (
-                    <option key={v.id} value={v.id}>{v.shop_name}</option>
+                  {vendors.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.shop_name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Start Date *</label>
-                  <input type="date" value={form.start_date} onChange={e => setForm({ ...form, start_date: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm" />
+                  <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                    Start Date *
+                  </label>
+                  <input
+                    type="date"
+                    value={form.start_date}
+                    onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">End Date *</label>
-                  <input type="date" value={form.end_date} onChange={e => setForm({ ...form, end_date: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm" />
+                  <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                    End Date *
+                  </label>
+                  <input
+                    type="date"
+                    value={form.end_date}
+                    onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm"
+                  />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] block mb-1">Budget (₹) *</label>
-                <input type="number" value={form.budget || ""} onChange={e => setForm({ ...form, budget: Number(e.target.value) })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm" placeholder="5000" />
+                <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                  Budget (₹) *
+                </label>
+                <input
+                  type="number"
+                  value={form.budget || ""}
+                  onChange={(e) => setForm({ ...form, budget: Number(e.target.value) })}
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm"
+                  placeholder="5000"
+                />
               </div>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold disabled:opacity-50"
+                className="text-on-primary w-full rounded-xl bg-[var(--color-primary)] py-3 font-bold disabled:opacity-50"
               >
                 {saving ? "Saving..." : editingItem ? "Update Listing" : "Create Listing"}
               </button>

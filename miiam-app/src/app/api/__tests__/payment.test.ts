@@ -58,7 +58,9 @@ vi.mock("@/lib/supabase/server", () => ({
     auth: {
       admin: {
         listUsers: vi.fn().mockResolvedValue({ data: { users: [] }, error: null }),
-        getUserById: vi.fn().mockResolvedValue({ data: { user: { id: "test-user" } }, error: null }),
+        getUserById: vi
+          .fn()
+          .mockResolvedValue({ data: { user: { id: "test-user" } }, error: null }),
       },
     },
     rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
@@ -74,7 +76,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 vi.mock("razorpay", () => {
   return {
-    default: vi.fn().mockImplementation(function() {
+    default: vi.fn().mockImplementation(function () {
       return {
         orders: {
           create: vi.fn().mockResolvedValue({
@@ -110,7 +112,12 @@ vi.mock("@/lib/logger", () => ({
   })),
 }));
 
-function mockRequest(method: string, url: string, body?: unknown, headers?: Record<string, string>) {
+function mockRequest(
+  method: string,
+  url: string,
+  body?: unknown,
+  headers?: Record<string, string>
+) {
   const requestHeaders = new Headers();
   if (headers) {
     Object.entries(headers).forEach(([key, value]) => {

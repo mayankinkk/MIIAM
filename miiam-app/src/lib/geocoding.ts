@@ -27,11 +27,16 @@ export function buildDisplayAddress(address: Record<string, string>): string {
     parts.push(address.road || address.street);
   }
 
-  const locality = address.neighbourhood || address.suburb || address.quarter || address.city_district || address.residential;
+  const locality =
+    address.neighbourhood ||
+    address.suburb ||
+    address.quarter ||
+    address.city_district ||
+    address.residential;
   if (locality) parts.push(locality);
 
   const city = address.city || address.town || address.village || address.county;
-  if (city && !parts.some(p => p.toLowerCase() === city.toLowerCase())) parts.push(city);
+  if (city && !parts.some((p) => p.toLowerCase() === city.toLowerCase())) parts.push(city);
 
   return parts.join(", ");
 }
@@ -50,21 +55,26 @@ function accuracyToZoom(accuracyMeters?: number): number {
 export async function reverseGeocode(
   lat: number,
   lng: number,
-  gpsAccuracyMeters?: number,
+  gpsAccuracyMeters?: number
 ): Promise<GeocodedAddress> {
   const zoom = accuracyToZoom(gpsAccuracyMeters);
 
-  const data = await withRetry(async () => {
-    const res = await fetch(
-      `${NOMINATIM_REVERSE_URL}&lat=${lat}&lon=${lng}&zoom=${zoom}&addressdetails=1&extratags=1`,
-      { headers: HEADERS },
-    );
-    if (!res.ok) throw new Error(`Nominatim ${res.status}`);
-    return res.json();
-  }, 2, 800);
+  const data = await withRetry(
+    async () => {
+      const res = await fetch(
+        `${NOMINATIM_REVERSE_URL}&lat=${lat}&lon=${lng}&zoom=${zoom}&addressdetails=1&extratags=1`,
+        { headers: HEADERS }
+      );
+      if (!res.ok) throw new Error(`Nominatim ${res.status}`);
+      return res.json();
+    },
+    2,
+    800
+  );
 
   const addr = data.address || {};
-  const displayAddress = buildDisplayAddress(addr) ||
+  const displayAddress =
+    buildDisplayAddress(addr) ||
     data.display_name?.split(",").slice(0, 3).join(", ") ||
     `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
@@ -108,7 +118,8 @@ export async function geocodePincode(pin: string): Promise<GeocodedAddress | nul
 
     const hit = data[0];
     const addr = hit.address || {};
-    const displayAddress = buildDisplayAddress(addr) ||
+    const displayAddress =
+      buildDisplayAddress(addr) ||
       hit.display_name?.split(",").slice(0, 3).join(", ") ||
       `PIN: ${pin}`;
 

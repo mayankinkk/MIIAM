@@ -14,7 +14,7 @@ export default function PullToRefresh({
   children,
   onRefresh,
   threshold = 80,
-  className = ""
+  className = "",
 }: PullToRefreshProps) {
   const [refreshing, setRefreshing] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
@@ -82,13 +82,10 @@ export default function PullToRefresh({
   const progress = Math.min(pullDistance / threshold, 1);
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative overflow-hidden ${className}`}
-    >
+    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
       {/* Pull Indicator */}
       <div
-        className="absolute top-0 left-0 right-0 flex items-center justify-center z-10"
+        className="absolute top-0 right-0 left-0 z-10 flex items-center justify-center"
         style={{
           height: refreshing ? 60 : pullDistance,
           opacity: pullDistance > 10 || refreshing ? 1 : 0,
@@ -102,7 +99,7 @@ export default function PullToRefresh({
               animate={{ scale: 1, rotate: 360 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <div className="w-7 h-7 border-[3px] border-primary border-t-transparent rounded-full animate-spin" />
+              <div className="border-primary h-7 w-7 animate-spin rounded-full border-[3px] border-t-transparent" />
             </motion.div>
           ) : (
             <>
@@ -110,12 +107,14 @@ export default function PullToRefresh({
                 animate={{ rotate: progress * 180, scale: 0.8 + progress * 0.4 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <span className="material-symbols-outlined text-accent text-2xl">arrow_downward</span>
+                <span className="material-symbols-outlined text-accent text-2xl">
+                  arrow_downward
+                </span>
               </motion.div>
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: progress }}
-                className="text-[11px] font-bold text-accent"
+                className="text-accent text-[11px] font-bold"
               >
                 {progress >= 1 ? "Release to refresh" : "Pull down"}
               </motion.span>

@@ -16,7 +16,7 @@ export default function EditProfilePage() {
   const supabase = useMemo(() => createClient(), []);
   const { addToast } = useToastStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -32,13 +32,20 @@ export default function EditProfilePage() {
   useEffect(() => {
     async function loadProfile() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (!session) {
           router.push("/app/profile");
           return;
         }
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { setLoading(false); return; }
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
 
         const { data: profile } = await supabase
           .from("profiles")
@@ -66,27 +73,25 @@ export default function EditProfilePage() {
     try {
       setError(null);
       setUploading(true);
-      
+
       if (!event.target.files || event.target.files.length === 0) {
         throw new Error(t.profile.selectImage);
       }
 
       const file = event.target.files[0];
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file);
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
 
       if (uploadError) {
         throw uploadError;
       }
 
-      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      
-      setFormData(prev => ({ ...prev, avatarUrl: data.publicUrl }));
+      const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+
+      setFormData((prev) => ({ ...prev, avatarUrl: data.publicUrl }));
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Upload failed");
     } finally {
@@ -102,30 +107,30 @@ export default function EditProfilePage() {
       addToast(t.profile.enterFullName, "error");
       return;
     }
-    const phoneDigits = formData.phone.replace(/\D/g, '');
+    const phoneDigits = formData.phone.replace(/\D/g, "");
     if (phoneDigits.length !== 10) {
       addToast(t.profile.invalidPhone, "error");
       return;
     }
-    if (!formData.email.includes('@') || !formData.email.includes('.')) {
+    if (!formData.email.includes("@") || !formData.email.includes(".")) {
       addToast(t.profile.invalidEmail, "error");
       return;
     }
 
     setSaving(true);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .upsert({
-        id: user.id,
-        email: user.email,
-        full_name: formData.fullName,
-        phone: formData.phone,
-        avatar_url: formData.avatarUrl,
-      });
+    const { error: updateError } = await supabase.from("profiles").upsert({
+      id: user.id,
+      email: user.email,
+      full_name: formData.fullName,
+      phone: formData.phone,
+      avatar_url: formData.avatarUrl,
+    });
 
     if (updateError) {
       setError(updateError.message);
@@ -138,17 +143,17 @@ export default function EditProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex justify-center pt-32">
-        <div className="w-full max-w-lg px-6 space-y-6">
+      <div className="bg-surface flex min-h-screen justify-center pt-32">
+        <div className="w-full max-w-lg space-y-6 px-6">
           <div className="flex flex-col items-center space-y-4">
-            <div className="w-24 h-24 rounded-full bg-surface-container animate-pulse" />
-            <div className="h-4 bg-surface-container rounded w-32 animate-pulse" />
+            <div className="bg-surface-container h-24 w-24 animate-pulse rounded-full" />
+            <div className="bg-surface-container h-4 w-32 animate-pulse rounded" />
           </div>
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="space-y-1.5">
-                <div className="h-3 bg-surface-container rounded w-20 animate-pulse" />
-                <div className="h-12 bg-surface-container rounded-xl animate-pulse" />
+                <div className="bg-surface-container h-3 w-20 animate-pulse rounded" />
+                <div className="bg-surface-container h-12 animate-pulse rounded-xl" />
               </div>
             ))}
           </div>
@@ -159,36 +164,56 @@ export default function EditProfilePage() {
 
   return (
     <>
-      <header className="fixed top-0 w-full z-50 flex items-center px-6 py-4 bg-surface/80 dark:bg-[var(--color-surface)]/80 backdrop-blur-2xl shadow-[0px_20px_40px_rgba(0,0,0,0.06)]">
-        <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-all mr-4">
+      <header className="bg-surface/80 fixed top-0 z-50 flex w-full items-center px-6 py-4 shadow-[0px_20px_40px_rgba(0,0,0,0.06)] backdrop-blur-2xl dark:bg-[var(--color-surface)]/80">
+        <Link
+          href="/app/profile"
+          aria-label="Go back"
+          className="hover:bg-surface-container mr-4 flex h-10 w-10 items-center justify-center rounded-full transition-all"
+        >
           <span className="material-symbols-outlined text-accent">arrow_back</span>
         </Link>
-        <span className="text-xl font-extrabold tracking-tight text-on-surface">{t.settings.editProfile}</span>
+        <span className="text-on-surface text-xl font-extrabold tracking-tight">
+          {t.settings.editProfile}
+        </span>
       </header>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Profile', href: '/app/profile' }, { label: 'Edit Profile' }]} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/home" },
+          { label: "Profile", href: "/app/profile" },
+          { label: "Edit Profile" },
+        ]}
+      />
 
-      <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto">
+      <main className="mx-auto max-w-2xl px-6 pt-24 pb-32">
         {error && (
-          <div className="mb-6 p-4 bg-error-container/10 border border-[#f95630]/30 rounded-xl text-error text-sm font-medium">
+          <div className="bg-error-container/10 text-error mb-6 rounded-xl border border-[#f95630]/30 p-4 text-sm font-medium">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-xl p-6 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] space-y-6">
-            
+          <div className="space-y-6 rounded-xl bg-[var(--color-surface-container-lowest)] p-6 shadow-[0px_10px_30px_rgba(0,0,0,0.04)] dark:bg-[var(--color-surface-container)]">
             {/* Avatar Upload */}
-            <div className="flex flex-col items-center justify-center border-b border-outline-variant/20 pb-6 mb-6">
-              <div className="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-accent text-3xl font-bold mb-3 overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+            <div className="border-outline-variant/20 mb-6 flex flex-col items-center justify-center border-b pb-6">
+              <div
+                className="bg-surface-container text-accent group relative mb-3 flex h-24 w-24 cursor-pointer items-center justify-center overflow-hidden rounded-full text-3xl font-bold"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 {formData.avatarUrl ? (
-                  <BlurImage src={formData.avatarUrl} alt="Avatar" fill className="w-full h-full" sizes="96px" />
+                  <BlurImage
+                    src={formData.avatarUrl}
+                    alt="Avatar"
+                    fill
+                    className="h-full w-full"
+                    sizes="96px"
+                  />
                 ) : (
                   formData.fullName?.charAt(0).toUpperCase() || "U"
                 )}
                 {uploading && (
-                  <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/60 flex items-center justify-center">
-                    <span className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface-container-lowest)]/60">
+                    <span className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
                   </div>
                 )}
               </div>
@@ -199,44 +224,66 @@ export default function EditProfilePage() {
                 accept="image/*"
                 className="hidden"
               />
-              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="text-secondary text-sm font-bold hover:underline disabled:opacity-50">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="text-secondary text-sm font-bold hover:underline disabled:opacity-50"
+              >
                 {uploading ? t.profile.uploading : t.profile.changePhoto}
               </button>
             </div>
 
             <div>
-              <label htmlFor="full-name" className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.fullName}</label>
+              <label
+                htmlFor="full-name"
+                className="text-on-surface-variant mb-2 block px-1 text-xs font-bold tracking-widest uppercase"
+              >
+                {t.profile.fullName}
+              </label>
               <input
                 id="full-name"
                 type="text"
                 required
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full bg-surface-container-low dark:bg-[var(--color-surface-container)] border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface dark:text-[var(--color-on-surface)]"
+                className="bg-surface-container-low focus:ring-primary/40 text-on-surface w-full rounded-xl border-none px-5 py-4 font-medium focus:ring-2 focus:outline-none dark:bg-[var(--color-surface-container)] dark:text-[var(--color-on-surface)]"
                 placeholder="John Doe"
               />
             </div>
 
             <div>
-              <label htmlFor="email-address" className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.emailAddress}</label>
+              <label
+                htmlFor="email-address"
+                className="text-on-surface-variant mb-2 block px-1 text-xs font-bold tracking-widest uppercase"
+              >
+                {t.profile.emailAddress}
+              </label>
               <input
                 id="email-address"
                 type="email"
                 disabled
                 value={formData.email}
-                className="w-full bg-[#f8f9fa] dark:bg-[var(--color-surface-container)] border-none rounded-xl px-5 py-4 text-on-surface-variant dark:text-[var(--color-outline)] cursor-not-allowed opacity-70 font-medium"
+                className="text-on-surface-variant w-full cursor-not-allowed rounded-xl border-none bg-[#f8f9fa] px-5 py-4 font-medium opacity-70 dark:bg-[var(--color-surface-container)] dark:text-[var(--color-outline)]"
               />
-              <p className="text-[10px] text-on-surface-variant mt-2 px-1 font-medium">{t.profile.emailCannotChange}</p>
+              <p className="text-on-surface-variant mt-2 px-1 text-[10px] font-medium">
+                {t.profile.emailCannotChange}
+              </p>
             </div>
 
             <div>
-              <label htmlFor="phone-number" className="block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2 px-1">{t.profile.phoneNumber}</label>
+              <label
+                htmlFor="phone-number"
+                className="text-on-surface-variant mb-2 block px-1 text-xs font-bold tracking-widest uppercase"
+              >
+                {t.profile.phoneNumber}
+              </label>
               <input
                 id="phone-number"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full bg-surface-container-low dark:bg-[var(--color-surface-container)] border-none rounded-xl px-5 py-4 focus:outline-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface dark:text-[var(--color-on-surface)]"
+                className="bg-surface-container-low focus:ring-primary/40 text-on-surface w-full rounded-xl border-none px-5 py-4 font-medium focus:ring-2 focus:outline-none dark:bg-[var(--color-surface-container)] dark:text-[var(--color-on-surface)]"
                 placeholder="+1 234 567 8900"
               />
             </div>
@@ -245,14 +292,16 @@ export default function EditProfilePage() {
           <button
             type="submit"
             disabled={saving || uploading}
-            className="w-full bento-gradient-red text-on-primary py-5 rounded-xl font-extrabold text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-70 flex justify-center items-center gap-2"
+            className="bento-gradient-red text-on-primary shadow-primary/20 flex w-full items-center justify-center gap-2 rounded-xl py-5 text-lg font-extrabold shadow-lg transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70"
           >
-                {saving ? (
-                  <>
-                    <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    {t.profile.saving}
-                  </>
-                ) : t.common.save}
+            {saving ? (
+              <>
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                {t.profile.saving}
+              </>
+            ) : (
+              t.common.save
+            )}
           </button>
         </form>
       </main>

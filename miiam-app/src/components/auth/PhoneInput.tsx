@@ -51,11 +51,11 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-bold text-[var(--color-on-surface)] mb-2">
+        <label className="mb-2 block text-sm font-bold text-[var(--color-on-surface)]">
           Mobile Number
         </label>
         <div className="flex gap-2">
-          <div className="px-4 py-3 bg-[var(--color-surface-container)] rounded-xl font-bold text-[var(--color-on-surface-variant)]">
+          <div className="rounded-xl bg-[var(--color-surface-container)] px-4 py-3 font-bold text-[var(--color-on-surface-variant)]">
             +91
           </div>
           <input
@@ -66,20 +66,20 @@ export default function PhoneInput({ purpose = "signup", onSuccess }: PhoneInput
               setPhone(val);
             }}
             placeholder="Enter 10-digit number"
-            className="flex-1 px-4 py-3 rounded-xl border-2 border-[var(--color-border-subtle)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20 outline-none font-bold"
+            className="flex-1 rounded-xl border-2 border-[var(--color-border-subtle)] px-4 py-3 font-bold outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/20"
             maxLength={10}
           />
         </div>
-        {error && <p className="text-status-error text-sm mt-2">{error}</p>}
+        {error && <p className="text-status-error mt-2 text-sm">{error}</p>}
       </div>
 
       <button
         onClick={handleSubmit}
         disabled={phone.length !== 10 || isLoading}
-        className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
+        className={`w-full rounded-xl py-4 text-lg font-bold transition-all ${
           phone.length === 10 && !isLoading
             ? "bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary"
-            : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
+            : "cursor-not-allowed bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
         }`}
       >
         {isLoading ? "Sending..." : "Send OTP"}

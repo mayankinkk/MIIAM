@@ -2,11 +2,7 @@
 
 import { useEffect, useCallback, useMemo, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import {
-  useNotificationStore,
-  subscribe,
-  notify,
-} from "@/lib/store/notificationStore";
+import { useNotificationStore, subscribe, notify } from "@/lib/store/notificationStore";
 import logger from "@/lib/logger";
 
 export function useNotifications() {
@@ -37,36 +33,45 @@ export function useNotifications() {
     let cancelled = false;
     initializeNotifications();
 
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
-      if (cancelled || !user) return;
-      channelRef.current = supabase
-        .channel(`notifications-${user.id}`)
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "notifications",
-            filter: `user_id=eq.${user.id}`,
-          },
-          (payload: Record<string, unknown>) => {
-            const newNotification = payload.new as { title: string; body?: string; icon_url?: string; type?: string; data?: Record<string, unknown>; action_url?: string };
-            addNotification({
-              title: newNotification.title,
-              body: newNotification.body ?? "",
-              icon: newNotification.icon_url,
-              tag: newNotification.type,
-              data: newNotification.data,
-              actionUrl: newNotification.action_url,
-            });
-            notify(newNotification.title, {
-              body: newNotification.body,
-              tag: newNotification.type,
-            });
-          }
-        )
-        .subscribe();
-    });
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
+        if (cancelled || !user) return;
+        channelRef.current = supabase
+          .channel(`notifications-${user.id}`)
+          .on(
+            "postgres_changes",
+            {
+              event: "INSERT",
+              schema: "public",
+              table: "notifications",
+              filter: `user_id=eq.${user.id}`,
+            },
+            (payload: Record<string, unknown>) => {
+              const newNotification = payload.new as {
+                title: string;
+                body?: string;
+                icon_url?: string;
+                type?: string;
+                data?: Record<string, unknown>;
+                action_url?: string;
+              };
+              addNotification({
+                title: newNotification.title,
+                body: newNotification.body ?? "",
+                icon: newNotification.icon_url,
+                tag: newNotification.type,
+                data: newNotification.data,
+                actionUrl: newNotification.action_url,
+              });
+              notify(newNotification.title, {
+                body: newNotification.body,
+                tag: newNotification.type,
+              });
+            }
+          )
+          .subscribe();
+      });
 
     return () => {
       cancelled = true;
@@ -76,17 +81,14 @@ export function useNotifications() {
 
   const sendPushNotification = useCallback(
     async (userId: string, title: string, body: string, data?: Record<string, unknown>) => {
-      const { data: result, error } = await supabase.functions.invoke(
-        "send-notification",
-        {
-          body: {
-            user_id: userId,
-            title,
-            body,
-            data,
-          },
-        }
-      );
+      const { data: result, error } = await supabase.functions.invoke("send-notification", {
+        body: {
+          user_id: userId,
+          title,
+          body,
+          data,
+        },
+      });
 
       if (error) {
         logger.error({ err: error }, "Failed to send push notification");

@@ -8,7 +8,7 @@ import logger from "@/lib/logger";
 
 const RiderMap = dynamic(() => import("@/components/rider/RiderMap"), {
   ssr: false,
-  loading: () => <div className="h-56 bg-surface-container rounded-2xl animate-pulse" />,
+  loading: () => <div className="bg-surface-container h-56 animate-pulse rounded-2xl" />,
 });
 
 interface BookingData {
@@ -69,7 +69,12 @@ export default function TechnicianTracker({ booking }: TechnicianTrackerProps) {
       .channel(`tech-track-${booking.id}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "rider_locations", filter: `order_id=eq.${booking.id}` },
+        {
+          event: "*",
+          schema: "public",
+          table: "rider_locations",
+          filter: `order_id=eq.${booking.id}`,
+        },
         (payload: { new: unknown }) => {
           const row = payload.new as { lat?: number; lng?: number } | null;
           if (row?.lat != null && row?.lng != null) {
@@ -111,12 +116,16 @@ export default function TechnicianTracker({ booking }: TechnicianTrackerProps) {
   if (!hasTechnician) {
     if (!isActive) return null;
     return (
-      <div className="bg-surface-container-lowest rounded-2xl p-6 text-center border border-outline-variant/10">
-        <span className="material-symbols-outlined text-5xl text-amber-500 mb-3 block">person_search</span>
-        <h2 className="text-lg font-bold text-on-surface mb-1">Finding your technician</h2>
-        <p className="text-on-surface-variant text-sm">We&apos;re assigning a technician to your booking. You&apos;ll be notified once confirmed.</p>
-        <div className="mt-4 flex items-center justify-center gap-2 text-xs text-on-surface-variant">
-          <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse" />
+      <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-6 text-center">
+        <span className="material-symbols-outlined mb-3 block text-5xl text-amber-500">
+          person_search
+        </span>
+        <h2 className="text-on-surface mb-1 text-lg font-bold">Finding your technician</h2>
+        <p className="text-on-surface-variant text-sm">
+          We&apos;re assigning a technician to your booking. You&apos;ll be notified once confirmed.
+        </p>
+        <div className="text-on-surface-variant mt-4 flex items-center justify-center gap-2 text-xs">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-amber-500" />
           Searching nearby technicians…
         </div>
       </div>
@@ -127,7 +136,7 @@ export default function TechnicianTracker({ booking }: TechnicianTrackerProps) {
     <div className="space-y-4">
       {/* Live map when tech is moving, or booking is active */}
       {isActive && (techLoc || booking.address) && (
-        <div className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
+        <div className="bg-surface-container-lowest border-outline-variant/10 overflow-hidden rounded-2xl border">
           <div className="h-56">
             <RiderMap
               pickup={techLoc ? { ...techLoc, label: "Technician", kind: "rider" as const } : null}
@@ -143,48 +152,49 @@ export default function TechnicianTracker({ booking }: TechnicianTrackerProps) {
             />
           </div>
           {eta != null && (
-            <div className="px-4 py-3 border-t border-outline-variant/10 flex items-center gap-2">
+            <div className="border-outline-variant/10 flex items-center gap-2 border-t px-4 py-3">
               <span className="material-symbols-outlined text-accent text-lg">schedule</span>
-              <p className="text-sm font-bold text-on-surface">
-                Arriving in ~{eta} min
-              </p>
+              <p className="text-on-surface text-sm font-bold">Arriving in ~{eta} min</p>
             </div>
           )}
         </div>
       )}
 
       {/* Technician card */}
-      <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="material-symbols-outlined text-accent text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-          <h2 className="text-sm font-bold text-accent">Technician Assigned</h2>
+      <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <span
+            className="material-symbols-outlined text-accent text-sm"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            check_circle
+          </span>
+          <h2 className="text-accent text-sm font-bold">Technician Assigned</h2>
         </div>
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="bg-primary/10 flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full">
             <span className="material-symbols-outlined text-accent text-2xl">engineering</span>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-bold text-on-surface text-base">{booking.technician_name}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-on-surface text-base font-bold">{booking.technician_name}</p>
             {booking.technician_phone && (
-              <p className="text-sm text-on-surface-variant mt-0.5">{booking.technician_phone}</p>
+              <p className="text-on-surface-variant mt-0.5 text-sm">{booking.technician_phone}</p>
             )}
-            {eta != null && (
-              <p className="text-xs font-bold text-accent mt-1">ETA ~{eta} min</p>
-            )}
+            {eta != null && <p className="text-accent mt-1 text-xs font-bold">ETA ~{eta} min</p>}
           </div>
-          <div className="flex gap-2 shrink-0">
+          <div className="flex shrink-0 gap-2">
             {booking.technician_phone && (
               <>
                 <button
                   onClick={callTechnician}
-                  className="w-11 h-11 bg-green-100 rounded-full flex items-center justify-center text-green-600 hover:bg-green-200 active:scale-95 transition-all"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-green-100 text-green-600 transition-all hover:bg-green-200 active:scale-95"
                   aria-label="Call technician"
                 >
                   <span className="material-symbols-outlined">call</span>
                 </button>
                 <button
                   onClick={messageTechnician}
-                  className="w-11 h-11 bg-primary/10 rounded-full flex items-center justify-center text-accent hover:bg-primary/20 active:scale-95 transition-all"
+                  className="bg-primary/10 text-accent hover:bg-primary/20 flex h-11 w-11 items-center justify-center rounded-full transition-all active:scale-95"
                   aria-label="Message technician"
                 >
                   <span className="material-symbols-outlined">chat</span>

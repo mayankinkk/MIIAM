@@ -226,26 +226,32 @@ export default function AdminRiderMap({ riders, onRiderClick }: Props) {
   }, [ridersWithCoords, onRiderClick]);
 
   return (
-    <div className="relative w-full h-full">
-      <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
+    <div className="relative h-full w-full">
+      <div ref={mapRef} className="h-full w-full" style={{ position: "absolute", inset: 0 }} />
       {fetchError && (
-        <div className="absolute top-2 left-2 right-2 z-[999] bg-status-error/10 border border-status-error/20 rounded-lg p-2 text-xs text-status-error">
+        <div className="bg-status-error/10 border-status-error/20 text-status-error absolute top-2 right-2 left-2 z-[999] rounded-lg border p-2 text-xs">
           Location fetch error: {fetchError}
         </div>
       )}
       {locatedRiders.length === 0 && !fetchError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface-subtle)]/80 pointer-events-none z-[999]">
+        <div className="pointer-events-none absolute inset-0 z-[999] flex items-center justify-center bg-[var(--color-surface-subtle)]/80">
           <div className="text-center">
-            <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60 mb-2">location_off</span>
-            <p className="text-sm font-bold text-[var(--color-outline-variant)]">No rider locations yet</p>
-            <p className="text-xs text-[var(--color-outline-variant)]/60">Riders will appear here when they start delivering</p>
+            <span className="material-symbols-outlined mb-2 text-4xl text-[var(--color-outline-variant)]/60">
+              location_off
+            </span>
+            <p className="text-sm font-bold text-[var(--color-outline-variant)]">
+              No rider locations yet
+            </p>
+            <p className="text-xs text-[var(--color-outline-variant)]/60">
+              Riders will appear here when they start delivering
+            </p>
           </div>
         </div>
       )}
       {fetchError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface-subtle)]/80 pointer-events-none z-[998]">
+        <div className="pointer-events-none absolute inset-0 z-[998] flex items-center justify-center bg-[var(--color-surface-subtle)]/80">
           <div className="text-center">
-            <span className="material-symbols-outlined text-4xl text-red-300 mb-2">error</span>
+            <span className="material-symbols-outlined mb-2 text-4xl text-red-300">error</span>
             <p className="text-sm font-bold text-red-400">Failed to load rider locations</p>
             <p className="text-xs text-red-300">Check Supabase table permissions</p>
           </div>

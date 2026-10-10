@@ -16,7 +16,12 @@ interface OrderChatOverlayProps {
 
 const QUICK_REPLIES: Record<string, Record<string, string[]> | string[]> = {
   user: {
-    "user-vendor": ["Is my order confirmed?", "Any extra items needed?", "How long will it take?", "Thank you!"],
+    "user-vendor": [
+      "Is my order confirmed?",
+      "Any extra items needed?",
+      "How long will it take?",
+      "Thank you!",
+    ],
     "user-rider": ["Where are you?", "Please call me", "Almost there?", "I'm outside"],
     all: ["Where are you?", "Please call me", "Almost there?", "I'm outside"],
   },
@@ -34,14 +39,20 @@ export default function OrderChatOverlay({
   onClose,
 }: OrderChatOverlayProps) {
   const participants =
-    thread === "user-vendor" ? (["user", "vendor"] as const) :
-    thread === "user-rider" ? (["user", "rider"] as const) :
-    undefined;
+    thread === "user-vendor"
+      ? (["user", "vendor"] as const)
+      : thread === "user-rider"
+        ? (["user", "rider"] as const)
+        : undefined;
 
   const { messages, loading, isTyping, sendMessage, sendTypingIndicator } = useChat(
     orderId,
     currentUserId,
-    { participants: participants ? (Array.from(participants) as Array<"user" | "rider" | "vendor" | "support">) : undefined }
+    {
+      participants: participants
+        ? (Array.from(participants) as Array<"user" | "rider" | "vendor" | "support">)
+        : undefined,
+    }
   );
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -72,25 +83,37 @@ export default function OrderChatOverlay({
     sendMessage(msg, senderType);
   };
 
-  const replies = senderType === "user"
-    ? ((QUICK_REPLIES.user as Record<string, string[]>)[thread] || (QUICK_REPLIES.user as Record<string, string[]>).all)
-    : ((QUICK_REPLIES[senderType] as string[]) || []);
+  const replies =
+    senderType === "user"
+      ? (QUICK_REPLIES.user as Record<string, string[]>)[thread] ||
+        (QUICK_REPLIES.user as Record<string, string[]>).all
+      : (QUICK_REPLIES[senderType] as string[]) || [];
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-end animate-fade-in" onClick={onClose}>
+    <div
+      className="animate-fade-in fixed inset-0 z-[100] flex items-end bg-black/50"
+      onClick={onClose}
+    >
       <div
-        className="bg-surface text-on-surface rounded-t-[2.5rem] w-full h-[85vh] flex flex-col animate-slide-up shadow-[0_-20px_40px_rgba(0,0,0,0.1)]"
+        className="bg-surface text-on-surface animate-slide-up flex h-[85vh] w-full flex-col rounded-t-[2.5rem] shadow-[0_-20px_40px_rgba(0,0,0,0.1)]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <header className="p-6 pb-4 flex items-center justify-between border-b border-outline-variant/10">
+        <header className="border-outline-variant/10 flex items-center justify-between border-b p-6 pb-4">
           <div className="flex items-center gap-3">
-            <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+            <button
+              onClick={onClose}
+              className="hover:bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+            >
               <span className="material-symbols-outlined text-secondary">arrow_back</span>
             </button>
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary overflow-hidden">
+            <div className="bg-primary text-on-primary flex h-10 w-10 items-center justify-center overflow-hidden rounded-full">
               {otherAvatar ? (
-                <BlurImage src={otherAvatar} alt={otherName || "avatar"} className="w-full h-full object-cover" />
+                <BlurImage
+                  src={otherAvatar}
+                  alt={otherName || "avatar"}
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <span className="material-symbols-outlined">
                   {thread === "user-vendor" ? "storefront" : "person"}
@@ -98,27 +121,38 @@ export default function OrderChatOverlay({
               )}
             </div>
             <div>
-              <h1 className="font-bold text-on-surface">{otherName || (senderType === "rider" ? "Customer" : thread === "user-vendor" ? "Restaurant" : "Rider")}</h1>
-              <p className="text-[10px] font-medium text-status-success flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-status-success rounded-full"></span>
+              <h1 className="text-on-surface font-bold">
+                {otherName ||
+                  (senderType === "rider"
+                    ? "Customer"
+                    : thread === "user-vendor"
+                      ? "Restaurant"
+                      : "Rider")}
+              </h1>
+              <p className="text-status-success flex items-center gap-1 text-[10px] font-medium">
+                <span className="bg-status-success h-1.5 w-1.5 rounded-full"></span>
                 {thread === "user-vendor" ? "Restaurant" : "Online"}
               </p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Close" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="hover:bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+          >
             <span className="material-symbols-outlined text-on-surface-variant">close</span>
           </button>
         </header>
 
         {/* Messages */}
-        <main className="flex-1 overflow-y-auto p-6 space-y-6">
+        <main className="flex-1 space-y-6 overflow-y-auto p-6">
           {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="flex h-32 items-center justify-center">
+              <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
             </div>
           ) : messages.length === 0 ? (
-            <div className="text-center py-12 text-on-surface-variant">
-              <span className="material-symbols-outlined text-6xl block mb-4">chat</span>
+            <div className="text-on-surface-variant py-12 text-center">
+              <span className="material-symbols-outlined mb-4 block text-6xl">chat</span>
               <p>Start the conversation</p>
             </div>
           ) : (
@@ -126,18 +160,28 @@ export default function OrderChatOverlay({
               {messages.map((msg) => {
                 const isMe = msg.sender_id === currentUserId;
                 const time = msg.created_at
-                  ? new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                  ? new Date(msg.created_at).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
                   : "";
                 return (
-                  <div key={msg.id} className={`flex flex-col gap-1 max-w-[85%] ${isMe ? "self-end items-end" : "self-start items-start"}`}>
-                    <div className={`p-4 rounded-t-2xl shadow-sm ${
-                      isMe 
-                        ? "bg-primary text-on-primary rounded-bl-2xl rounded-br-sm" 
-                        : "bg-secondary-container text-on-secondary-container rounded-br-2xl rounded-bl-sm"
-                    }`}>
+                  <div
+                    key={msg.id}
+                    className={`flex max-w-[85%] flex-col gap-1 ${isMe ? "items-end self-end" : "items-start self-start"}`}
+                  >
+                    <div
+                      className={`rounded-t-2xl p-4 shadow-sm ${
+                        isMe
+                          ? "bg-primary text-on-primary rounded-br-sm rounded-bl-2xl"
+                          : "bg-secondary-container text-on-secondary-container rounded-br-2xl rounded-bl-sm"
+                      }`}
+                    >
                       <p className="text-sm font-medium">{msg.message}</p>
                     </div>
-                    <span className="text-[10px] text-on-surface-variant font-medium mx-1">{time}</span>
+                    <span className="text-on-surface-variant mx-1 text-[10px] font-medium">
+                      {time}
+                    </span>
                   </div>
                 );
               })}
@@ -146,44 +190,55 @@ export default function OrderChatOverlay({
           )}
 
           {isTyping && (
-            <div className="self-start bg-secondary-container p-4 rounded-t-2xl rounded-br-2xl rounded-bl-sm">
+            <div className="bg-secondary-container self-start rounded-t-2xl rounded-br-2xl rounded-bl-sm p-4">
               <div className="flex gap-1">
-                <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" />
-                <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-on-secondary-container rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <span className="bg-on-secondary-container h-2 w-2 animate-bounce rounded-full" />
+                <span
+                  className="bg-on-secondary-container h-2 w-2 animate-bounce rounded-full"
+                  style={{ animationDelay: "150ms" }}
+                />
+                <span
+                  className="bg-on-secondary-container h-2 w-2 animate-bounce rounded-full"
+                  style={{ animationDelay: "300ms" }}
+                />
               </div>
             </div>
           )}
         </main>
 
         {/* Input */}
-        <footer className="p-6 pt-2 border-t border-outline-variant/10 bg-surface-container-low/90 backdrop-blur-2xl rounded-b-[2.5rem]">
-          <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar">
+        <footer className="border-outline-variant/10 bg-surface-container-low/90 rounded-b-[2.5rem] border-t p-6 pt-2 backdrop-blur-2xl">
+          <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto">
             {replies.map((msg) => (
               <button
                 key={msg}
                 onClick={() => handleQuickReply(msg)}
-                className="whitespace-nowrap flex-shrink-0 px-4 py-2 bg-surface-container-lowest border border-outline-variant/20 text-secondary rounded-full text-xs font-bold hover:border-primary active:scale-95 transition-all"
+                className="bg-surface-container-lowest border-outline-variant/20 text-secondary hover:border-primary flex-shrink-0 rounded-full border px-4 py-2 text-xs font-bold whitespace-nowrap transition-all active:scale-95"
               >
                 {msg}
               </button>
             ))}
           </div>
-          <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-3">
             <input
               type="text"
               value={input}
               onChange={(e) => handleInputChange(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type a message..."
-              className="flex-1 bg-surface-container-lowest rounded-full h-12 px-5 text-sm outline-none border border-outline-variant/10 focus:ring-2 focus:ring-secondary/20 transition-all"
+              className="bg-surface-container-lowest border-outline-variant/10 focus:ring-secondary/20 h-12 flex-1 rounded-full border px-5 text-sm transition-all outline-none focus:ring-2"
             />
             <button
               onClick={handleSend}
               disabled={!input.trim()}
-              className="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center disabled:opacity-50 active:scale-95 transition-all shadow-lg shadow-primary/20"
+              className="bg-primary text-on-primary shadow-primary/20 flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-50"
             >
-              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontVariationSettings: "'FILL' 1" }}
+              >
+                send
+              </span>
             </button>
           </div>
         </footer>

@@ -43,7 +43,9 @@ export default function NotificationPermission() {
     };
 
     async function setupRealtimeSubscriptions() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user || !isMounted) return;
 
       // 2. Subscribe to custom notifications table
@@ -87,7 +89,7 @@ export default function NotificationPermission() {
           (payload: Record<string, unknown>) => {
             const oldOrder = payload.old as { status: string };
             const newOrder = payload.new as { status: string };
-            
+
             if (newOrder && oldOrder && newOrder.status !== oldOrder.status && isMounted) {
               const statusTitles: Record<string, string> = {
                 pending: "Order Placed! 🛒",
@@ -116,7 +118,9 @@ export default function NotificationPermission() {
               };
 
               const title = statusTitles[newOrder.status] || "Order Update";
-              const message = statusMessages[newOrder.status] || `Your order status changed to ${newOrder.status}`;
+              const message =
+                statusMessages[newOrder.status] ||
+                `Your order status changed to ${newOrder.status}`;
 
               playNotificationSound();
               addToast(`${title} - ${message}`, "success");

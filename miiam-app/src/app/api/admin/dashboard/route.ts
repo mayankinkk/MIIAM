@@ -5,7 +5,10 @@ import logger from "@/lib/logger";
 export async function GET() {
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,11 +27,23 @@ export async function GET() {
     const admin = createAdminClient();
 
     const [ordersRes, vendorsRes, ridersRes, usersRes, bookingsRes] = await Promise.all([
-      admin.from("orders").select("id, total_amount, status, placed_at, vendor_id").order("placed_at", { ascending: false }).limit(500),
-      admin.from("vendors").select("id, shop_name, owner_name, type, status, created_at").order("created_at", { ascending: false }).limit(8),
+      admin
+        .from("orders")
+        .select("id, total_amount, status, placed_at, vendor_id")
+        .order("placed_at", { ascending: false })
+        .limit(500),
+      admin
+        .from("vendors")
+        .select("id, shop_name, owner_name, type, status, created_at")
+        .order("created_at", { ascending: false })
+        .limit(8),
       admin.from("riders").select("id, status").limit(200),
       admin.from("profiles").select("id, created_at").limit(1000),
-      admin.from("service_bookings").select("id, service_type, status, amount, created_at").order("created_at", { ascending: false }).limit(500),
+      admin
+        .from("service_bookings")
+        .select("id, service_type, status, amount, created_at")
+        .order("created_at", { ascending: false })
+        .limit(500),
     ]);
 
     return NextResponse.json({
@@ -46,7 +61,10 @@ export async function GET() {
       },
     });
   } catch (error) {
-    logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Admin dashboard API error");
+    logger.error(
+      { err: error instanceof Error ? error : new Error(String(error)) },
+      "Admin dashboard API error"
+    );
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

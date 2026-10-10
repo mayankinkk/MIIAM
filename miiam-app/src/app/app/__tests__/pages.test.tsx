@@ -12,9 +12,7 @@ const h = vi.hoisted(() => {
       eq: vi.fn(() => query),
       order: vi.fn(() => query),
       limit: vi.fn(() => query),
-      single: vi.fn(() =>
-        Promise.resolve({ data: data[0] || null, error: null }),
-      ),
+      single: vi.fn(() => Promise.resolve({ data: data[0] || null, error: null })),
       then(resolve: (value: unknown) => void) {
         resolve({ data, error: null });
       },
@@ -29,18 +27,21 @@ const h = vi.hoisted(() => {
         Promise.resolve({
           data: { user: { id: "test-user-id" } },
           error: null,
-        }),
+        })
       ),
     },
   };
 
   const buildStore = <T,>(defaultState: T) => {
-    const store = Object.assign(vi.fn(() => defaultState), {
-      getState: vi.fn(() => defaultState),
-      setState: vi.fn(),
-      subscribe: vi.fn(),
-      destroy: vi.fn(),
-    });
+    const store = Object.assign(
+      vi.fn(() => defaultState),
+      {
+        getState: vi.fn(() => defaultState),
+        setState: vi.fn(),
+        subscribe: vi.fn(),
+        destroy: vi.fn(),
+      }
+    );
     return store;
   };
 
@@ -75,8 +76,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/supabase/client", () => ({
   createClient: vi.fn(() => h.mockSupabase),
 }));
-
-
 
 vi.mock("@/lib/store/toastStore", () => {
   const store = h.buildStore({
@@ -116,9 +115,7 @@ vi.mock("@/lib/store/serviceSettingsStore", () => {
   const defaultState = {
     settings,
     updateSetting: vi.fn(),
-    getSetting: vi.fn(
-      (id: string) => settings.find((s) => s.id === id),
-    ),
+    getSetting: vi.fn((id: string) => settings.find((s) => s.id === id)),
     isServiceEnabled: vi.fn(() => true),
   };
   const store = h.buildStore(defaultState);
@@ -149,12 +146,7 @@ vi.mock("@/components/Breadcrumbs", () => ({
 
 vi.mock("@/components/BlurImage", () => ({
   default: ({ src, alt, className }: any) => (
-    <div
-      data-testid="blur-image"
-      className={className}
-      data-src={src}
-      data-alt={alt}
-    />
+    <div data-testid="blur-image" className={className} data-src={src} data-alt={alt} />
   ),
 }));
 
@@ -184,17 +176,13 @@ describe("Page smoke tests", () => {
   it("notifications page renders header and push notification section", () => {
     render(<NotificationsPage />);
 
-    expect(
-      screen.getByRole("heading", { level: 1 }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     expect(screen.getByText("Push Notifications")).toBeInTheDocument();
   });
 
   it("notifications page renders enable button when permission is default", () => {
     render(<NotificationsPage />);
 
-    expect(
-      screen.getByText("Enable Notifications"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Enable Notifications")).toBeInTheDocument();
   });
 });

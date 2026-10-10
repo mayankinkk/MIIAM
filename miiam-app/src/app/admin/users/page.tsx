@@ -42,14 +42,16 @@ export default function UserRegistry() {
     };
   }, [page, searchQuery]);
 
-  const filteredProfiles = profiles.filter(p => {
-    const matchesSearch = !searchQuery ||
+  const filteredProfiles = profiles.filter((p) => {
+    const matchesSearch =
+      !searchQuery ||
       p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.id?.toLowerCase().includes(searchQuery.toLowerCase());
     if (!matchesSearch) return false;
     if (dateFrom && p.created_at && new Date(p.created_at) < new Date(dateFrom)) return false;
-    if (dateTo && p.created_at && new Date(p.created_at) > new Date(dateTo + "T23:59:59")) return false;
+    if (dateTo && p.created_at && new Date(p.created_at) > new Date(dateTo + "T23:59:59"))
+      return false;
     return true;
   });
 
@@ -67,7 +69,13 @@ export default function UserRegistry() {
       setSelectedProfile(profile);
       setShowRoleModal(true);
     } else if (action === "delete") {
-      if (await confirm({ title: "Delete", message: `Are you sure you want to delete ${profile.full_name}?`, variant: "danger" })) {
+      if (
+        await confirm({
+          title: "Delete",
+          message: `Are you sure you want to delete ${profile.full_name}?`,
+          variant: "danger",
+        })
+      ) {
         await supabase.from("profiles").delete().eq("id", profile.id);
         loadProfiles();
       }
@@ -78,7 +86,7 @@ export default function UserRegistry() {
     setLoading(true);
     const from = (page - 1) * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
-    
+
     if (searchQuery.trim()) {
       const { data, count } = await supabase
         .from("profiles")
@@ -90,8 +98,12 @@ export default function UserRegistry() {
       setTotalCount(count || 0);
     } else {
       const [{ data, count }] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact" }).range(from, to).order("created_at", { ascending: false }),
-        supabase.from("profiles").select("*", { count: "exact", head: true })
+        supabase
+          .from("profiles")
+          .select("*", { count: "exact" })
+          .range(from, to)
+          .order("created_at", { ascending: false }),
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
       ]);
       if (data) setProfiles(data);
       setTotalCount(count || 0);
@@ -105,32 +117,40 @@ export default function UserRegistry() {
     if (selectedIds.size === filteredProfiles.length) {
       setSelectedIds(new Set());
     } else {
-      setSelectedIds(new Set(filteredProfiles.map(p => p.id)));
+      setSelectedIds(new Set(filteredProfiles.map((p) => p.id)));
     }
   }
 
   function toggleSelect(id: string) {
-    setSelectedIds(prev => {
+    setSelectedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) { next.delete(id); } else { next.add(id); }
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
       return next;
     });
   }
 
   function exportToCSV() {
     const headers = ["Name", "Email", "Role", "Join Date", "ID"];
-    const rows = filteredProfiles.filter(p => selectedIds.size === 0 || selectedIds.has(p.id)).map(p => [
-      p.full_name || "",
-      p.email || "",
-      p.role || "",
-      p.created_at ? new Date(p.created_at).toLocaleDateString("en-IN") : "",
-      p.id
-    ]);
+    const rows = filteredProfiles
+      .filter((p) => selectedIds.size === 0 || selectedIds.has(p.id))
+      .map((p) => [
+        p.full_name || "",
+        p.email || "",
+        p.role || "",
+        p.created_at ? new Date(p.created_at).toLocaleDateString("en-IN") : "",
+        p.id,
+      ]);
     const escapeCsv = (val: unknown) => {
       const str = String(val ?? "");
-      return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
+      return str.includes(",") || str.includes('"') || str.includes("\n")
+        ? `"${str.replace(/"/g, '""')}"`
+        : str;
     };
-    const csv = [headers, ...rows].map(r => r.map(escapeCsv).join(",")).join("\n");
+    const csv = [headers, ...rows].map((r) => r.map(escapeCsv).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -141,9 +161,16 @@ export default function UserRegistry() {
   }
 
   async function bulkSuspend() {
-    if (!(await confirm({ title: "Bulk Suspend", message: `Suspend ${selectedIds.size} users?`, variant: "danger" }))) return;
+    if (
+      !(await confirm({
+        title: "Bulk Suspend",
+        message: `Suspend ${selectedIds.size} users?`,
+        variant: "danger",
+      }))
+    )
+      return;
     await Promise.all(
-      Array.from(selectedIds).map(id =>
+      Array.from(selectedIds).map((id) =>
         supabase.from("profiles").update({ role: "suspended" }).eq("id", id)
       )
     );
@@ -152,175 +179,227 @@ export default function UserRegistry() {
     loadProfiles();
   }
 
-  if (loading) return (
-    <div className="px-8 space-y-8">
-      <div className="flex justify-between items-end">
-        <div>
-          <div className="h-10 w-48 bg-[var(--color-surface-container-high)] rounded animate-pulse mb-2" />
-          <div className="h-5 w-72 bg-[var(--color-surface-container-high)] rounded animate-pulse" />
+  if (loading)
+    return (
+      <div className="space-y-8 px-8">
+        <div className="flex items-end justify-between">
+          <div>
+            <div className="mb-2 h-10 w-48 animate-pulse rounded bg-[var(--color-surface-container-high)]" />
+            <div className="h-5 w-72 animate-pulse rounded bg-[var(--color-surface-container-high)]" />
+          </div>
         </div>
-      </div>
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6">
-        <div className="space-y-4">
-          {[1,2,3,4,5].map(i => (
-            <div key={i} className="flex items-center gap-4 p-4">
-              <div className="h-10 w-10 rounded-full bg-[var(--color-surface-container-high)] animate-pulse" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 w-32 bg-[var(--color-surface-container-high)] rounded animate-pulse" />
-                <div className="h-3 w-48 bg-[var(--color-surface-container-high)] rounded animate-pulse" />
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6">
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-4 p-4">
+                <div className="h-10 w-10 animate-pulse rounded-full bg-[var(--color-surface-container-high)]" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-32 animate-pulse rounded bg-[var(--color-surface-container-high)]" />
+                  <div className="h-3 w-48 animate-pulse rounded bg-[var(--color-surface-container-high)]" />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 
   return (
-    <div className="px-8 space-y-8">
-      <div className="flex justify-between items-end">
+    <div className="space-y-8 px-8">
+      <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">User Registry</h1>
-          <p className="text-[var(--color-outline)]">Manage all customer and staff accounts across MIIAM.</p>
+          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            User Registry
+          </h1>
+          <p className="text-[var(--color-outline)]">
+            Manage all customer and staff accounts across MIIAM.
+          </p>
         </div>
       </div>
 
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-slate-50 flex items-center gap-4">
-           <div className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 flex items-center gap-2 flex-1 max-w-sm">
-             <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-sm">search</span>
-             <input
-               type="text"
-               value={searchQuery}
-               onChange={e => { setSearchQuery(e.target.value); setPage(1); }}
-               placeholder="Search by name, email or ID..."
-               aria-label="Search users"
-               className="bg-transparent border-none focus:outline-none text-sm w-full"
-             />
-           </div>
-           <input
-             type="date"
-             value={dateFrom}
-             onChange={(e) => setDateFrom(e.target.value)}
-             aria-label="Filter users from join date"
-             className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
-           />
-           <input
-             type="date"
-             value={dateTo}
-             onChange={(e) => setDateTo(e.target.value)}
-             aria-label="Filter users to join date"
-             className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
-           />
-           <div className="flex gap-2 items-center">
-             {selectedIds.size > 0 && (
-               <>
-                 <span className="text-xs font-bold text-[var(--color-outline-variant)]">{selectedIds.size} selected</span>
-                 <button
-                   onClick={bulkSuspend}
-                   className="px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-xs font-bold hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300"
-                 >
-                   Bulk Suspend
-                 </button>
-               </>
-             )}
-             <button
-               onClick={exportToCSV}
-               className="px-4 py-2 bg-green-50 text-green-600 rounded-xl text-xs font-bold hover:bg-green-100 flex items-center gap-1 dark:bg-green-900/30 dark:text-green-300"
-             >
-               <span className="material-symbols-outlined text-sm">download</span>
-               Export CSV
-             </button>
-             <button
-               onClick={() => { setSearchQuery(""); setPage(1); }}
-               className={`p-3 rounded-xl transition-colors ${searchQuery ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
-               aria-label="Clear search"
-             >
-               <span className="material-symbols-outlined">filter_list</span>
-             </button>
-           </div>
+      <div className="overflow-hidden rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
+        <div className="flex items-center gap-4 border-b border-slate-50 p-6">
+          <div className="flex max-w-sm flex-1 items-center gap-2 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-2">
+            <span className="material-symbols-outlined text-sm text-[var(--color-outline-variant)]">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(1);
+              }}
+              placeholder="Search by name, email or ID..."
+              aria-label="Search users"
+              className="w-full border-none bg-transparent text-sm focus:outline-none"
+            />
+          </div>
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            aria-label="Filter users from join date"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-2 text-sm focus:outline-none"
+          />
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            aria-label="Filter users to join date"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-2 text-sm focus:outline-none"
+          />
+          <div className="flex items-center gap-2">
+            {selectedIds.size > 0 && (
+              <>
+                <span className="text-xs font-bold text-[var(--color-outline-variant)]">
+                  {selectedIds.size} selected
+                </span>
+                <button
+                  onClick={bulkSuspend}
+                  className="rounded-xl bg-amber-50 px-4 py-2 text-xs font-bold text-amber-600 hover:bg-amber-100 dark:bg-amber-900/30 dark:text-amber-300"
+                >
+                  Bulk Suspend
+                </button>
+              </>
+            )}
+            <button
+              onClick={exportToCSV}
+              className="flex items-center gap-1 rounded-xl bg-green-50 px-4 py-2 text-xs font-bold text-green-600 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Export CSV
+            </button>
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setPage(1);
+              }}
+              className={`rounded-xl p-3 transition-colors ${searchQuery ? "text-on-primary bg-[var(--color-primary)]" : "bg-[var(--color-surface-subtle)] text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"}`}
+              aria-label="Clear search"
+            >
+              <span className="material-symbols-outlined">filter_list</span>
+            </button>
+          </div>
         </div>
-        
+
         <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
           <table className="w-full text-left">
             <caption className="sr-only">User Registry</caption>
-            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
+            <thead className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 w-10">
+                <th className="w-10 p-4">
                   <input
                     type="checkbox"
-                    checked={selectedIds.size === filteredProfiles.length && filteredProfiles.length > 0}
+                    checked={
+                      selectedIds.size === filteredProfiles.length && filteredProfiles.length > 0
+                    }
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 accent-[var(--color-primary)]"
+                    className="h-4 w-4 accent-[var(--color-primary)]"
                   />
                 </th>
-                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Profile</th>
-                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Role</th>
-                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-center">Join Date</th>
-                <th className="p-6 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Actions</th>
+                <th className="p-6 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Profile
+                </th>
+                <th className="p-6 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Role
+                </th>
+                <th className="p-6 text-center text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Join Date
+                </th>
+                <th className="p-6 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--color-border-subtle)]">
               {filteredProfiles.map((profile) => (
-                <tr key={profile.id} className="hover:bg-[var(--color-surface-subtle)]/50 transition-colors">
+                <tr
+                  key={profile.id}
+                  className="transition-colors hover:bg-[var(--color-surface-subtle)]/50"
+                >
                   <td className="p-4">
                     <input
                       type="checkbox"
                       checked={selectedIds.has(profile.id)}
                       onChange={() => toggleSelect(profile.id)}
-                      className="w-4 h-4 accent-[var(--color-primary)]"
+                      className="h-4 w-4 accent-[var(--color-primary)]"
                     />
                   </td>
                   <td className="p-6">
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container)] flex items-center justify-center text-[var(--color-primary)] font-black overflow-hidden shadow-sm">
-                        {profile.avatar_url ? <BlurImage src={profile.avatar_url} alt={`${profile.full_name || 'User'}'s avatar`} className="w-full h-full object-cover" /> : profile.full_name?.[0] || "?"}
+                      <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[var(--color-surface-container)] font-black text-[var(--color-primary)] shadow-sm">
+                        {profile.avatar_url ? (
+                          <BlurImage
+                            src={profile.avatar_url}
+                            alt={`${profile.full_name || "User"}'s avatar`}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          profile.full_name?.[0] || "?"
+                        )}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[var(--color-on-surface)]">{profile.full_name || "Unknown"}</p>
-                        <p className="text-[11px] text-[var(--color-outline-variant)] font-medium">{profile.email || "No email"}</p>
+                        <p className="text-sm font-bold text-[var(--color-on-surface)]">
+                          {profile.full_name || "Unknown"}
+                        </p>
+                        <p className="text-[11px] font-medium text-[var(--color-outline-variant)]">
+                          {profile.email || "No email"}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </td>
+                  </td>
                   <td className="p-6">
-                    <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${
-                      profile.role === 'admin' ? 'bg-[var(--color-primary)] text-on-primary' :
-                      profile.role === 'rider' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' :
-                      'bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]'
-                    }`}>
+                    <span
+                      className={`rounded-full px-3 py-1 text-[10px] font-black tracking-widest uppercase ${
+                        profile.role === "admin"
+                          ? "text-on-primary bg-[var(--color-primary)]"
+                          : profile.role === "rider"
+                            ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                            : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                      }`}
+                    >
                       {profile.role}
                     </span>
                   </td>
                   <td className="p-6 text-center">
-                    <p className="text-xs text-[var(--color-outline)] font-bold">{profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A"}</p>
+                    <p className="text-xs font-bold text-[var(--color-outline)]">
+                      {profile.created_at
+                        ? new Date(profile.created_at).toLocaleDateString("en-IN", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })
+                        : "N/A"}
+                    </p>
                   </td>
-                  <td className="p-6 text-right relative">
-                    <button 
+                  <td className="relative p-6 text-right">
+                    <button
                       onClick={(e) => toggleMenu(profile.id, e)}
-                      className="text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] transition-colors p-2 rounded hover:bg-[var(--color-surface-container)]"
+                      className="rounded p-2 text-[var(--color-outline-variant)] transition-colors hover:bg-[var(--color-surface-container)] hover:text-[var(--color-primary)]"
                       aria-label="More actions"
                     >
                       <span className="material-symbols-outlined text-[20px]">more_vert</span>
                     </button>
                     {openMenuId === profile.id && (
-                      <div className="absolute right-6 top-10 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl shadow-lg py-2 z-50 min-w-[140px]">
-                        <button 
+                      <div className="absolute top-10 right-6 z-50 min-w-[140px] rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] py-2 shadow-lg">
+                        <button
                           onClick={() => handleAction("view", profile)}
-                          className="w-full px-4 py-2 text-left text-sm text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-2"
+                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]"
                         >
                           <span className="material-symbols-outlined text-lg">visibility</span>
                           View Details
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleAction("edit", profile)}
-                          className="w-full px-4 py-2 text-left text-sm text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-2"
+                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]"
                         >
                           <span className="material-symbols-outlined text-lg">edit</span>
                           Change Role
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleAction("delete", profile)}
-                          className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                          className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50"
                         >
                           <span className="material-symbols-outlined text-lg">delete</span>
                           Delete User
@@ -333,79 +412,142 @@ export default function UserRegistry() {
             </tbody>
           </table>
         </div>
-        
-        <div className="p-6 border-t border-slate-50 flex items-center justify-between text-xs font-bold text-[var(--color-outline-variant)]">
-          <p>Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, totalCount)} of {totalCount} users</p>
+
+        <div className="flex items-center justify-between border-t border-slate-50 p-6 text-xs font-bold text-[var(--color-outline-variant)]">
+          <p>
+            Showing {(page - 1) * PAGE_SIZE + 1}-{Math.min(page * PAGE_SIZE, totalCount)} of{" "}
+            {totalCount} users
+          </p>
           <div className="flex gap-2">
-             <button 
-               onClick={() => setPage(p => Math.max(1, p - 1))}
-               disabled={page === 1}
-               className="px-4 py-2 rounded-lg border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] transition-colors disabled:opacity-50"
-             >
-               Previous
-             </button>
-             <span className="px-4 py-2 text-[var(--color-on-surface-variant)]">Page {page} of {totalPages || 1}</span>
-             <button 
-               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-               disabled={page >= totalPages}
-               className="px-4 py-2 rounded-lg border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] transition-colors disabled:opacity-50"
-             >
-               Next
-             </button>
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="rounded-lg border border-[var(--color-border-subtle)] px-4 py-2 transition-colors hover:bg-[var(--color-surface-subtle)] disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-[var(--color-on-surface-variant)]">
+              Page {page} of {totalPages || 1}
+            </span>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page >= totalPages}
+              className="rounded-lg border border-[var(--color-border-subtle)] px-4 py-2 transition-colors hover:bg-[var(--color-surface-subtle)] disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
 
       {/* User Detail Modal */}
       {showDetailModal && selectedProfile && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" aria-labelledby="user-detail-title" onKeyDown={(e) => e.key === "Escape" && setShowDetailModal(false)}>
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-md mx-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 id="user-detail-title" className="text-lg font-black text-[var(--color-on-surface)]">User Details</h3>
-              <button onClick={() => setShowDetailModal(false)} className="p-1 hover:bg-[var(--color-surface-container)] rounded-full" aria-label="Close">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="user-detail-title"
+          onKeyDown={(e) => e.key === "Escape" && setShowDetailModal(false)}
+        >
+          <div className="mx-4 w-full max-w-md rounded-2xl bg-[var(--color-surface-container-lowest)] p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h3
+                id="user-detail-title"
+                className="text-lg font-black text-[var(--color-on-surface)]"
+              >
+                User Details
+              </h3>
+              <button
+                onClick={() => setShowDetailModal(false)}
+                className="rounded-full p-1 hover:bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-3">
-              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Name</span><span className="font-bold">{selectedProfile.full_name || "—"}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Email</span><span className="font-bold">{selectedProfile.email || "—"}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Role</span><span className="font-bold capitalize">{selectedProfile.role}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--color-outline)]">Joined</span><span className="font-bold">{selectedProfile.created_at ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN") : "—"}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--color-outline)]">ID</span><span className="font-bold text-xs">{selectedProfile.id}</span></div>
+              <div className="flex justify-between">
+                <span className="text-[var(--color-outline)]">Name</span>
+                <span className="font-bold">{selectedProfile.full_name || "—"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--color-outline)]">Email</span>
+                <span className="font-bold">{selectedProfile.email || "—"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--color-outline)]">Role</span>
+                <span className="font-bold capitalize">{selectedProfile.role}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--color-outline)]">Joined</span>
+                <span className="font-bold">
+                  {selectedProfile.created_at
+                    ? new Date(selectedProfile.created_at).toLocaleDateString("en-IN")
+                    : "—"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-[var(--color-outline)]">ID</span>
+                <span className="text-xs font-bold">{selectedProfile.id}</span>
+              </div>
             </div>
-            <button onClick={() => setShowDetailModal(false)} className="w-full mt-6 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl">Close</button>
+            <button
+              onClick={() => setShowDetailModal(false)}
+              className="text-on-primary mt-6 w-full rounded-xl bg-[var(--color-primary)] py-3 font-bold"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
 
       {/* Role Change Modal */}
       {showRoleModal && selectedProfile && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" aria-labelledby="role-change-title" onKeyDown={(e) => e.key === "Escape" && setShowRoleModal(false)}>
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm mx-4">
-            <h3 id="role-change-title" className="text-lg font-black text-[var(--color-on-surface)] mb-4">Change Role — {selectedProfile.full_name}</h3>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="role-change-title"
+          onKeyDown={(e) => e.key === "Escape" && setShowRoleModal(false)}
+        >
+          <div className="mx-4 w-full max-w-sm rounded-2xl bg-[var(--color-surface-container-lowest)] p-6">
+            <h3
+              id="role-change-title"
+              className="mb-4 text-lg font-black text-[var(--color-on-surface)]"
+            >
+              Change Role — {selectedProfile.full_name}
+            </h3>
             <div className="space-y-2">
-              {["customer", "admin", "rider"].map(role => (
+              {["customer", "admin", "rider"].map((role) => (
                 <button
                   key={role}
                   onClick={() => setNewRole(role)}
-                  className={`w-full p-3 rounded-xl text-left font-bold capitalize transition-colors ${newRole === role ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
+                  className={`w-full rounded-xl p-3 text-left font-bold capitalize transition-colors ${newRole === role ? "text-on-primary bg-[var(--color-primary)]" : "bg-[var(--color-surface-subtle)] hover:bg-[var(--color-surface-container)]"}`}
                 >
                   {role}
                 </button>
               ))}
             </div>
-            <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowRoleModal(false)} className="flex-1 py-3 border border-[var(--color-border-subtle)] font-bold rounded-xl">Cancel</button>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowRoleModal(false)}
+                className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 font-bold"
+              >
+                Cancel
+              </button>
               <button
                 onClick={async () => {
                   if (newRole && newRole !== selectedProfile.role) {
-                    await supabase.from("profiles").update({ role: newRole }).eq("id", selectedProfile.id);
+                    await supabase
+                      .from("profiles")
+                      .update({ role: newRole })
+                      .eq("id", selectedProfile.id);
                     loadProfiles();
                   }
                   setShowRoleModal(false);
                 }}
                 disabled={!newRole || newRole === selectedProfile.role}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl disabled:opacity-50"
+                className="text-on-primary flex-1 rounded-xl bg-[var(--color-primary)] py-3 font-bold disabled:opacity-50"
               >
                 Save
               </button>

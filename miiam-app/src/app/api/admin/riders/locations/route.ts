@@ -4,7 +4,10 @@ import { withRateLimit } from "@/lib/api-utils";
 
 export const GET = withRateLimit(async function GET() {
   const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -19,9 +22,7 @@ export const GET = withRateLimit(async function GET() {
   }
 
   const adminSupabase = createAdminClient();
-  const { data, error } = await adminSupabase
-    .from("rider_locations")
-    .select("*");
+  const { data, error } = await adminSupabase.from("rider_locations").select("*");
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

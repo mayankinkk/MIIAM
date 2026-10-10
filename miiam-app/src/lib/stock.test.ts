@@ -4,7 +4,11 @@ const hoisted = vi.hoisted(() => {
   const inArgs: string[][] = [];
   let response: { data: unknown; error: unknown } = { data: [], error: null };
   const fromMock = vi.fn();
-  return { inArgs, responseRef: { get: () => response, set: (v: typeof response) => (response = v) }, fromMock };
+  return {
+    inArgs,
+    responseRef: { get: () => response, set: (v: typeof response) => (response = v) },
+    fromMock,
+  };
 });
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -49,7 +53,12 @@ const uuid = "ccc2aa64-268d-47d6-aad7-c6a7dd076125";
 describe("checkStock", () => {
   it("never queries PostgREST with ids that are not UUIDs", async () => {
     const result = await checkStock([
-      { menu_item_id: "combo-3ff244f5-4196-4411-9f37-33cbe961de87", quantity: 1, name: "Family combo", vendor_id: uuid },
+      {
+        menu_item_id: "combo-3ff244f5-4196-4411-9f37-33cbe961de87",
+        quantity: 1,
+        name: "Family combo",
+        vendor_id: uuid,
+      },
     ]);
 
     expect(hoisted.fromMock).not.toHaveBeenCalled();
@@ -59,12 +68,20 @@ describe("checkStock", () => {
   });
 
   it("sends only real UUIDs and reports untracked lines as available", async () => {
-    hoisted.responseRef.set({ data: [{ id: uuid, name: "Paneer pizza", stock: 1, is_available: true }], error: null });
+    hoisted.responseRef.set({
+      data: [{ id: uuid, name: "Paneer pizza", stock: 1, is_available: true }],
+      error: null,
+    });
 
     const result = await checkStock([
       { menu_item_id: uuid, quantity: 2, name: "Paneer pizza", vendor_id: uuid },
       { menu_item_id: "combo-not-a-uuid", quantity: 1, name: "Combo", vendor_id: uuid },
-      { menu_item_id: "66dedf8b-629e-4612-b553-0a0661e07b77", quantity: 1, name: "Store item", vendor_id: uuid },
+      {
+        menu_item_id: "66dedf8b-629e-4612-b553-0a0661e07b77",
+        quantity: 1,
+        name: "Store item",
+        vendor_id: uuid,
+      },
     ]);
 
     expect(hoisted.inArgs[0]).toEqual([uuid, "66dedf8b-629e-4612-b553-0a0661e07b77"]);
@@ -94,7 +111,7 @@ describe("decrementStock", () => {
       calls.push(table);
       const result: Result =
         table === "stock_movements"
-          ? { data: null, error: { message: "relation \"stock_movements\" does not exist" } }
+          ? { data: null, error: { message: 'relation "stock_movements" does not exist' } }
           : { data: [{ id: uuid }], error: null };
       return chain(result);
     });
@@ -115,7 +132,7 @@ describe("decrementStock", () => {
 describe("restoreStock", () => {
   it("does not throw when stock_movements does not exist", async () => {
     hoisted.fromMock.mockImplementation(() =>
-      chain({ data: null, error: { message: "relation \"stock_movements\" does not exist" } })
+      chain({ data: null, error: { message: 'relation "stock_movements" does not exist' } })
     );
 
     await expect(restoreStock("862cc9ba-78b6-453f-9467-1d133fe55a8b")).resolves.toBeUndefined();

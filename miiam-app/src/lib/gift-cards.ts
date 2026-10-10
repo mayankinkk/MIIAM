@@ -38,7 +38,7 @@ export async function purchaseGiftCard(
   amount: number,
   recipientEmail: string,
   recipientName: string,
-  message: string,
+  message: string
 ): Promise<{ success: boolean; code?: string; error?: string }> {
   try {
     if (amount < 100 || amount > 5000) {
@@ -69,7 +69,9 @@ export async function purchaseGiftCard(
   }
 }
 
-export async function getGiftCardBalance(code: string): Promise<{ valid: boolean; balance?: number; error?: string }> {
+export async function getGiftCardBalance(
+  code: string
+): Promise<{ valid: boolean; balance?: number; error?: string }> {
   try {
     const { data, error } = await supabase
       .from("gift_cards")
@@ -85,7 +87,10 @@ export async function getGiftCardBalance(code: string): Promise<{ valid: boolean
     }
 
     if (data.expires_at && new Date(data.expires_at) < new Date()) {
-      await supabase.from("gift_cards").update({ status: "expired" }).eq("code", code.toUpperCase());
+      await supabase
+        .from("gift_cards")
+        .update({ status: "expired" })
+        .eq("code", code.toUpperCase());
       return { valid: false, error: "Gift card has expired" };
     }
 
@@ -98,7 +103,7 @@ export async function getGiftCardBalance(code: string): Promise<{ valid: boolean
 export async function redeemGiftCard(
   code: string,
   userId: string,
-  amount: number,
+  amount: number
 ): Promise<{ success: boolean; discount?: number; error?: string }> {
   try {
     const { data, error } = await supabase
@@ -163,8 +168,10 @@ export async function getUserGiftCards(userId: string): Promise<GiftCard[]> {
     }
 
     const all = [...(received || []), ...(sent || [])];
-    const unique = Array.from(new Map(all.map(g => [g.id, g])).values());
-    return unique.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const unique = Array.from(new Map(all.map((g) => [g.id, g])).values());
+    return unique.sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
   } catch {
     return [];
   }

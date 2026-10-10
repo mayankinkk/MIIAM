@@ -1,24 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateInvoicePdf, GST_INVOICE_TAX_RATE, type InvoiceData, type InvoiceLine } from "@/lib/gst-invoice";
+import {
+  generateInvoicePdf,
+  GST_INVOICE_TAX_RATE,
+  type InvoiceData,
+  type InvoiceLine,
+} from "@/lib/gst-invoice";
 import logger from "@/lib/logger";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const supabase = await createClient();
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { data: order, error: orderErr } = await supabase
       .from("orders")
-      .select("id, total_amount, payment_method, delivery_address, placed_at, user_id, vendor_id, vendors(shop_name, address, gst_number, city, state), profiles(full_name, email, phone)")
+      .select(
+        "id, total_amount, payment_method, delivery_address, placed_at, user_id, vendor_id, vendors(shop_name, address, gst_number, city, state), profiles(full_name, email, phone)"
+      )
       .eq("id", id)
       .eq("user_id", user.id)
       .single();
@@ -32,8 +38,18 @@ export async function GET(
       .select("name, quantity, unit_price, price")
       .eq("order_id", id);
 
-    const vendor = order.vendors as { shop_name?: string; address?: string; gst_number?: string | null; city?: string | null; state?: string | null } | null;
-    const profile = order.profiles as { full_name?: string | null; email?: string | null; phone?: string | null } | null;
+    const vendor = order.vendors as {
+      shop_name?: string;
+      address?: string;
+      gst_number?: string | null;
+      city?: string | null;
+      state?: string | null;
+    } | null;
+    const profile = order.profiles as {
+      full_name?: string | null;
+      email?: string | null;
+      phone?: string | null;
+    } | null;
 
     const lines: InvoiceLine[] = (orderItems || []).map((item) => {
       const qty = Number(item.quantity) || 1;
@@ -54,7 +70,9 @@ export async function GET(
 
     const invoiceData: InvoiceData = {
       invoiceNumber: `MIIAM-${order.id.slice(0, 8).toUpperCase()}`,
-      invoiceDate: order.placed_at ? new Date(order.placed_at).toLocaleDateString("en-IN") : new Date().toLocaleDateString("en-IN"),
+      invoiceDate: order.placed_at
+        ? new Date(order.placed_at).toLocaleDateString("en-IN")
+        : new Date().toLocaleDateString("en-IN"),
       orderId: order.id,
       seller: {
         name: vendor?.shop_name || "MIIAM",
@@ -76,7 +94,9 @@ export async function GET(
       igst: 0,
       total: subtotal + gst,
       paymentMode: order.payment_method === "cod" ? "Cash on Delivery" : "Online",
-      notes: hasGstin ? undefined : "GST included where applicable. Restaurant services taxed at 5%.",
+      notes: hasGstin
+        ? undefined
+        : "GST included where applicable. Restaurant services taxed at 5%.",
     };
 
     const pdf = generateInvoicePdf(invoiceData);

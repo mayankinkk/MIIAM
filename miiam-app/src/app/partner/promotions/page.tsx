@@ -92,22 +92,47 @@ export default function VendorPromotions() {
       const existing = userMap.get(o.user_id) || { count: 0, total: 0, lastDate: new Date(0) };
       existing.count++;
       existing.total += o.total_amount || 0;
-      existing.lastDate = new Date(o.placed_at) > existing.lastDate ? new Date(o.placed_at) : existing.lastDate;
+      existing.lastDate =
+        new Date(o.placed_at) > existing.lastDate ? new Date(o.placed_at) : existing.lastDate;
       userMap.set(o.user_id, existing);
     });
 
     const all = userMap.size;
-    const returning = Array.from(userMap.values()).filter(u => u.count > 1).length;
+    const returning = Array.from(userMap.values()).filter((u) => u.count > 1).length;
     const avgSpend = Array.from(userMap.values()).reduce((s, u) => s + u.total, 0) / all;
-    const highValue = Array.from(userMap.values()).filter(u => u.total > avgSpend * 1.5).length;
+    const highValue = Array.from(userMap.values()).filter((u) => u.total > avgSpend * 1.5).length;
     const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
-    const lapsed = Array.from(userMap.values()).filter(u => u.lastDate < thirtyDaysAgo).length;
+    const lapsed = Array.from(userMap.values()).filter((u) => u.lastDate < thirtyDaysAgo).length;
 
     setSegments([
-      { label: "All Customers", key: "all", count: all, icon: "people", description: "Everyone who ordered from you" },
-      { label: "Returning", key: "returning", count: returning, icon: "repeat", description: `Ordered more than once (${all > 0 ? Math.round(returning / all * 100) : 0}% of customers)` },
-      { label: "High Spenders", key: "high_value", count: highValue, icon: "award_star", description: `Spent >₹${avgSpend.toFixed(0)} total (1.5x avg)` },
-      { label: "Lapsed", key: "lapsed", count: lapsed, icon: "schedule", description: "No order in 30+ days" },
+      {
+        label: "All Customers",
+        key: "all",
+        count: all,
+        icon: "people",
+        description: "Everyone who ordered from you",
+      },
+      {
+        label: "Returning",
+        key: "returning",
+        count: returning,
+        icon: "repeat",
+        description: `Ordered more than once (${all > 0 ? Math.round((returning / all) * 100) : 0}% of customers)`,
+      },
+      {
+        label: "High Spenders",
+        key: "high_value",
+        count: highValue,
+        icon: "award_star",
+        description: `Spent >₹${avgSpend.toFixed(0)} total (1.5x avg)`,
+      },
+      {
+        label: "Lapsed",
+        key: "lapsed",
+        count: lapsed,
+        icon: "schedule",
+        description: "No order in 30+ days",
+      },
     ]);
   }
 
@@ -143,33 +168,56 @@ export default function VendorPromotions() {
     }
 
     setShowCreate(false);
-    setNewPromo({ code: "", discount_value: 10, max_discount: 100, min_order_amount: 0, usage_limit: 100, valid_until: "" });
+    setNewPromo({
+      code: "",
+      discount_value: 10,
+      max_discount: 100,
+      min_order_amount: 0,
+      usage_limit: 100,
+      valid_until: "",
+    });
     if (vendorId) loadPromos(vendorId);
   };
 
   const toggleActive = async (promo: PromoCode) => {
     await supabase.from("promo_codes").update({ is_active: !promo.is_active }).eq("id", promo.id);
-    setPromoCodes(prev => prev.map((p) => (p.id === promo.id ? { ...p, is_active: !p.is_active } : p)));
+    setPromoCodes((prev) =>
+      prev.map((p) => (p.id === promo.id ? { ...p, is_active: !p.is_active } : p))
+    );
   };
 
   const handleDelete = async (id: string) => {
-    if (!await confirm({ title: "Delete Promotion", message: "Delete this promotion?", variant: "danger" })) return;
+    if (
+      !(await confirm({
+        title: "Delete Promotion",
+        message: "Delete this promotion?",
+        variant: "danger",
+      }))
+    )
+      return;
     await supabase.from("promo_codes").delete().eq("id", id);
-    setPromoCodes(prev => prev.filter((p) => p.id !== id));
+    setPromoCodes((prev) => prev.filter((p) => p.id !== id));
   };
 
   const isExpired = (date: string) => new Date(date) < new Date();
 
   return (
-    <div className="p-4 md:p-8 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-8 p-4 md:p-8">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Promotions & Offers</h1>
-          <p className="text-[var(--color-outline)] mt-1">Create discount codes to attract more customers</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            Promotions & Offers
+          </h1>
+          <p className="mt-1 text-[var(--color-outline)]">
+            Create discount codes to attract more customers
+          </p>
         </div>
         <button
-          onClick={() => { generateCode(); setShowCreate(true); }}
-          className="bg-[var(--color-primary)] text-on-primary px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[var(--color-primary-dim)] transition-colors"
+          onClick={() => {
+            generateCode();
+            setShowCreate(true);
+          }}
+          className="text-on-primary flex items-center gap-2 rounded-xl bg-[var(--color-primary)] px-5 py-3 text-sm font-bold transition-colors hover:bg-[var(--color-primary-dim)]"
         >
           <span className="material-symbols-outlined text-lg">add</span>
           Create Offer
@@ -179,22 +227,33 @@ export default function VendorPromotions() {
       {/* Customer Segments */}
       {segments.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 mb-4">
+          <div className="mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-[var(--color-outline)]">campaign</span>
-            <h2 className="text-lg font-extrabold text-[var(--color-on-surface)]">Targeted Offers</h2>
-            <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Send offers to segments</span>
+            <h2 className="text-lg font-extrabold text-[var(--color-on-surface)]">
+              Targeted Offers
+            </h2>
+            <span className="rounded-full bg-[var(--color-surface-container)] px-2 py-0.5 text-[10px] text-[var(--color-outline-variant)]">
+              Send offers to segments
+            </span>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             {segments.map((seg) => (
-              <div key={seg.key} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-5 border border-[var(--color-border-subtle)] hover:shadow-sm transition-shadow">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">{seg.icon}</span>
+              <div
+                key={seg.key}
+                className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 transition-shadow hover:shadow-sm"
+              >
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-surface-container)]">
+                    <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">
+                      {seg.icon}
+                    </span>
                   </div>
-                  <span className="text-2xl font-black text-[var(--color-on-surface)]">{seg.count}</span>
+                  <span className="text-2xl font-black text-[var(--color-on-surface)]">
+                    {seg.count}
+                  </span>
                 </div>
-                <p className="font-bold text-[var(--color-on-surface)] text-sm">{seg.label}</p>
-                <p className="text-[10px] text-[var(--color-outline)] mt-1">{seg.description}</p>
+                <p className="text-sm font-bold text-[var(--color-on-surface)]">{seg.label}</p>
+                <p className="mt-1 text-[10px] text-[var(--color-outline)]">{seg.description}</p>
               </div>
             ))}
           </div>
@@ -202,14 +261,22 @@ export default function VendorPromotions() {
       )}
 
       {/* Active Promos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          <div className="col-span-full text-center py-12 text-[var(--color-outline-variant)] animate-pulse">Loading promotions...</div>
+          <div className="col-span-full animate-pulse py-12 text-center text-[var(--color-outline-variant)]">
+            Loading promotions...
+          </div>
         ) : promoCodes.length === 0 ? (
-          <div className="col-span-full bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
-            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">local_offer</span>
-            <p className="text-[var(--color-outline-variant)] font-medium text-lg">No promotions yet</p>
-            <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">Create your first offer to attract more customers</p>
+          <div className="col-span-full rounded-3xl border-2 border-dashed border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 text-center md:p-16">
+            <span className="material-symbols-outlined mb-4 text-6xl text-[var(--color-outline-variant)]/60">
+              local_offer
+            </span>
+            <p className="text-lg font-medium text-[var(--color-outline-variant)]">
+              No promotions yet
+            </p>
+            <p className="mt-1 text-sm text-[var(--color-outline-variant)]/60">
+              Create your first offer to attract more customers
+            </p>
           </div>
         ) : (
           promoCodes.map((promo) => {
@@ -217,22 +284,29 @@ export default function VendorPromotions() {
             return (
               <div
                 key={promo.id}
-                className={`bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border transition-all ${
-                  expired ? "border-[var(--color-border-subtle)] opacity-60" : "border-[var(--color-border-subtle)] hover:shadow-md"
+                className={`rounded-2xl border bg-[var(--color-surface-container-lowest)] p-6 shadow-sm transition-all ${
+                  expired
+                    ? "border-[var(--color-border-subtle)] opacity-60"
+                    : "border-[var(--color-border-subtle)] hover:shadow-md"
                 }`}
               >
-                <div className="flex items-start justify-between mb-4">
+                <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <p className="text-2xl font-black tracking-wider text-[var(--color-primary)]">{promo.code}</p>
-                    <p className="text-sm text-[var(--color-outline)] mt-1">
-                      {promo.discount_value}% off{promo.max_discount ? ` • Up to ₹${promo.max_discount}` : ""}
+                    <p className="text-2xl font-black tracking-wider text-[var(--color-primary)]">
+                      {promo.code}
+                    </p>
+                    <p className="mt-1 text-sm text-[var(--color-outline)]">
+                      {promo.discount_value}% off
+                      {promo.max_discount ? ` • Up to ₹${promo.max_discount}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full ${promo.is_active && !expired ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"}`}></span>
+                    <span
+                      className={`h-2 w-2 rounded-full ${promo.is_active && !expired ? "bg-green-500" : "bg-slate-300 dark:bg-slate-600"}`}
+                    ></span>
                     <button
                       onClick={() => toggleActive(promo)}
-                      className={`text-xs font-bold px-2 py-1 rounded-full ${
+                      className={`rounded-full px-2 py-1 text-xs font-bold ${
                         promo.is_active && !expired
                           ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
                           : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
@@ -242,7 +316,7 @@ export default function VendorPromotions() {
                     </button>
                     <button
                       onClick={() => handleDelete(promo.id)}
-                      className="p-1.5 hover:bg-red-50 rounded-lg"
+                      className="rounded-lg p-1.5 hover:bg-red-50"
                       title="Delete"
                       aria-label="Delete"
                     >
@@ -254,25 +328,33 @@ export default function VendorPromotions() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-[var(--color-outline)]">Min Order</span>
-                    <span className="font-bold text-[var(--color-on-surface)]">₹{promo.min_order_amount || 0}</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">
+                      ₹{promo.min_order_amount || 0}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[var(--color-outline)]">Usage</span>
-                    <span className="font-bold text-[var(--color-on-surface)]">{promo.used_count || 0}/{promo.usage_limit || "∞"}</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">
+                      {promo.used_count || 0}/{promo.usage_limit || "∞"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[var(--color-outline)]">Valid Until</span>
-                    <span className={`font-bold ${expired ? "text-red-500" : "text-[var(--color-on-surface)]"}`}>
+                    <span
+                      className={`font-bold ${expired ? "text-red-500" : "text-[var(--color-on-surface)]"}`}
+                    >
                       {new Date(promo.valid_until).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
 
                 {/* Usage Bar */}
-                <div className="mt-4 h-1.5 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
+                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
                   <div
-                    className="h-full bg-[var(--color-primary)] rounded-full transition-all"
-                    style={{ width: `${promo.usage_limit ? Math.min(((promo.used_count || 0) / promo.usage_limit) * 100, 100) : 0}%` }}
+                    className="h-full rounded-full bg-[var(--color-primary)] transition-all"
+                    style={{
+                      width: `${promo.usage_limit ? Math.min(((promo.used_count || 0) / promo.usage_limit) * 100, 100) : 0}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -283,92 +365,153 @@ export default function VendorPromotions() {
 
       {/* Create Promo Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCreate(false)} role="dialog" aria-modal="true" aria-labelledby="create-promo-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-md rounded-3xl p-6 m-4" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 id="create-promo-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Create Promotion</h2>
-              <button onClick={() => setShowCreate(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowCreate(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="create-promo-title"
+        >
+          <div
+            className="m-4 w-full max-w-md rounded-3xl bg-[var(--color-surface-container-lowest)] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h2
+                id="create-promo-title"
+                className="text-xl font-extrabold text-[var(--color-on-surface)]"
+              >
+                Create Promotion
+              </h2>
+              <button
+                onClick={() => setShowCreate(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label htmlFor="promo_code" className="text-sm font-semibold text-[var(--color-on-surface)]">Promo Code</label>
-                <div className="flex gap-2 mt-1">
+                <label
+                  htmlFor="promo_code"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Promo Code
+                </label>
+                <div className="mt-1 flex gap-2">
                   <input
                     id="promo_code"
                     type="text"
                     value={newPromo.code}
-                    onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setNewPromo({ ...newPromo, code: e.target.value.toUpperCase() })
+                    }
                     placeholder="e.g., MIIAM30"
-                    className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] uppercase font-bold tracking-wider"
+                    className="flex-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 font-bold tracking-wider uppercase focus:border-[var(--color-primary)] focus:outline-none"
                   />
-                  <button onClick={generateCode} className="px-3 py-2 bg-[var(--color-surface-container)] rounded-xl text-xs font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]">
+                  <button
+                    onClick={generateCode}
+                    className="rounded-xl bg-[var(--color-surface-container)] px-3 py-2 text-xs font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
+                  >
                     Generate
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="discount_value" className="text-sm font-semibold text-[var(--color-on-surface)]">Discount %</label>
+                  <label
+                    htmlFor="discount_value"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Discount %
+                  </label>
                   <input
                     id="discount_value"
                     type="number"
                     min="1"
                     max="100"
                     value={newPromo.discount_value}
-                    onChange={(e) => setNewPromo({ ...newPromo, discount_value: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    onChange={(e) =>
+                      setNewPromo({ ...newPromo, discount_value: parseInt(e.target.value) || 0 })
+                    }
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label htmlFor="max_discount" className="text-sm font-semibold text-[var(--color-on-surface)]">Max Discount (₹)</label>
+                  <label
+                    htmlFor="max_discount"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Max Discount (₹)
+                  </label>
                   <input
                     id="max_discount"
                     type="number"
                     min="0"
                     value={newPromo.max_discount}
-                    onChange={(e) => setNewPromo({ ...newPromo, max_discount: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    onChange={(e) =>
+                      setNewPromo({ ...newPromo, max_discount: parseInt(e.target.value) || 0 })
+                    }
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               </div>
               <div>
-                  <label htmlFor="min_order_amount_promo" className="text-sm font-semibold text-[var(--color-on-surface)]">Min Order Amount (₹)</label>
-                  <input
-                    id="min_order_amount_promo"
-                    type="number"
-                    min="0"
-                    value={newPromo.min_order_amount}
-                    onChange={(e) => setNewPromo({ ...newPromo, min_order_amount: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
-                  />
+                <label
+                  htmlFor="min_order_amount_promo"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Min Order Amount (₹)
+                </label>
+                <input
+                  id="min_order_amount_promo"
+                  type="number"
+                  min="0"
+                  value={newPromo.min_order_amount}
+                  onChange={(e) =>
+                    setNewPromo({ ...newPromo, min_order_amount: parseInt(e.target.value) || 0 })
+                  }
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                />
               </div>
               <div>
-                <label htmlFor="usage_limit" className="text-sm font-semibold text-[var(--color-on-surface)]">Usage Limit</label>
+                <label
+                  htmlFor="usage_limit"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Usage Limit
+                </label>
                 <input
                   id="usage_limit"
                   type="number"
                   min="1"
                   value={newPromo.usage_limit}
-                  onChange={(e) => setNewPromo({ ...newPromo, usage_limit: parseInt(e.target.value) || 1 })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  onChange={(e) =>
+                    setNewPromo({ ...newPromo, usage_limit: parseInt(e.target.value) || 1 })
+                  }
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="valid_until" className="text-sm font-semibold text-[var(--color-on-surface)]">Valid Until</label>
+                <label
+                  htmlFor="valid_until"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Valid Until
+                </label>
                 <input
                   id="valid_until"
                   type="date"
                   value={newPromo.valid_until}
                   onChange={(e) => setNewPromo({ ...newPromo, valid_until: e.target.value })}
                   min={new Date().toISOString().split("T")[0]}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <button
                 onClick={handleCreate}
-                className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors"
+                className="text-on-primary w-full rounded-2xl bg-[var(--color-primary)] py-4 font-extrabold transition-colors hover:bg-[var(--color-primary-dim)]"
               >
                 Create Promotion
               </button>

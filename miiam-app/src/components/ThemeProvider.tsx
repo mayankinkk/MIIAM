@@ -22,9 +22,12 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
       return;
     }
     const store = useThemeStore.getState();
-    const resolved = store.theme === "system"
-      ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-      : store.theme;
+    const resolved =
+      store.theme === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+        : store.theme;
     applyThemeClass(resolved);
   }, [theme]);
 

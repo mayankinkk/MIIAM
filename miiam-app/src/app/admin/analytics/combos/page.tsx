@@ -23,7 +23,7 @@ export default function ComboAnalytics() {
 
   async function loadStats() {
     setLoading(true);
-    
+
     const startDate = new Date();
     if (timeRange === "7d") startDate.setDate(startDate.getDate() - 7);
     else if (timeRange === "30d") startDate.setDate(startDate.getDate() - 30);
@@ -46,8 +46,14 @@ export default function ComboAnalytics() {
           .eq("combo_id", combo.id)
           .gte("created_at", startDate.toISOString());
 
-        const orderCount = orders?.reduce((sum: number, o: { quantity?: number }) => sum + (o.quantity || 1), 0) || 0;
-        const totalRevenue = orders?.reduce((sum: number, o: { total_price?: number }) => sum + (o.total_price || 0), 0) || 0;
+        const orderCount =
+          orders?.reduce((sum: number, o: { quantity?: number }) => sum + (o.quantity || 1), 0) ||
+          0;
+        const totalRevenue =
+          orders?.reduce(
+            (sum: number, o: { total_price?: number }) => sum + (o.total_price || 0),
+            0
+          ) || 0;
 
         return {
           id: combo.id,
@@ -69,11 +75,11 @@ export default function ComboAnalytics() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-4">
-        <div className="h-8 w-48 bg-surface-container-high animate-pulse rounded" />
+      <div className="space-y-4 p-6">
+        <div className="bg-surface-container-high h-8 w-48 animate-pulse rounded" />
         <div className="grid grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-24 bg-surface-container-high animate-pulse rounded-xl" />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-surface-container-high h-24 animate-pulse rounded-xl" />
           ))}
         </div>
       </div>
@@ -81,15 +87,15 @@ export default function ComboAnalytics() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-black text-on-surface">Combo Analytics</h1>
+        <h1 className="text-on-surface text-2xl font-black">Combo Analytics</h1>
         <div className="flex gap-2">
           {(["7d", "30d", "all"] as const).map((range) => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold ${
+              className={`rounded-full px-3 py-1.5 text-xs font-bold ${
                 timeRange === range
                   ? "bg-primary text-on-primary"
                   : "bg-surface-container-high text-on-surface-variant"
@@ -103,40 +109,46 @@ export default function ComboAnalytics() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/10">
-          <p className="text-xs text-on-surface-variant">Total Orders</p>
-          <p className="text-2xl font-black text-on-surface mt-1">{totalOrders}</p>
+        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-4">
+          <p className="text-on-surface-variant text-xs">Total Orders</p>
+          <p className="text-on-surface mt-1 text-2xl font-black">{totalOrders}</p>
         </div>
-        <div className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/10">
-          <p className="text-xs text-on-surface-variant">Total Revenue</p>
-          <p className="text-2xl font-black text-primary mt-1">₹{totalRevenue.toFixed(0)}</p>
+        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-4">
+          <p className="text-on-surface-variant text-xs">Total Revenue</p>
+          <p className="text-primary mt-1 text-2xl font-black">₹{totalRevenue.toFixed(0)}</p>
         </div>
-        <div className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/10">
-          <p className="text-xs text-on-surface-variant">Avg Order Value</p>
-          <p className="text-2xl font-black text-on-surface mt-1">₹{avgOrderValue.toFixed(0)}</p>
+        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-4">
+          <p className="text-on-surface-variant text-xs">Avg Order Value</p>
+          <p className="text-on-surface mt-1 text-2xl font-black">₹{avgOrderValue.toFixed(0)}</p>
         </div>
       </div>
 
       {/* Combo Performance Table */}
-      <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/10 overflow-hidden">
+      <div className="bg-surface-container-lowest border-outline-variant/10 overflow-hidden rounded-xl border">
         <table className="w-full">
           <thead className="bg-surface-container-high">
             <tr>
-              <th className="p-4 text-left text-xs font-bold text-on-surface-variant">Combo</th>
-              <th className="p-4 text-right text-xs font-bold text-on-surface-variant">Price</th>
-              <th className="p-4 text-right text-xs font-bold text-on-surface-variant">Orders</th>
-              <th className="p-4 text-right text-xs font-bold text-on-surface-variant">Revenue</th>
+              <th className="text-on-surface-variant p-4 text-left text-xs font-bold">Combo</th>
+              <th className="text-on-surface-variant p-4 text-right text-xs font-bold">Price</th>
+              <th className="text-on-surface-variant p-4 text-right text-xs font-bold">Orders</th>
+              <th className="text-on-surface-variant p-4 text-right text-xs font-bold">Revenue</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-outline-variant/10">
+          <tbody className="divide-outline-variant/10 divide-y">
             {stats.map((combo) => (
               <tr key={combo.id} className="hover:bg-surface-container">
                 <td className="p-4">
-                  <p className="font-bold text-sm text-on-surface">{combo.name}</p>
+                  <p className="text-on-surface text-sm font-bold">{combo.name}</p>
                 </td>
-                <td className="p-4 text-right text-sm text-on-surface-variant">₹{combo.combo_price}</td>
-                <td className="p-4 text-right text-sm font-bold text-on-surface">{combo.order_count}</td>
-                <td className="p-4 text-right text-sm font-bold text-primary">₹{combo.total_revenue.toFixed(0)}</td>
+                <td className="text-on-surface-variant p-4 text-right text-sm">
+                  ₹{combo.combo_price}
+                </td>
+                <td className="text-on-surface p-4 text-right text-sm font-bold">
+                  {combo.order_count}
+                </td>
+                <td className="text-primary p-4 text-right text-sm font-bold">
+                  ₹{combo.total_revenue.toFixed(0)}
+                </td>
               </tr>
             ))}
           </tbody>

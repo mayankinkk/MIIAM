@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 
-
 const statusColors: Record<string, string> = {
   delivered: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
   preparing: "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal",
@@ -21,7 +20,10 @@ const typeColors: Record<string, string> = {
   hamper: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
 };
 
-interface FlowerOrderItem { name: string; quantity: number; }
+interface FlowerOrderItem {
+  name: string;
+  quantity: number;
+}
 interface FlowerOrderRaw {
   id: string;
   total_amount: number | null;
@@ -70,15 +72,19 @@ export default function FlowersOrdersPage() {
         items: o.order_items?.map((i) => `${i.name} (x${i.quantity})`).join(", ") || "N/A",
         total: o.total_amount || 0,
         status: o.status || "pending",
-        date: o.placed_at ? new Date(o.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "",
+        date: o.placed_at
+          ? new Date(o.placed_at).toLocaleDateString("en-IN", { month: "short", day: "numeric" })
+          : "",
         type: "bouquet",
       }));
       setOrders(mapped);
       setStats({
         total: mapped.length,
-        pending: mapped.filter(o => o.status === "preparing" || o.status === "shipped" || o.status === "pending").length,
-        delivered: mapped.filter(o => o.status === "delivered").length,
-        cancelled: mapped.filter(o => o.status === "cancelled").length,
+        pending: mapped.filter(
+          (o) => o.status === "preparing" || o.status === "shipped" || o.status === "pending"
+        ).length,
+        delivered: mapped.filter((o) => o.status === "delivered").length,
+        cancelled: mapped.filter((o) => o.status === "cancelled").length,
       });
     }
     setLoading(false);
@@ -94,8 +100,9 @@ export default function FlowersOrdersPage() {
     loadOrders();
   }
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = searchTerm === "" ||
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch =
+      searchTerm === "" ||
       order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || order.status === statusFilter;
@@ -104,50 +111,55 @@ export default function FlowersOrdersPage() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/flowers" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+      <div className="mb-6 flex items-center gap-4">
+        <Link
+          href="/admin/flowers"
+          className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
+        >
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Flowers Orders</h1>
-          <p className="text-[var(--color-outline)] text-sm">Manage flower delivery orders</p>
+          <p className="text-sm text-[var(--color-outline)]">Manage flower delivery orders</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL ORDERS</p>
-          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
+      <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-4">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)]">TOTAL ORDERS</p>
+          <p className="mt-1 text-2xl font-black text-[var(--color-on-surface)]">{stats.total}</p>
         </div>
-        <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
-          <p className="text-yellow-600 text-xs font-bold">PENDING</p>
-          <p className="text-2xl font-black text-yellow-700 mt-1">{stats.pending}</p>
+        <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4">
+          <p className="text-xs font-bold text-yellow-600">PENDING</p>
+          <p className="mt-1 text-2xl font-black text-yellow-700">{stats.pending}</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-          <p className="text-green-600 text-xs font-bold">DELIVERED</p>
-          <p className="text-2xl font-black text-green-700 mt-1">{stats.delivered}</p>
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+          <p className="text-xs font-bold text-green-600">DELIVERED</p>
+          <p className="mt-1 text-2xl font-black text-green-700">{stats.delivered}</p>
         </div>
-        <div className="bg-red-50 p-4 rounded-xl border border-red-200">
-          <p className="text-red-600 text-xs font-bold">CANCELLED</p>
-          <p className="text-2xl font-black text-red-700 mt-1">{stats.cancelled}</p>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-xs font-bold text-red-600">CANCELLED</p>
+          <p className="mt-1 text-2xl font-black text-red-700">{stats.cancelled}</p>
         </div>
       </div>
 
-      <div className="flex gap-4 mb-6">
-        <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
+      <div className="mb-6 flex gap-4">
+        <div className="relative flex-1">
+          <span className="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[var(--color-outline-variant)]">
+            search
+          </span>
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by customer or order ID..."
-            className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
+            className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] py-3 pr-4 pl-10 focus:border-[var(--color-primary)] focus:outline-none"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]"
+          className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
         >
           <option value="all">All Status</option>
           <option value="preparing">Preparing</option>
@@ -158,33 +170,56 @@ export default function FlowersOrdersPage() {
       </div>
 
       {filteredOrders.length === 0 ? (
-        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">receipt_long</span>
+        <div className="rounded-xl bg-[var(--color-surface-container-lowest)] py-12 text-center text-[var(--color-outline)]">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">
+            receipt_long
+          </span>
           <p className="mt-4 font-bold">No orders found</p>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)]">
           <table className="w-full">
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Order ID</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Customer</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Items</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Total</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Type</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Date</th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Order ID
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Customer
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Items
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Total
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Type
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Status
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Date
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredOrders.map((order) => (
-                <tr key={order.id} className="border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]">
+                <tr
+                  key={order.id}
+                  className="border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+                >
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">{order.id}</td>
                   <td className="p-4 text-[var(--color-on-surface-variant)]">{order.customer}</td>
-                  <td className="p-4 text-[var(--color-on-surface-variant)] text-sm">{order.items}</td>
+                  <td className="p-4 text-sm text-[var(--color-on-surface-variant)]">
+                    {order.items}
+                  </td>
                   <td className="p-4 font-bold text-[var(--color-on-surface)]">₹{order.total}</td>
                   <td className="p-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold capitalize ${typeColors[order.type]}`}>
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-bold capitalize ${typeColors[order.type]}`}
+                    >
                       {order.type}
                     </span>
                   </td>
@@ -192,14 +227,16 @@ export default function FlowersOrdersPage() {
                     <select
                       value={order.status}
                       onChange={(e) => updateStatus(order.id, e.target.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-bold capitalize border-0 focus:ring-2 focus:ring-[var(--color-primary)]/20 cursor-pointer ${statusColors[order.status]}`}
+                      className={`cursor-pointer rounded-full border-0 px-3 py-1 text-xs font-bold capitalize focus:ring-2 focus:ring-[var(--color-primary)]/20 ${statusColors[order.status]}`}
                     >
-                      {["pending", "preparing", "shipped", "delivered", "cancelled"].map(s => (
-                        <option key={s} value={s}>{s}</option>
+                      {["pending", "preparing", "shipped", "delivered", "cancelled"].map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
                       ))}
                     </select>
                   </td>
-                  <td className="p-4 text-[var(--color-outline)] text-sm">{order.date}</td>
+                  <td className="p-4 text-sm text-[var(--color-outline)]">{order.date}</td>
                 </tr>
               ))}
             </tbody>

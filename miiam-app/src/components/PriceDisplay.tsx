@@ -7,7 +7,12 @@ interface PriceDisplayProps {
   showSavings?: boolean;
 }
 
-export default function PriceDisplay({ price, originalPrice, size = "md", showSavings = true }: PriceDisplayProps) {
+export default function PriceDisplay({
+  price,
+  originalPrice,
+  size = "md",
+  showSavings = true,
+}: PriceDisplayProps) {
   const hasDiscount = originalPrice && originalPrice > price;
   const savings = hasDiscount ? originalPrice - price : 0;
   const discountPercent = hasDiscount ? Math.round((savings / originalPrice) * 100) : 0;
@@ -22,12 +27,14 @@ export default function PriceDisplay({ price, originalPrice, size = "md", showSa
 
   return (
     <div className="flex flex-col items-start leading-tight">
-      <span className={`font-black text-on-surface ${s.price}`}>₹{price.toFixed(0)}</span>
+      <span className={`text-on-surface font-black ${s.price}`}>₹{price.toFixed(0)}</span>
       {hasDiscount && (
-        <span className={`font-medium text-on-surface-variant/50 line-through ${s.original}`}>₹{originalPrice.toFixed(0)}</span>
+        <span className={`text-on-surface-variant/50 font-medium line-through ${s.original}`}>
+          ₹{originalPrice.toFixed(0)}
+        </span>
       )}
       {hasDiscount && showSavings && (
-        <span className={`font-bold text-deal bg-deal/10 rounded-full mt-0.5 ${s.badge}`}>
+        <span className={`text-deal bg-deal/10 mt-0.5 rounded-full font-bold ${s.badge}`}>
           {discountPercent}% off
         </span>
       )}

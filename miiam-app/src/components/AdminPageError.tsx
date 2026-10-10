@@ -13,29 +13,36 @@ export default function AdminPageError({
   title?: string;
 }) {
   useEffect(() => {
-    logger.error({ err: error instanceof Error ? error : new Error(String(error)), title }, `Page error: ${title}`);
+    logger.error(
+      { err: error instanceof Error ? error : new Error(String(error)), title },
+      `Page error: ${title}`
+    );
   }, [error, title]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
-      <span className="material-symbols-outlined text-6xl text-[var(--color-accent)] mb-4">error_outline</span>
-      <h2 className="text-xl font-black text-[var(--color-on-surface)] mb-2">{title}</h2>
-      <p className="text-sm text-[var(--color-outline)] mb-1 max-w-md">
+    <div className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center">
+      <span className="material-symbols-outlined mb-4 text-6xl text-[var(--color-accent)]">
+        error_outline
+      </span>
+      <h2 className="mb-2 text-xl font-black text-[var(--color-on-surface)]">{title}</h2>
+      <p className="mb-1 max-w-md text-sm text-[var(--color-outline)]">
         Something went wrong loading this page. You can try again or go back to the dashboard.
       </p>
       {error.digest && (
-        <p className="text-xs text-[var(--color-outline-variant)] mb-4 font-mono">Error ID: {error.digest}</p>
+        <p className="mb-4 font-mono text-xs text-[var(--color-outline-variant)]">
+          Error ID: {error.digest}
+        </p>
       )}
       <div className="flex gap-3">
         <button
           onClick={reset}
-          className="px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity"
+          className="text-on-primary rounded-xl bg-[var(--color-primary)] px-6 py-3 font-bold transition-opacity hover:opacity-90"
         >
           Try Again
         </button>
         <a
           href="/admin"
-          className="px-6 py-3 bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] rounded-xl font-bold hover:bg-[var(--color-surface-container-high)] transition-colors"
+          className="rounded-xl bg-[var(--color-surface-container)] px-6 py-3 font-bold text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)]"
         >
           Dashboard
         </a>

@@ -9,7 +9,7 @@ const logger = createRouteLogger("auth/verify-cookie");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 20, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 20, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const randomToken = crypto.randomUUID();
     const hmac = signHmac(cleanEmail, randomToken);
     const verifiedToken = `${randomToken}.${hmac}`;
-    
+
     cookieStore.set("password_reset_verified", verifiedToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

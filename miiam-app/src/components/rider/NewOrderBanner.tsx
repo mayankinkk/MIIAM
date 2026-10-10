@@ -17,19 +17,19 @@ export default function NewOrderBanner({ visible, order, onView, onDismiss }: Ne
   if (!visible || !order) return null;
 
   return (
-    <div className="fixed top-16 left-0 right-0 z-[90] bg-gradient-to-r from-brand-secondary to-secondary-dim text-white p-3 flex items-center justify-between shadow-lg animate-slide-down">
+    <div className="from-brand-secondary to-secondary-dim animate-slide-down fixed top-16 right-0 left-0 z-[90] flex items-center justify-between bg-gradient-to-r p-3 text-white shadow-lg">
       <div className="flex items-center gap-3">
         <span className="material-symbols-outlined animate-bounce">local_shipping</span>
         <div>
-          <p className="font-bold text-sm">{t.rider.banner.newOrderAvailable}</p>
-          <p className="text-xs opacity-80">{order.type === "multi_stop" ? `${order.stops?.length} stops` : order.items} items • ₹{calculatePeakEarnings(order)}</p>
+          <p className="text-sm font-bold">{t.rider.banner.newOrderAvailable}</p>
+          <p className="text-xs opacity-80">
+            {order.type === "multi_stop" ? `${order.stops?.length} stops` : order.items} items • ₹
+            {calculatePeakEarnings(order)}
+          </p>
         </div>
       </div>
-      <button 
-        onClick={onView}
-        className="px-3 py-1 bg-white/20 rounded-full text-xs font-bold"
-      >
-{t.rider.banner.view}
+      <button onClick={onView} className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold">
+        {t.rider.banner.view}
       </button>
     </div>
   );

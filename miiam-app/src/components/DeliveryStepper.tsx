@@ -30,13 +30,13 @@ export default function DeliveryStepper({ steps }: DeliveryStepperProps) {
           >
             {/* Connector line */}
             {!isLast && (
-              <div className="absolute left-[15px] top-[32px] w-[2px] h-[calc(100%-20px)] bg-surface-container-high">
+              <div className="bg-surface-container-high absolute top-[32px] left-[15px] h-[calc(100%-20px)] w-[2px]">
                 {step.completed && (
                   <motion.div
                     initial={{ scaleY: 0 }}
                     animate={{ scaleY: 1 }}
                     transition={{ delay: i * 0.15, duration: 0.3 }}
-                    className="w-full h-full bg-primary origin-top"
+                    className="bg-primary h-full w-full origin-top"
                   />
                 )}
               </div>
@@ -49,28 +49,33 @@ export default function DeliveryStepper({ steps }: DeliveryStepperProps) {
                 scale: step.current ? [1, 1.15, 1] : 1,
               }}
               transition={step.current ? { repeat: Infinity, duration: 2 } : { delay: i * 0.1 }}
-              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 z-10 ${
+              className={`z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
                 step.completed
                   ? "bg-primary text-on-primary"
                   : step.current
-                    ? "bg-primary text-on-primary shadow-lg shadow-primary/30"
+                    ? "bg-primary text-on-primary shadow-primary/30 shadow-lg"
                     : "bg-surface-container-high text-on-surface-variant"
               }`}
             >
-              <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: step.completed ? "'FILL' 1" : "'FILL' 0" }}>
+              <span
+                className="material-symbols-outlined text-sm"
+                style={{ fontVariationSettings: step.completed ? "'FILL' 1" : "'FILL' 0" }}
+              >
                 {step.completed ? "check" : step.icon}
               </span>
             </motion.div>
 
             {/* Label */}
             <div className="pt-1">
-              <p className={`text-sm font-bold ${
-                step.completed || step.current ? "text-on-surface" : "text-on-surface-variant/50"
-              }`}>
+              <p
+                className={`text-sm font-bold ${
+                  step.completed || step.current ? "text-on-surface" : "text-on-surface-variant/50"
+                }`}
+              >
                 {step.label}
               </p>
               {step.time && (
-                <p className="text-xs text-on-surface-variant/60 mt-0.5">{step.time}</p>
+                <p className="text-on-surface-variant/60 mt-0.5 text-xs">{step.time}</p>
               )}
             </div>
           </motion.div>

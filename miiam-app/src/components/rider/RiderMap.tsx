@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
-import type * as Leaflet from 'leaflet';
+import type * as Leaflet from "leaflet";
 
 export interface RiderLocation {
   lat: number;
@@ -55,10 +55,9 @@ const TILE_SERVERS = [
 async function geocode(address: string): Promise<[number, number] | null> {
   try {
     const q = address.toLowerCase().includes("india") ? address : `${address}, India`;
-    const res = await fetch(
-      `${NOMINATIM}?format=json&q=${encodeURIComponent(q)}&limit=1`,
-      { headers: { "Accept-Language": "en" } }
-    );
+    const res = await fetch(`${NOMINATIM}?format=json&q=${encodeURIComponent(q)}&limit=1`, {
+      headers: { "Accept-Language": "en" },
+    });
     const data = await res.json();
     if (data && data[0]) {
       return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
@@ -101,9 +100,7 @@ function haversine(a: [number, number], b: [number, number]) {
   const dLng = toRad(b[1] - a[1]);
   const lat1 = toRad(a[0]);
   const lat2 = toRad(b[0]);
-  const x =
-    Math.sin(dLat / 2) ** 2 +
-    Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  const x = Math.sin(dLat / 2) ** 2 + Math.sin(dLng / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
   return 2 * R * Math.asin(Math.sqrt(x));
 }
 
@@ -114,9 +111,7 @@ function bearing(a: [number, number], b: [number, number]) {
   const lat2 = toRad(b[0]);
   const dLng = toRad(b[1] - a[1]);
   const y = Math.sin(dLng) * Math.cos(lat2);
-  const x =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+  const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
   return (toDeg(Math.atan2(y, x)) + 360) % 360;
 }
 
@@ -150,7 +145,7 @@ export default function RiderMap({
   const trailLayerRef = useRef<Leaflet.Polyline | null>(null);
   const trailPointsRef = useRef<[number, number][]>([]);
   const routeLayerRef = useRef<Leaflet.Polyline[]>([]);
-  const leafletRef = useRef<typeof import('leaflet') | null>(null);
+  const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const dropoffCoordRef = useRef<[number, number] | null>(null);
   const pickupCoordRef = useRef<[number, number] | null>(null);
   const lastBearingRef = useRef<number>(0);
@@ -187,7 +182,7 @@ export default function RiderMap({
           attribution: "© OpenStreetMap contributors",
           maxZoom: 19,
         });
-        tileLayer.on('tileerror', () => {
+        tileLayer.on("tileerror", () => {
           tileLayer.remove();
           addTileLayer(urlIndex + 1);
         });
@@ -238,7 +233,9 @@ export default function RiderMap({
       }
     }
     resolveAll();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [dropoff.label, dropoff.lat, dropoff.lng, pickup?.label, pickup?.lat, pickup?.lng]);
 
   // Place / update static markers (home, vendor)
@@ -250,7 +247,12 @@ export default function RiderMap({
     const drop = dropoffCoordRef.current;
     if (drop && !homeMarkerRef.current) {
       homeMarkerRef.current = L.marker(drop, {
-        icon: L.divIcon({ className: "", html: homeIconHtml, iconSize: [44, 44], iconAnchor: [22, 44] }),
+        icon: L.divIcon({
+          className: "",
+          html: homeIconHtml,
+          iconSize: [44, 44],
+          iconAnchor: [22, 44],
+        }),
         zIndexOffset: 500,
       })
         .bindPopup("Your delivery location")
@@ -262,7 +264,12 @@ export default function RiderMap({
     const pick = pickupCoordRef.current;
     if (pick && !vendorMarkerRef.current) {
       vendorMarkerRef.current = L.marker(pick, {
-        icon: L.divIcon({ className: "", html: vendorIconHtml, iconSize: [44, 44], iconAnchor: [22, 44] }),
+        icon: L.divIcon({
+          className: "",
+          html: vendorIconHtml,
+          iconSize: [44, 44],
+          iconAnchor: [22, 44],
+        }),
         zIndexOffset: 500,
       })
         .bindPopup("Pickup location")
@@ -302,12 +309,17 @@ export default function RiderMap({
       routeLayerRef.current.forEach((l) => map!.removeLayer(l));
       routeLayerRef.current = [];
 
-      const drawLeg = async (from: [number, number], to: [number, number], opts: { dashed?: boolean; leg: "to_pickup" | "to_drop" }) => {
+      const drawLeg = async (
+        from: [number, number],
+        to: [number, number],
+        opts: { dashed?: boolean; leg: "to_pickup" | "to_drop" }
+      ) => {
         if (cancelled) return;
         const r = await routeBetween(from, to);
         if (cancelled || !r || !mapInstanceRef.current) return;
         const m = mapInstanceRef.current;
-        const baseColor = opts.leg === "to_pickup" ? "var(--color-secondary)" : "var(--color-primary)";
+        const baseColor =
+          opts.leg === "to_pickup" ? "var(--color-secondary)" : "var(--color-primary)";
         const shadow = L.polyline(r.coords, {
           color: `${baseColor}33`,
           weight: 10,
@@ -346,7 +358,9 @@ export default function RiderMap({
     }
 
     draw();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [riderLocation?.lat, riderLocation?.lng, resolvedDropoff, resolvedPickup, showRoute]);
 
   // Update the rider marker — and animate smoothly between positions
@@ -412,7 +426,10 @@ export default function RiderMap({
       marker.setLatLng([lat, lng]);
 
       // Append to trail every few frames
-      if (!trailPointsRef.current.length || haversine(trailPointsRef.current[trailPointsRef.current.length - 1], [lat, lng]) > 0.005) {
+      if (
+        !trailPointsRef.current.length ||
+        haversine(trailPointsRef.current[trailPointsRef.current.length - 1], [lat, lng]) > 0.005
+      ) {
         trailPointsRef.current.push([lat, lng]);
         if (trailPointsRef.current.length > TRAIL_MAX) trailPointsRef.current.shift();
         if (trailLayerRef.current) trailLayerRef.current.remove();
@@ -443,11 +460,11 @@ export default function RiderMap({
         .leaflet-container { width: 100%; height: 100%; margin: 0; padding: 0; }
         .leaflet-container .leaflet-pane > img.leaflet-tile { position: absolute; left: 0; bottom: -1px; }
       `}</style>
-      <div className="absolute top-3 left-3 z-10 bg-status-error text-white text-[10px] font-black px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-        <span className="w-1.5 h-1.5 bg-[var(--color-surface-container-lowest)] rounded-full animate-pulse" />
+      <div className="bg-status-error absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-black text-white shadow-lg">
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-surface-container-lowest)]" />
         LIVE
       </div>
-      <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
+      <div ref={mapRef} className="h-full w-full" style={{ position: "absolute", inset: 0 }} />
     </div>
   );
 }

@@ -36,15 +36,33 @@ export function useRealtimeMetrics(): RealtimeMetrics & { loading: boolean; refr
       const [ordersResult, todayResult, activeResult] = await Promise.all([
         supabase.from("orders").select("id, total_amount").limit(50000),
         supabase.from("orders").select("id, total_amount").gte("created_at", today).limit(10000),
-        supabase.from("orders").select("id").in("status", ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "on_the_way"]).limit(500),
+        supabase
+          .from("orders")
+          .select("id")
+          .in("status", [
+            "pending",
+            "accepted",
+            "preparing",
+            "ready_for_pickup",
+            "shopping",
+            "picked_up",
+            "on_the_way",
+          ])
+          .limit(500),
       ]);
 
       const allOrders = ordersResult.data || [];
       const todayOrders = todayResult.data || [];
       const activeOrders = activeResult.data || [];
 
-      const totalRevenue = allOrders.reduce((sum: number, o: { total_amount: number }) => sum + (o.total_amount || 0), 0);
-      const revenueToday = todayOrders.reduce((sum: number, o: { total_amount: number }) => sum + (o.total_amount || 0), 0);
+      const totalRevenue = allOrders.reduce(
+        (sum: number, o: { total_amount: number }) => sum + (o.total_amount || 0),
+        0
+      );
+      const revenueToday = todayOrders.reduce(
+        (sum: number, o: { total_amount: number }) => sum + (o.total_amount || 0),
+        0
+      );
 
       setMetrics({
         totalOrders: allOrders.length,
@@ -67,13 +85,9 @@ export function useRealtimeMetrics(): RealtimeMetrics & { loading: boolean; refr
 
     channelRef.current = supabase
       .channel("admin-metrics")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "orders" },
-        () => {
-          fetchMetrics();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+        fetchMetrics();
+      })
       .subscribe();
 
     return () => {
@@ -87,14 +101,16 @@ export function useRealtimeMetrics(): RealtimeMetrics & { loading: boolean; refr
 }
 
 export function useRealtimeOrders(limit = 20) {
-  const [orders, setOrders] = useState<Array<{
-    id: string;
-    status: string;
-    total_amount: number;
-    created_at: string;
-    vendor_id: string;
-    user_id: string;
-  }>>([]);
+  const [orders, setOrders] = useState<
+    Array<{
+      id: string;
+      status: string;
+      total_amount: number;
+      created_at: string;
+      vendor_id: string;
+      user_id: string;
+    }>
+  >([]);
   const [loading, setLoading] = useState(true);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
@@ -119,13 +135,9 @@ export function useRealtimeOrders(limit = 20) {
 
     channelRef.current = supabase
       .channel("realtime-orders")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "orders" },
-        () => {
-          fetchOrders();
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, () => {
+        fetchOrders();
+      })
       .subscribe();
 
     return () => {
@@ -139,13 +151,15 @@ export function useRealtimeOrders(limit = 20) {
 }
 
 export function useRealtimeVendorOrders(vendorId: string) {
-  const [orders, setOrders] = useState<Array<{
-    id: string;
-    status: string;
-    total_amount: number;
-    created_at: string;
-    user_id: string;
-  }>>([]);
+  const [orders, setOrders] = useState<
+    Array<{
+      id: string;
+      status: string;
+      total_amount: number;
+      created_at: string;
+      user_id: string;
+    }>
+  >([]);
   const [loading, setLoading] = useState(true);
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 

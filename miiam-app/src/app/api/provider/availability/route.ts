@@ -7,12 +7,18 @@ const logger = createRouteLogger("provider/availability");
 
 async function requireAuth() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
   return user;
 }
 
-function generateTimeSlots(startHour: number = 8, endHour: number = 20, intervalMinutes: number = 60): string[] {
+function generateTimeSlots(
+  startHour: number = 8,
+  endHour: number = 20,
+  intervalMinutes: number = 60
+): string[] {
   const slots: string[] = [];
   for (let hour = startHour; hour < endHour; hour++) {
     const time = `${hour.toString().padStart(2, "0")}:00`;
@@ -51,27 +57,27 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
       .eq("scheduled_date", date)
       .eq("status", "confirmed");
 
-    const bookedTimes = (bookings || []).map(b => b.scheduled_time);
+    const bookedTimes = (bookings || []).map((b) => b.scheduled_time);
     const allSlots = generateTimeSlots();
 
-    const availableSlots = allSlots.map(time => ({
+    const availableSlots = allSlots.map((time) => ({
       time,
       available: !bookedTimes.includes(time),
-      reason: bookedTimes.includes(time) ? "booked" : null
+      reason: bookedTimes.includes(time) ? "booked" : null,
     }));
 
     if (availability?.is_unavailable) {
       return NextResponse.json({
         available: false,
         reason: availability.reason || "Not available",
-        slots: []
+        slots: [],
       });
     }
 
     return NextResponse.json({
       available: true,
       date,
-      slots: availableSlots
+      slots: availableSlots,
     });
   }
 
@@ -96,14 +102,16 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
 
     while (currentDate <= end) {
       const dateStr = currentDate.toISOString().split("T")[0];
-      const dayAvail = (availabilities || []).find((a: Record<string, unknown>) => a.date === dateStr);
-      
+      const dayAvail = (availabilities || []).find(
+        (a: Record<string, unknown>) => a.date === dateStr
+      );
+
       days[dateStr] = {
         available: !dayAvail?.is_unavailable,
         reason: (dayAvail?.reason as string) || null,
-        slots: dayAvail?.is_unavailable ? [] : generateTimeSlots()
+        slots: dayAvail?.is_unavailable ? [] : generateTimeSlots(),
       };
-      
+
       currentDate.setDate(currentDate.getDate() + 1);
     }
 

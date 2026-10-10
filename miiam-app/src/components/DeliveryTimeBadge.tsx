@@ -7,10 +7,17 @@ interface DeliveryTimeBadgeProps {
   className?: string;
 }
 
-export default function DeliveryTimeBadge({ min, max, variant = "default", className = "" }: DeliveryTimeBadgeProps) {
+export default function DeliveryTimeBadge({
+  min,
+  max,
+  variant = "default",
+  className = "",
+}: DeliveryTimeBadgeProps) {
   if (variant === "compact") {
     return (
-      <span className={`inline-flex items-center gap-1 text-xs font-bold text-on-surface-variant ${className}`}>
+      <span
+        className={`text-on-surface-variant inline-flex items-center gap-1 text-xs font-bold ${className}`}
+      >
         <span className="material-symbols-outlined text-sm">schedule</span>
         {min}–{max} min
       </span>
@@ -19,13 +26,13 @@ export default function DeliveryTimeBadge({ min, max, variant = "default", class
 
   if (variant === "detailed") {
     return (
-      <div className={`flex items-center gap-3 p-3 bg-surface-container rounded-xl ${className}`}>
-        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+      <div className={`bg-surface-container flex items-center gap-3 rounded-xl p-3 ${className}`}>
+        <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full">
           <span className="material-symbols-outlined text-accent text-lg">delivery_dining</span>
         </div>
         <div>
-          <p className="text-sm font-bold text-on-surface">Delivery Time</p>
-          <p className="text-xs text-on-surface-variant">
+          <p className="text-on-surface text-sm font-bold">Delivery Time</p>
+          <p className="text-on-surface-variant text-xs">
             Estimated {min}–{max} minutes
           </p>
         </div>
@@ -34,9 +41,13 @@ export default function DeliveryTimeBadge({ min, max, variant = "default", class
   }
 
   return (
-    <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-container rounded-full ${className}`}>
-      <span className="material-symbols-outlined text-sm text-accent">schedule</span>
-      <span className="text-xs font-bold text-on-surface">{min}–{max} min</span>
+    <div
+      className={`bg-surface-container inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 ${className}`}
+    >
+      <span className="material-symbols-outlined text-accent text-sm">schedule</span>
+      <span className="text-on-surface text-xs font-bold">
+        {min}–{max} min
+      </span>
     </div>
   );
 }

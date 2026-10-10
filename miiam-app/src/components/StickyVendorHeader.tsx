@@ -12,7 +12,13 @@ interface StickyVendorHeaderProps {
   vendorId: string;
 }
 
-export default function StickyVendorHeader({ name, rating, cuisine, isOpen, vendorId }: StickyVendorHeaderProps) {
+export default function StickyVendorHeader({
+  name,
+  rating,
+  cuisine,
+  isOpen,
+  vendorId,
+}: StickyVendorHeaderProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -29,16 +35,16 @@ export default function StickyVendorHeader({ name, rating, cuisine, isOpen, vend
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -60, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-xl shadow-sm border-b border-outline/5"
+          className="bg-surface-container-lowest/95 border-outline/5 fixed top-0 right-0 left-0 z-50 border-b shadow-sm backdrop-blur-xl"
         >
-          <div className="flex items-center gap-3 px-4 py-3 max-w-7xl mx-auto">
+          <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3">
             <Link href="/app/food" className="text-on-surface">
               <span className="material-symbols-outlined">arrow_back</span>
             </Link>
 
-            <div className="flex-1 min-w-0">
-              <h2 className="text-sm font-bold text-on-surface truncate">{name}</h2>
-              <div className="flex items-center gap-2 text-xs text-on-surface-variant">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-on-surface truncate text-sm font-bold">{name}</h2>
+              <div className="text-on-surface-variant flex items-center gap-2 text-xs">
                 {rating && <span>★ {typeof rating === "number" ? rating.toFixed(1) : rating}</span>}
                 {cuisine && <span className="truncate">{cuisine}</span>}
                 <span className={`font-bold ${isOpen ? "text-emerald-600" : "text-gray-400"}`}>

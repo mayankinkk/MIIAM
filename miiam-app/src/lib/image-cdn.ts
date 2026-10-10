@@ -24,7 +24,7 @@ export function getOptimizedImageUrl(
     quality?: number;
     resize?: "cover" | "contain" | "fill";
     preset?: keyof typeof DEFAULT_SIZES;
-  } = {},
+  } = {}
 ): string {
   if (!url || url.startsWith("data:")) return url;
 
@@ -69,7 +69,7 @@ export function getResponsiveImageProps(
     quality?: number;
     format?: ImageFormat;
     preset?: keyof typeof DEFAULT_SIZES;
-  } = {},
+  } = {}
 ): {
   src: string;
   srcSet: string;

@@ -9,7 +9,13 @@ interface IssueReportModalProps {
   onSubmit: (issueType: string) => void;
 }
 
-const ISSUE_TYPES = ["Wrong Items", "Store Closed", "Customer Unreachable", "Safety Concern", "Other"];
+const ISSUE_TYPES = [
+  "Wrong Items",
+  "Store Closed",
+  "Customer Unreachable",
+  "Safety Concern",
+  "Other",
+];
 
 export default function IssueReportModal({ open, onClose, onSubmit }: IssueReportModalProps) {
   const { t } = useTranslation();
@@ -26,21 +32,33 @@ export default function IssueReportModal({ open, onClose, onSubmit }: IssueRepor
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div role="dialog" aria-modal="true" aria-labelledby="issue-report-title" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-        <h3 id="issue-report-title" className="font-bold text-xl mb-4">Report Issue</h3>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="issue-report-title"
+        className="w-full max-w-sm rounded-2xl bg-[var(--color-surface-container-lowest)] p-6"
+      >
+        <h3 id="issue-report-title" className="mb-4 text-xl font-bold">
+          Report Issue
+        </h3>
         <div className="space-y-2">
-          {ISSUE_TYPES.map(issue => (
+          {ISSUE_TYPES.map((issue) => (
             <button
               key={issue}
               onClick={() => onSubmit(issue)}
-              className="w-full p-3 text-left bg-[var(--color-surface-subtle)] rounded-xl font-bold hover:bg-[var(--color-surface-container)]"
+              className="w-full rounded-xl bg-[var(--color-surface-subtle)] p-3 text-left font-bold hover:bg-[var(--color-surface-container)]"
             >
               {issue}
             </button>
           ))}
         </div>
-        <button onClick={onClose} className="w-full mt-4 py-3 text-[var(--color-outline)] font-bold">Cancel</button>
+        <button
+          onClick={onClose}
+          className="mt-4 w-full py-3 font-bold text-[var(--color-outline)]"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   );

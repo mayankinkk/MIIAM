@@ -7,13 +7,16 @@ const logger = createRouteLogger("notifications/send");
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 5, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 5, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -31,10 +34,7 @@ export async function POST(request: NextRequest) {
     const { userId, title, body: message, icon, actionUrl, type } = body;
 
     if (!userId || !title) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     // Store notification in database for in-app display
@@ -56,16 +56,16 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     logger.error({ err: error }, "Notification error");
-    return NextResponse.json(
-      { error: "Failed to send notification" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to send notification" }, { status: 500 });
   }
 }
 
 export async function GET(request: NextRequest) {
   const supabaseAdmin = await createClient();
-  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabaseAdmin.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

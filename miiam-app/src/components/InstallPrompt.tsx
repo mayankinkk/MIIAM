@@ -50,23 +50,31 @@ export default function InstallPrompt() {
   if (installed || !showPrompt) return null;
 
   return (
-    <div className="fixed bottom-24 left-4 right-4 z-50 bg-surface-container-lowest rounded-2xl shadow-2xl border border-outline-variant p-4 animate-in slide-in-from-bottom-8 duration-300"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
+    <div
+      className="bg-surface-container-lowest border-outline-variant animate-in slide-in-from-bottom-8 fixed right-4 bottom-24 left-4 z-50 rounded-2xl border p-4 shadow-2xl duration-300"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="bg-primary flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl">
           <span className="material-symbols-outlined text-on-primary text-xl">install_mobile</span>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-bold text-on-surface text-sm">Install MIIAM</p>
-          <p className="text-xs text-on-surface-variant mt-0.5">Add to your home screen for a better experience</p>
+        <div className="min-w-0 flex-1">
+          <p className="text-on-surface text-sm font-bold">Install MIIAM</p>
+          <p className="text-on-surface-variant mt-0.5 text-xs">
+            Add to your home screen for a better experience
+          </p>
         </div>
-        <button onClick={() => setShowPrompt(false)} className="text-on-surface-variant hover:text-on-surface" aria-label="Dismiss install prompt">
+        <button
+          onClick={() => setShowPrompt(false)}
+          className="text-on-surface-variant hover:text-on-surface"
+          aria-label="Dismiss install prompt"
+        >
           <span className="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
       <button
         onClick={handleInstall}
-        className="mt-3 w-full py-2.5 bg-primary text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-opacity"
+        className="bg-primary text-on-primary mt-3 w-full rounded-xl py-2.5 text-sm font-bold transition-opacity hover:opacity-90"
       >
         Install App
       </button>

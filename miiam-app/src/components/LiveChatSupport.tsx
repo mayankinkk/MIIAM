@@ -15,12 +15,7 @@ interface LiveChatProps {
   onClose?: () => void;
 }
 
-const quickReplies = [
-  "Where is my order?",
-  "I want to cancel",
-  "Refund issue",
-  "Talk to human",
-];
+const quickReplies = ["Where is my order?", "I want to cancel", "Refund issue", "Talk to human"];
 
 export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -50,7 +45,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
 
@@ -67,19 +62,20 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
       const supportResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "support",
-        message: "Thanks for your message! A support agent will respond shortly. For urgent issues, call us at +91 99578 73472.",
+        message:
+          "Thanks for your message! A support agent will respond shortly. For urgent issues, call us at +91 99578 73472.",
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, supportResponse]);
+      setMessages((prev) => [...prev, supportResponse]);
     }, 1500);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
-      <div className="bg-white dark:bg-[var(--color-surface)] w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[80vh]">
-        <div className="bg-[var(--color-primary)] text-on-primary p-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
+      <div className="flex max-h-[80vh] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white dark:bg-[var(--color-surface)]">
+        <div className="text-on-primary flex items-center justify-between bg-[var(--color-primary)] p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
               <span className="material-symbols-outlined">support_agent</span>
             </div>
             <div>
@@ -87,43 +83,49 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               <p className="text-xs text-white/80">Typically replies in minutes</p>
             </div>
           </div>
-          <button onClick={onClose} aria-label="Close" className="w-11 h-11 bg-white/20 rounded-full flex items-center justify-center">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20"
+          >
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--color-surface-subtle)]">
+        <div className="flex-1 space-y-4 overflow-y-auto bg-[var(--color-surface-subtle)] p-4">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] px-4 py-2 rounded-2xl ${
+                className={`max-w-[80%] rounded-2xl px-4 py-2 ${
                   msg.role === "user"
-                    ? "bg-[var(--color-primary)] text-on-primary rounded-br-md"
+                    ? "text-on-primary rounded-br-md bg-[var(--color-primary)]"
                     : msg.role === "system"
-                    ? "bg-yellow-100 text-yellow-800 text-sm"
-                    : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] rounded-bl-md shadow-sm"
+                      ? "bg-yellow-100 text-sm text-yellow-800"
+                      : "rounded-bl-md bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] shadow-sm"
                 }`}
               >
                 <p className="text-sm">{msg.message}</p>
-                <p className={`text-xs mt-1 ${
-                  msg.role === "user" ? "text-white/60" : "text-[var(--color-outline-variant)]"
-                }`}>
+                <p
+                  className={`mt-1 text-xs ${
+                    msg.role === "user" ? "text-white/60" : "text-[var(--color-outline-variant)]"
+                  }`}
+                >
                   {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
             </div>
           ))}
-          
+
           {isTyping && (
             <div className="flex justify-start">
-              <div className="bg-[var(--color-surface-container-lowest)] px-4 py-3 rounded-2xl rounded-bl-md shadow-sm">
+              <div className="rounded-2xl rounded-bl-md bg-[var(--color-surface-container-lowest)] px-4 py-3 shadow-sm">
                 <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" />
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-75" />
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce delay-150" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 delay-75" />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 delay-150" />
                 </div>
               </div>
             </div>
@@ -133,12 +135,12 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
         </div>
 
         {messages.length <= 2 && (
-          <div className="px-4 pb-2 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 px-4 pb-2">
             {quickReplies.map((reply) => (
               <button
                 key={reply}
                 onClick={() => sendMessage(reply)}
-                className="text-xs bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] px-3 py-2 rounded-full text-[var(--color-on-surface-variant)] transition-colors"
+                className="rounded-full bg-[var(--color-surface-container)] px-3 py-2 text-xs text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)]"
               >
                 {reply}
               </button>
@@ -146,7 +148,7 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
           </div>
         )}
 
-        <div className="p-4 border-t bg-white dark:bg-[var(--color-surface)]">
+        <div className="border-t bg-white p-4 dark:bg-[var(--color-surface)]">
           <div className="flex gap-2">
             <input
               type="text"
@@ -154,12 +156,12 @@ export function LiveChatSupport({ orderId, onClose }: LiveChatProps) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-2 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+              className="flex-1 rounded-full bg-[var(--color-surface-container)] px-4 py-2 text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
             />
             <button
               onClick={() => sendMessage(input)}
               disabled={!input.trim()}
-              className="w-10 h-10 bg-[var(--color-primary)] text-on-primary rounded-full flex items-center justify-center disabled:opacity-50"
+              className="text-on-primary flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)] disabled:opacity-50"
             >
               <span className="material-symbols-outlined">send</span>
             </button>
@@ -177,11 +179,11 @@ export function SupportButton() {
     <>
       <button
         onClick={() => setShowChat(true)}
-        className="fixed bottom-24 right-4 w-14 h-14 bg-[var(--color-primary)] text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-30"
+        className="text-on-primary fixed right-4 bottom-24 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-primary)] shadow-lg transition-transform hover:scale-105"
         style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <span className="material-symbols-outlined text-2xl">chat</span>
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-status-success rounded-full border-2 border-white dark:border-[var(--color-surface)]" />
+        <span className="bg-status-success absolute -top-1 -right-1 h-4 w-4 rounded-full border-2 border-white dark:border-[var(--color-surface)]" />
       </button>
       {showChat && <LiveChatSupport onClose={() => setShowChat(false)} />}
     </>

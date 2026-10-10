@@ -84,7 +84,9 @@ function parseIsOpen(hours: string | null | undefined): boolean {
     const now = new Date();
     const cur = now.getHours() * 60 + now.getMinutes();
     return cur >= to24(parts[0]) && cur < to24(parts[1]);
-  } catch { return true; }
+  } catch {
+    return true;
+  }
 }
 
 export default function VendorPage() {
@@ -109,7 +111,9 @@ export default function VendorPage() {
       try {
         const { data: vendorData } = await supabase
           .from("vendors")
-          .select("id, shop_name, cuisine, address, phone, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, opening_hours, description, is_featured, status, type, pincode, city, latitude, longitude")
+          .select(
+            "id, shop_name, cuisine, address, phone, image_url, cover_image_url, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, min_order_amount, opening_hours, description, is_featured, status, type, pincode, city, latitude, longitude"
+          )
           .eq("id", vendorId)
           .single();
 
@@ -126,7 +130,8 @@ export default function VendorPage() {
 
         let itemsTable = "menu_items";
         if (vendorData?.type === "grocery") itemsTable = "grocery_products";
-        else if (vendorData?.type === "flower" || vendorData?.type === "flowers") itemsTable = "flower_items";
+        else if (vendorData?.type === "flower" || vendorData?.type === "flowers")
+          itemsTable = "flower_items";
 
         const { data: menuData } = await supabase
           .from(itemsTable)
@@ -153,21 +158,30 @@ export default function VendorPage() {
 
   const getQty = (id: string) => items.find((i) => i.menu_item_id === id)?.quantity || 0;
 
-  const categories = ["All", ...new Set(menuItems.map((m) => m.category).filter((c): c is string => Boolean(c)))];
+  const categories = [
+    "All",
+    ...new Set(menuItems.map((m) => m.category).filter((c): c is string => Boolean(c))),
+  ];
 
   const currentSlot = getCurrentMenuSlot();
 
   const filteredItems = menuItems.filter((m) => {
     const categoryMatch = activeCategory === "All" || m.category === activeCategory;
-    const vegMatch = vendor?.type === "food" ? (vegFilter === "all" || m.is_veg === (vegFilter === "veg")) : true;
+    const vegMatch =
+      vendor?.type === "food" ? vegFilter === "all" || m.is_veg === (vegFilter === "veg") : true;
     const slotMatch = !m.menu_slot || m.menu_slot === "all_day" || m.menu_slot === currentSlot;
     return categoryMatch && vegMatch && slotMatch;
   });
-  const sortedItems = [...filteredItems].sort((a, b) => ((b.is_featured || b.featured) ? 1 : 0) - ((a.is_featured || a.featured) ? 1 : 0));
+  const sortedItems = [...filteredItems].sort(
+    (a, b) => (b.is_featured || b.featured ? 1 : 0) - (a.is_featured || a.featured ? 1 : 0)
+  );
 
   const handleCustomizeItem = (item: MenuItem) => {
-    const isFoodVendor = vendor && (vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine);
-    const isGroceryOrOther = vendor && (vendor.type === "grocery" || vendor.type === "flower" || vendor.type === "flowers");
+    const isFoodVendor =
+      vendor && (vendor.type === "food" || vendor.type === "restaurant" || vendor.cuisine);
+    const isGroceryOrOther =
+      vendor &&
+      (vendor.type === "grocery" || vendor.type === "flower" || vendor.type === "flowers");
     if (isFoodVendor && !isGroceryOrOther) {
       setCustomizingItem(item);
     } else {
@@ -176,15 +190,18 @@ export default function VendorPage() {
   };
 
   const handleAddToCart = (item: MenuItem) => {
-    addItem({
-      id: item.id,
-      menu_item_id: item.id,
-      name: item.name,
-      price: item.price,
-      image_url: item.image_url,
-      vendor_id: vendorId,
-      vendor_name: vendor?.shop_name ?? "",
-    }, item.quantity || 1);
+    addItem(
+      {
+        id: item.id,
+        menu_item_id: item.id,
+        name: item.name,
+        price: item.price,
+        image_url: item.image_url,
+        vendor_id: vendorId,
+        vendor_name: vendor?.shop_name ?? "",
+      },
+      item.quantity || 1
+    );
   };
 
   const handleUpdateQty = (id: string, delta: number) => {
@@ -204,7 +221,7 @@ export default function VendorPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface p-4 space-y-4" aria-label="Loading...">
+      <div className="bg-surface min-h-screen space-y-4 p-4" aria-label="Loading...">
         <Skeleton className="h-56 w-full rounded-2xl" />
         <ProfileSkeleton />
         <div className="space-y-3">
@@ -219,10 +236,12 @@ export default function VendorPage() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="bg-surface flex min-h-screen items-center justify-center">
         <div className="text-center">
           <p className="text-[var(--color-on-surface-variant)]">Vendor not found</p>
-          <Link href="/app/food" className="text-accent font-bold mt-4 block">Go Back</Link>
+          <Link href="/app/food" className="text-accent mt-4 block font-bold">
+            Go Back
+          </Link>
         </div>
       </div>
     );
@@ -232,34 +251,35 @@ export default function VendorPage() {
   const cartTotal = totalPrice();
 
   return (
-    <div className="min-h-screen bg-surface pb-28">
+    <div className="bg-surface min-h-screen pb-28">
       {/* Sticky header — back / shop + cuisine / search + cart */}
-      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
-        <div className="h-14 flex items-center gap-1 px-2">
+      <header className="bg-surface-container-lowest/95 border-outline-variant/60 sticky top-0 z-30 border-b backdrop-blur-md">
+        <div className="flex h-14 items-center gap-1 px-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <div className="flex-1 min-w-0 px-1">
-            <p className="text-[13px] font-bold text-on-surface truncate">{vendor.shop_name}</p>
-            <p className="text-[11px] text-on-surface-variant truncate">
-              {vendor.cuisine}{vendor.address ? ` • ${vendor.address}` : ""}
+          <div className="min-w-0 flex-1 px-1">
+            <p className="text-on-surface truncate text-[13px] font-bold">{vendor.shop_name}</p>
+            <p className="text-on-surface-variant truncate text-[11px]">
+              {vendor.cuisine}
+              {vendor.address ? ` • ${vendor.address}` : ""}
             </p>
           </div>
           <Link
             href="/app/search"
             aria-label="Search"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">search</span>
           </Link>
           <Link
             href="/app/cart"
             aria-label="Go to cart"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">shopping_cart</span>
           </Link>
@@ -267,60 +287,79 @@ export default function VendorPage() {
       </header>
 
       {/* Cover image — flat, no overlay */}
-      <div className="relative h-44 sm:h-52 overflow-hidden bg-surface-container">
+      <div className="bg-surface-container relative h-44 overflow-hidden sm:h-52">
         <BlurImage
-          src={vendor.banner_url || vendor.cover_image_url || vendor.image_url || "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"}
+          src={
+            vendor.banner_url ||
+            vendor.cover_image_url ||
+            vendor.image_url ||
+            "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
+          }
           alt={vendor.shop_name}
           fill
-          className="w-full h-full"
+          className="h-full w-full"
           sizes="100vw"
           fallbackSrc="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
         />
       </div>
 
       {/* Title + rating */}
-      <section className="px-4 py-4 border-b border-outline-variant/60">
+      <section className="border-outline-variant/60 border-b px-4 py-4">
         {vendor.is_featured && (
-          <span className="inline-block bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">
+          <span className="mb-2 inline-block rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black tracking-wider text-amber-900 uppercase">
             Featured
           </span>
         )}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-black text-on-surface leading-tight truncate">{vendor.shop_name}</h1>
-            <p className="text-sm text-on-surface-variant mt-1 truncate">
-              {vendor.cuisine}{vendor.address ? ` • ${vendor.address}` : ""}
+          <div className="min-w-0 flex-1">
+            <h1 className="text-on-surface truncate text-xl leading-tight font-black">
+              {vendor.shop_name}
+            </h1>
+            <p className="text-on-surface-variant mt-1 truncate text-sm">
+              {vendor.cuisine}
+              {vendor.address ? ` • ${vendor.address}` : ""}
             </p>
           </div>
-          <span className="flex-shrink-0 inline-flex items-center gap-1 bg-white border border-outline-variant/60 shadow-sm rounded-lg px-2.5 py-1.5 text-xs font-black text-accent">
-            <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+          <span className="border-outline-variant/60 text-accent inline-flex flex-shrink-0 items-center gap-1 rounded-lg border bg-white px-2.5 py-1.5 text-xs font-black shadow-sm">
+            <span
+              className="material-symbols-outlined text-sm"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
+              star
+            </span>
             {avgRating}
-            <span className="text-on-surface-variant font-medium">({reviews.length || vendor.review_count || 0})</span>
+            <span className="text-on-surface-variant font-medium">
+              ({reviews.length || vendor.review_count || 0})
+            </span>
           </span>
         </div>
       </section>
 
       {/* Info Chips */}
-      <div className="bg-surface-container-lowest px-4 py-3 border-b border-outline-variant/20">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          <span className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${isOpen ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800" : "bg-red-50 text-red-600 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"}`}>
-            <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-500" : "bg-red-500"} ${isOpen ? "animate-pulse" : ""}`} />
+      <div className="bg-surface-container-lowest border-outline-variant/20 border-b px-4 py-3">
+        <div className="no-scrollbar flex items-center gap-2 overflow-x-auto">
+          <span
+            className={`flex flex-shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${isOpen ? "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400" : "border border-red-200 bg-red-50 text-red-600 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400"}`}
+          >
+            <span
+              className={`h-2 w-2 rounded-full ${isOpen ? "bg-emerald-500" : "bg-red-500"} ${isOpen ? "animate-pulse" : ""}`}
+            />
             {isOpen ? "Open Now" : "Closed"}
           </span>
-          <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
-          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
+          <div className="bg-outline-variant/30 h-4 w-px flex-shrink-0" />
+          <span className="bg-surface-container-low text-on-surface border-outline-variant/20 flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold">
             <span className="material-symbols-outlined text-[14px]">schedule</span>
             {vendor.delivery_time_min || 30}–{vendor.delivery_time_max || 45} min
           </span>
-          <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
-          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
+          <div className="bg-outline-variant/30 h-4 w-px flex-shrink-0" />
+          <span className="bg-surface-container-low text-on-surface border-outline-variant/20 flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold">
             <span className="material-symbols-outlined text-[14px]">delivery_dining</span>
             {vendor.delivery_charge ? `\u20B9${vendor.delivery_charge}` : "Free delivery"}
           </span>
           {vendor.min_order_amount ? (
             <>
-              <div className="w-px h-4 bg-outline-variant/30 flex-shrink-0" />
-              <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-surface-container-low text-on-surface border border-outline-variant/20">
+              <div className="bg-outline-variant/30 h-4 w-px flex-shrink-0" />
+              <span className="bg-surface-container-low text-on-surface border-outline-variant/20 flex flex-shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold">
                 <span className="material-symbols-outlined text-[14px]">receipt</span>
                 min order: ₹{vendor.min_order_amount}
               </span>
@@ -331,69 +370,95 @@ export default function VendorPage() {
 
       {/* Closed Banner */}
       {!isOpen && (
-        <div className="bg-red-50 border-b border-red-200 px-4 py-3 flex items-center gap-3">
+        <div className="flex items-center gap-3 border-b border-red-200 bg-red-50 px-4 py-3">
           <span className="material-symbols-outlined text-red-500">schedule</span>
           <div>
-            <p className="font-bold text-red-700 text-sm">Restaurant is currently closed</p>
-            <p className="text-red-500 text-xs mt-0.5">You can browse the menu but cannot order right now.</p>
+            <p className="text-sm font-bold text-red-700">Restaurant is currently closed</p>
+            <p className="mt-0.5 text-xs text-red-500">
+              You can browse the menu but cannot order right now.
+            </p>
           </div>
         </div>
       )}
 
       {/* Address & Hours */}
-      <section className="px-4 py-4 border-b border-outline-variant/60 space-y-3">
+      <section className="border-outline-variant/60 space-y-3 border-b px-4 py-4">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="bg-primary/10 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl">
             <span className="material-symbols-outlined text-accent text-lg">location_on</span>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-on-surface text-sm">{vendor.address || "Address not available"}</p>
-            <p className="text-xs text-on-surface-variant mt-0.5">Live tracking not available</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-on-surface text-sm font-semibold">
+              {vendor.address || "Address not available"}
+            </p>
+            <p className="text-on-surface-variant mt-0.5 text-xs">Live tracking not available</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0 dark:bg-amber-900/30">
-            <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-lg">access_time</span>
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-900/30">
+            <span className="material-symbols-outlined text-lg text-amber-600 dark:text-amber-400">
+              access_time
+            </span>
           </div>
           <div>
-            <p className="font-semibold text-on-surface text-sm">{vendor.opening_hours || "9:00 AM - 10:00 PM"}</p>
-            <p className="text-xs text-on-surface-variant mt-0.5">Today</p>
+            <p className="text-on-surface text-sm font-semibold">
+              {vendor.opening_hours || "9:00 AM - 10:00 PM"}
+            </p>
+            <p className="text-on-surface-variant mt-0.5 text-xs">Today</p>
           </div>
         </div>
       </section>
 
       {/* Reviews Summary */}
       {reviews.length > 0 && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-bold text-on-surface">Reviews</h2>
-            <Link href={`/app/vendor/${vendorId}/reviews`} className="text-xs font-bold text-accent">
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-on-surface text-base font-bold">Reviews</h2>
+            <Link
+              href={`/app/vendor/${vendorId}/reviews`}
+              className="text-accent text-xs font-bold"
+            >
               See All →
             </Link>
           </div>
-          <div className="flex gap-3 overflow-x-auto no-scrollbar">
+          <div className="no-scrollbar flex gap-3 overflow-x-auto">
             {reviews.slice(0, 4).map((review: Review) => (
-              <div key={review.id} className="flex-shrink-0 w-56 bg-surface-container-low rounded-xl p-3 border border-outline-variant/20">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-7 h-7 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-full flex items-center justify-center text-[10px] font-bold">
+              <div
+                key={review.id}
+                className="bg-surface-container-low border-outline-variant/20 w-56 flex-shrink-0 rounded-xl border p-3"
+              >
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="from-primary to-primary-container text-on-primary flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br text-[10px] font-bold">
                     {review.profile?.full_name?.[0] || "U"}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-on-surface truncate">{review.profile?.full_name || "User"}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-on-surface truncate text-xs font-bold">
+                      {review.profile?.full_name || "User"}
+                    </p>
                     <div className="flex items-center gap-0.5">
-                      {[1,2,3,4,5].map((star) => (
-                        <span key={star} className={`text-[10px] ${star <= review.rating ? "text-amber-400" : "text-outline"}`}>★</span>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`text-[10px] ${star <= review.rating ? "text-amber-400" : "text-outline"}`}
+                        >
+                          ★
+                        </span>
                       ))}
                     </div>
                   </div>
                 </div>
                 {review.review_text && (
-                  <p className="text-[11px] text-on-surface-variant line-clamp-2 leading-relaxed">{review.review_text}</p>
+                  <p className="text-on-surface-variant line-clamp-2 text-[11px] leading-relaxed">
+                    {review.review_text}
+                  </p>
                 )}
                 {review.tags && review.tags.length > 0 && (
-                  <div className="flex gap-1 mt-2 flex-wrap">
+                  <div className="mt-2 flex flex-wrap gap-1">
                     {review.tags.slice(0, 2).map((tag: string) => (
-                      <span key={tag} className="text-[9px] bg-primary/10 text-accent px-1.5 py-0.5 rounded-full font-medium">
+                      <span
+                        key={tag}
+                        className="bg-primary/10 text-accent rounded-full px-1.5 py-0.5 text-[9px] font-medium"
+                      >
                         {tag}
                       </span>
                     ))}
@@ -406,20 +471,25 @@ export default function VendorPage() {
       )}
 
       {/* Sticky Menu Filter */}
-      <div className="sticky top-14 z-20 bg-surface-container-lowest border-b border-outline-variant/20">
+      <div className="bg-surface-container-lowest border-outline-variant/20 sticky top-14 z-20 border-b">
         <div className="px-4 pt-3 pb-2">
-          <div className="flex items-center justify-between mb-2.5">
-            <h2 className="text-lg font-black text-on-surface">Menu</h2>
-            <span className="text-xs font-bold text-on-surface-variant">{sortedItems.length} items</span>
+          <div className="mb-2.5 flex items-center justify-between">
+            <h2 className="text-on-surface text-lg font-black">Menu</h2>
+            <span className="text-on-surface-variant text-xs font-bold">
+              {sortedItems.length} items
+            </span>
           </div>
-          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
-                className={`flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
+                onClick={() => {
+                  setActiveCategory(cat);
+                  if (navigator.vibrate) navigator.vibrate(10);
+                }}
+                className={`flex-shrink-0 rounded-full px-4 py-1.5 text-xs font-bold whitespace-nowrap transition-all active:scale-95 ${
                   activeCategory === cat
-                    ? "bg-primary text-on-primary shadow-sm shadow-primary/20"
+                    ? "bg-primary text-on-primary shadow-primary/20 shadow-sm"
                     : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high"
                 }`}
               >
@@ -438,10 +508,12 @@ export default function VendorPage() {
       {/* Menu Items */}
       <div className="px-4 py-1">
         {filteredItems.length === 0 ? (
-          <div className="bg-surface-container-lowest rounded-2xl p-10 text-center border border-outline-variant/20 shadow-sm">
-            <span className="material-symbols-outlined text-4xl text-outline mb-2">restaurant_menu</span>
-            <p className="text-on-surface-variant font-medium text-sm">No items found</p>
-            <p className="text-outline text-xs mt-1">Try a different category or filter</p>
+          <div className="bg-surface-container-lowest border-outline-variant/20 rounded-2xl border p-10 text-center shadow-sm">
+            <span className="material-symbols-outlined text-outline mb-2 text-4xl">
+              restaurant_menu
+            </span>
+            <p className="text-on-surface-variant text-sm font-medium">No items found</p>
+            <p className="text-outline mt-1 text-xs">Try a different category or filter</p>
           </div>
         ) : (
           sortedItems.map((item, index) => {
@@ -453,14 +525,15 @@ export default function VendorPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(index * 0.05, 0.3) }}
-                className="border-b border-outline-variant/40 last:border-0 py-3"
+                className="border-outline-variant/40 border-b py-3 last:border-0"
               >
                 <div className="flex gap-3">
                   {/* Image */}
                   <div
-                    className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative cursor-pointer"
+                    className="bg-surface-container relative h-28 w-28 flex-shrink-0 cursor-pointer overflow-hidden rounded-xl"
                     onClick={() => {
-                      const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
+                      const imgs =
+                        item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
                       if (imgs.length > 1) {
                         setImageIndex((prev) => ({
                           ...prev,
@@ -470,60 +543,88 @@ export default function VendorPage() {
                     }}
                   >
                     {(() => {
-                      const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
+                      const imgs =
+                        item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
                       const idx = imageIndex[item.id] || 0;
-                      const src = imgs[idx] || item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+                      const src =
+                        imgs[idx] ||
+                        item.image_url ||
+                        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
                       return (
-                        <BlurImage key={idx} src={src} alt={item.name} fill className="w-full h-full" sizes="112px" fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" />
+                        <BlurImage
+                          key={idx}
+                          src={src}
+                          alt={item.name}
+                          fill
+                          className="h-full w-full"
+                          sizes="112px"
+                          fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                        />
                       );
                     })()}
                     {(() => {
-                      const imgs = item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
-                      return imgs.length > 1 && (
-                        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1">
-                          {imgs.map((_: string, i: number) => (
-                            <span key={i} className={`w-1 h-1 rounded-full transition-all ${i === (imageIndex[item.id] || 0) ? "bg-white w-2" : "bg-white/50"}`} />
-                          ))}
-                        </div>
+                      const imgs =
+                        item.images?.filter(Boolean) || (item.image_url ? [item.image_url] : []);
+                      return (
+                        imgs.length > 1 && (
+                          <div className="absolute bottom-1.5 left-1/2 flex -translate-x-1/2 gap-1">
+                            {imgs.map((_: string, i: number) => (
+                              <span
+                                key={i}
+                                className={`h-1 w-1 rounded-full transition-all ${i === (imageIndex[item.id] || 0) ? "w-2 bg-white" : "bg-white/50"}`}
+                              />
+                            ))}
+                          </div>
+                        )
                       );
                     })()}
                     {/* Discount badge */}
                     {item.discount_percent != null && item.discount_percent > 0 && (
-                      <div className="absolute top-1.5 left-1.5 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                      <div className="absolute top-1.5 left-1.5 rounded-full bg-red-500 px-1.5 py-0.5 text-[9px] font-black text-white">
                         -{item.discount_percent}%
                       </div>
                     )}
                   </div>
 
                   {/* Details */}
-                  <div className="flex-1 min-w-0 flex flex-col">
+                  <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-start gap-1.5">
-                      <div className="flex items-center gap-1 flex-1 min-w-0">
+                      <div className="flex min-w-0 flex-1 items-center gap-1">
                         {item.is_veg !== undefined && (
-                          <span className={`w-3 h-3 border-[1.5px] ${item.is_veg ? "border-emerald-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
-                            <span className={`w-1 h-1 ${item.is_veg ? "bg-emerald-600" : "bg-red-600"} rounded-full`} />
+                          <span
+                            className={`h-3 w-3 border-[1.5px] ${item.is_veg ? "border-emerald-600" : "border-red-600"} flex flex-shrink-0 items-center justify-center rounded-sm`}
+                          >
+                            <span
+                              className={`h-1 w-1 ${item.is_veg ? "bg-emerald-600" : "bg-red-600"} rounded-full`}
+                            />
                           </span>
                         )}
-                        <h3 className="font-bold text-gray-900 text-sm truncate">{item.name}</h3>
+                        <h3 className="truncate text-sm font-bold text-gray-900">{item.name}</h3>
                       </div>
                       {isFeatured && (
-                        <span className="flex-shrink-0 text-[9px] font-bold px-1.5 py-0.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200">Featured</span>
+                        <span className="flex-shrink-0 rounded-full border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">
+                          Featured
+                        </span>
                       )}
                     </div>
                     {item.description && (
-                      <p className="text-[11px] text-gray-400 mt-1 line-clamp-2 leading-relaxed">{item.description}</p>
+                      <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-gray-400">
+                        {item.description}
+                      </p>
                     )}
-                    <div className="flex items-center justify-between mt-auto pt-2">
+                    <div className="mt-auto flex items-center justify-between pt-2">
                       <div className="flex flex-col items-start leading-tight">
-                        <span className="font-black text-gray-900 text-base">₹{item.price}</span>
+                        <span className="text-base font-black text-gray-900">₹{item.price}</span>
                         {item.original_price && (
-                          <span className="text-xs text-gray-400 line-through">₹{item.original_price}</span>
+                          <span className="text-xs text-gray-400 line-through">
+                            ₹{item.original_price}
+                          </span>
                         )}
                       </div>
                       {qty === 0 ? (
                         <button
                           onClick={() => handleCustomizeItem(item)}
-                          className="min-w-[52px] px-3 h-8 bg-primary text-on-primary text-xs font-extrabold rounded-lg border border-primary hover:brightness-95 transition-all"
+                          className="bg-primary text-on-primary border-primary h-8 min-w-[52px] rounded-lg border px-3 text-xs font-extrabold transition-all hover:brightness-95"
                         >
                           ADD +
                         </button>
@@ -531,18 +632,20 @@ export default function VendorPage() {
                         <motion.div
                           initial={{ scale: 0.8 }}
                           animate={{ scale: 1 }}
-                          className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden shadow-sm"
+                          className="bg-surface-container-lowest border-primary flex items-center overflow-hidden rounded-lg border shadow-sm"
                         >
                           <button
                             onClick={() => handleUpdateQty(item.id, -1)}
-                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center active:scale-90 transition-transform"
+                            className="bg-primary text-on-primary flex h-8 w-8 items-center justify-center font-bold transition-transform active:scale-90"
                           >
                             −
                           </button>
-                          <span className="text-on-surface font-extrabold text-sm min-w-[22px] text-center">{qty}</span>
+                          <span className="text-on-surface min-w-[22px] text-center text-sm font-extrabold">
+                            {qty}
+                          </span>
                           <button
                             onClick={() => handleUpdateQty(item.id, 1)}
-                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center active:scale-110 transition-transform"
+                            className="bg-primary text-on-primary flex h-8 w-8 items-center justify-center font-bold transition-transform active:scale-110"
                           >
                             +
                           </button>
@@ -565,24 +668,26 @@ export default function VendorPage() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-0 left-0 right-0 z-50 p-4 pt-0"
+            className="fixed right-0 bottom-0 left-0 z-50 p-4 pt-0"
             style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)" }}
           >
             <Link
               href="/app/cart"
-              className="flex items-center justify-between bg-emerald-600 text-white px-5 py-4 rounded-2xl shadow-2xl shadow-emerald-600/30 active:scale-[0.98] transition-transform"
+              className="flex items-center justify-between rounded-2xl bg-emerald-600 px-5 py-4 text-white shadow-2xl shadow-emerald-600/30 transition-transform active:scale-[0.98]"
             >
               <div className="flex items-center gap-3">
-                <div className="bg-white/20 text-white font-black text-sm px-2.5 py-1 rounded-lg">
+                <div className="rounded-lg bg-white/20 px-2.5 py-1 text-sm font-black text-white">
                   {cartItemCount}
                 </div>
                 <div>
-                  <p className="font-bold text-sm">View Cart</p>
-                  <p className="text-white/70 text-[10px]">{cartItemCount} item{cartItemCount > 1 ? "s" : ""}</p>
+                  <p className="text-sm font-bold">View Cart</p>
+                  <p className="text-[10px] text-white/70">
+                    {cartItemCount} item{cartItemCount > 1 ? "s" : ""}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="font-black text-lg">₹{cartTotal.toFixed(0)}</span>
+                <span className="text-lg font-black">₹{cartTotal.toFixed(0)}</span>
                 <span className="material-symbols-outlined text-white/80">arrow_forward</span>
               </div>
             </Link>

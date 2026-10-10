@@ -111,7 +111,10 @@ export default function PartnerMenuPage() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [vendorCategories, setVendorCategories] = useState<string[]>([]);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [editingCategory, setEditingCategory] = useState<{ oldName: string; newName: string } | null>(null);
+  const [editingCategory, setEditingCategory] = useState<{
+    oldName: string;
+    newName: string;
+  } | null>(null);
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [showEditUrlInput, setShowEditUrlInput] = useState(false);
@@ -142,7 +145,9 @@ export default function PartnerMenuPage() {
   useEffect(() => {
     if (showQRModal && selectedVendorId && typeof window !== "undefined") {
       const url = `${window.location.origin}/app/vendor/${selectedVendorId}`;
-      QRCode.toDataURL(url, { width: 300, margin: 2 }).then(setQrDataUrl).catch(() => setQrDataUrl(""));
+      QRCode.toDataURL(url, { width: 300, margin: 2 })
+        .then(setQrDataUrl)
+        .catch(() => setQrDataUrl(""));
     }
   }, [showQRModal, selectedVendorId]);
 
@@ -162,14 +167,14 @@ export default function PartnerMenuPage() {
       return null;
     }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from("menu-images")
-      .getPublicUrl(filePath);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("menu-images").getPublicUrl(filePath);
 
     return publicUrl;
   }
 
-  const selectedVendor = vendors.find(v => v.id === selectedVendorId);
+  const selectedVendor = vendors.find((v) => v.id === selectedVendorId);
   const vendorKey = selectedVendor ? getVendorKey(selectedVendor.type) : "food";
   const vendorType = selectedVendor?.type || "food";
   const table = TABLE_MAP[vendorKey];
@@ -188,7 +193,7 @@ export default function PartnerMenuPage() {
   }, [selectedVendorId]);
 
   useEffect(() => {
-    const vendor = vendors.find(v => v.id === selectedVendorId);
+    const vendor = vendors.find((v) => v.id === selectedVendorId);
     if (vendor?.categories && Array.isArray(vendor.categories) && vendor.categories.length > 0) {
       setVendorCategories(vendor.categories);
     } else {
@@ -198,7 +203,9 @@ export default function PartnerMenuPage() {
   }, [selectedVendorId, vendors]);
 
   async function loadVendors() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     let { data } = await supabase
@@ -206,7 +213,7 @@ export default function PartnerMenuPage() {
       .select("id, shop_name, type")
       .eq("user_id", user.id)
       .order("shop_name");
-    
+
     if (!data || data.length === 0) {
       const { data: fallbackData } = await supabase
         .from("vendors")
@@ -215,7 +222,7 @@ export default function PartnerMenuPage() {
         .order("shop_name");
       if (fallbackData) data = fallbackData;
     }
-    
+
     if (data) {
       setVendors(data);
       if (data.length > 0 && !selectedVendorId) {
@@ -226,7 +233,11 @@ export default function PartnerMenuPage() {
 
   async function loadItems() {
     setLoading(true);
-    const { data, error } = await supabase.from(table).select("*").eq("vendor_id", selectedVendorId).order("name");
+    const { data, error } = await supabase
+      .from(table)
+      .select("*")
+      .eq("vendor_id", selectedVendorId)
+      .order("name");
     if (error) {
       logger.error({ err: error }, "Failed to load menu items");
     }
@@ -292,7 +303,8 @@ export default function PartnerMenuPage() {
       if (m.discount_percent && m.discount_percent > 0) {
         base.discount_percent = m.discount_percent;
         base.original_price = m.original_price || m.price;
-        base.price = Math.round((m.original_price || m.price) * (1 - m.discount_percent / 100) * 100) / 100;
+        base.price =
+          Math.round((m.original_price || m.price) * (1 - m.discount_percent / 100) * 100) / 100;
       }
     } else if (vendorKey === "grocery") {
       const g = item as GroceryItem;
@@ -313,7 +325,9 @@ export default function PartnerMenuPage() {
       return;
     }
     setVendorCategories(newCats);
-    setVendors(prev => prev.map(v => v.id === selectedVendorId ? { ...v, categories: newCats } : v));
+    setVendors((prev) =>
+      prev.map((v) => (v.id === selectedVendorId ? { ...v, categories: newCats } : v))
+    );
   }
 
   const handleAddItem = async () => {
@@ -322,7 +336,9 @@ export default function PartnerMenuPage() {
       return;
     }
     if (!selectedVendorId) {
-      useToastStore.getState().addToast("No vendor selected. Please select a vendor first.", "error");
+      useToastStore
+        .getState()
+        .addToast("No vendor selected. Please select a vendor first.", "error");
       return;
     }
     setUploading(true);
@@ -346,7 +362,9 @@ export default function PartnerMenuPage() {
       resetNewItem();
       loadItems();
     } catch (error: unknown) {
-      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
+      useToastStore
+        .getState()
+        .addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
     } finally {
       setUploading(false);
     }
@@ -361,17 +379,22 @@ export default function PartnerMenuPage() {
       setEditingItem(null);
       loadItems();
     } catch (error: unknown) {
-      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
+      useToastStore
+        .getState()
+        .addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
     }
   };
 
   const handleDeleteItem = async (id: string) => {
-    if (!await confirm({ title: "Delete Item", message: "Delete this item?", variant: "danger" })) return;
+    if (!(await confirm({ title: "Delete Item", message: "Delete this item?", variant: "danger" })))
+      return;
     try {
       await supabase.from(table).delete().eq("id", id);
-      setItems(prev => prev.filter(i => i.id !== id));
+      setItems((prev) => prev.filter((i) => i.id !== id));
     } catch (error: unknown) {
-      useToastStore.getState().addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
+      useToastStore
+        .getState()
+        .addToast("Failed: " + (error instanceof Error ? error.message : String(error)), "error");
     }
   };
 
@@ -379,33 +402,49 @@ export default function PartnerMenuPage() {
     if (!("is_available" in item)) return;
     const m = item as MenuItem;
     try {
-      const { error } = await supabase.from(table).update({ is_available: !m.is_available }).eq("id", item.id);
+      const { error } = await supabase
+        .from(table)
+        .update({ is_available: !m.is_available })
+        .eq("id", item.id);
       if (error) {
         logger.warn("Toggle availability not supported: " + error.message);
         return;
       }
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_available: !m.is_available } as AnyItem : i));
+      setItems((prev) =>
+        prev.map((i) =>
+          i.id === item.id ? ({ ...i, is_available: !m.is_available } as AnyItem) : i
+        )
+      );
     } catch (error: unknown) {
-      logger.warn("Toggle availability failed: " + (error instanceof Error ? error.message : String(error)));
+      logger.warn(
+        "Toggle availability failed: " + (error instanceof Error ? error.message : String(error))
+      );
     }
   };
 
   const toggleFeatured = async (item: AnyItem) => {
     const current = !!(item as MenuItem).is_featured;
     try {
-      const { error } = await supabase.from(table).update({ is_featured: !current }).eq("id", item.id);
+      const { error } = await supabase
+        .from(table)
+        .update({ is_featured: !current })
+        .eq("id", item.id);
       if (error) {
         logger.warn("Toggle featured not supported: " + error.message);
         return;
       }
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_featured: !current } as AnyItem : i));
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? ({ ...i, is_featured: !current } as AnyItem) : i))
+      );
     } catch (error: unknown) {
-      logger.warn("Toggle featured failed: " + (error instanceof Error ? error.message : String(error)));
+      logger.warn(
+        "Toggle featured failed: " + (error instanceof Error ? error.message : String(error))
+      );
     }
   };
 
   const handleStockChange = async (item: AnyItem, delta: number) => {
-    const currentStock = ('stock' in item ? (item as GroceryItem | MenuItem).stock : 0) ?? 0;
+    const currentStock = ("stock" in item ? (item as GroceryItem | MenuItem).stock : 0) ?? 0;
     const newStock = currentStock + delta;
     if (newStock < 0) return;
     try {
@@ -414,61 +453,81 @@ export default function PartnerMenuPage() {
         logger.warn("Stock update not supported: " + error.message);
         return;
       }
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, stock: newStock } as AnyItem : i));
+      setItems((prev) =>
+        prev.map((i) => (i.id === item.id ? ({ ...i, stock: newStock } as AnyItem) : i))
+      );
     } catch (error: unknown) {
-      logger.warn("Stock update failed: " + (error instanceof Error ? error.message : String(error)));
+      logger.warn(
+        "Stock update failed: " + (error instanceof Error ? error.message : String(error))
+      );
     }
   };
 
-  const filteredItems = items.filter(item => {
-    const matchesSearch = searchQuery === "" ||
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredItems = items.filter((item) => {
+    const matchesSearch =
+      searchQuery === "" || item.name?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = categoryFilter === "all" || item.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
-  const pageTitle = vendorKey === "food" ? "Menu Items" :
-    vendorKey === "grocery" ? "Grocery Products" :
-    "Flower Items";
+  const pageTitle =
+    vendorKey === "food"
+      ? "Menu Items"
+      : vendorKey === "grocery"
+        ? "Grocery Products"
+        : "Flower Items";
 
   return (
-    <div className="p-4 md:p-8 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-8 p-4 md:p-8">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Menu & Inventory</h1>
-          <p className="text-[var(--color-outline)] text-sm mt-1">{pageTitle}</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            Menu & Inventory
+          </h1>
+          <p className="mt-1 text-sm text-[var(--color-outline)]">{pageTitle}</p>
         </div>
         <div className="flex items-center gap-3">
           <select
             value={selectedVendorId}
             onChange={(e) => setSelectedVendorId(e.target.value)}
-            className="px-4 py-2.5 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-2.5 text-sm font-bold"
           >
-            {vendors.map(v => (
+            {vendors.map((v) => (
               <option key={v.id} value={v.id}>
-                {v.shop_name}{v.type ? ` (${v.type})` : ""}
+                {v.shop_name}
+                {v.type ? ` (${v.type})` : ""}
               </option>
             ))}
           </select>
           <button
             onClick={() => {
               if (!selectedVendorId) {
-                useToastStore.getState().addToast("Cannot add item: No active vendor is selected or associated with your account.", "error");
+                useToastStore
+                  .getState()
+                  .addToast(
+                    "Cannot add item: No active vendor is selected or associated with your account.",
+                    "error"
+                  );
                 return;
               }
               resetNewItem();
               setShowAddModal(true);
             }}
-            className="bg-[var(--color-primary)] text-on-primary px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 cursor-pointer"
+            className="text-on-primary flex cursor-pointer items-center gap-2 rounded-xl bg-[var(--color-primary)] px-5 py-2.5 text-sm font-bold"
           >
             <span className="material-symbols-outlined text-lg">add</span>
             Add {vendorKey === "food" ? "Item" : vendorKey === "grocery" ? "Product" : "Item"}
           </button>
           <button
-            onClick={() => { setBulkMode(!bulkMode); setSelectedItems(new Set()); }}
+            onClick={() => {
+              setBulkMode(!bulkMode);
+              setSelectedItems(new Set());
+            }}
             aria-pressed={bulkMode}
-            className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border transition-colors ${
-              bulkMode ? "bg-[var(--color-primary)] text-on-primary border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+            className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-colors ${
+              bulkMode
+                ? "text-on-primary border-[var(--color-primary)] bg-[var(--color-primary)]"
+                : "border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-subtle)]"
             }`}
           >
             <span className="material-symbols-outlined text-lg">select_all</span>
@@ -478,30 +537,34 @@ export default function PartnerMenuPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-4 flex items-center gap-4 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] text-lg">search</span>
+      <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-4">
+        <div className="relative min-w-[200px] flex-1">
+          <span className="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-lg text-[var(--color-outline-variant)]">
+            search
+          </span>
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search items..."
-            className="w-full pl-10 pr-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
+            className="w-full rounded-xl border border-[var(--color-border-subtle)] py-2 pr-4 pl-10 text-sm focus:border-[var(--color-primary)] focus:outline-none"
           />
         </div>
         <select
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold focus:outline-none"
+          className="rounded-xl border border-[var(--color-border-subtle)] px-4 py-2 text-sm font-bold focus:outline-none"
         >
           <option value="all">All Categories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
         <button
           onClick={() => setShowCategoryModal(true)}
-          className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--color-surface-subtle)]"
+          className="flex items-center gap-2 rounded-xl border border-[var(--color-border-subtle)] px-4 py-2 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
         >
           <span className="material-symbols-outlined text-lg">edit</span>
           Manage Categories
@@ -510,14 +573,14 @@ export default function PartnerMenuPage() {
           <>
             <button
               onClick={() => setShowQRModal(true)}
-              className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--color-surface-subtle)]"
+              className="flex items-center gap-2 rounded-xl border border-[var(--color-border-subtle)] px-4 py-2 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="material-symbols-outlined text-lg">qr_code</span>
               QR Code
             </button>
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-[var(--color-surface-subtle)]"
+              className="flex items-center gap-2 rounded-xl border border-[var(--color-border-subtle)] px-4 py-2 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
             >
               <span className="material-symbols-outlined text-lg">print</span>
               Print Menu
@@ -528,40 +591,68 @@ export default function PartnerMenuPage() {
 
       {/* Menu Intelligence + Bulk Import */}
       {selectedVendorId && items.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           {/* Optimization Suggestions */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-[#fef7f8] to-white rounded-2xl border border-[#f5d0d6] p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="material-symbols-outlined text-[var(--color-primary)]">insights</span>
-              <h3 className="font-extrabold text-[var(--color-on-surface)] text-sm">Menu Intelligence</h3>
+          <div className="rounded-2xl border border-[#f5d0d6] bg-gradient-to-br from-[#fef7f8] to-white p-5 lg:col-span-2">
+            <div className="mb-3 flex items-center gap-2">
+              <span className="material-symbols-outlined text-[var(--color-primary)]">
+                insights
+              </span>
+              <h3 className="text-sm font-extrabold text-[var(--color-on-surface)]">
+                Menu Intelligence
+              </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-3">
               {(() => {
                 const total = items.length;
-                const noDesc = items.filter(i => !('description' in i) || !(i as MenuItem | FlowerItem).description).length;
-                const outOfStock = items.filter(i => 'stock' in i && (i as GroceryItem | MenuItem).stock === 0).length;
-                const noImg = items.filter(i => !i.image_url).length;
+                const noDesc = items.filter(
+                  (i) => !("description" in i) || !(i as MenuItem | FlowerItem).description
+                ).length;
+                const outOfStock = items.filter(
+                  (i) => "stock" in i && (i as GroceryItem | MenuItem).stock === 0
+                ).length;
+                const noImg = items.filter((i) => !i.image_url).length;
                 const suggestions: string[] = [];
-                if (noDesc > 0) suggestions.push(`Add descriptions to ${noDesc} item${noDesc > 1 ? 's' : ''} to boost conversion`);
-                if (outOfStock > 0) suggestions.push(`${outOfStock} item${outOfStock > 1 ? 's are' : ' is'} out of stock — restock soon`);
-                if (noImg > 0) suggestions.push(`Upload images for ${noImg} item${noImg > 1 ? 's' : ''} — items with images sell 30% more`);
-                if (total < 10) suggestions.push(`Consider adding more items — menus with 15+ items get 2x more orders`);
-                if (noImg === 0 && noDesc === 0 && outOfStock === 0 && total >= 10) suggestions.push(`Your menu looks great! Continue adding seasonal specials.`);
+                if (noDesc > 0)
+                  suggestions.push(
+                    `Add descriptions to ${noDesc} item${noDesc > 1 ? "s" : ""} to boost conversion`
+                  );
+                if (outOfStock > 0)
+                  suggestions.push(
+                    `${outOfStock} item${outOfStock > 1 ? "s are" : " is"} out of stock — restock soon`
+                  );
+                if (noImg > 0)
+                  suggestions.push(
+                    `Upload images for ${noImg} item${noImg > 1 ? "s" : ""} — items with images sell 30% more`
+                  );
+                if (total < 10)
+                  suggestions.push(
+                    `Consider adding more items — menus with 15+ items get 2x more orders`
+                  );
+                if (noImg === 0 && noDesc === 0 && outOfStock === 0 && total >= 10)
+                  suggestions.push(`Your menu looks great! Continue adding seasonal specials.`);
                 return suggestions;
               })().map((s, i) => (
-                <div key={i} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 border border-[var(--color-border-subtle)] flex items-start gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)] text-lg shrink-0">lightbulb</span>
+                <div
+                  key={i}
+                  className="flex items-start gap-2 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-3"
+                >
+                  <span className="material-symbols-outlined shrink-0 text-lg text-[var(--color-primary)]">
+                    lightbulb
+                  </span>
                   <span className="text-[var(--color-on-surface)]">{s}</span>
                 </div>
               ))}
             </div>
           </div>
           {/* Bulk Import Card */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-5 flex flex-col items-center justify-center text-center">
-            <span className="material-symbols-outlined text-3xl text-[var(--color-outline-variant)] mb-2">file_upload</span>
-            <p className="font-bold text-[var(--color-on-surface)] text-sm">Bulk Import Items</p>
-            <p className="text-xs text-[var(--color-outline-variant)] mt-1 mb-3">CSV upload</p>
-              <label className="cursor-pointer px-4 py-2 bg-[var(--color-primary)] text-on-primary text-xs font-bold rounded-xl hover:bg-[var(--color-primary-dim)]">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 text-center">
+            <span className="material-symbols-outlined mb-2 text-3xl text-[var(--color-outline-variant)]">
+              file_upload
+            </span>
+            <p className="text-sm font-bold text-[var(--color-on-surface)]">Bulk Import Items</p>
+            <p className="mt-1 mb-3 text-xs text-[var(--color-outline-variant)]">CSV upload</p>
+            <label className="text-on-primary cursor-pointer rounded-xl bg-[var(--color-primary)] px-4 py-2 text-xs font-bold hover:bg-[var(--color-primary-dim)]">
               Upload CSV
               <input
                 type="file"
@@ -571,32 +662,57 @@ export default function PartnerMenuPage() {
                   const file = e.target.files?.[0];
                   if (!file) return;
                   const text = await file.text();
-                  const rows = text.split('\n').slice(1).filter(r => r.trim());
+                  const rows = text
+                    .split("\n")
+                    .slice(1)
+                    .filter((r) => r.trim());
                   if (rows.length > 50) {
-                    useToastStore.getState().addToast("Maximum 50 rows allowed per import", "error");
-                    e.target.value = '';
+                    useToastStore
+                      .getState()
+                      .addToast("Maximum 50 rows allowed per import", "error");
+                    e.target.value = "";
                     return;
                   }
-                  const cols = rows.map(r => {
-                    const [name, price, category, description, stock, isVeg] = r.split(',').map(c => c.trim());
-                    return { name, price, category, description, stock, is_veg: isVeg === 'veg' };
+                  const cols = rows.map((r) => {
+                    const [name, price, category, description, stock, isVeg] = r
+                      .split(",")
+                      .map((c) => c.trim());
+                    return { name, price, category, description, stock, is_veg: isVeg === "veg" };
                   });
                   const errors: string[] = [];
                   for (let i = 0; i < cols.length; i++) {
                     const c = cols[i];
-                    if (!c.name) { errors.push(`Row ${i + 1}: name is required`); continue; }
-                    if (c.name.length > 100) errors.push(`Row ${i + 1}: name exceeds 100 characters`);
-                    if (c.description && c.description.length > 500) errors.push(`Row ${i + 1}: description exceeds 500 characters`);
+                    if (!c.name) {
+                      errors.push(`Row ${i + 1}: name is required`);
+                      continue;
+                    }
+                    if (c.name.length > 100)
+                      errors.push(`Row ${i + 1}: name exceeds 100 characters`);
+                    if (c.description && c.description.length > 500)
+                      errors.push(`Row ${i + 1}: description exceeds 500 characters`);
                     const priceNum = parseFloat(c.price);
-                    if (!c.price || isNaN(priceNum) || priceNum <= 0) errors.push(`Row ${i + 1}: price must be a positive number`);
+                    if (!c.price || isNaN(priceNum) || priceNum <= 0)
+                      errors.push(`Row ${i + 1}: price must be a positive number`);
                   }
                   if (errors.length > 0) {
-                    useToastStore.getState().addToast(errors.slice(0, 5).join("; ") + (errors.length > 5 ? ` ...and ${errors.length - 5} more` : ""), "error");
-                    e.target.value = '';
+                    useToastStore
+                      .getState()
+                      .addToast(
+                        errors.slice(0, 5).join("; ") +
+                          (errors.length > 5 ? ` ...and ${errors.length - 5} more` : ""),
+                        "error"
+                      );
+                    e.target.value = "";
                     return;
                   }
-                  if (!await confirm({ title: "Bulk Import", message: `Import ${cols.length} items? This will add them to your menu.`, variant: "default" })) {
-                    e.target.value = '';
+                  if (
+                    !(await confirm({
+                      title: "Bulk Import",
+                      message: `Import ${cols.length} items? This will add them to your menu.`,
+                      variant: "default",
+                    }))
+                  ) {
+                    e.target.value = "";
                     return;
                   }
                   const table = TABLE_MAP[vendorKey];
@@ -611,44 +727,65 @@ export default function PartnerMenuPage() {
                       category: c.category || categories[0],
                       image_url: null,
                     };
-                    if (vendorKey === 'food') {
-                      payload.description = c.description || '';
+                    if (vendorKey === "food") {
+                      payload.description = c.description || "";
                       payload.is_available = true;
                       payload.is_veg = c.is_veg;
-                      payload.stock = parseInt(c.stock || '0', 10) || 0;
+                      payload.stock = parseInt(c.stock || "0", 10) || 0;
                     }
-                    if (vendorKey === 'grocery') {
-                      payload.stock = parseInt(c.stock || '0', 10) || 0;
+                    if (vendorKey === "grocery") {
+                      payload.stock = parseInt(c.stock || "0", 10) || 0;
                     }
                     const { error } = await supabase.from(table).insert(payload);
                     if (!error) imported++;
                   }
-                  useToastStore.getState().addToast(`Imported ${imported} of ${rows.length} items`, "success");
+                  useToastStore
+                    .getState()
+                    .addToast(`Imported ${imported} of ${rows.length} items`, "success");
                   loadItems();
-                  e.target.value = '';
+                  e.target.value = "";
                 }}
               />
             </label>
-            <button type="button" onClick={(e) => {
-              e.preventDefault();
-              const blob = new Blob([['name,price,category,description,stock,isVeg', 'Butter Chicken,350,Main Course,Creamy tomato gravy,50,veg', 'Naan,40,Breads,Tandoor baked,100,veg'].join('\n')], { type: 'text/csv' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url; a.download = 'menu_template.csv'; a.click();
-              URL.revokeObjectURL(url);
-            }} className="text-[10px] text-[var(--color-primary)] font-semibold mt-2 hover:underline">Download template</button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                const blob = new Blob(
+                  [
+                    [
+                      "name,price,category,description,stock,isVeg",
+                      "Butter Chicken,350,Main Course,Creamy tomato gravy,50,veg",
+                      "Naan,40,Breads,Tandoor baked,100,veg",
+                    ].join("\n"),
+                  ],
+                  { type: "text/csv" }
+                );
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "menu_template.csv";
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className="mt-2 text-[10px] font-semibold text-[var(--color-primary)] hover:underline"
+            >
+              Download template
+            </button>
           </div>
         </div>
       )}
 
       {/* Bulk Actions Toolbar */}
       {bulkMode && selectedItems.size > 0 && (
-        <div className="bg-[var(--color-primary)]/5 border border-[var(--color-primary)]/20 rounded-2xl p-4 flex items-center gap-4 flex-wrap">
-          <span className="text-sm font-bold text-[var(--color-on-surface)]">{selectedItems.size} selected</span>
+        <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/5 p-4">
+          <span className="text-sm font-bold text-[var(--color-on-surface)]">
+            {selectedItems.size} selected
+          </span>
           <select
             value={bulkAction}
             onChange={(e) => setBulkAction(e.target.value)}
-            className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-sm font-bold"
           >
             <option value="">Select action...</option>
             {vendorKey === "food" && (
@@ -669,7 +806,7 @@ export default function PartnerMenuPage() {
                 <select
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
-                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
+                  className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-sm font-bold"
                 >
                   <option value="all_day">All Day</option>
                   <option value="breakfast">Breakfast</option>
@@ -680,10 +817,14 @@ export default function PartnerMenuPage() {
                 <select
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
-                  className="px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)]"
+                  className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-3 py-2 text-sm font-bold"
                 >
                   <option value="">Select category...</option>
-                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
                 </select>
               ) : (
                 <input
@@ -691,7 +832,7 @@ export default function PartnerMenuPage() {
                   value={bulkValue}
                   onChange={(e) => setBulkValue(e.target.value)}
                   placeholder={bulkAction === "price_percent" ? "+/- %" : "Value"}
-                  className="w-24 px-3 py-2 border border-[var(--color-border-subtle)] rounded-xl text-sm"
+                  className="w-24 rounded-xl border border-[var(--color-border-subtle)] px-3 py-2 text-sm"
                 />
               )}
               <button
@@ -711,7 +852,7 @@ export default function PartnerMenuPage() {
                     updates.category = bulkValue;
                   } else if (bulkAction === "price_percent") {
                     const pct = parseFloat(bulkValue);
-                    const itemData = currentItems.filter(i => currentSelected.has(i.id));
+                    const itemData = currentItems.filter((i) => currentSelected.has(i.id));
                     for (const item of itemData) {
                       const newPrice = Math.round(item.price * (1 + pct / 100) * 100) / 100;
                       await supabase.from(table).update({ price: newPrice }).eq("id", item.id);
@@ -735,15 +876,19 @@ export default function PartnerMenuPage() {
                     setBulkValue("");
                   }
                 }}
-                className="px-4 py-2 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm"
+                className="text-on-primary rounded-xl bg-[var(--color-primary)] px-4 py-2 text-sm font-bold"
               >
                 Apply
               </button>
             </div>
           )}
           <button
-            onClick={() => { setSelectedItems(new Set()); setBulkAction(""); setBulkValue(""); }}
-            className="px-4 py-2 border border-[var(--color-border-subtle)] text-[var(--color-outline)] font-bold rounded-xl text-sm hover:bg-[var(--color-surface-subtle)]"
+            onClick={() => {
+              setSelectedItems(new Set());
+              setBulkAction("");
+              setBulkValue("");
+            }}
+            className="rounded-xl border border-[var(--color-border-subtle)] px-4 py-2 text-sm font-bold text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
           >
             Clear
           </button>
@@ -751,236 +896,332 @@ export default function PartnerMenuPage() {
       )}
 
       {/* Items Table */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] overflow-hidden">
+      <div className="overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)]">
         <div className="overflow-x-auto">
-        {loading ? (
-          <div className="p-12 text-center text-[var(--color-outline-variant)] font-medium">Loading items...</div>
-        ) : filteredItems.length === 0 ? (
-          <div className="p-12 text-center">
-            <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60 mb-3">
-              {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "flowers" ? "local_florist" : "restaurant_menu"}
-            </span>
-            <p className="text-[var(--color-outline-variant)] font-medium">No {pageTitle.toLowerCase()} found</p>
-            <button
-              onClick={() => { resetNewItem(); setShowAddModal(true); }}
-              className="mt-4 text-[var(--color-primary)] font-bold text-sm hover:underline"
-            >
-              Add your first {vendorKey === "grocery" ? "product" : "item"}
-            </button>
-          </div>
-        ) : (
-          <table className="w-full text-left">
-            <caption className="sr-only">Menu items inventory</caption>
-            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
-              <tr>
-                {bulkMode && (
-                  <th className="p-4 w-10">
-                    <input
-                      type="checkbox"
-                      checked={selectedItems.size === filteredItems.length && filteredItems.length > 0}
-                      onChange={() => {
-                        if (selectedItems.size === filteredItems.length) {
-                          setSelectedItems(new Set());
-                        } else {
-                          setSelectedItems(new Set(filteredItems.map(i => i.id)));
-                        }
-                      }}
-                      className="w-4 h-4 accent-[var(--color-primary)]"
-                    />
-                  </th>
-                )}
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Item</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Category</th>
-                {vendorKey === "food" && (
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Type</th>
-                )}
-                {(vendorKey === "food" || vendorKey === "grocery") && (
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Stock</th>
-                )}
-                {vendorKey === "food" && (
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
-                )}
-                {vendorKey === "food" && (
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Featured</th>
-                )}
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Price</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--color-border-subtle)]">
-              {filteredItems.map((item) => (
-                <tr key={item.id} className={`hover:bg-[var(--color-surface-subtle)] transition-colors ${selectedItems.has(item.id) ? "bg-[var(--color-primary)]/5" : ""}`}>
+          {loading ? (
+            <div className="p-12 text-center font-medium text-[var(--color-outline-variant)]">
+              Loading items...
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="p-12 text-center">
+              <span className="material-symbols-outlined mb-3 text-5xl text-[var(--color-outline-variant)]/60">
+                {vendorKey === "grocery"
+                  ? "shopping_cart"
+                  : vendorKey === "flowers"
+                    ? "local_florist"
+                    : "restaurant_menu"}
+              </span>
+              <p className="font-medium text-[var(--color-outline-variant)]">
+                No {pageTitle.toLowerCase()} found
+              </p>
+              <button
+                onClick={() => {
+                  resetNewItem();
+                  setShowAddModal(true);
+                }}
+                className="mt-4 text-sm font-bold text-[var(--color-primary)] hover:underline"
+              >
+                Add your first {vendorKey === "grocery" ? "product" : "item"}
+              </button>
+            </div>
+          ) : (
+            <table className="w-full text-left">
+              <caption className="sr-only">Menu items inventory</caption>
+              <thead className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
+                <tr>
                   {bulkMode && (
-                    <td className="p-4 w-10">
+                    <th className="w-10 p-4">
                       <input
                         type="checkbox"
-                        checked={selectedItems.has(item.id)}
+                        checked={
+                          selectedItems.size === filteredItems.length && filteredItems.length > 0
+                        }
                         onChange={() => {
-                          const next = new Set(selectedItems);
-                          if (next.has(item.id)) next.delete(item.id); else next.add(item.id);
-                          setSelectedItems(next);
+                          if (selectedItems.size === filteredItems.length) {
+                            setSelectedItems(new Set());
+                          } else {
+                            setSelectedItems(new Set(filteredItems.map((i) => i.id)));
+                          }
                         }}
-                        className="w-4 h-4 accent-[var(--color-primary)]"
+                        className="h-4 w-4 accent-[var(--color-primary)]"
                       />
-                    </td>
+                    </th>
                   )}
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center overflow-hidden">
-                        {item.image_url ? (
-                          <BlurImage
-                            src={item.image_url}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : null}
-                        <span className="mi-fallback material-symbols-outlined text-[var(--color-outline-variant)]" style={{ display: item.image_url ? "none" : "flex" }}>
-                          {vendorKey === "grocery" ? "shopping_cart" : vendorKey === "flowers" ? "local_florist" : "restaurant"}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-bold text-[var(--color-on-surface)]">{item.name}</p>
-                        {'description' in item && (item as MenuItem | FlowerItem).description && (
-                          <p className="text-xs text-[var(--color-outline-variant)] mt-0.5">{(item as MenuItem | FlowerItem).description}</p>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <span className="text-xs font-semibold text-[var(--color-outline)]">{item.category}</span>
-                  </td>
+                  <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Item
+                  </th>
+                  <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Category
+                  </th>
                   {vendorKey === "food" && (
-                    <td className="p-4">
-                      <span className={`inline-flex items-center gap-1 text-xs font-bold ${(item as MenuItem).is_veg ? 'text-green-600' : 'text-red-600'}`}>
-                        <span className={`w-2 h-2 rounded-sm ${(item as MenuItem).is_veg ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                        {(item as MenuItem).is_veg ? 'Veg' : 'Non-Veg'}
-                      </span>
-                    </td>
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Type
+                    </th>
                   )}
                   {(vendorKey === "food" || vendorKey === "grocery") && (
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Stock
+                    </th>
+                  )}
+                  {vendorKey === "food" && (
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Status
+                    </th>
+                  )}
+                  {vendorKey === "food" && (
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Featured
+                    </th>
+                  )}
+                  <th className="p-4 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Price
+                  </th>
+                  <th className="p-4 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--color-border-subtle)]">
+                {filteredItems.map((item) => (
+                  <tr
+                    key={item.id}
+                    className={`transition-colors hover:bg-[var(--color-surface-subtle)] ${selectedItems.has(item.id) ? "bg-[var(--color-primary)]/5" : ""}`}
+                  >
+                    {bulkMode && (
+                      <td className="w-10 p-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedItems.has(item.id)}
+                          onChange={() => {
+                            const next = new Set(selectedItems);
+                            if (next.has(item.id)) next.delete(item.id);
+                            else next.add(item.id);
+                            setSelectedItems(next);
+                          }}
+                          className="h-4 w-4 accent-[var(--color-primary)]"
+                        />
+                      </td>
+                    )}
                     <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        {'stock' in item && (
-                          <>
-                            <button
-                              onClick={() => handleStockChange(item, -1)}
-                              aria-label="Decrease stock"
-                              className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
-                            >−</button>
-                            <span className={`text-sm font-bold min-w-[2ch] text-center ${('stock' in item && (item as GroceryItem | MenuItem).stock === 0) ? 'text-red-600' : ('stock' in item && (item as GroceryItem | MenuItem).stock! < 10) ? 'text-amber-600' : 'text-[var(--color-on-surface)]'}`}>
-                              {'stock' in item ? (item as GroceryItem | MenuItem).stock : 0}
-                            </span>
-                            <button
-                              onClick={() => handleStockChange(item, 1)}
-                              aria-label="Increase stock"
-                              className="w-11 h-11 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] text-sm font-bold"
-                            >+</button>
-                          </>
-                        )}
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-xl bg-[var(--color-surface-container)]">
+                          {item.image_url ? (
+                            <BlurImage
+                              src={item.image_url}
+                              alt={item.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : null}
+                          <span
+                            className="mi-fallback material-symbols-outlined text-[var(--color-outline-variant)]"
+                            style={{ display: item.image_url ? "none" : "flex" }}
+                          >
+                            {vendorKey === "grocery"
+                              ? "shopping_cart"
+                              : vendorKey === "flowers"
+                                ? "local_florist"
+                                : "restaurant"}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-bold text-[var(--color-on-surface)]">{item.name}</p>
+                          {"description" in item && (item as MenuItem | FlowerItem).description && (
+                            <p className="mt-0.5 text-xs text-[var(--color-outline-variant)]">
+                              {(item as MenuItem | FlowerItem).description}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </td>
-                  )}
-                  {vendorKey === "food" && (
                     <td className="p-4">
-                      <button
-                        onClick={() => toggleAvailability(item)}
-                        role="switch"
-                        aria-checked={(item as MenuItem).is_available}
-                        className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                          (item as MenuItem).is_available
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {(item as MenuItem).is_available ? "Available" : "Unavailable"}
-                      </button>
+                      <span className="text-xs font-semibold text-[var(--color-outline)]">
+                        {item.category}
+                      </span>
                     </td>
-                  )}
-                  {vendorKey === "food" && (
-                    <td className="p-4">
-                      <button
-                        onClick={() => toggleFeatured(item)}
-                        role="switch"
-                        aria-checked={!!(item as MenuItem).is_featured}
-                        className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
-                          (item as MenuItem).is_featured
-                            ? "bg-amber-100 text-amber-700"
-                            : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
-                        }`}
-                      >
-                        {(item as MenuItem).is_featured ? "Featured" : "Promote"}
-                      </button>
+                    {vendorKey === "food" && (
+                      <td className="p-4">
+                        <span
+                          className={`inline-flex items-center gap-1 text-xs font-bold ${(item as MenuItem).is_veg ? "text-green-600" : "text-red-600"}`}
+                        >
+                          <span
+                            className={`h-2 w-2 rounded-sm ${(item as MenuItem).is_veg ? "bg-green-500" : "bg-red-500"}`}
+                          ></span>
+                          {(item as MenuItem).is_veg ? "Veg" : "Non-Veg"}
+                        </span>
+                      </td>
+                    )}
+                    {(vendorKey === "food" || vendorKey === "grocery") && (
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          {"stock" in item && (
+                            <>
+                              <button
+                                onClick={() => handleStockChange(item, -1)}
+                                aria-label="Decrease stock"
+                                className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--color-surface-container)] text-sm font-bold hover:bg-[var(--color-surface-container-high)]"
+                              >
+                                −
+                              </button>
+                              <span
+                                className={`min-w-[2ch] text-center text-sm font-bold ${"stock" in item && (item as GroceryItem | MenuItem).stock === 0 ? "text-red-600" : "stock" in item && (item as GroceryItem | MenuItem).stock! < 10 ? "text-amber-600" : "text-[var(--color-on-surface)]"}`}
+                              >
+                                {"stock" in item ? (item as GroceryItem | MenuItem).stock : 0}
+                              </span>
+                              <button
+                                onClick={() => handleStockChange(item, 1)}
+                                aria-label="Increase stock"
+                                className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--color-surface-container)] text-sm font-bold hover:bg-[var(--color-surface-container-high)]"
+                              >
+                                +
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    )}
+                    {vendorKey === "food" && (
+                      <td className="p-4">
+                        <button
+                          onClick={() => toggleAvailability(item)}
+                          role="switch"
+                          aria-checked={(item as MenuItem).is_available}
+                          className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase ${
+                            (item as MenuItem).is_available
+                              ? "bg-green-100 text-green-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {(item as MenuItem).is_available ? "Available" : "Unavailable"}
+                        </button>
+                      </td>
+                    )}
+                    {vendorKey === "food" && (
+                      <td className="p-4">
+                        <button
+                          onClick={() => toggleFeatured(item)}
+                          role="switch"
+                          aria-checked={!!(item as MenuItem).is_featured}
+                          className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-wider uppercase ${
+                            (item as MenuItem).is_featured
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
+                          }`}
+                        >
+                          {(item as MenuItem).is_featured ? "Featured" : "Promote"}
+                        </button>
+                      </td>
+                    )}
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {(item as MenuItem).discount_percent != null &&
+                          (item as MenuItem).discount_percent! > 0 && (
+                            <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-bold text-red-700">
+                              -{(item as MenuItem).discount_percent}%
+                            </span>
+                          )}
+                        <p className="font-extrabold text-[var(--color-on-surface)]">
+                          {(item as MenuItem).original_price ? (
+                            <>
+                              <span className="mr-1 text-xs text-[var(--color-outline-variant)] line-through">
+                                ₹{(item as MenuItem).original_price}
+                              </span>
+                              ₹{item.price}
+                            </>
+                          ) : (
+                            <>₹{item.price}</>
+                          )}
+                        </p>
+                      </div>
                     </td>
-                  )}
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {(item as MenuItem).discount_percent != null && (item as MenuItem).discount_percent! > 0 && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded-full">-{(item as MenuItem).discount_percent}%</span>
-                      )}
-                      <p className="font-extrabold text-[var(--color-on-surface)]">
-                        {(item as MenuItem).original_price ? (
-                          <>
-                            <span className="line-through text-[var(--color-outline-variant)] text-xs mr-1">₹{(item as MenuItem).original_price}</span>
-                            ₹{item.price}
-                          </>
-                        ) : (
-                          <>₹{item.price}</>
-                        )}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="p-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => setEditingItem(item)}
-                        className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-[var(--color-surface-container-high)] transition-colors"
-                        aria-label={`Edit ${item.name}`}
-                      >
-                        <span className="material-symbols-outlined text-[var(--color-on-surface-variant)] text-sm">edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        className="w-10 h-10 bg-[var(--color-surface-container)] rounded-lg flex items-center justify-center hover:bg-red-100 transition-colors"
-                        aria-label={`Delete ${item.name}`}
-                      >
-                        <span className="material-symbols-outlined text-red-500 text-sm">delete</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setEditingItem(item)}
+                          className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-surface-container)] transition-colors hover:bg-[var(--color-surface-container-high)]"
+                          aria-label={`Edit ${item.name}`}
+                        >
+                          <span className="material-symbols-outlined text-sm text-[var(--color-on-surface-variant)]">
+                            edit
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteItem(item.id)}
+                          className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-surface-container)] transition-colors hover:bg-red-100"
+                          aria-label={`Delete ${item.name}`}
+                        >
+                          <span className="material-symbols-outlined text-sm text-red-500">
+                            delete
+                          </span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
       {/* Add Item Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowAddModal(false)} role="dialog" aria-modal="true" aria-labelledby="add-item-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 id="add-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">
-                Add {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : "Item"}
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowAddModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="add-item-title"
+        >
+          <div
+            className="m-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-[var(--color-surface-container-lowest)] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h2
+                id="add-item-title"
+                className="text-xl font-extrabold text-[var(--color-on-surface)]"
+              >
+                Add{" "}
+                {vendorKey === "food" ? "Menu Item" : vendorKey === "grocery" ? "Product" : "Item"}
               </h2>
-              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label htmlFor="add-item-name" className="text-sm font-semibold text-[var(--color-on-surface)]">Name *</label>
+                <label
+                  htmlFor="add-item-name"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Name *
+                </label>
                 <input
                   id="add-item-name"
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                  placeholder={vendorKey === "food" ? "e.g., Butter Chicken" : vendorKey === "grocery" ? "e.g., Organic Apples"  : "e.g., Rose Bouquet"}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  placeholder={
+                    vendorKey === "food"
+                      ? "e.g., Butter Chicken"
+                      : vendorKey === "grocery"
+                        ? "e.g., Organic Apples"
+                        : "e.g., Rose Bouquet"
+                  }
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="add-item-price" className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹) *</label>
+                <label
+                  htmlFor="add-item-price"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Price (₹) *
+                </label>
                 <input
                   id="add-item-price"
                   type="number"
@@ -989,38 +1230,55 @@ export default function PartnerMenuPage() {
                   value={newItem.price}
                   onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                   placeholder="e.g., 280"
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="add-item-category" className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
+                <label
+                  htmlFor="add-item-category"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Category
+                </label>
                 <select
                   id="add-item-category"
                   value={newItem.category || categories[0]}
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
               {(vendorKey === "food" || vendorKey === "flowers") && (
                 <div>
-                  <label htmlFor="add-item-description" className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
+                  <label
+                    htmlFor="add-item-description"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Description
+                  </label>
                   <textarea
                     id="add-item-description"
                     value={newItem.description}
                     onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
                     placeholder="Brief description"
                     rows={2}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] resize-none"
+                    className="mt-1 w-full resize-none rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               )}
-              {(vendorKey === "grocery") && (
+              {vendorKey === "grocery" && (
                 <div>
-                  <label htmlFor="add-item-stock" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
+                  <label
+                    htmlFor="add-item-stock"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Stock Quantity
+                  </label>
                   <input
                     id="add-item-stock"
                     type="number"
@@ -1028,13 +1286,18 @@ export default function PartnerMenuPage() {
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
                     placeholder="e.g., 100"
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               )}
-              {(vendorKey === "food") && (
+              {vendorKey === "food" && (
                 <div>
-                  <label htmlFor="add-item-stock-food" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
+                  <label
+                    htmlFor="add-item-stock-food"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Stock Quantity
+                  </label>
                   <input
                     id="add-item-stock-food"
                     type="number"
@@ -1042,33 +1305,38 @@ export default function PartnerMenuPage() {
                     value={newItem.stock}
                     onChange={(e) => setNewItem({ ...newItem, stock: e.target.value })}
                     placeholder="e.g., 50"
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               )}
               {vendorKey === "food" && (
-                <div className="bg-red-50 rounded-xl p-4 border border-red-200">
-                  <label className="flex items-center gap-3 cursor-pointer mb-3">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+                  <label className="mb-3 flex cursor-pointer items-center gap-3">
                     <input
                       type="checkbox"
                       checked={newItem.has_discount}
                       onChange={(e) => setNewItem({ ...newItem, has_discount: e.target.checked })}
-                      className="w-5 h-5 accent-[var(--color-primary)]"
+                      className="h-5 w-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-red-700">Put on Sale</span>
                   </label>
                   {newItem.has_discount && (
                     <div>
-                      <label htmlFor="add-item-discount" className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
+                      <label
+                        htmlFor="add-item-discount"
+                        className="mb-2 block text-xs font-semibold text-[var(--color-on-surface)]"
+                      >
+                        Discount %
+                      </label>
                       <div className="flex gap-2">
                         {[10, 15, 20, 25, 30, 40, 50].map((p) => (
                           <button
                             key={p}
                             onClick={() => setNewItem({ ...newItem, discount_percent: p })}
-                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                            className={`flex-1 rounded-lg py-2 text-xs font-bold transition-all ${
                               newItem.discount_percent === p
-                                ? "bg-[var(--color-primary)] text-on-primary shadow-md"
-                                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+                                ? "text-on-primary bg-[var(--color-primary)] shadow-md"
+                                : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
                             }`}
                           >
                             {p}%
@@ -1076,10 +1344,14 @@ export default function PartnerMenuPage() {
                         ))}
                       </div>
                       {newItem.price && (
-                        <p className="text-xs text-[var(--color-outline)] mt-2">
+                        <p className="mt-2 text-xs text-[var(--color-outline)]">
                           Original: ₹{parseFloat(newItem.price).toFixed(2)} →{" "}
                           <span className="font-bold text-red-600">
-                            ₹{(parseFloat(newItem.price) * (1 - newItem.discount_percent / 100)).toFixed(2)}
+                            ₹
+                            {(
+                              parseFloat(newItem.price) *
+                              (1 - newItem.discount_percent / 100)
+                            ).toFixed(2)}
                           </span>
                         </p>
                       )}
@@ -1089,9 +1361,11 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Type</label>
-                  <div className="flex gap-4 mt-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                    Type
+                  </label>
+                  <div className="mt-2 flex gap-4">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
                         checked={newItem.is_veg}
@@ -1099,10 +1373,10 @@ export default function PartnerMenuPage() {
                         className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-green-700">
-                        <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
+                        <span className="h-3 w-3 rounded-sm bg-green-500"></span> Veg
                       </span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
                         checked={!newItem.is_veg}
@@ -1110,7 +1384,7 @@ export default function PartnerMenuPage() {
                         className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-red-700">
-                        <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
+                        <span className="h-3 w-3 rounded-sm bg-red-500"></span> Non-Veg
                       </span>
                     </label>
                   </div>
@@ -1118,11 +1392,13 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available For</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                    Available For
+                  </label>
                   <select
                     value={newItem.menu_slot || "all_day"}
                     onChange={(e) => setNewItem({ ...newItem, menu_slot: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   >
                     <option value="all_day">All Day</option>
                     <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
@@ -1132,21 +1408,25 @@ export default function PartnerMenuPage() {
                 </div>
               )}
               {vendorKey === "food" && (
-                <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
-                  <label className="flex items-center gap-3 cursor-pointer">
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                  <label className="flex cursor-pointer items-center gap-3">
                     <input
                       type="checkbox"
                       checked={newItem.is_featured}
                       onChange={(e) => setNewItem({ ...newItem, is_featured: e.target.checked })}
-                      className="w-5 h-5 accent-[var(--color-primary)]"
+                      className="h-5 w-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
                   </label>
-                  <p className="text-xs text-amber-600 mt-2 ml-8">Featured items appear first on your menu with a special badge</p>
+                  <p className="mt-2 ml-8 text-xs text-amber-600">
+                    Featured items appear first on your menu with a special badge
+                  </p>
                 </div>
               )}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Images</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                  Images
+                </label>
                 <input
                   type="file"
                   multiple
@@ -1161,23 +1441,37 @@ export default function PartnerMenuPage() {
                       return true;
                     });
                     if (validFiles.length > 0) {
-                      setNewItem({ ...newItem, imageFiles: [...(newItem.imageFiles || []), ...validFiles] });
+                      setNewItem({
+                        ...newItem,
+                        imageFiles: [...(newItem.imageFiles || []), ...validFiles],
+                      });
                     }
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-on-primary file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="file:text-on-primary mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:px-4 file:py-1.5 file:text-xs file:font-bold hover:file:bg-[#a40017]"
                 />
                 {newItem.imageFiles?.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     {newItem.imageFiles.map((file: File, idx: number) => (
-                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
-                        <BlurImage src={URL.createObjectURL(file)} alt="" className="w-full h-full object-cover" />
+                      <div
+                        key={idx}
+                        className="group relative h-16 w-16 overflow-hidden rounded-xl border border-[var(--color-border-subtle)]"
+                      >
+                        <BlurImage
+                          src={URL.createObjectURL(file)}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
                         <button
-                          onClick={() => setNewItem({
-                            ...newItem,
-                            imageFiles: newItem.imageFiles.filter((_: File, i: number) => i !== idx)
-                          })}
-                          className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
+                          onClick={() =>
+                            setNewItem({
+                              ...newItem,
+                              imageFiles: newItem.imageFiles.filter(
+                                (_: File, i: number) => i !== idx
+                              ),
+                            })
+                          }
+                          className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-bl-xl bg-red-500 text-[10px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100"
                           aria-label="Remove image"
                         >
                           ×
@@ -1198,9 +1492,11 @@ export default function PartnerMenuPage() {
                     <input
                       type="url"
                       value={newItem.image_url}
-                      onChange={(e) => setNewItem({ ...newItem, image_url: e.target.value, imageFiles: [] })}
+                      onChange={(e) =>
+                        setNewItem({ ...newItem, image_url: e.target.value, imageFiles: [] })
+                      }
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                      className="mt-2 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   )}
                 </div>
@@ -1208,7 +1504,7 @@ export default function PartnerMenuPage() {
               <button
                 onClick={handleAddItem}
                 disabled={uploading}
-                className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl mt-4 hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
+                className="text-on-primary mt-4 w-full rounded-2xl bg-[var(--color-primary)] py-4 font-extrabold transition-colors hover:bg-[var(--color-primary-dim)] disabled:opacity-50"
               >
                 {uploading ? "Uploading..." : `Add ${vendorKey === "grocery" ? "Product" : "Item"}`}
               </button>
@@ -1219,139 +1515,224 @@ export default function PartnerMenuPage() {
 
       {/* Edit Item Modal */}
       {editingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setEditingItem(null)} role="dialog" aria-modal="true" aria-labelledby="edit-item-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 id="edit-item-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Edit Item</h2>
-              <button onClick={() => setEditingItem(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setEditingItem(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="edit-item-title"
+        >
+          <div
+            className="m-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-[var(--color-surface-container-lowest)] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h2
+                id="edit-item-title"
+                className="text-xl font-extrabold text-[var(--color-on-surface)]"
+              >
+                Edit Item
+              </h2>
+              <button
+                onClick={() => setEditingItem(null)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label htmlFor="edit-item-name" className="text-sm font-semibold text-[var(--color-on-surface)]">Name</label>
+                <label
+                  htmlFor="edit-item-name"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Name
+                </label>
                 <input
                   id="edit-item-name"
                   type="text"
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="edit-item-price" className="text-sm font-semibold text-[var(--color-on-surface)]">Price (₹)</label>
+                <label
+                  htmlFor="edit-item-price"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Price (₹)
+                </label>
                 <input
                   id="edit-item-price"
                   type="number"
                   min="0"
                   step="0.5"
                   value={editingItem.price}
-                  onChange={(e) => setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  onChange={(e) =>
+                    setEditingItem({ ...editingItem, price: parseFloat(e.target.value) })
+                  }
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="edit-item-category" className="text-sm font-semibold text-[var(--color-on-surface)]">Category</label>
+                <label
+                  htmlFor="edit-item-category"
+                  className="text-sm font-semibold text-[var(--color-on-surface)]"
+                >
+                  Category
+                </label>
                 <select
                   id="edit-item-category"
                   value={editingItem.category}
                   onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                  className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                 >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
               {(vendorKey === "food" || vendorKey === "flowers") && (
                 <div>
-                  <label htmlFor="edit-item-description" className="text-sm font-semibold text-[var(--color-on-surface)]">Description</label>
+                  <label
+                    htmlFor="edit-item-description"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Description
+                  </label>
                   <textarea
                     id="edit-item-description"
                     value={(editingItem as MenuItem).description || ""}
-                    onChange={(e) => setEditingItem({ ...editingItem, description: e.target.value })}
+                    onChange={(e) =>
+                      setEditingItem({ ...editingItem, description: e.target.value })
+                    }
                     rows={2}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] resize-none"
+                    className="mt-1 w-full resize-none rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               )}
               {(vendorKey === "food" || vendorKey === "grocery") && (
                 <div>
-                  <label htmlFor="edit-item-stock" className="text-sm font-semibold text-[var(--color-on-surface)]">Stock Quantity</label>
+                  <label
+                    htmlFor="edit-item-stock"
+                    className="text-sm font-semibold text-[var(--color-on-surface)]"
+                  >
+                    Stock Quantity
+                  </label>
                   <input
                     id="edit-item-stock"
                     type="number"
                     min="0"
-                    value={'stock' in editingItem ? (editingItem as GroceryItem | MenuItem).stock ?? 0 : 0}
-                    onChange={(e) => setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    value={
+                      "stock" in editingItem
+                        ? ((editingItem as GroceryItem | MenuItem).stock ?? 0)
+                        : 0
+                    }
+                    onChange={(e) =>
+                      setEditingItem({ ...editingItem, stock: parseInt(e.target.value) || 0 })
+                    }
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   />
                 </div>
               )}
               {vendorKey === "food" && (
-                <div className="bg-red-50 rounded-xl p-4 border border-red-200">
-                  <label className="flex items-center gap-3 cursor-pointer mb-3">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+                  <label className="mb-3 flex cursor-pointer items-center gap-3">
                     <input
                       type="checkbox"
-                      checked={(editingItem as MenuItem).discount_percent != null && (editingItem as MenuItem).discount_percent! > 0}
+                      checked={
+                        (editingItem as MenuItem).discount_percent != null &&
+                        (editingItem as MenuItem).discount_percent! > 0
+                      }
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setEditingItem({ ...editingItem, discount_percent: 20, original_price: editingItem.price } as AnyItem);
+                          setEditingItem({
+                            ...editingItem,
+                            discount_percent: 20,
+                            original_price: editingItem.price,
+                          } as AnyItem);
                         } else {
                           setEditingItem({ ...editingItem, discount_percent: 0 } as AnyItem);
                         }
                       }}
-                      className="w-5 h-5 accent-[var(--color-primary)]"
+                      className="h-5 w-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-red-700">On Sale</span>
                   </label>
-                  {(editingItem as MenuItem).discount_percent != null && (editingItem as MenuItem).discount_percent! > 0 && (
-                    <div>
-                      <label htmlFor="edit-item-discount" className="text-xs font-semibold text-[var(--color-on-surface)] mb-2 block">Discount %</label>
-                      <div className="flex gap-2">
-                        {[10, 15, 20, 25, 30, 40, 50].map((p) => (
-                          <button
-                            key={p}
-                            onClick={() => setEditingItem({ ...editingItem, discount_percent: p } as AnyItem)}
-                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
-                              (editingItem as MenuItem).discount_percent === p
-                                ? "bg-[var(--color-primary)] text-on-primary shadow-md"
-                                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
-                            }`}
-                          >
-                            {p}%
-                          </button>
-                        ))}
+                  {(editingItem as MenuItem).discount_percent != null &&
+                    (editingItem as MenuItem).discount_percent! > 0 && (
+                      <div>
+                        <label
+                          htmlFor="edit-item-discount"
+                          className="mb-2 block text-xs font-semibold text-[var(--color-on-surface)]"
+                        >
+                          Discount %
+                        </label>
+                        <div className="flex gap-2">
+                          {[10, 15, 20, 25, 30, 40, 50].map((p) => (
+                            <button
+                              key={p}
+                              onClick={() =>
+                                setEditingItem({ ...editingItem, discount_percent: p } as AnyItem)
+                              }
+                              className={`flex-1 rounded-lg py-2 text-xs font-bold transition-all ${
+                                (editingItem as MenuItem).discount_percent === p
+                                  ? "text-on-primary bg-[var(--color-primary)] shadow-md"
+                                  : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
+                              }`}
+                            >
+                              {p}%
+                            </button>
+                          ))}
+                        </div>
+                        <p className="mt-2 text-xs text-[var(--color-outline)]">
+                          Original: ₹
+                          {((editingItem as MenuItem).original_price || editingItem.price).toFixed(
+                            2
+                          )}{" "}
+                          →{" "}
+                          <span className="font-bold text-red-600">
+                            ₹
+                            {Math.round(
+                              ((editingItem as MenuItem).original_price || editingItem.price) *
+                                (1 - ((editingItem as MenuItem).discount_percent || 0) / 100) *
+                                100
+                            ) / 100}
+                          </span>
+                        </p>
                       </div>
-                      <p className="text-xs text-[var(--color-outline)] mt-2">
-                        Original: ₹{((editingItem as MenuItem).original_price || editingItem.price).toFixed(2)} →{" "}
-                        <span className="font-bold text-red-600">
-                          ₹{Math.round(((editingItem as MenuItem).original_price || editingItem.price) * (1 - ((editingItem as MenuItem).discount_percent || 0) / 100) * 100) / 100}
-                        </span>
-                      </p>
-                    </div>
-                  )}
+                    )}
                 </div>
               )}
               {vendorKey === "food" && (
-                <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
-                  <label className="flex items-center gap-3 cursor-pointer">
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                  <label className="flex cursor-pointer items-center gap-3">
                     <input
                       type="checkbox"
                       checked={!!(editingItem as MenuItem).is_featured}
-                      onChange={(e) => setEditingItem({ ...editingItem, is_featured: e.target.checked } as AnyItem)}
-                      className="w-5 h-5 accent-[var(--color-primary)]"
+                      onChange={(e) =>
+                        setEditingItem({ ...editingItem, is_featured: e.target.checked } as AnyItem)
+                      }
+                      className="h-5 w-5 accent-[var(--color-primary)]"
                     />
                     <span className="text-sm font-bold text-amber-700">Promote as Featured</span>
                   </label>
-                  <p className="text-xs text-amber-600 mt-2 ml-8">Featured items appear first on your menu</p>
+                  <p className="mt-2 ml-8 text-xs text-amber-600">
+                    Featured items appear first on your menu
+                  </p>
                 </div>
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Type</label>
-                  <div className="flex gap-4 mt-2">
-                    <label className="flex items-center gap-2 cursor-pointer">
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                    Type
+                  </label>
+                  <div className="mt-2 flex gap-4">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
                         checked={(editingItem as MenuItem).is_veg}
@@ -1359,10 +1740,10 @@ export default function PartnerMenuPage() {
                         className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-green-700">
-                        <span className="w-3 h-3 bg-green-500 rounded-sm"></span> Veg
+                        <span className="h-3 w-3 rounded-sm bg-green-500"></span> Veg
                       </span>
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
                         checked={!(editingItem as MenuItem).is_veg}
@@ -1370,7 +1751,7 @@ export default function PartnerMenuPage() {
                         className="accent-[var(--color-primary)]"
                       />
                       <span className="flex items-center gap-1 text-sm font-medium text-red-700">
-                        <span className="w-3 h-3 bg-red-500 rounded-sm"></span> Non-Veg
+                        <span className="h-3 w-3 rounded-sm bg-red-500"></span> Non-Veg
                       </span>
                     </label>
                   </div>
@@ -1378,11 +1759,13 @@ export default function PartnerMenuPage() {
               )}
               {vendorKey === "food" && (
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available For</label>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                    Available For
+                  </label>
                   <select
                     value={(editingItem as MenuItem).menu_slot || "all_day"}
                     onChange={(e) => setEditingItem({ ...editingItem, menu_slot: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]"
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
                   >
                     <option value="all_day">All Day</option>
                     <option value="breakfast">Breakfast (6 AM – 11 AM)</option>
@@ -1391,31 +1774,58 @@ export default function PartnerMenuPage() {
                   </select>
                 </div>
               )}
-              {editingItem && (("images" in editingItem && (editingItem as MenuItem).images && (editingItem as MenuItem).images!.length > 0) || ("image_url" in editingItem && (editingItem as MenuItem).image_url)) && (
-                <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)] block mb-2">Current Images</label>
-                  <div className="flex flex-wrap gap-2">
-                    {(("images" in editingItem && (editingItem as MenuItem).images && (editingItem as MenuItem).images!.length > 0 ? (editingItem as MenuItem).images! : [("image_url" in editingItem ? (editingItem as MenuItem).image_url : "")])).filter((url): url is string => !!url).map((url, idx) => (
-                      <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden border border-[var(--color-border-subtle)] group">
-                        <BlurImage src={url} alt="" className="w-full h-full object-cover" />
-                        <button
-                          onClick={() => {
-                            const existing: string[] = ("images" in editingItem && (editingItem as MenuItem).images ? (editingItem as MenuItem).images! : ("image_url" in editingItem ? [(editingItem as MenuItem).image_url!] : []));
-                            const imgs = existing.filter((_url, i) => i !== idx);
-                            setEditingItem({ ...editingItem, images: imgs, image_url: imgs[0] || null } as AnyItem);
-                          }}
-                          className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-xl"
-                          aria-label="Remove image"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+              {editingItem &&
+                (("images" in editingItem &&
+                  (editingItem as MenuItem).images &&
+                  (editingItem as MenuItem).images!.length > 0) ||
+                  ("image_url" in editingItem && (editingItem as MenuItem).image_url)) && (
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-[var(--color-on-surface)]">
+                      Current Images
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {("images" in editingItem &&
+                      (editingItem as MenuItem).images &&
+                      (editingItem as MenuItem).images!.length > 0
+                        ? (editingItem as MenuItem).images!
+                        : ["image_url" in editingItem ? (editingItem as MenuItem).image_url : ""]
+                      )
+                        .filter((url): url is string => !!url)
+                        .map((url, idx) => (
+                          <div
+                            key={idx}
+                            className="group relative h-16 w-16 overflow-hidden rounded-xl border border-[var(--color-border-subtle)]"
+                          >
+                            <BlurImage src={url} alt="" className="h-full w-full object-cover" />
+                            <button
+                              onClick={() => {
+                                const existing: string[] =
+                                  "images" in editingItem && (editingItem as MenuItem).images
+                                    ? (editingItem as MenuItem).images!
+                                    : "image_url" in editingItem
+                                      ? [(editingItem as MenuItem).image_url!]
+                                      : [];
+                                const imgs = existing.filter((_url, i) => i !== idx);
+                                setEditingItem({
+                                  ...editingItem,
+                                  images: imgs,
+                                  image_url: imgs[0] || null,
+                                } as AnyItem);
+                              }}
+                              className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-bl-xl bg-red-500 text-[10px] font-bold text-white opacity-0 transition-opacity group-hover:opacity-100"
+                              aria-label="Remove image"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
               <div>
-                <label className="text-sm font-semibold text-[var(--color-on-surface)]">Add Images</label>
+                <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                  Add Images
+                </label>
                 <input
                   type="file"
                   multiple
@@ -1437,13 +1847,18 @@ export default function PartnerMenuPage() {
                       setUploading(false);
                     }
                     if (newUrls.length > 0) {
-                      const existing: string[] = ("images" in editingItem && (editingItem as MenuItem).images ? (editingItem as MenuItem).images! : (("image_url" in editingItem && (editingItem as MenuItem).image_url) ? [(editingItem as MenuItem).image_url!] : []));
+                      const existing: string[] =
+                        "images" in editingItem && (editingItem as MenuItem).images
+                          ? (editingItem as MenuItem).images!
+                          : "image_url" in editingItem && (editingItem as MenuItem).image_url
+                            ? [(editingItem as MenuItem).image_url!]
+                            : [];
                       const all = [...existing, ...newUrls];
                       setEditingItem({ ...editingItem, images: all, image_url: all[0] } as AnyItem);
                     }
                     e.target.value = "";
                   }}
-                  className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:text-on-primary file:font-bold file:text-xs hover:file:bg-[#a40017]"
+                  className="file:text-on-primary mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--color-primary)] file:px-4 file:py-1.5 file:text-xs file:font-bold hover:file:bg-[#a40017]"
                 />
                 <div className="mt-2">
                   <button
@@ -1456,10 +1871,15 @@ export default function PartnerMenuPage() {
                   {showEditUrlInput && (
                     <input
                       type="url"
-                      value={("image_url" in editingItem ? (editingItem as MenuItem).image_url : "") || ""}
-                      onChange={(e) => setEditingItem({ ...editingItem, image_url: e.target.value } as AnyItem)}
+                      value={
+                        ("image_url" in editingItem ? (editingItem as MenuItem).image_url : "") ||
+                        ""
+                      }
+                      onChange={(e) =>
+                        setEditingItem({ ...editingItem, image_url: e.target.value } as AnyItem)
+                      }
                       placeholder="https://example.com/image.jpg"
-                      className="mt-2 w-full px-4 py-3 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                      className="mt-2 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   )}
                 </div>
@@ -1467,14 +1887,14 @@ export default function PartnerMenuPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setEditingItem(null)}
-                  className="flex-1 py-4 border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold rounded-2xl hover:bg-[var(--color-surface-subtle)] transition-colors"
+                  className="flex-1 rounded-2xl border border-[var(--color-border-subtle)] py-4 font-bold text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleUpdateItem}
                   disabled={uploading}
-                  className="flex-1 py-4 bg-[var(--color-primary)] text-on-primary font-extrabold rounded-2xl hover:bg-[var(--color-primary-dim)] transition-colors disabled:opacity-50"
+                  className="text-on-primary flex-1 rounded-2xl bg-[var(--color-primary)] py-4 font-extrabold transition-colors hover:bg-[var(--color-primary-dim)] disabled:opacity-50"
                 >
                   {uploading ? "Uploading..." : "Save Changes"}
                 </button>
@@ -1485,31 +1905,53 @@ export default function PartnerMenuPage() {
       )}
       {/* Category Management Modal */}
       {showCategoryModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowCategoryModal(false)} role="dialog" aria-modal="true" aria-labelledby="category-modal-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-lg rounded-3xl p-6 m-4" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 id="category-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)]">Manage Categories</h2>
-              <button onClick={() => setShowCategoryModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowCategoryModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="category-modal-title"
+        >
+          <div
+            className="m-4 w-full max-w-lg rounded-3xl bg-[var(--color-surface-container-lowest)] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h2
+                id="category-modal-title"
+                className="text-xl font-extrabold text-[var(--color-on-surface)]"
+              >
+                Manage Categories
+              </h2>
+              <button
+                onClick={() => setShowCategoryModal(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <div className="space-y-3 mb-6">
+            <div className="mb-6 space-y-3">
               {vendorCategories.map((cat, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   {editingCategory?.oldName === cat ? (
                     <input
                       type="text"
                       value={editingCategory.newName}
-                      onChange={(e) => setEditingCategory({ ...editingCategory, newName: e.target.value })}
+                      onChange={(e) =>
+                        setEditingCategory({ ...editingCategory, newName: e.target.value })
+                      }
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && editingCategory.newName.trim()) {
-                          const updated = vendorCategories.map(c => c === cat ? editingCategory.newName.trim() : c);
+                          const updated = vendorCategories.map((c) =>
+                            c === cat ? editingCategory.newName.trim() : c
+                          );
                           saveCategories(updated);
                           setEditingCategory(null);
                         }
                         if (e.key === "Escape") setEditingCategory(null);
                       }}
-                      className="flex-1 px-3 py-2 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                      className="flex-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-3 py-2 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       autoFocus
                     />
                   ) : (
@@ -1519,21 +1961,31 @@ export default function PartnerMenuPage() {
                     <>
                       <button
                         onClick={() => setEditingCategory({ oldName: cat, newName: cat })}
-                        className="p-2 hover:bg-[var(--color-surface-container)] rounded-lg"
+                        className="rounded-lg p-2 hover:bg-[var(--color-surface-container)]"
                         aria-label={`Edit ${cat}`}
                       >
-                        <span className="material-symbols-outlined text-lg text-[var(--color-outline)]">edit</span>
+                        <span className="material-symbols-outlined text-lg text-[var(--color-outline)]">
+                          edit
+                        </span>
                       </button>
                       <button
                         onClick={async () => {
-                          if (await confirm({ title: "Delete Category", message: `Delete category "${cat}"? Items in this category won't be deleted.`, variant: "danger" })) {
-                            saveCategories(vendorCategories.filter(c => c !== cat));
+                          if (
+                            await confirm({
+                              title: "Delete Category",
+                              message: `Delete category "${cat}"? Items in this category won't be deleted.`,
+                              variant: "danger",
+                            })
+                          ) {
+                            saveCategories(vendorCategories.filter((c) => c !== cat));
                           }
                         }}
-                        className="p-2 hover:bg-red-50 rounded-lg"
+                        className="rounded-lg p-2 hover:bg-red-50"
                         aria-label={`Delete ${cat}`}
                       >
-                        <span className="material-symbols-outlined text-lg text-red-400">delete</span>
+                        <span className="material-symbols-outlined text-lg text-red-400">
+                          delete
+                        </span>
                       </button>
                     </>
                   )}
@@ -1552,7 +2004,7 @@ export default function PartnerMenuPage() {
                   }
                 }}
                 placeholder="New category name..."
-                className="flex-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:border-[var(--color-primary)]"
+                className="flex-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
               />
               <button
                 onClick={() => {
@@ -1561,7 +2013,7 @@ export default function PartnerMenuPage() {
                     setNewCategoryName("");
                   }
                 }}
-                className="px-5 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
+                className="text-on-primary rounded-xl bg-[var(--color-primary)] px-5 py-3 text-sm font-bold hover:bg-[var(--color-primary-dim)]"
               >
                 Add
               </button>
@@ -1572,22 +2024,37 @@ export default function PartnerMenuPage() {
 
       {/* QR Code Modal */}
       {showQRModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowQRModal(false)} role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
-          <div id="qr-modal" className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-8 m-4 text-center" onClick={e => e.stopPropagation()}>
-            <span className="material-symbols-outlined text-6xl text-[var(--color-on-surface)] mb-4">qr_code_scanner</span>
-            <h2 id="qr-modal-title" className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">Menu QR Code</h2>
-            <p className="text-sm text-[var(--color-outline)] mb-6">Scan to view {selectedVendor?.shop_name || "store"}'s menu</p>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowQRModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="qr-modal-title"
+        >
+          <div
+            id="qr-modal"
+            className="m-4 w-full max-w-sm rounded-3xl bg-[var(--color-surface-container-lowest)] p-8 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span className="material-symbols-outlined mb-4 text-6xl text-[var(--color-on-surface)]">
+              qr_code_scanner
+            </span>
+            <h2
+              id="qr-modal-title"
+              className="mb-2 text-xl font-extrabold text-[var(--color-on-surface)]"
+            >
+              Menu QR Code
+            </h2>
+            <p className="mb-6 text-sm text-[var(--color-outline)]">
+              Scan to view {selectedVendor?.shop_name || "store"}'s menu
+            </p>
             {selectedVendorId && qrDataUrl && (
-              <img
-                src={qrDataUrl}
-                alt="Menu QR Code"
-                className="w-48 h-48 mx-auto mb-6"
-              />
+              <img src={qrDataUrl} alt="Menu QR Code" className="mx-auto mb-6 h-48 w-48" />
             )}
             <div className="flex gap-3">
               <button
                 onClick={() => setShowQRModal(false)}
-                className="flex-1 py-3 border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold rounded-xl text-sm hover:bg-[var(--color-surface-subtle)]"
+                className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 text-sm font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
               >
                 Close
               </button>
@@ -1599,7 +2066,7 @@ export default function PartnerMenuPage() {
                   if (qr) link.href = qr.src;
                   link.click();
                 }}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl text-sm hover:bg-[var(--color-primary-dim)]"
+                className="text-on-primary flex-1 rounded-xl bg-[var(--color-primary)] py-3 text-sm font-bold hover:bg-[var(--color-primary-dim)]"
               >
                 Download
               </button>

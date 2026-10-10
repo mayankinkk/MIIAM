@@ -67,7 +67,11 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<NominatimSuggestion[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [pickedLocation, setPickedLocation] = useState<{ lat: number; lng: number; display: string } | null>(null);
+  const [pickedLocation, setPickedLocation] = useState<{
+    lat: number;
+    lng: number;
+    display: string;
+  } | null>(null);
   const [flat, setFlat] = useState("");
   const [landmark, setLandmark] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -123,14 +127,19 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
   // Nominatim search autocomplete
   useEffect(() => {
-    if (searchQuery.length < 3) { setSuggestions([]); return; }
+    if (searchQuery.length < 3) {
+      setSuggestions([]);
+      return;
+    }
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(async () => {
       setSearchLoading(true);
       try {
         const data = await searchLocation(searchQuery, 6);
         setSuggestions(data);
-      } catch { setSuggestions([]); }
+      } catch {
+        setSuggestions([]);
+      }
       setSearchLoading(false);
     }, 400);
   }, [searchQuery]);
@@ -143,9 +152,10 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       const L = await import("leaflet");
       if (!mounted || !mapRef.current) return;
 
-      const initialLoc = pickedLocation || { lat: 28.6139, lng: 77.2090 };
+      const initialLoc = pickedLocation || { lat: 28.6139, lng: 77.209 };
       const map = L.map(mapRef.current, { zoomControl: false }).setView(
-        [initialLoc.lat, initialLoc.lng], 16
+        [initialLoc.lat, initialLoc.lng],
+        16
       );
       L.control.zoom({ position: "bottomright" }).addTo(map);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
@@ -157,7 +167,9 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
         iconAnchor: [20, 40],
       });
 
-      const marker = L.marker([initialLoc.lat, initialLoc.lng], { icon, draggable: true }).addTo(map);
+      const marker = L.marker([initialLoc.lat, initialLoc.lng], { icon, draggable: true }).addTo(
+        map
+      );
       markerRef.current = marker;
       mapInstanceRef.current = map;
       requestAnimationFrame(() => map.invalidateSize());
@@ -170,13 +182,16 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
           const geo = await reverseGeocode(lat, lng);
           setPickedLocation({ lat, lng, display: geo.displayAddress });
         } catch {
-          setPickedLocation(prev => prev ? { ...prev, lat, lng } : null);
+          setPickedLocation((prev) => (prev ? { ...prev, lat, lng } : null));
         }
       });
     })();
     return () => {
       mounted = false;
-      if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
   }, []);
 
@@ -196,7 +211,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
     if (!pickedLocation) return;
     const parts = pickedLocation.display.split(",");
     const rawPostal = parts[parts.length - 2]?.trim() || "";
-      onSelect({
+    onSelect({
       label: addrType === "home" ? "Home" : addrType === "office" ? "Office" : "Other",
       street: [flat, parts[0]].filter(Boolean).join(", "),
       city: parts[1]?.trim() || "",
@@ -223,43 +238,53 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
       `}</style>
 
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-[200] bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Sheet */}
-      <div className="addr-sheet fixed bottom-0 left-0 right-0 z-[201] bg-[var(--color-surface-container-lowest)] rounded-t-3xl max-h-[92vh] flex flex-col shadow-2xl"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <div
+        className="addr-sheet fixed right-0 bottom-0 left-0 z-[201] flex max-h-[92vh] flex-col rounded-t-3xl bg-[var(--color-surface-container-lowest)] shadow-2xl"
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+      >
         {/* Handle + Header */}
-        <div className="flex-shrink-0 px-5 pt-4 pb-3 border-b border-[var(--color-border-subtle)]">
-          <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-4" />
+        <div className="flex-shrink-0 border-b border-[var(--color-border-subtle)] px-5 pt-4 pb-3">
+          <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-slate-300" />
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Choose Delivery Location</h2>
-            <button onClick={onClose} aria-label="Close" className="w-11 h-11 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">close</span>
+            <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+              Choose Delivery Location
+            </h2>
+            <button
+              onClick={onClose}
+              aria-label="Close"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+            >
+              <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">
+                close
+              </span>
             </button>
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-2 mt-4">
+          <div className="mt-4 flex gap-2">
             {savedAddresses.length > 0 && (
               <button
                 onClick={() => setTab("saved")}
-                className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${tab === "saved" ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
+                className={`rounded-full px-4 py-2 text-sm font-bold transition-all ${tab === "saved" ? "text-on-primary bg-[var(--color-primary)]" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
               >
                 📋 Saved
               </button>
             )}
             <button
-              onClick={() => { setTab("gps"); if (gpsStatus === "idle") detectGPS(); }}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${tab === "gps" ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
+              onClick={() => {
+                setTab("gps");
+                if (gpsStatus === "idle") detectGPS();
+              }}
+              className={`rounded-full px-4 py-2 text-sm font-bold transition-all ${tab === "gps" ? "text-on-primary bg-[var(--color-primary)]" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
             >
               📍 Use GPS
             </button>
             <button
               onClick={() => setTab("manual")}
-              className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${tab === "manual" ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
+              className={`rounded-full px-4 py-2 text-sm font-bold transition-all ${tab === "manual" ? "text-on-primary bg-[var(--color-primary)]" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
             >
               ✏️ Enter Manually
             </button>
@@ -268,31 +293,38 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
-
           {/* ── SAVED TAB ── */}
           {tab === "saved" && (
-            <div className="p-5 space-y-3">
+            <div className="space-y-3 p-5">
               {savedAddresses.map((addr, i) => (
                 <button
                   key={i}
                   onClick={() => onSelect(addr)}
-                  className="w-full text-left p-4 bg-[var(--color-surface-subtle)] rounded-2xl border-2 border-transparent hover:border-[var(--color-primary)] transition-all flex items-start gap-4"
+                  className="flex w-full items-start gap-4 rounded-2xl border-2 border-transparent bg-[var(--color-surface-subtle)] p-4 text-left transition-all hover:border-[var(--color-primary)]"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-[var(--color-surface-container)] flex items-center justify-center flex-shrink-0">
+                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[var(--color-surface-container)]">
                     <span className="material-symbols-outlined text-[var(--color-accent)]">
-                      {addr.type === "office" ? "business" : addr.type === "other" ? "place" : "home"}
+                      {addr.type === "office"
+                        ? "business"
+                        : addr.type === "other"
+                          ? "place"
+                          : "home"}
                     </span>
                   </div>
                   <div>
                     <p className="font-bold text-[var(--color-on-surface)]">{addr.label}</p>
-                    <p className="text-sm text-[var(--color-outline)] mt-0.5 line-clamp-2">{addr.street}, {addr.city}</p>
+                    <p className="mt-0.5 line-clamp-2 text-sm text-[var(--color-outline)]">
+                      {addr.street}, {addr.city}
+                    </p>
                   </div>
-                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] ml-auto mt-1">chevron_right</span>
+                  <span className="material-symbols-outlined mt-1 ml-auto text-[var(--color-outline-variant)]">
+                    chevron_right
+                  </span>
                 </button>
               ))}
               <button
                 onClick={() => setTab("gps")}
-                className="w-full p-4 rounded-2xl border-2 border-dashed border-[var(--color-primary)]/30 text-[var(--color-accent)] font-bold flex items-center justify-center gap-2 hover:bg-[var(--color-surface-container-lowest)]"
+                className="flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[var(--color-primary)]/30 p-4 font-bold text-[var(--color-accent)] hover:bg-[var(--color-surface-container-lowest)]"
               >
                 <span className="material-symbols-outlined">add_location</span>
                 Add New Address
@@ -306,35 +338,51 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
               {gpsStatus === "idle" && (
                 <button
                   onClick={detectGPS}
-                  className="w-full py-5 bg-primary text-on-primary rounded-xl font-extrabold flex flex-col items-center gap-3 shadow-md hover:brightness-95 transition-all"
+                  className="bg-primary text-on-primary flex w-full flex-col items-center gap-3 rounded-xl py-5 font-extrabold shadow-md transition-all hover:brightness-95"
                 >
                   <span className="material-symbols-outlined text-4xl">my_location</span>
                   <span>Detect My Location</span>
-                  <span className="text-xs opacity-80 font-normal">Quick & accurate GPS detection</span>
+                  <span className="text-xs font-normal opacity-80">
+                    Quick & accurate GPS detection
+                  </span>
                 </button>
               )}
 
               {gpsStatus === "detecting" && (
-                <div className="flex flex-col items-center py-12 gap-4">
-                  <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 rounded-full border-4 border-[var(--color-primary)]/20 animate-ping" />
-                    <div className="absolute inset-3 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[var(--color-accent)] text-3xl">location_searching</span>
+                <div className="flex flex-col items-center gap-4 py-12">
+                  <div className="relative h-20 w-20">
+                    <div className="absolute inset-0 animate-ping rounded-full border-4 border-[var(--color-primary)]/20" />
+                    <div className="absolute inset-3 flex items-center justify-center rounded-full bg-[var(--color-primary)]/10">
+                      <span className="material-symbols-outlined text-3xl text-[var(--color-accent)]">
+                        location_searching
+                      </span>
                     </div>
                   </div>
-                  <p className="font-bold text-[var(--color-on-surface)]">Detecting your location...</p>
-                  <p className="text-sm text-[var(--color-outline-variant)]">Please allow location access</p>
+                  <p className="font-bold text-[var(--color-on-surface)]">
+                    Detecting your location...
+                  </p>
+                  <p className="text-sm text-[var(--color-outline-variant)]">
+                    Please allow location access
+                  </p>
                 </div>
               )}
 
               {gpsStatus === "error" && (
-                <div className="text-center py-8">
-                  <span className="material-symbols-outlined text-4xl text-red-400">location_off</span>
-                  <p className="font-bold text-[var(--color-on-surface)] mt-3">{gpsError}</p>
-                  <button onClick={detectGPS} className="mt-4 px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold">
+                <div className="py-8 text-center">
+                  <span className="material-symbols-outlined text-4xl text-red-400">
+                    location_off
+                  </span>
+                  <p className="mt-3 font-bold text-[var(--color-on-surface)]">{gpsError}</p>
+                  <button
+                    onClick={detectGPS}
+                    className="text-on-primary mt-4 rounded-xl bg-[var(--color-primary)] px-6 py-3 font-bold"
+                  >
                     Try Again
                   </button>
-                  <button onClick={() => setTab("manual")} className="mt-3 w-full py-3 text-[var(--color-accent)] font-bold">
+                  <button
+                    onClick={() => setTab("manual")}
+                    className="mt-3 w-full py-3 font-bold text-[var(--color-accent)]"
+                  >
                     Enter Address Manually →
                   </button>
                 </div>
@@ -342,14 +390,27 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
               {gpsStatus === "detected" && gpsAddress && (
                 <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-5 bg-green-50 border-2 border-green-200 rounded-2xl">
-                    <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <span className="material-symbols-outlined text-green-600" style={{ fontVariationSettings: "'FILL' 1" }}>location_on</span>
+                  <div className="flex items-start gap-4 rounded-2xl border-2 border-green-200 bg-green-50 p-5">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100">
+                      <span
+                        className="material-symbols-outlined text-green-600"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        location_on
+                      </span>
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">📡 GPS Detected</p>
-                      <p className="font-bold text-[var(--color-on-surface)] text-sm leading-relaxed">{gpsAddress.street}</p>
-                      {gpsAddress.city && <p className="text-sm text-[var(--color-outline)] mt-1">{gpsAddress.city}, {gpsAddress.state}</p>}
+                      <p className="mb-1 text-xs font-semibold tracking-wide text-green-600 uppercase">
+                        📡 GPS Detected
+                      </p>
+                      <p className="text-sm leading-relaxed font-bold text-[var(--color-on-surface)]">
+                        {gpsAddress.street}
+                      </p>
+                      {gpsAddress.city && (
+                        <p className="mt-1 text-sm text-[var(--color-outline)]">
+                          {gpsAddress.city}, {gpsAddress.state}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -359,39 +420,39 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Flat / House No. / Building *"
                     aria-label="Flat / House number"
                     value={flat}
-                    onChange={e => setFlat(e.target.value.slice(0, 100))}
+                    onChange={(e) => setFlat(e.target.value.slice(0, 100))}
                     maxLength={100}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                   />
                   <input
                     type="text"
                     placeholder="Nearby Landmark (optional)"
                     aria-label="Nearby landmark"
                     value={landmark}
-                    onChange={e => setLandmark(e.target.value.slice(0, 100))}
+                    onChange={(e) => setLandmark(e.target.value.slice(0, 100))}
                     maxLength={100}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                   />
                   <input
                     type="tel"
                     placeholder="Phone Number *"
                     aria-label="Phone number"
                     value={phone}
-                    onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                     inputMode="numeric"
                     maxLength={10}
                   />
 
                   {/* Address type */}
                   <div>
-                    <p className="text-sm font-bold text-[var(--color-on-surface)] mb-2">Save as</p>
+                    <p className="mb-2 text-sm font-bold text-[var(--color-on-surface)]">Save as</p>
                     <div className="flex gap-3">
-                      {ADDRESS_TYPES.map(t => (
+                      {ADDRESS_TYPES.map((t) => (
                         <button
                           key={t.id}
                           onClick={() => setAddrType(t.id)}
-                          className={`flex-1 py-2.5 rounded-xl border-2 text-xs font-bold flex flex-col items-center gap-1 transition-all ${addrType === t.id ? "border-[var(--color-primary)] bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)]" : "border-[var(--color-border-subtle)] text-[var(--color-outline)]"}`}
+                          className={`flex flex-1 flex-col items-center gap-1 rounded-xl border-2 py-2.5 text-xs font-bold transition-all ${addrType === t.id ? "border-[var(--color-primary)] bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)]" : "border-[var(--color-border-subtle)] text-[var(--color-outline)]"}`}
                         >
                           <span className="material-symbols-outlined text-base">{t.icon}</span>
                           {t.label}
@@ -401,15 +462,28 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   </div>
 
                   <button
-                    onClick={() => onSelect({ ...gpsAddress!, flat, landmark, instructions, type: addrType, label: addrType.charAt(0).toUpperCase() + addrType.slice(1), phone })}
+                    onClick={() =>
+                      onSelect({
+                        ...gpsAddress!,
+                        flat,
+                        landmark,
+                        instructions,
+                        type: addrType,
+                        label: addrType.charAt(0).toUpperCase() + addrType.slice(1),
+                        phone,
+                      })
+                    }
                     disabled={!flat.trim() || phone.length !== 10}
-                    className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-xl disabled:opacity-50 shadow-md hover:brightness-95 transition-all flex items-center justify-center gap-2"
+                    className="bg-primary text-on-primary flex w-full items-center justify-center gap-2 rounded-xl py-4 font-extrabold shadow-md transition-all hover:brightness-95 disabled:opacity-50"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
                     Confirm This Location
                   </button>
 
-                  <button onClick={detectGPS} className="w-full py-3 text-[var(--color-outline)] text-sm font-bold flex items-center justify-center gap-1">
+                  <button
+                    onClick={detectGPS}
+                    className="flex w-full items-center justify-center gap-1 py-3 text-sm font-bold text-[var(--color-outline)]"
+                  >
                     <span className="material-symbols-outlined text-sm">refresh</span>
                     Re-detect Location
                   </button>
@@ -420,36 +494,44 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
 
           {/* ── MANUAL TAB ── */}
           {tab === "manual" && (
-            <div className="p-5 space-y-4">
+            <div className="space-y-4 p-5">
               {/* Search */}
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[var(--color-outline-variant)]">search</span>
+                <span className="material-symbols-outlined absolute top-1/2 left-4 -translate-y-1/2 text-[var(--color-outline-variant)]">
+                  search
+                </span>
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search area, street, landmark..."
                   aria-label="Search area, street, landmark"
-                  className="w-full pl-12 pr-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] py-3.5 pr-4 pl-12 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                 />
                 {searchLoading && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                  <div className="absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 animate-spin rounded-full border-2 border-[var(--color-primary)] border-t-transparent" />
                 )}
               </div>
 
               {/* Suggestions */}
               {suggestions.length > 0 && (
-                <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl overflow-hidden shadow-lg -mt-2">
+                <div className="-mt-2 overflow-hidden rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-lg">
                   {suggestions.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => pickSuggestion(s)}
-                      className="w-full px-4 py-3 text-left flex items-start gap-3 hover:bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)] last:border-0"
+                      className="flex w-full items-start gap-3 border-b border-[var(--color-border-subtle)] px-4 py-3 text-left last:border-0 hover:bg-[var(--color-surface-subtle)]"
                     >
-                      <span className="material-symbols-outlined text-[var(--color-accent)] text-sm mt-0.5">location_on</span>
+                      <span className="material-symbols-outlined mt-0.5 text-sm text-[var(--color-accent)]">
+                        location_on
+                      </span>
                       <div>
-                        <p className="text-sm font-semibold text-[var(--color-on-surface)] line-clamp-1">{s.display_name.split(",")[0]}</p>
-                        <p className="text-xs text-[var(--color-outline-variant)] line-clamp-1">{s.display_name.split(",").slice(1).join(",").trim()}</p>
+                        <p className="line-clamp-1 text-sm font-semibold text-[var(--color-on-surface)]">
+                          {s.display_name.split(",")[0]}
+                        </p>
+                        <p className="line-clamp-1 text-xs text-[var(--color-outline-variant)]">
+                          {s.display_name.split(",").slice(1).join(",").trim()}
+                        </p>
                       </div>
                     </button>
                   ))}
@@ -459,36 +541,41 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
               {/* Map preview when location picked */}
               {pickedLocation && (
                 <div className="space-y-3">
-                  <div className="rounded-2xl overflow-hidden border-2 border-[var(--color-primary)]/20" style={{ height: 200 }}>
-                    <div ref={mapRef} className="w-full h-full" style={{ position: "relative" }} />
+                  <div
+                    className="overflow-hidden rounded-2xl border-2 border-[var(--color-primary)]/20"
+                    style={{ height: 200 }}
+                  >
+                    <div ref={mapRef} className="h-full w-full" style={{ position: "relative" }} />
                   </div>
-                  <p className="text-xs text-[var(--color-outline)] text-center">Drag the pin to fine-tune the location</p>
+                  <p className="text-center text-xs text-[var(--color-outline)]">
+                    Drag the pin to fine-tune the location
+                  </p>
 
                   <input
                     type="text"
                     placeholder="Flat / House No. / Building *"
                     aria-label="Flat / House number"
                     value={flat}
-                    onChange={e => setFlat(e.target.value.slice(0, 100))}
+                    onChange={(e) => setFlat(e.target.value.slice(0, 100))}
                     maxLength={100}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                   />
                   <input
                     type="text"
                     placeholder="Nearby Landmark (optional)"
                     aria-label="Nearby landmark"
                     value={landmark}
-                    onChange={e => setLandmark(e.target.value.slice(0, 100))}
+                    onChange={(e) => setLandmark(e.target.value.slice(0, 100))}
                     maxLength={100}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                   />
                   <input
                     type="tel"
                     placeholder="Phone Number *"
                     aria-label="Phone number"
                     value={phone}
-                    onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm"
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                    className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                     inputMode="numeric"
                     maxLength={10}
                   />
@@ -496,19 +583,19 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                     placeholder="Delivery instructions (e.g. Ring bell, 2nd floor)"
                     aria-label="Delivery instructions"
                     value={instructions}
-                    onChange={e => setInstructions(e.target.value.slice(0, 200))}
+                    onChange={(e) => setInstructions(e.target.value.slice(0, 200))}
                     maxLength={200}
-                    className="w-full px-4 py-3.5 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 text-sm resize-none h-20"
+                    className="h-20 w-full resize-none rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3.5 text-sm focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/15 focus:outline-none"
                   />
 
                   <div>
-                    <p className="text-sm font-bold text-[var(--color-on-surface)] mb-2">Save as</p>
+                    <p className="mb-2 text-sm font-bold text-[var(--color-on-surface)]">Save as</p>
                     <div className="flex gap-3">
-                      {ADDRESS_TYPES.map(t => (
+                      {ADDRESS_TYPES.map((t) => (
                         <button
                           key={t.id}
                           onClick={() => setAddrType(t.id)}
-                          className={`flex-1 py-2.5 rounded-xl border-2 text-xs font-bold flex flex-col items-center gap-1 transition-all ${addrType === t.id ? "border-[var(--color-primary)] bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)]" : "border-[var(--color-border-subtle)] text-[var(--color-outline)]"}`}
+                          className={`flex flex-1 flex-col items-center gap-1 rounded-xl border-2 py-2.5 text-xs font-bold transition-all ${addrType === t.id ? "border-[var(--color-primary)] bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)]" : "border-[var(--color-border-subtle)] text-[var(--color-outline)]"}`}
                         >
                           <span className="material-symbols-outlined text-base">{t.icon}</span>
                           {t.label}
@@ -520,7 +607,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
                   <button
                     onClick={confirmManual}
                     disabled={!flat.trim() || phone.length !== 10}
-                    className="w-full py-4 bg-primary text-on-primary font-extrabold rounded-xl disabled:opacity-50 shadow-md hover:brightness-95 transition-all flex items-center justify-center gap-2"
+                    className="bg-primary text-on-primary flex w-full items-center justify-center gap-2 rounded-xl py-4 font-extrabold shadow-md transition-all hover:brightness-95 disabled:opacity-50"
                   >
                     <span className="material-symbols-outlined">check_circle</span>
                     Confirm Address
@@ -529,7 +616,7 @@ export default function AddressPickerSheet({ onSelect, onClose, savedAddresses =
               )}
 
               {!pickedLocation && suggestions.length === 0 && searchQuery.length < 3 && (
-                <div className="text-center py-8 text-[var(--color-outline-variant)]">
+                <div className="py-8 text-center text-[var(--color-outline-variant)]">
                   <span className="material-symbols-outlined text-4xl">search</span>
                   <p className="mt-2 text-sm">Type at least 3 characters to search</p>
                 </div>

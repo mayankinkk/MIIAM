@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { calculateOrderTotals, normalizePhone, isValidPhone, buildScheduledIso, isUuid } from "./checkout-utils";
+import {
+  calculateOrderTotals,
+  normalizePhone,
+  isValidPhone,
+  buildScheduledIso,
+  isUuid,
+} from "./checkout-utils";
 
 describe("normalizePhone", () => {
   it("converts a 10-digit Indian mobile to E.164", () => {

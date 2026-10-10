@@ -36,7 +36,9 @@ export default function WalletPage() {
   async function loadWallet() {
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data: wallet } = await supabase
@@ -68,7 +70,9 @@ export default function WalletPage() {
     if (!giftCode.trim() || redeeming) return;
     setRedeeming(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       // Amount of 0 means "redeem full balance into wallet"
@@ -89,29 +93,40 @@ export default function WalletPage() {
 
   return (
     <PullToRefresh onRefresh={loadWallet}>
-      <div className="min-h-screen bg-surface pb-24">
-        <header className="bg-surface border-b border-outline-variant/10 px-5 pt-5 pb-3">
+      <div className="bg-surface min-h-screen pb-24">
+        <header className="bg-surface border-outline-variant/10 border-b px-5 pt-5 pb-3">
           <div className="flex items-center gap-3">
-            <Link href="/app/profile" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+            <Link
+              href="/app/profile"
+              className="bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+            >
               <span className="material-symbols-outlined">arrow_back</span>
             </Link>
-            <h1 className="text-xl font-black text-on-surface">Wallet</h1>
+            <h1 className="text-on-surface text-xl font-black">Wallet</h1>
           </div>
         </header>
 
-        <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Profile", href: "/app/profile" }, { label: "Wallet" }]} />
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/app/home" },
+            { label: "Profile", href: "/app/profile" },
+            { label: "Wallet" },
+          ]}
+        />
 
-        <main className="px-5 py-6 max-w-2xl mx-auto space-y-6">
+        <main className="mx-auto max-w-2xl space-y-6 px-5 py-6">
           {/* Balance Card */}
-          <div className="bg-gradient-to-br from-primary to-primary-dim rounded-3xl p-6 text-on-primary shadow-lg">
-            <p className="text-on-primary/70 text-xs font-bold uppercase tracking-wider">Available Balance</p>
-            <p className="text-4xl font-black mt-2">₹{balance.toFixed(2)}</p>
-            <p className="text-on-primary/60 text-xs mt-2">Use your wallet balance at checkout</p>
+          <div className="from-primary to-primary-dim text-on-primary rounded-3xl bg-gradient-to-br p-6 shadow-lg">
+            <p className="text-on-primary/70 text-xs font-bold tracking-wider uppercase">
+              Available Balance
+            </p>
+            <p className="mt-2 text-4xl font-black">₹{balance.toFixed(2)}</p>
+            <p className="text-on-primary/60 mt-2 text-xs">Use your wallet balance at checkout</p>
           </div>
 
           {/* Gift Card */}
-          <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
-            <h2 className="font-bold text-on-surface mb-3 flex items-center gap-2">
+          <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5">
+            <h2 className="text-on-surface mb-3 flex items-center gap-2 font-bold">
               <span className="material-symbols-outlined text-accent">card_giftcard</span>
               Redeem Gift Card
             </h2>
@@ -121,12 +136,12 @@ export default function WalletPage() {
                 value={giftCode}
                 onChange={(e) => setGiftCode(e.target.value.toUpperCase())}
                 placeholder="Enter gift card code"
-                className="flex-1 px-4 py-3 bg-surface-container rounded-xl border border-outline-variant/20 focus:border-primary outline-none text-sm font-mono tracking-wider"
+                className="bg-surface-container border-outline-variant/20 focus:border-primary flex-1 rounded-xl border px-4 py-3 font-mono text-sm tracking-wider outline-none"
               />
               <button
                 onClick={redeemGiftCardCode}
                 disabled={!giftCode.trim() || redeeming}
-                className="px-5 py-3 bg-primary text-on-primary font-bold rounded-xl text-sm disabled:opacity-50 active:scale-95 transition-all"
+                className="bg-primary text-on-primary rounded-xl px-5 py-3 text-sm font-bold transition-all active:scale-95 disabled:opacity-50"
               >
                 {redeeming ? "..." : "Redeem"}
               </button>
@@ -136,23 +151,36 @@ export default function WalletPage() {
           {/* Gift Cards */}
           {giftCards.length > 0 && (
             <div>
-              <h2 className="font-bold text-on-surface mb-3">Your Gift Cards</h2>
+              <h2 className="text-on-surface mb-3 font-bold">Your Gift Cards</h2>
               <div className="space-y-2">
                 {giftCards.map((card) => (
-                  <div key={card.id} className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-3 border border-outline-variant/5">
-                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center">
-                      <span className="material-symbols-outlined text-amber-600">card_giftcard</span>
+                  <div
+                    key={card.id}
+                    className="bg-surface-container-lowest border-outline-variant/5 flex items-center gap-3 rounded-xl border p-4"
+                  >
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
+                      <span className="material-symbols-outlined text-amber-600">
+                        card_giftcard
+                      </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-on-surface font-mono tracking-wider">{card.code}</p>
-                      <p className="text-xs text-on-surface-variant">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-on-surface font-mono text-sm font-bold tracking-wider">
+                        {card.code}
+                      </p>
+                      <p className="text-on-surface-variant text-xs">
                         {card.status === "active" ? `Balance ₹${card.balance}` : card.status}
-                        {card.expires_at && new Date(card.expires_at) < new Date() ? " (expired)" : ""}
+                        {card.expires_at && new Date(card.expires_at) < new Date()
+                          ? " (expired)"
+                          : ""}
                       </p>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      card.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
-                    }`}>
+                    <span
+                      className={`rounded-full px-2 py-1 text-xs font-bold ${
+                        card.status === "active"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-gray-100 text-gray-500"
+                      }`}
+                    >
                       {card.status}
                     </span>
                   </div>
@@ -163,39 +191,59 @@ export default function WalletPage() {
 
           {/* Transactions */}
           <div>
-            <h2 className="font-bold text-on-surface mb-3">Transaction History</h2>
+            <h2 className="text-on-surface mb-3 font-bold">Transaction History</h2>
             {loading ? (
               <div className="space-y-3">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="bg-surface-container-lowest rounded-xl p-4 animate-pulse">
-                    <div className="h-4 bg-surface-container rounded w-3/4 mb-2" />
-                    <div className="h-3 bg-surface-container rounded w-1/2" />
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-surface-container-lowest animate-pulse rounded-xl p-4">
+                    <div className="bg-surface-container mb-2 h-4 w-3/4 rounded" />
+                    <div className="bg-surface-container h-3 w-1/2 rounded" />
                   </div>
                 ))}
               </div>
             ) : transactions.length === 0 ? (
               <div className="bg-surface-container-lowest rounded-2xl p-8 text-center">
-                <span className="material-symbols-outlined text-4xl text-on-surface-variant/30">receipt_long</span>
+                <span className="material-symbols-outlined text-on-surface-variant/30 text-4xl">
+                  receipt_long
+                </span>
                 <p className="text-on-surface-variant mt-2 text-sm">No transactions yet</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {transactions.map((txn) => (
-                  <div key={txn.id} className="bg-surface-container-lowest rounded-xl p-4 flex items-center gap-3 border border-outline-variant/5">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      txn.type === "credit" ? "bg-green-100" : "bg-red-100"
-                    }`}>
-                      <span className={`material-symbols-outlined text-lg ${
-                        txn.type === "credit" ? "text-green-600" : "text-red-600"
-                      }`}>
+                  <div
+                    key={txn.id}
+                    className="bg-surface-container-lowest border-outline-variant/5 flex items-center gap-3 rounded-xl border p-4"
+                  >
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                        txn.type === "credit" ? "bg-green-100" : "bg-red-100"
+                      }`}
+                    >
+                      <span
+                        className={`material-symbols-outlined text-lg ${
+                          txn.type === "credit" ? "text-green-600" : "text-red-600"
+                        }`}
+                      >
                         {txn.type === "credit" ? "add" : "remove"}
                       </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-sm text-on-surface truncate">{txn.description}</p>
-                      <p className="text-xs text-on-surface-variant">{new Date(txn.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-on-surface truncate text-sm font-bold">
+                        {txn.description}
+                      </p>
+                      <p className="text-on-surface-variant text-xs">
+                        {new Date(txn.created_at).toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
                     </div>
-                    <span className={`font-bold text-sm ${txn.type === "credit" ? "text-green-600" : "text-red-600"}`}>
+                    <span
+                      className={`text-sm font-bold ${txn.type === "credit" ? "text-green-600" : "text-red-600"}`}
+                    >
                       {txn.type === "credit" ? "+" : "-"}₹{txn.amount.toFixed(2)}
                     </span>
                   </div>

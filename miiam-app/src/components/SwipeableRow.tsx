@@ -40,35 +40,41 @@ export default function SwipeableRow({
     setSwiping(true);
   }, []);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!swiping) return;
-    const deltaX = e.touches[0].clientX - startX.current;
-    const deltaY = e.touches[0].clientY - startY.current;
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      setOffsetX(Math.max(-200, Math.min(200, deltaX)));
-    }
-  }, [swiping]);
-
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
-    const deltaX = e.changedTouches[0].clientX - startX.current;
-    const deltaY = e.changedTouches[0].clientY - startY.current;
-
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
-      if (deltaX < -SWIPE_THRESHOLD && onSwipeLeft) {
-        onSwipeLeft();
-      } else if (deltaX > SWIPE_THRESHOLD && onSwipeRight) {
-        onSwipeRight();
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!swiping) return;
+      const deltaX = e.touches[0].clientX - startX.current;
+      const deltaY = e.touches[0].clientY - startY.current;
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        setOffsetX(Math.max(-200, Math.min(200, deltaX)));
       }
-    }
-    reset();
-  }, [onSwipeLeft, onSwipeRight, reset]);
+    },
+    [swiping]
+  );
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const deltaX = e.changedTouches[0].clientX - startX.current;
+      const deltaY = e.changedTouches[0].clientY - startY.current;
+
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > SWIPE_THRESHOLD) {
+        if (deltaX < -SWIPE_THRESHOLD && onSwipeLeft) {
+          onSwipeLeft();
+        } else if (deltaX > SWIPE_THRESHOLD && onSwipeRight) {
+          onSwipeRight();
+        }
+      }
+      reset();
+    },
+    [onSwipeLeft, onSwipeRight, reset]
+  );
 
   return (
     <div className="relative overflow-hidden rounded-xl" ref={containerRef}>
       {/* Left action background */}
       {onSwipeRight && (
         <div
-          className="absolute inset-y-0 left-0 flex items-center justify-end pr-4 bg-secondary text-white font-bold text-sm gap-2"
+          className="bg-secondary absolute inset-y-0 left-0 flex items-center justify-end gap-2 pr-4 text-sm font-bold text-white"
           style={{ width: Math.max(0, offsetX) }}
         >
           <span className="material-symbols-outlined">{onSwipeRightIcon}</span>
@@ -78,7 +84,7 @@ export default function SwipeableRow({
       {/* Right action background */}
       {onSwipeLeft && (
         <div
-          className="absolute inset-y-0 right-0 flex items-center justify-start pl-4 bg-error text-white font-bold text-sm gap-2"
+          className="bg-error absolute inset-y-0 right-0 flex items-center justify-start gap-2 pl-4 text-sm font-bold text-white"
           style={{ width: Math.max(0, -offsetX) }}
         >
           <span className={-offsetX < 60 ? "hidden" : ""}>{onSwipeLeftLabel}</span>
@@ -87,7 +93,7 @@ export default function SwipeableRow({
       )}
       {/* Content */}
       <div
-        className="relative bg-[var(--color-surface-container-lowest)] rounded-xl transition-transform"
+        className="relative rounded-xl bg-[var(--color-surface-container-lowest)] transition-transform"
         style={{
           transform: swiping ? `translateX(${offsetX}px)` : undefined,
           transition: swiping ? "none" : "transform 0.3s ease",

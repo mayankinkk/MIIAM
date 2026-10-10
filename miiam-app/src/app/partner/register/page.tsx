@@ -67,15 +67,16 @@ export default function VendorRegister() {
 
   // Check auth on mount — redirect to login immediately if not signed in
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
-      if (!user) {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
-        router.push("/auth/login?redirect=/partner/register");
-      } else {
-        setAuthChecked(true);
-      }
-    });
-   
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
+        if (!user) {
+          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+          router.push("/auth/login?redirect=/partner/register");
+        } else {
+          setAuthChecked(true);
+        }
+      });
   }, []);
 
   useEffect(() => {
@@ -83,11 +84,12 @@ export default function VendorRegister() {
   }, [form]);
 
   // Show nothing while auth check is in progress
-  if (!authChecked && !submitted) return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="w-8 h-8 border-3 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
-    </div>
-  );
+  if (!authChecked && !submitted)
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-3 border-[var(--color-primary)] border-t-transparent" />
+      </div>
+    );
 
   const steps = [
     { num: 1, label: "Owner Details" },
@@ -100,7 +102,9 @@ export default function VendorRegister() {
     setSubmitting(true);
     setSubmitError("");
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(form));
         router.push("/auth/login?redirect=/partner/register");
@@ -140,56 +144,74 @@ export default function VendorRegister() {
       sessionStorage.removeItem(STORAGE_KEY);
       setSubmitted(true);
     } catch (err: unknown) {
-      setSubmitError((err instanceof Error ? err.message : String(err)) || "Submission failed. Please try again.");
+      setSubmitError(
+        (err instanceof Error ? err.message : String(err)) || "Submission failed. Please try again."
+      );
     } finally {
       setSubmitting(false);
     }
   };
 
-  const update = (field: string, value: string | number | boolean) => setForm({ ...form, [field]: value });
+  const update = (field: string, value: string | number | boolean) =>
+    setForm({ ...form, [field]: value });
 
-  const inputClass = "w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]";
+  const inputClass =
+    "w-full mt-1 px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]";
   const labelClass = "text-sm font-semibold text-[var(--color-on-surface)]";
 
   // ── Success screen ─────────────────────────────────────────────────────────
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white dark:to-[var(--color-surface)] flex items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[var(--color-primary)]/5 to-white p-4 dark:to-[var(--color-surface)]">
         <div className="w-full max-w-lg text-center">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-10 shadow-lg border border-[var(--color-border-subtle)] space-y-6">
+          <div className="space-y-6 rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-10 shadow-lg">
             {/* Animated checkmark */}
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto dark:bg-green-900/30">
-              <span className="material-symbols-outlined text-green-600 text-5xl dark:text-green-400">check_circle</span>
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+              <span className="material-symbols-outlined text-5xl text-green-600 dark:text-green-400">
+                check_circle
+              </span>
             </div>
             <div className="space-y-2">
-              <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
+              <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
                 Application Submitted!
               </h1>
-              <p className="text-[var(--color-outline)] text-base leading-relaxed">
+              <p className="text-base leading-relaxed text-[var(--color-outline)]">
                 Thanks for registering,{" "}
-                <span className="font-semibold text-[var(--color-on-surface)]">{form.owner_name || "partner"}</span>!<br />
-                Kindly wait — your application is currently under review.<br />
+                <span className="font-semibold text-[var(--color-on-surface)]">
+                  {form.owner_name || "partner"}
+                </span>
+                !<br />
+                Kindly wait — your application is currently under review.
+                <br />
                 Our team will verify your details and get back to you shortly.
               </p>
             </div>
-            <div className="bg-[var(--color-surface-subtle)] rounded-2xl p-4 text-left space-y-2">
-              <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest mb-3">Submission Summary</p>
+            <div className="space-y-2 rounded-2xl bg-[var(--color-surface-subtle)] p-4 text-left">
+              <p className="mb-3 text-xs font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                Submission Summary
+              </p>
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--color-outline)]">Store</span>
-                <span className="font-bold text-[var(--color-on-surface)]">{form.shop_name || "-"}</span>
+                <span className="font-bold text-[var(--color-on-surface)]">
+                  {form.shop_name || "-"}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--color-outline)]">Type</span>
-                <span className="font-bold text-[var(--color-on-surface)] capitalize">{form.type}</span>
+                <span className="font-bold text-[var(--color-on-surface)] capitalize">
+                  {form.type}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--color-outline)]">Status</span>
-                <span className="font-bold text-yellow-600 dark:text-yellow-400">⏳ Pending Review</span>
+                <span className="font-bold text-yellow-600 dark:text-yellow-400">
+                  ⏳ Pending Review
+                </span>
               </div>
             </div>
             <button
               onClick={() => router.push("/")}
-              className="w-full py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors"
+              className="text-on-primary w-full rounded-xl bg-[var(--color-primary)] py-3 font-bold transition-colors hover:bg-[var(--color-primary-dim)]"
             >
               Go to Home
             </button>
@@ -200,96 +222,212 @@ export default function VendorRegister() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[var(--color-primary)]/5 to-white dark:to-[var(--color-surface)] flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[var(--color-primary)]/5 to-white p-4 dark:to-[var(--color-surface)]">
       <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold text-[var(--color-on-surface)] tracking-tight">
+        <div className="mb-8 text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
             Partner with <span className="text-[var(--color-primary)]">MIIAM</span>
           </h1>
-          <p className="text-[var(--color-outline)] mt-2">List your business and reach thousands of customers</p>
+          <p className="mt-2 text-[var(--color-outline)]">
+            List your business and reach thousands of customers
+          </p>
         </div>
 
         {/* Steps Indicator */}
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="mb-8 flex items-center justify-center gap-2">
           {steps.map((s, i) => (
             <div key={s.num} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                step > s.num ? "bg-green-500 text-white" :
-                step === s.num ? "bg-[var(--color-primary)] text-on-primary" :
-                "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
-              }`}>
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
+                  step > s.num
+                    ? "bg-green-500 text-white"
+                    : step === s.num
+                      ? "text-on-primary bg-[var(--color-primary)]"
+                      : "bg-[var(--color-surface-container-high)] text-[var(--color-outline)]"
+                }`}
+              >
                 {step > s.num ? "✓" : s.num}
               </div>
-              <span className={`text-sm font-medium ${step === s.num ? "text-[var(--color-on-surface)]" : "text-[var(--color-outline-variant)]"}`}>
+              <span
+                className={`text-sm font-medium ${step === s.num ? "text-[var(--color-on-surface)]" : "text-[var(--color-outline-variant)]"}`}
+              >
                 {s.label}
               </span>
-              {i < steps.length - 1 && <div className={`w-12 h-0.5 ${step > s.num ? "bg-[var(--color-primary)]" : "bg-[var(--color-surface-container-high)]"}`} />}
+              {i < steps.length - 1 && (
+                <div
+                  className={`h-0.5 w-12 ${step > s.num ? "bg-[var(--color-primary)]" : "bg-[var(--color-surface-container-high)]"}`}
+                />
+              )}
             </div>
           ))}
         </div>
 
         {/* Form Card */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-8 shadow-lg border border-[var(--color-border-subtle)]">
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-lg">
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Owner Details</h2>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+                Owner Details
+              </h2>
               <div>
-                <label htmlFor="owner_name" className={labelClass}>Full Name *</label>
-                <input id="owner_name" type="text" value={form.owner_name} onChange={(e) => update("owner_name", e.target.value)} placeholder="Your full name" className={inputClass} />
+                <label htmlFor="owner_name" className={labelClass}>
+                  Full Name *
+                </label>
+                <input
+                  id="owner_name"
+                  type="text"
+                  value={form.owner_name}
+                  onChange={(e) => update("owner_name", e.target.value)}
+                  placeholder="Your full name"
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label htmlFor="phone" className={labelClass}>Phone Number *</label>
-                <input id="phone" type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} placeholder="+91 99578 73472" className={inputClass} />
+                <label htmlFor="phone" className={labelClass}>
+                  Phone Number *
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => update("phone", e.target.value)}
+                  placeholder="+91 99578 73472"
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label htmlFor="email" className={labelClass}>Email</label>
-                <input id="email" type="email" value={form.email} onChange={(e) => update("email", e.target.value)} placeholder="Will use your account email if left blank" className={inputClass} />
+                <label htmlFor="email" className={labelClass}>
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => update("email", e.target.value)}
+                  placeholder="Will use your account email if left blank"
+                  className={inputClass}
+                />
               </div>
             </div>
           )}
 
           {step === 2 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Shop Details</h2>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+                Shop Details
+              </h2>
               <div>
-                <label htmlFor="shop_name" className={labelClass}>Shop Name *</label>
-                <input id="shop_name" type="text" value={form.shop_name} onChange={(e) => update("shop_name", e.target.value)} placeholder="e.g., The Burger Alchemist" className={inputClass} />
+                <label htmlFor="shop_name" className={labelClass}>
+                  Shop Name *
+                </label>
+                <input
+                  id="shop_name"
+                  type="text"
+                  value={form.shop_name}
+                  onChange={(e) => update("shop_name", e.target.value)}
+                  placeholder="e.g., The Burger Alchemist"
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label htmlFor="type" className={labelClass}>Store Type *</label>
-                <select id="type" value={form.type} onChange={(e) => update("type", e.target.value)} className={inputClass}>
+                <label htmlFor="type" className={labelClass}>
+                  Store Type *
+                </label>
+                <select
+                  id="type"
+                  value={form.type}
+                  onChange={(e) => update("type", e.target.value)}
+                  className={inputClass}
+                >
                   <option value="food">Food & Restaurant</option>
                   <option value="flowers">Flowers & Gifts</option>
                 </select>
               </div>
               <div>
-                <label htmlFor="cuisine" className={labelClass}>Cuisine / Category</label>
-                <input id="cuisine" type="text" value={form.cuisine} onChange={(e) => update("cuisine", e.target.value)} placeholder="e.g., Indian, Chinese, Italian" className={inputClass} />
+                <label htmlFor="cuisine" className={labelClass}>
+                  Cuisine / Category
+                </label>
+                <input
+                  id="cuisine"
+                  type="text"
+                  value={form.cuisine}
+                  onChange={(e) => update("cuisine", e.target.value)}
+                  placeholder="e.g., Indian, Chinese, Italian"
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label htmlFor="description" className={labelClass}>Description</label>
-                <textarea id="description" value={form.description} onChange={(e) => update("description", e.target.value)} placeholder="Tell customers about your store..." rows={3} className={`${inputClass} resize-none`} />
+                <label htmlFor="description" className={labelClass}>
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  value={form.description}
+                  onChange={(e) => update("description", e.target.value)}
+                  placeholder="Tell customers about your store..."
+                  rows={3}
+                  className={`${inputClass} resize-none`}
+                />
               </div>
               <div>
-                <label htmlFor="address" className={labelClass}>Address *</label>
-                <input id="address" type="text" value={form.address} onChange={(e) => update("address", e.target.value)} placeholder="Street address" className={inputClass} />
+                <label htmlFor="address" className={labelClass}>
+                  Address *
+                </label>
+                <input
+                  id="address"
+                  type="text"
+                  value={form.address}
+                  onChange={(e) => update("address", e.target.value)}
+                  placeholder="Street address"
+                  className={inputClass}
+                />
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="city" className={labelClass}>City *</label>
-                  <input id="city" type="text" value={form.city} onChange={(e) => update("city", e.target.value)} className={inputClass} />
+                  <label htmlFor="city" className={labelClass}>
+                    City *
+                  </label>
+                  <input
+                    id="city"
+                    type="text"
+                    value={form.city}
+                    onChange={(e) => update("city", e.target.value)}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
-                  <label htmlFor="state" className={labelClass}>State</label>
-                  <input id="state" type="text" value={form.state} onChange={(e) => update("state", e.target.value)} className={inputClass} />
+                  <label htmlFor="state" className={labelClass}>
+                    State
+                  </label>
+                  <input
+                    id="state"
+                    type="text"
+                    value={form.state}
+                    onChange={(e) => update("state", e.target.value)}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
-                  <label htmlFor="pincode" className={labelClass}>Pincode</label>
-                  <input id="pincode" type="text" value={form.pincode} onChange={(e) => update("pincode", e.target.value)} className={inputClass} />
+                  <label htmlFor="pincode" className={labelClass}>
+                    Pincode
+                  </label>
+                  <input
+                    id="pincode"
+                    type="text"
+                    value={form.pincode}
+                    onChange={(e) => update("pincode", e.target.value)}
+                    className={inputClass}
+                  />
                 </div>
               </div>
-              <label htmlFor="is_pure_veg" className="flex items-center gap-3 cursor-pointer">
-                <input id="is_pure_veg" type="checkbox" checked={form.is_pure_veg} onChange={(e) => update("is_pure_veg", e.target.checked)} className="w-5 h-5 accent-[var(--color-primary)]" />
+              <label htmlFor="is_pure_veg" className="flex cursor-pointer items-center gap-3">
+                <input
+                  id="is_pure_veg"
+                  type="checkbox"
+                  checked={form.is_pure_veg}
+                  onChange={(e) => update("is_pure_veg", e.target.checked)}
+                  className="h-5 w-5 accent-[var(--color-primary)]"
+                />
                 <span className={labelClass}>Pure Vegetarian Store</span>
               </label>
             </div>
@@ -297,57 +435,152 @@ export default function VendorRegister() {
 
           {step === 3 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Business Documents</h2>
-              <p className="text-sm text-[var(--color-outline)]">Provide your business documents for verification.</p>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+                Business Documents
+              </h2>
+              <p className="text-sm text-[var(--color-outline)]">
+                Provide your business documents for verification.
+              </p>
               <div>
-                <label htmlFor="gst_number" className={labelClass}>GST Number</label>
-                <input id="gst_number" type="text" value={form.gst_number} onChange={(e) => update("gst_number", e.target.value)} placeholder="22AAAAA0000A1Z5" className={inputClass} />
+                <label htmlFor="gst_number" className={labelClass}>
+                  GST Number
+                </label>
+                <input
+                  id="gst_number"
+                  type="text"
+                  value={form.gst_number}
+                  onChange={(e) => update("gst_number", e.target.value)}
+                  placeholder="22AAAAA0000A1Z5"
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label htmlFor="fssai_number" className={labelClass}>FSSAI Number</label>
-                <input id="fssai_number" type="text" value={form.fssai_number} onChange={(e) => update("fssai_number", e.target.value)} placeholder="12345678901234" className={inputClass} />
+                <label htmlFor="fssai_number" className={labelClass}>
+                  FSSAI Number
+                </label>
+                <input
+                  id="fssai_number"
+                  type="text"
+                  value={form.fssai_number}
+                  onChange={(e) => update("fssai_number", e.target.value)}
+                  placeholder="12345678901234"
+                  className={inputClass}
+                />
               </div>
               <div>
-                <label htmlFor="pan_number" className={labelClass}>PAN Number</label>
-                <input id="pan_number" type="text" value={form.pan_number} onChange={(e) => update("pan_number", e.target.value)} placeholder="ABCDE1234F" className={inputClass} />
+                <label htmlFor="pan_number" className={labelClass}>
+                  PAN Number
+                </label>
+                <input
+                  id="pan_number"
+                  type="text"
+                  value={form.pan_number}
+                  onChange={(e) => update("pan_number", e.target.value)}
+                  placeholder="ABCDE1234F"
+                  className={inputClass}
+                />
               </div>
             </div>
           )}
 
           {step === 4 && (
             <div className="space-y-5">
-              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">Delivery Settings</h2>
-              <p className="text-sm text-[var(--color-outline)]">Configure your delivery preferences.</p>
+              <h2 className="text-xl font-extrabold text-[var(--color-on-surface)]">
+                Delivery Settings
+              </h2>
+              <p className="text-sm text-[var(--color-outline)]">
+                Configure your delivery preferences.
+              </p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="min_order_amount" className={labelClass}>Min Order Amount (₹)</label>
-                  <input id="min_order_amount" type="number" min="0" value={form.min_order_amount} onChange={(e) => update("min_order_amount", parseFloat(e.target.value) || 0)} className={inputClass} />
+                  <label htmlFor="min_order_amount" className={labelClass}>
+                    Min Order Amount (₹)
+                  </label>
+                  <input
+                    id="min_order_amount"
+                    type="number"
+                    min="0"
+                    value={form.min_order_amount}
+                    onChange={(e) => update("min_order_amount", parseFloat(e.target.value) || 0)}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
-                  <label htmlFor="delivery_charge" className={labelClass}>Delivery Charge (₹)</label>
-                  <input id="delivery_charge" type="number" min="0" value={form.delivery_charge} onChange={(e) => update("delivery_charge", parseFloat(e.target.value) || 0)} className={inputClass} />
+                  <label htmlFor="delivery_charge" className={labelClass}>
+                    Delivery Charge (₹)
+                  </label>
+                  <input
+                    id="delivery_charge"
+                    type="number"
+                    min="0"
+                    value={form.delivery_charge}
+                    onChange={(e) => update("delivery_charge", parseFloat(e.target.value) || 0)}
+                    className={inputClass}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="delivery_time_min" className={labelClass}>Min Delivery Time (min)</label>
-                  <input id="delivery_time_min" type="number" min="1" value={form.delivery_time_min} onChange={(e) => update("delivery_time_min", parseInt(e.target.value) || 30)} className={inputClass} />
+                  <label htmlFor="delivery_time_min" className={labelClass}>
+                    Min Delivery Time (min)
+                  </label>
+                  <input
+                    id="delivery_time_min"
+                    type="number"
+                    min="1"
+                    value={form.delivery_time_min}
+                    onChange={(e) => update("delivery_time_min", parseInt(e.target.value) || 30)}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
-                  <label htmlFor="delivery_time_max" className={labelClass}>Max Delivery Time (min)</label>
-                  <input id="delivery_time_max" type="number" min="1" value={form.delivery_time_max} onChange={(e) => update("delivery_time_max", parseInt(e.target.value) || 45)} className={inputClass} />
+                  <label htmlFor="delivery_time_max" className={labelClass}>
+                    Max Delivery Time (min)
+                  </label>
+                  <input
+                    id="delivery_time_max"
+                    type="number"
+                    min="1"
+                    value={form.delivery_time_max}
+                    onChange={(e) => update("delivery_time_max", parseInt(e.target.value) || 45)}
+                    className={inputClass}
+                  />
                 </div>
               </div>
 
               {/* Summary */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-2xl p-6 mt-6">
-                <h3 className="font-bold text-[var(--color-on-surface)] mb-3">Summary</h3>
+              <div className="mt-6 rounded-2xl bg-[var(--color-surface-subtle)] p-6">
+                <h3 className="mb-3 font-bold text-[var(--color-on-surface)]">Summary</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Owner</span><span className="font-bold text-[var(--color-on-surface)]">{form.owner_name || "-"}</span></div>
-                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Store</span><span className="font-bold text-[var(--color-on-surface)]">{form.shop_name || "-"}</span></div>
-                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Type</span><span className="font-bold text-[var(--color-on-surface)]">{form.type}</span></div>
-                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Location</span><span className="font-bold text-[var(--color-on-surface)]">{[form.city, form.state].filter(Boolean).join(", ") || "-"}</span></div>
-                  <div className="flex justify-between"><span className="text-[var(--color-outline)]">Documents</span><span className="font-bold text-[var(--color-on-surface)]">{form.gst_number ? "GST ✓" : "No GST"}{form.fssai_number ? " • FSSAI ✓" : ""}</span></div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-outline)]">Owner</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">
+                      {form.owner_name || "-"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-outline)]">Store</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">
+                      {form.shop_name || "-"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-outline)]">Type</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">{form.type}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-outline)]">Location</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">
+                      {[form.city, form.state].filter(Boolean).join(", ") || "-"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-outline)]">Documents</span>
+                    <span className="font-bold text-[var(--color-on-surface)]">
+                      {form.gst_number ? "GST ✓" : "No GST"}
+                      {form.fssai_number ? " • FSSAI ✓" : ""}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -355,25 +588,33 @@ export default function VendorRegister() {
 
           {/* Navigation */}
           {submitError && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
+            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
               ⚠️ {submitError}
             </div>
           )}
-          <div className="flex justify-between mt-8">
+          <div className="mt-8 flex justify-between">
             {step > 1 ? (
-              <button onClick={() => setStep(step - 1)} className="px-6 py-3 border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] rounded-xl font-bold hover:bg-[var(--color-surface-subtle)] transition-colors">
+              <button
+                onClick={() => setStep(step - 1)}
+                className="rounded-xl border border-[var(--color-border-subtle)] px-6 py-3 font-bold text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              >
                 Back
               </button>
-            ) : <div />}
+            ) : (
+              <div />
+            )}
             {step < 4 ? (
-              <button onClick={() => setStep(step + 1)} className="px-8 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:bg-[var(--color-primary-dim)] transition-colors">
+              <button
+                onClick={() => setStep(step + 1)}
+                className="text-on-primary rounded-xl bg-[var(--color-primary)] px-8 py-3 font-bold transition-colors hover:bg-[var(--color-primary-dim)]"
+              >
                 Continue
               </button>
             ) : (
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="px-8 py-3 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition-colors disabled:opacity-50"
+                className="rounded-xl bg-green-600 px-8 py-3 font-bold text-white transition-colors hover:bg-green-700 disabled:opacity-50"
               >
                 {submitting ? "Submitting..." : "Submit for Review"}
               </button>

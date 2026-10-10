@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
   }
   try {
     const supabase = createAdminClient();
-    
+
     // Find orders that have expired (no rider assigned after 5 min) and haven't notified user
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
-    
+
     const { data: expiredOrders, error } = await supabase
       .from("orders")
       .select("id, user_id, placed_at")
@@ -21,54 +21,52 @@ export async function POST(request: NextRequest) {
       .eq("status", "pending")
       .lt("placed_at", fiveMinutesAgo)
       .eq("no_rider_notified", false);
-    
+
     if (error) {
       logger.error({ err: error }, "Error fetching expired orders");
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    
+
     if (!expiredOrders || expiredOrders.length === 0) {
       return NextResponse.json({ processed: 0, message: "No expired orders" });
     }
-    
+
     // Process each expired order
     let processedCount = 0;
     for (const order of expiredOrders) {
       // Mark order as no rider available
       const { error: updateError } = await supabase
         .from("orders")
-        .update({ 
-          no_rider_notified: true, 
-          status: 'no_rider_available',
-          updated_at: new Date().toISOString()
+        .update({
+          no_rider_notified: true,
+          status: "no_rider_available",
+          updated_at: new Date().toISOString(),
         })
         .eq("id", order.id);
-      
+
       if (updateError) {
         logger.error({ err: updateError }, "Error updating order");
         continue;
       }
-      
+
       // Create notification for user
-      const { error: notifError } = await supabase
-        .from("notifications")
-        .insert({
-          user_id: order.user_id,
-          title: "No Rider Available",
-          body: "Sorry, no riders are available for your order right now. Please try again in a few minutes.",
-          type: "order_failed",
-          is_read: false,
-          icon: "local_shipping"
-        });
-      
+      const { error: notifError } = await supabase.from("notifications").insert({
+        user_id: order.user_id,
+        title: "No Rider Available",
+        body: "Sorry, no riders are available for your order right now. Please try again in a few minutes.",
+        type: "order_failed",
+        is_read: false,
+        icon: "local_shipping",
+      });
+
       if (!notifError) {
         processedCount++;
       }
     }
-    
-    return NextResponse.json({ 
-      processed: processedCount, 
-      message: `Processed ${processedCount} expired orders` 
+
+    return NextResponse.json({
+      processed: processedCount,
+      message: `Processed ${processedCount} expired orders`,
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";

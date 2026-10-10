@@ -21,7 +21,9 @@ class TwilioProvider implements SmsProvider {
     this.fromNumber = process.env.TWILIO_FROM_NUMBER || "";
   }
 
-  async send(options: SmsOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  async send(
+    options: SmsOptions
+  ): Promise<{ success: boolean; messageId?: string; error?: string }> {
     if (!this.accountSid || !this.authToken || !this.fromNumber) {
       logger.warn("Twilio credentials not configured — SMS not sent");
       return { success: false, error: "Twilio not configured" };
@@ -57,7 +59,7 @@ class TwilioProvider implements SmsProvider {
     if (!variables) return template;
     return Object.entries(variables).reduce(
       (result, [key, value]) => result.replace(new RegExp(`{{${key}}}`, "g"), value),
-      template,
+      template
     );
   }
 }
@@ -73,7 +75,9 @@ class Msg91Provider implements SmsProvider {
     this.templateId = process.env.MSG91_TEMPLATE_ID || "";
   }
 
-  async send(options: SmsOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
+  async send(
+    options: SmsOptions
+  ): Promise<{ success: boolean; messageId?: string; error?: string }> {
     if (!this.authKey || !this.templateId) {
       logger.warn("MSG91 credentials not configured — SMS not sent");
       return { success: false, error: "MSG91 not configured" };
@@ -122,7 +126,9 @@ export function getSmsProvider(): SmsProvider {
   return provider;
 }
 
-export async function sendSms(options: SmsOptions): Promise<{ success: boolean; messageId?: string; error?: string }> {
+export async function sendSms(
+  options: SmsOptions
+): Promise<{ success: boolean; messageId?: string; error?: string }> {
   return getSmsProvider().send(options);
 }
 
@@ -130,8 +136,10 @@ export const SMS_TEMPLATES = {
   ORDER_CONFIRMED: "Your MIIAM order #{{orderId}} has been confirmed! Estimated delivery: {{eta}}",
   ORDER_DISPATCHED: "Great news! Your MIIAM order #{{orderId}} is on its way. Rider: {{riderName}}",
   ORDER_DELIVERED: "Your MIIAM order #{{orderId}} has been delivered. Enjoy your meal!",
-  ORDER_CANCELLED: "Your MIIAM order #{{orderId}} has been cancelled. Refund will be processed within 2-5 business days.",
+  ORDER_CANCELLED:
+    "Your MIIAM order #{{orderId}} has been cancelled. Refund will be processed within 2-5 business days.",
   OTP_LOGIN: "Your MIIAM login OTP is {{otp}}. Valid for 5 minutes.",
-  VENDOR_NEW_ORDER: "New order #{{orderId}} from {{customerName}}. Total: ₹{{amount}}. Check your dashboard!",
+  VENDOR_NEW_ORDER:
+    "New order #{{orderId}} from {{customerName}}. Total: ₹{{amount}}. Check your dashboard!",
   RIDER_NEW_ASSIGNMENT: "You've been assigned order #{{orderId}}. Pickup from: {{vendorAddress}}",
 } as const;

@@ -39,16 +39,25 @@ export async function POST(request: NextRequest) {
     }
 
     if (promo.usage_limit && promo.used_count >= promo.usage_limit) {
-      return NextResponse.json({ valid: false, error: "This promo code has reached its usage limit" });
+      return NextResponse.json({
+        valid: false,
+        error: "This promo code has reached its usage limit",
+      });
     }
 
     if (subtotal < promo.min_order_amount) {
-      return NextResponse.json({ valid: false, error: `Minimum order ₹${promo.min_order_amount} required` });
+      return NextResponse.json({
+        valid: false,
+        error: `Minimum order ₹${promo.min_order_amount} required`,
+      });
     }
 
     if (promo.vendor_id && vendorIds && Array.isArray(vendorIds)) {
       if (!vendorIds.includes(promo.vendor_id)) {
-        return NextResponse.json({ valid: false, error: "This promo code is not applicable to items in your cart" });
+        return NextResponse.json({
+          valid: false,
+          error: "This promo code is not applicable to items in your cart",
+        });
       }
     }
 

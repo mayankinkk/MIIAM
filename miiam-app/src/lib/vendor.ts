@@ -2,13 +2,17 @@ import { createClient } from "@/lib/supabase/client";
 
 export async function getVendorForUser() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return null;
 
   // Try user_id first (if migration has been run)
   const { data: byUserId } = await supabase
     .from("vendors")
-    .select("id, shop_name, status, owner_name, rating, review_count, type, email, description, cover_image_url, cuisine, min_order_amount, delivery_charge, delivery_time_min, delivery_time_max, is_pure_veg, gst_number, fssai_number, pan_number, opening_hours, address, city, state, pincode, phone, created_at")
+    .select(
+      "id, shop_name, status, owner_name, rating, review_count, type, email, description, cover_image_url, cuisine, min_order_amount, delivery_charge, delivery_time_min, delivery_time_max, is_pure_veg, gst_number, fssai_number, pan_number, opening_hours, address, city, state, pincode, phone, created_at"
+    )
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -17,7 +21,9 @@ export async function getVendorForUser() {
   // Fall back to email matching
   const { data: byEmail } = await supabase
     .from("vendors")
-    .select("id, shop_name, status, owner_name, rating, review_count, type, email, description, cover_image_url, cuisine, min_order_amount, delivery_charge, delivery_time_min, delivery_time_max, is_pure_veg, gst_number, fssai_number, pan_number, opening_hours, address, city, state, pincode, phone, created_at")
+    .select(
+      "id, shop_name, status, owner_name, rating, review_count, type, email, description, cover_image_url, cuisine, min_order_amount, delivery_charge, delivery_time_min, delivery_time_max, is_pure_veg, gst_number, fssai_number, pan_number, opening_hours, address, city, state, pincode, phone, created_at"
+    )
     .eq("email", user.email)
     .maybeSingle();
 
@@ -35,7 +41,9 @@ const MENU_TABLE_MAP: Record<string, string> = {
   flowers: "flower_items",
 };
 
-export async function getVendorMenuItems(vendorId: string): Promise<Map<string, { name: string; category: string }>> {
+export async function getVendorMenuItems(
+  vendorId: string
+): Promise<Map<string, { name: string; category: string }>> {
   const supabase = createClient();
   const { data: vendor } = await supabase
     .from("vendors")
@@ -51,7 +59,9 @@ export async function getVendorMenuItems(vendorId: string): Promise<Map<string, 
 
   const map = new Map<string, { name: string; category: string }>();
   if (data) {
-    data.forEach((item: { id: string; name: string; category: string | null }) => map.set(item.id, { name: item.name, category: item.category || "" }));
+    data.forEach((item: { id: string; name: string; category: string | null }) =>
+      map.set(item.id, { name: item.name, category: item.category || "" })
+    );
   }
   return map;
 }

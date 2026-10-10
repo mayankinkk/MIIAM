@@ -50,7 +50,9 @@ export default function GroupOrderPage() {
 
   async function init() {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user) {
       setUserId(user.id);
       const name = user.user_metadata?.full_name || user.email?.split("@")[0] || "You";
@@ -176,68 +178,78 @@ export default function GroupOrderPage() {
 
   function getGroupTotal(): number {
     if (!group) return 0;
-    return group.members.reduce((total, member) =>
-      total + member.items.reduce((sum, item) => sum + item.price * item.quantity, 0), 0);
+    return group.members.reduce(
+      (total, member) =>
+        total + member.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+      0
+    );
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
+      <div className="bg-surface flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <span className="material-symbols-outlined text-4xl text-accent animate-bounce">group</span>
-          <p className="text-on-surface-variant text-sm mt-3">Loading...</p>
+          <span className="material-symbols-outlined text-accent animate-bounce text-4xl">
+            group
+          </span>
+          <p className="text-on-surface-variant mt-3 text-sm">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
-      <header className="bg-surface border-b border-outline-variant/10 px-5 pt-5 pb-3">
+    <div className="bg-surface min-h-screen pb-24">
+      <header className="bg-surface border-outline-variant/10 border-b px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
-          <Link href="/app/home" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+          <Link
+            href="/app/home"
+            className="bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+          >
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-surface">Group Order</h1>
+          <h1 className="text-on-surface text-xl font-black">Group Order</h1>
         </div>
       </header>
 
       <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Group Order" }]} />
 
-      <main className="px-5 py-6 max-w-lg mx-auto space-y-6">
+      <main className="mx-auto max-w-lg space-y-6 px-5 py-6">
         {!group ? (
           <>
             {/* Create or Join */}
-            <div className="bg-gradient-to-br from-primary to-primary-dim rounded-3xl p-6 text-on-primary shadow-lg text-center">
-              <span className="text-5xl mb-3 block">👥</span>
+            <div className="from-primary to-primary-dim text-on-primary rounded-3xl bg-gradient-to-br p-6 text-center shadow-lg">
+              <span className="mb-3 block text-5xl">👥</span>
               <h2 className="text-2xl font-black">Order Together</h2>
-              <p className="text-on-primary/80 text-sm mt-2">Create a group and order together — everyone adds their items</p>
+              <p className="text-on-primary/80 mt-2 text-sm">
+                Create a group and order together — everyone adds their items
+              </p>
             </div>
 
             {/* Member name */}
-            <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 space-y-4">
+            <div className="bg-surface-container-lowest border-outline-variant/10 space-y-4 rounded-2xl border p-5">
               <label className="block">
-                <span className="text-xs font-bold text-on-surface-variant">Your display name</span>
+                <span className="text-on-surface-variant text-xs font-bold">Your display name</span>
                 <input
                   type="text"
                   value={memberName}
                   onChange={(e) => setMemberName(e.target.value)}
                   placeholder="e.g. Mayank"
-                  className="mt-1 w-full px-4 py-3 bg-surface-container rounded-xl border border-outline-variant/20 focus:border-primary outline-none text-sm"
+                  className="bg-surface-container border-outline-variant/20 focus:border-primary mt-1 w-full rounded-xl border px-4 py-3 text-sm outline-none"
                 />
               </label>
 
               <button
                 onClick={createGroup}
-                className="w-full py-3.5 bg-primary text-on-primary rounded-xl font-bold text-sm active:scale-95 transition-transform"
+                className="bg-primary text-on-primary w-full rounded-xl py-3.5 text-sm font-bold transition-transform active:scale-95"
               >
                 Create Group Order
               </button>
             </div>
 
             {/* Join existing */}
-            <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 space-y-3">
-              <p className="font-bold text-on-surface text-sm">Join an Existing Group</p>
+            <div className="bg-surface-container-lowest border-outline-variant/10 space-y-3 rounded-2xl border p-5">
+              <p className="text-on-surface text-sm font-bold">Join an Existing Group</p>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -245,12 +257,12 @@ export default function GroupOrderPage() {
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                   placeholder="Enter group code"
                   maxLength={6}
-                  className="flex-1 px-4 py-3 bg-surface-container rounded-xl border border-outline-variant/20 focus:border-primary outline-none text-sm font-mono tracking-widest text-center uppercase"
+                  className="bg-surface-container border-outline-variant/20 focus:border-primary flex-1 rounded-xl border px-4 py-3 text-center font-mono text-sm tracking-widest uppercase outline-none"
                 />
                 <button
                   onClick={joinGroup}
                   disabled={!joinCode}
-                  className="px-6 py-3 bg-surface-container rounded-xl font-bold text-sm border border-outline-variant/20 active:scale-95 transition-transform disabled:opacity-40"
+                  className="bg-surface-container border-outline-variant/20 rounded-xl border px-6 py-3 text-sm font-bold transition-transform active:scale-95 disabled:opacity-40"
                 >
                   Join
                 </button>
@@ -260,23 +272,31 @@ export default function GroupOrderPage() {
         ) : (
           <>
             {/* Active Group */}
-            <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
-              <div className="flex items-center justify-between mb-4">
+            <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5">
+              <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-on-surface-variant">Group Code</p>
-                  <p className="text-2xl font-black text-accent font-mono tracking-[0.15em]">{group.code}</p>
+                  <p className="text-on-surface-variant text-xs">Group Code</p>
+                  <p className="text-accent font-mono text-2xl font-black tracking-[0.15em]">
+                    {group.code}
+                  </p>
                 </div>
-                <button onClick={copyCode} className="px-3 py-2 bg-primary/10 text-accent rounded-lg text-xs font-bold">
+                <button
+                  onClick={copyCode}
+                  className="bg-primary/10 text-accent rounded-lg px-3 py-2 text-xs font-bold"
+                >
                   Copy
                 </button>
               </div>
-              <p className="text-xs text-on-surface-variant">
+              <p className="text-on-surface-variant text-xs">
                 Share this code with friends to join
               </p>
               {group.status === "active" && (
                 <div className="mt-3 flex gap-2">
                   {group.host_id === userId && (
-                    <button onClick={closeGroup} className="flex-1 py-2 bg-red-500 text-white rounded-lg text-xs font-bold">
+                    <button
+                      onClick={closeGroup}
+                      className="flex-1 rounded-lg bg-red-500 py-2 text-xs font-bold text-white"
+                    >
                       Close Group
                     </button>
                   )}
@@ -286,30 +306,40 @@ export default function GroupOrderPage() {
 
             {/* Members */}
             <div className="space-y-3">
-              <p className="font-bold text-on-surface text-sm">Members ({group.members.length})</p>
+              <p className="text-on-surface text-sm font-bold">Members ({group.members.length})</p>
               {group.members.map((member) => (
-                <div key={member.id} className="bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/10">
-                  <div className="flex items-center justify-between mb-2">
+                <div
+                  key={member.id}
+                  className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-4"
+                >
+                  <div className="mb-2 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-accent text-sm">person</span>
+                      <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
+                        <span className="material-symbols-outlined text-accent text-sm">
+                          person
+                        </span>
                       </div>
                       <div>
-                        <p className="font-bold text-sm text-on-surface">{member.display_name}</p>
-                        <p className="text-[10px] text-on-surface-variant">{member.role}</p>
+                        <p className="text-on-surface text-sm font-bold">{member.display_name}</p>
+                        <p className="text-on-surface-variant text-[10px]">{member.role}</p>
                       </div>
                     </div>
-                    <p className="text-sm font-bold text-accent">
+                    <p className="text-accent text-sm font-bold">
                       ₹{member.items.reduce((s, i) => s + i.price * i.quantity, 0).toFixed(0)}
                     </p>
                   </div>
                   {member.items.length === 0 ? (
-                    <p className="text-xs text-on-surface-variant italic">No items yet</p>
+                    <p className="text-on-surface-variant text-xs italic">No items yet</p>
                   ) : (
-                    <div className="space-y-1 mt-2">
+                    <div className="mt-2 space-y-1">
                       {member.items.map((item) => (
-                        <div key={item.id} className="flex justify-between text-xs text-on-surface-variant">
-                          <span>{item.quantity}× {item.name}</span>
+                        <div
+                          key={item.id}
+                          className="text-on-surface-variant flex justify-between text-xs"
+                        >
+                          <span>
+                            {item.quantity}× {item.name}
+                          </span>
                           <span>₹{item.price * item.quantity}</span>
                         </div>
                       ))}
@@ -320,10 +350,10 @@ export default function GroupOrderPage() {
             </div>
 
             {/* Order Summary */}
-            <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
-              <div className="flex justify-between items-center">
-                <p className="font-bold text-on-surface">Group Total</p>
-                <p className="text-2xl font-black text-on-surface">₹{getGroupTotal().toFixed(0)}</p>
+            <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5">
+              <div className="flex items-center justify-between">
+                <p className="text-on-surface font-bold">Group Total</p>
+                <p className="text-on-surface text-2xl font-black">₹{getGroupTotal().toFixed(0)}</p>
               </div>
             </div>
           </>

@@ -25,37 +25,58 @@ export default function PromotedPartners({ restaurants }: PromotedPartnersProps)
 
   return (
     <div className="px-4 pb-3">
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-accent" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-          <h2 className="text-lg font-bold text-on-surface">{t.home.promotedPartners}</h2>
+          <span
+            className="material-symbols-outlined text-accent"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            verified
+          </span>
+          <h2 className="text-on-surface text-lg font-bold">{t.home.promotedPartners}</h2>
         </div>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
         {restaurants.map((restaurant) => (
-          <Link key={restaurant.id} href={`/app/vendor/${restaurant.id}`} className="flex-shrink-0 w-36 bg-surface-container-lowest border border-outline-variant/10 rounded-2xl overflow-hidden shadow-sm hover:border-accent/40 transition-all">
-            <div className="relative h-28 bg-surface-container">
+          <Link
+            key={restaurant.id}
+            href={`/app/vendor/${restaurant.id}`}
+            className="bg-surface-container-lowest border-outline-variant/10 hover:border-accent/40 w-36 flex-shrink-0 overflow-hidden rounded-2xl border shadow-sm transition-all"
+          >
+            <div className="bg-surface-container relative h-28">
               {restaurant.cover_image_url || restaurant.image_url ? (
-                <BlurImage src={restaurant.cover_image_url || restaurant.image_url || ""} alt={`${restaurant.shop_name || restaurant.name} promoted`} fill className="w-full h-full" sizes="(max-width: 768px) 50vw, 25vw" />
+                <BlurImage
+                  src={restaurant.cover_image_url || restaurant.image_url || ""}
+                  alt={`${restaurant.shop_name || restaurant.name} promoted`}
+                  fill
+                  className="h-full w-full"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-2xl">🍽️</div>
+                <div className="flex h-full w-full items-center justify-center text-2xl">🍽️</div>
               )}
               {restaurant.is_promoted && (
-                <div className="absolute top-2 left-2 bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <div className="bg-primary text-on-primary absolute top-2 left-2 rounded-full px-2 py-0.5 text-[10px] font-bold">
                   {t.home.promoted}
                 </div>
               )}
               {restaurant.is_new && (
-                <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                <div className="absolute top-2 right-2 rounded-full bg-green-500 px-2 py-0.5 text-[10px] font-bold text-white">
                   {t.home.new}
                 </div>
               )}
             </div>
             <div className="p-2">
-              <h4 className="font-bold text-sm text-on-surface truncate">{restaurant.name || restaurant.shop_name}</h4>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="text-xs font-bold text-green-700">★ {restaurant.rating || 4.0}</span>
-                <span className="text-xs text-on-surface-variant/70">• {restaurant.cuisine?.split(",")[0] || t.home.various}</span>
+              <h4 className="text-on-surface truncate text-sm font-bold">
+                {restaurant.name || restaurant.shop_name}
+              </h4>
+              <div className="mt-1 flex items-center gap-1">
+                <span className="text-xs font-bold text-green-700">
+                  ★ {restaurant.rating || 4.0}
+                </span>
+                <span className="text-on-surface-variant/70 text-xs">
+                  • {restaurant.cuisine?.split(",")[0] || t.home.various}
+                </span>
               </div>
             </div>
           </Link>

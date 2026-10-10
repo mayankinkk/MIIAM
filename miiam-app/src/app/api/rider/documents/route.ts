@@ -8,7 +8,9 @@ const logger = createRouteLogger("rider/documents");
 
 export const POST = withRateLimit(async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -22,30 +24,39 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     const file = formData.get("file") as File;
 
     if (!rider_id || !doc_type || !file) {
-      return NextResponse.json({ 
-        error: "Missing required fields: rider_id, doc_type, file" 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: "Missing required fields: rider_id, doc_type, file",
+        },
+        { status: 400 }
+      );
     }
 
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ 
-        error: "Invalid file type. Allowed: JPEG, PNG, WebP, PDF" 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: "Invalid file type. Allowed: JPEG, PNG, WebP, PDF",
+        },
+        { status: 400 }
+      );
     }
 
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      return NextResponse.json({ 
-        error: "File too large. Maximum 5MB allowed" 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: "File too large. Maximum 5MB allowed",
+        },
+        { status: 400 }
+      );
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    
+
     const fileName = `${rider_id}/${doc_type}_${Date.now()}.${file.name.split(".").pop()}`;
-    
+
     const publicUrl = await uploadFile(buffer, fileName, file.type);
 
     const { data: existingDoc } = await supabaseAdmin
@@ -89,9 +100,8 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       document: doc,
-      url: publicUrl
+      url: publicUrl,
     });
-
   } catch (error) {
     logger.error({ err: error }, "Document upload error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -100,7 +110,9 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
 export const GET = withRateLimit(async function GET(request: NextRequest) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -119,7 +131,7 @@ export const GET = withRateLimit(async function GET(request: NextRequest) {
     .select("id")
     .eq("user_id", user.id)
     .maybeSingle();
-  
+
   if (!rider || rider.id !== rider_id) {
     const { data: profile } = await supabase
       .from("profiles")

@@ -49,7 +49,7 @@ export default function CustomerInsights() {
   }, [supabase]);
 
   // User metrics
-  const newUsersThisMonth = users.filter(u => {
+  const newUsersThisMonth = users.filter((u) => {
     const created = new Date(u.created_at);
     const monthAgo = new Date();
     monthAgo.setMonth(monthAgo.getMonth() - 1);
@@ -58,27 +58,31 @@ export default function CustomerInsights() {
 
   // Order frequency
   const userOrderCounts: Record<string, number> = {};
-  orders.forEach(o => {
+  orders.forEach((o) => {
     userOrderCounts[o.user_id] = (userOrderCounts[o.user_id] || 0) + 1;
   });
-  
-  const frequentBuyers = Object.values(userOrderCounts).filter(c => c > 5).length;
-  const regularBuyers = Object.values(userOrderCounts).filter(c => c >= 2 && c <= 5).length;
-  const oneTimeBuyers = Object.values(userOrderCounts).filter(c => c === 1).length;
+
+  const frequentBuyers = Object.values(userOrderCounts).filter((c) => c > 5).length;
+  const regularBuyers = Object.values(userOrderCounts).filter((c) => c >= 2 && c <= 5).length;
+  const oneTimeBuyers = Object.values(userOrderCounts).filter((c) => c === 1).length;
 
   // Activity heatmap data (simulated)
   const hours = Array.from({ length: 24 }, (_, i) => i);
-  const activityByHour = hours.map(hour => {
-    const count = orders.filter(o => new Date(o.placed_at).getHours() === hour).length;
+  const activityByHour = hours.map((hour) => {
+    const count = orders.filter((o) => new Date(o.placed_at).getHours() === hour).length;
     return count;
   });
   const maxActivity = Math.max(...activityByHour, 1);
 
   // Services analytics — booking conversion / completion per service type
   const serviceTypes = useMemo(() => {
-    const map: Record<string, { total: number; completed: number; cancelled: number; active: number; revenue: number }> = {};
+    const map: Record<
+      string,
+      { total: number; completed: number; cancelled: number; active: number; revenue: number }
+    > = {};
     bookings.forEach((b) => {
-      if (!map[b.service_type]) map[b.service_type] = { total: 0, completed: 0, cancelled: 0, active: 0, revenue: 0 };
+      if (!map[b.service_type])
+        map[b.service_type] = { total: 0, completed: 0, cancelled: 0, active: 0, revenue: 0 };
       map[b.service_type].total += 1;
       if (b.status === "completed") {
         map[b.service_type].completed += 1;
@@ -93,83 +97,115 @@ export default function CustomerInsights() {
   }, [bookings]);
 
   const maxServiceTotal = Math.max(...Object.values(serviceTypes).map((s) => s.total), 1);
-  const overallCompletionRate = bookings.length > 0
-    ? Math.round((bookings.filter((b) => b.status === "completed").length / bookings.length) * 100)
-    : 0;
+  const overallCompletionRate =
+    bookings.length > 0
+      ? Math.round(
+          (bookings.filter((b) => b.status === "completed").length / bookings.length) * 100
+        )
+      : 0;
 
   if (loading) return <div className="px-8">Loading insights...</div>;
 
   return (
-    <div className="px-8 space-y-8">
+    <div className="space-y-8 px-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Customer Insights</h1>
+        <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+          Customer Insights
+        </h1>
         <p className="text-[var(--color-outline)]">User behavior analytics and segments.</p>
       </div>
 
       {/* User Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Total Users</p>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="mb-1 text-xs font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+            Total Users
+          </p>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{users.length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">New This Month</p>
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="mb-1 text-xs font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+            New This Month
+          </p>
           <p className="text-3xl font-black text-green-600">+{newUsersThisMonth}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Total Orders</p>
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="mb-1 text-xs font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+            Total Orders
+          </p>
           <p className="text-3xl font-black text-[var(--color-on-surface)]">{orders.length}</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-3xl border border-[var(--color-border-subtle)] shadow-sm">
-          <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase tracking-widest mb-1">Avg Orders/User</p>
-          <p className="text-3xl font-black text-amber-500">{users.length > 0 ? Math.round(orders.length / users.length) : 0}</p>
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="mb-1 text-xs font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+            Avg Orders/User
+          </p>
+          <p className="text-3xl font-black text-amber-500">
+            {users.length > 0 ? Math.round(orders.length / users.length) : 0}
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* User Segments */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-          <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">User Segments</h2>
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <h2 className="mb-6 text-lg font-black text-[var(--color-on-surface)]">User Segments</h2>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+              <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
                 <span className="material-symbols-outlined text-accent">local_shipping</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <span className="font-bold text-[var(--color-on-surface)]">Frequent Buyers (&gt;5 orders)</span>
-                  <span className="font-black text-accent">{frequentBuyers}</span>
+                  <span className="font-bold text-[var(--color-on-surface)]">
+                    Frequent Buyers (&gt;5 orders)
+                  </span>
+                  <span className="text-accent font-black">{frequentBuyers}</span>
                 </div>
-                <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-accent" style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                  <div
+                    className="bg-accent h-full"
+                    style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }}
+                  />
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+              <div className="bg-accent/10 flex h-12 w-12 items-center justify-center rounded-xl">
                 <span className="material-symbols-outlined text-accent">card_membership</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <span className="font-bold text-[var(--color-on-surface)]">Regular (2-5 orders)</span>
-                  <span className="font-black text-accent">{regularBuyers}</span>
+                  <span className="font-bold text-[var(--color-on-surface)]">
+                    Regular (2-5 orders)
+                  </span>
+                  <span className="text-accent font-black">{regularBuyers}</span>
                 </div>
-                <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-accent" style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                  <div
+                    className="bg-accent h-full"
+                    style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }}
+                  />
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">person_off</span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-surface-container)]">
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">
+                  person_off
+                </span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
                   <span className="font-bold text-[var(--color-on-surface)]">One-time Buyers</span>
-                  <span className="font-black text-[var(--color-on-surface-variant)]">{oneTimeBuyers}</span>
+                  <span className="font-black text-[var(--color-on-surface-variant)]">
+                    {oneTimeBuyers}
+                  </span>
                 </div>
-                <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-slate-400" style={{ width: `${(oneTimeBuyers / (users.length || 1)) * 100}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                  <div
+                    className="h-full bg-slate-400"
+                    style={{ width: `${(oneTimeBuyers / (users.length || 1)) * 100}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -177,48 +213,67 @@ export default function CustomerInsights() {
         </div>
 
         {/* Purchase Frequency */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-          <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Purchase Frequency</h2>
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <h2 className="mb-6 text-lg font-black text-[var(--color-on-surface)]">
+            Purchase Frequency
+          </h2>
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
                 <span className="material-symbols-outlined text-green-600">local_shipping</span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <span className="font-bold text-[var(--color-on-surface)]">Frequent (5+ orders)</span>
+                  <span className="font-bold text-[var(--color-on-surface)]">
+                    Frequent (5+ orders)
+                  </span>
                   <span className="font-black text-green-600">{frequentBuyers}</span>
                 </div>
-                <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500" style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }} />
-                </div>
-              </div>
-            </div>
-              <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-amber-600">shopping_bag</span>
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between">
-                  <span className="font-bold text-[var(--color-on-surface)]">Occasional (2-5 orders)</span>
-                  <span className="font-black text-amber-600">{regularBuyers}</span>
-                </div>
-                <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-500" style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                  <div
+                    className="h-full bg-green-500"
+                    style={{ width: `${(frequentBuyers / (users.length || 1)) * 100}%` }}
+                  />
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center">
-                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">person_off</span>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100">
+                <span className="material-symbols-outlined text-amber-600">shopping_bag</span>
+              </div>
+              <div className="flex-1">
+                <div className="flex justify-between">
+                  <span className="font-bold text-[var(--color-on-surface)]">
+                    Occasional (2-5 orders)
+                  </span>
+                  <span className="font-black text-amber-600">{regularBuyers}</span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                  <div
+                    className="h-full bg-amber-500"
+                    style={{ width: `${(regularBuyers / (users.length || 1)) * 100}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-surface-container)]">
+                <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">
+                  person_off
+                </span>
               </div>
               <div className="flex-1">
                 <div className="flex justify-between">
                   <span className="font-bold text-[var(--color-on-surface)]">One-time Buyers</span>
-                  <span className="font-black text-[var(--color-on-surface-variant)]">{oneTimeBuyers}</span>
+                  <span className="font-black text-[var(--color-on-surface-variant)]">
+                    {oneTimeBuyers}
+                  </span>
                 </div>
-                <div className="h-2 bg-[var(--color-surface-container)] rounded-full overflow-hidden">
-                  <div className="h-full bg-slate-400" style={{ width: `${(oneTimeBuyers / (users.length || 1)) * 100}%` }} />
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                  <div
+                    className="h-full bg-slate-400"
+                    style={{ width: `${(oneTimeBuyers / (users.length || 1)) * 100}%` }}
+                  />
                 </div>
               </div>
             </div>
@@ -227,16 +282,22 @@ export default function CustomerInsights() {
       </div>
 
       {/* Services Analytics — booking conversion & completion by type */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-black text-[var(--color-on-surface)]">Services — Booking Conversion</h2>
+      <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-black text-[var(--color-on-surface)]">
+            Services — Booking Conversion
+          </h2>
           <div className="text-right">
-            <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Overall Completion</p>
+            <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+              Overall Completion
+            </p>
             <p className="text-xl font-black text-green-600">{overallCompletionRate}%</p>
           </div>
         </div>
         {Object.keys(serviceTypes).length === 0 ? (
-          <p className="text-[var(--color-outline-variant)] text-center py-8">No service bookings yet</p>
+          <p className="py-8 text-center text-[var(--color-outline-variant)]">
+            No service bookings yet
+          </p>
         ) : (
           <div className="space-y-4">
             {Object.entries(serviceTypes)
@@ -245,47 +306,80 @@ export default function CustomerInsights() {
                 const completionRate = s.total > 0 ? Math.round((s.completed / s.total) * 100) : 0;
                 const cancelRate = s.total > 0 ? Math.round((s.cancelled / s.total) * 100) : 0;
                 return (
-                  <div key={type} className="p-4 rounded-xl bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
-                    <div className="flex items-center justify-between mb-2">
+                  <div
+                    key={type}
+                    className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] p-4"
+                  >
+                    <div className="mb-2 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-accent text-lg">home_repair_service</span>
-                        <span className="font-bold text-[var(--color-on-surface)] capitalize">{type.replaceAll("_", " ")}</span>
+                        <span className="material-symbols-outlined text-accent text-lg">
+                          home_repair_service
+                        </span>
+                        <span className="font-bold text-[var(--color-on-surface)] capitalize">
+                          {type.replaceAll("_", " ")}
+                        </span>
                       </div>
-                      <span className="text-sm font-black text-[var(--color-on-surface)]">₹{s.revenue.toLocaleString()}</span>
+                      <span className="text-sm font-black text-[var(--color-on-surface)]">
+                        ₹{s.revenue.toLocaleString()}
+                      </span>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-[var(--color-outline)]">
                       <span>{s.total} bookings</span>
-                      <span className="text-green-600 font-bold">{s.completed} completed ({completionRate}%)</span>
+                      <span className="font-bold text-green-600">
+                        {s.completed} completed ({completionRate}%)
+                      </span>
                       <span className="text-amber-600">{s.active} active</span>
-                      <span className="text-red-600">{s.cancelled} cancelled ({cancelRate}%)</span>
+                      <span className="text-red-600">
+                        {s.cancelled} cancelled ({cancelRate}%)
+                      </span>
                     </div>
                     {/* completion bar */}
-                    <div className="flex h-2 mt-2 rounded-full overflow-hidden bg-[var(--color-surface-container)]">
-                      <div className="bg-green-500 transition-all" style={{ width: `${(s.completed / maxServiceTotal) * 100}%` }} />
-                      <div className="bg-amber-400 transition-all" style={{ width: `${(s.active / maxServiceTotal) * 100}%` }} />
-                      <div className="bg-red-400 transition-all" style={{ width: `${(s.cancelled / maxServiceTotal) * 100}%` }} />
+                    <div className="mt-2 flex h-2 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
+                      <div
+                        className="bg-green-500 transition-all"
+                        style={{ width: `${(s.completed / maxServiceTotal) * 100}%` }}
+                      />
+                      <div
+                        className="bg-amber-400 transition-all"
+                        style={{ width: `${(s.active / maxServiceTotal) * 100}%` }}
+                      />
+                      <div
+                        className="bg-red-400 transition-all"
+                        style={{ width: `${(s.cancelled / maxServiceTotal) * 100}%` }}
+                      />
                     </div>
                   </div>
                 );
               })}
           </div>
         )}
-        <div className="flex items-center gap-4 mt-4 text-xs text-[var(--color-outline-variant)]">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500" /> Completed</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" /> Active</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Cancelled</span>
+        <div className="mt-4 flex items-center gap-4 text-xs text-[var(--color-outline-variant)]">
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-green-500" /> Completed
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-amber-400" /> Active
+          </span>
+          <span className="flex items-center gap-1">
+            <span className="h-2 w-2 rounded-full bg-red-400" /> Cancelled
+          </span>
         </div>
       </div>
 
       {/* Activity Heatmap */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-        <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Order Activity by Hour</h2>
-        <div className="flex items-end gap-1 h-40">
+      <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+        <h2 className="mb-6 text-lg font-black text-[var(--color-on-surface)]">
+          Order Activity by Hour
+        </h2>
+        <div className="flex h-40 items-end gap-1">
           {activityByHour.map((count, hour) => (
-            <div key={hour} className="flex-1 flex flex-col items-center gap-1">
-              <div 
-                className="w-full bg-gradient-to-t from-[var(--color-primary)] to-[#ff7670] rounded-t transition-all hover:opacity-80"
-                style={{ height: `${(count / maxActivity) * 100}%`, minHeight: count > 0 ? "4px" : "0" }}
+            <div key={hour} className="flex flex-1 flex-col items-center gap-1">
+              <div
+                className="w-full rounded-t bg-gradient-to-t from-[var(--color-primary)] to-[#ff7670] transition-all hover:opacity-80"
+                style={{
+                  height: `${(count / maxActivity) * 100}%`,
+                  minHeight: count > 0 ? "4px" : "0",
+                }}
               />
               {hour % 6 === 0 && (
                 <span className="text-[10px] text-[var(--color-outline-variant)]">{hour}:00</span>
@@ -296,28 +390,38 @@ export default function CustomerInsights() {
       </div>
 
       {/* Top Users by Orders */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-[var(--color-border-subtle)]">
-          <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Top Users by Orders</h2>
+      <div className="overflow-hidden rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
+        <div className="border-b border-[var(--color-border-subtle)] p-4">
+          <h2 className="text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+            Top Users by Orders
+          </h2>
         </div>
         <div className="divide-y divide-slate-50">
-          {users.sort((a, b) => (userOrderCounts[b.id] || 0) - (userOrderCounts[a.id] || 0)).slice(0, 10).map((user, i) => (
-            <div key={user.id} className="p-4 flex items-center gap-4 hover:bg-[var(--color-surface-subtle)]">
-              <span className="w-6 h-6 bg-[var(--color-primary)] text-on-primary rounded-full flex items-center justify-center text-xs font-bold">
-                {i + 1}
-              </span>
-              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-container-high)] flex items-center justify-center font-bold text-[var(--color-on-surface-variant)]">
-                {user.full_name?.[0] || "U"}
+          {users
+            .sort((a, b) => (userOrderCounts[b.id] || 0) - (userOrderCounts[a.id] || 0))
+            .slice(0, 10)
+            .map((user, i) => (
+              <div
+                key={user.id}
+                className="flex items-center gap-4 p-4 hover:bg-[var(--color-surface-subtle)]"
+              >
+                <span className="text-on-primary flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-primary)] text-xs font-bold">
+                  {i + 1}
+                </span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-high)] font-bold text-[var(--color-on-surface-variant)]">
+                  {user.full_name?.[0] || "U"}
+                </div>
+                <div className="flex-1">
+                  <p className="font-bold text-[var(--color-on-surface)]">{user.full_name}</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">{user.email}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-black text-amber-500">
+                    {userOrderCounts[user.id] || 0} orders
+                  </p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="font-bold text-[var(--color-on-surface)]">{user.full_name}</p>
-                <p className="text-xs text-[var(--color-outline-variant)]">{user.email}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-black text-amber-500">{userOrderCounts[user.id] || 0} orders</p>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

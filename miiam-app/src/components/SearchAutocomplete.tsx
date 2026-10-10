@@ -20,24 +20,37 @@ interface SearchAutocompleteProps {
 }
 
 const popularSearches = [
-  "Biryani", "Pizza", "Burger", "Paneer", "Chinese", "South Indian",
-  "Ice Cream", "Cake", "Dosa", "Momos"
+  "Biryani",
+  "Pizza",
+  "Burger",
+  "Paneer",
+  "Chinese",
+  "South Indian",
+  "Ice Cream",
+  "Cake",
+  "Dosa",
+  "Momos",
 ];
 
 const cuisineIcons: Record<string, string> = {
-  "Biryani": "🍚",
-  "Pizza": "🍕",
-  "Burger": "🍔",
-  "Paneer": "🧀",
-  "Chinese": "🥡",
+  Biryani: "🍚",
+  Pizza: "🍕",
+  Burger: "🍔",
+  Paneer: "🧀",
+  Chinese: "🥡",
   "South Indian": "🥘",
   "Ice Cream": "🍦",
-  "Cake": "🎂",
-  "Dosa": "🥞",
-  "Momos": "🥟",
+  Cake: "🎂",
+  Dosa: "🥞",
+  Momos: "🥟",
 };
 
-export function SearchAutocomplete({ onSelect, preventNavigation = false, className = "", placeholder = "Search for dishes, cuisines, restaurants..." }: SearchAutocompleteProps) {
+export function SearchAutocomplete({
+  onSelect,
+  preventNavigation = false,
+  className = "",
+  placeholder = "Search for dishes, cuisines, restaurants...",
+}: SearchAutocompleteProps) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -66,7 +79,7 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
   }, []);
 
   const saveRecentSearch = (term: string) => {
-    const updated = [term, ...recentSearches.filter(s => s !== term)].slice(0, 5);
+    const updated = [term, ...recentSearches.filter((s) => s !== term)].slice(0, 5);
     setRecentSearches(updated);
     localStorage.setItem("miiam-recent-searches", JSON.stringify(updated));
   };
@@ -78,7 +91,7 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
     }
 
     setLoading(true);
-    
+
     const { data: menuItems } = await supabase
       .from("menu_items")
       .select("name")
@@ -97,16 +110,18 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
       type: "dish" as const,
     }));
 
-    const vendorSuggestions: SearchSuggestion[] = (vendors || []).map((v: { shop_name: string }) => ({
-      id: `vendor-${v.shop_name}`,
-      text: v.shop_name,
-      type: "popular" as const,
-    }));
+    const vendorSuggestions: SearchSuggestion[] = (vendors || []).map(
+      (v: { shop_name: string }) => ({
+        id: `vendor-${v.shop_name}`,
+        text: v.shop_name,
+        type: "popular" as const,
+      })
+    );
 
     const matchedPopular: SearchSuggestion[] = popularSearches
-      .filter(p => p.toLowerCase().includes(search.toLowerCase()))
+      .filter((p) => p.toLowerCase().includes(search.toLowerCase()))
       .slice(0, 3)
-      .map(p => ({
+      .map((p) => ({
         id: `popular-${p}`,
         text: p,
         type: "popular" as const,
@@ -130,9 +145,10 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
     return () => clearTimeout(timer);
   }, [query]);
 
-  const allItems = showDropdown && !query && recentSearches.length > 0
-    ? recentSearches.map(t => ({ id: `recent-${t}`, text: t, type: "recent" as const }))
-    : suggestions;
+  const allItems =
+    showDropdown && !query && recentSearches.length > 0
+      ? recentSearches.map((t) => ({ id: `recent-${t}`, text: t, type: "recent" as const }))
+      : suggestions;
 
   const handleSearch = (term: string) => {
     if (!term.trim()) return;
@@ -151,47 +167,56 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
     localStorage.removeItem("miiam-recent-searches");
   };
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (!showDropdown) return;
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!showDropdown) return;
 
-    const items = allItems;
+      const items = allItems;
 
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setActiveIndex(prev => (prev < items.length - 1 ? prev + 1 : 0));
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setActiveIndex(prev => (prev > 0 ? prev - 1 : items.length - 1));
-        break;
-      case "Enter":
-        e.preventDefault();
-        if (activeIndex >= 0 && activeIndex < items.length) {
-          handleSearch(items[activeIndex].text);
-        } else if (query.trim()) {
-          handleSearch(query);
-        }
-        break;
-      case "Escape":
-        e.preventDefault();
-        setShowDropdown(false);
-        setActiveIndex(-1);
-        break;
-    }
-  }, [showDropdown, allItems, activeIndex, query]);
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setActiveIndex((prev) => (prev < items.length - 1 ? prev + 1 : 0));
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setActiveIndex((prev) => (prev > 0 ? prev - 1 : items.length - 1));
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (activeIndex >= 0 && activeIndex < items.length) {
+            handleSearch(items[activeIndex].text);
+          } else if (query.trim()) {
+            handleSearch(query);
+          }
+          break;
+        case "Escape":
+          e.preventDefault();
+          setShowDropdown(false);
+          setActiveIndex(-1);
+          break;
+      }
+    },
+    [showDropdown, allItems, activeIndex, query]
+  );
 
   return (
     <div ref={dropdownRef} className={`relative ${className}`}>
       <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">
+        <span
+          className="material-symbols-outlined absolute top-1/2 left-4 -translate-y-1/2 text-[var(--color-outline-variant)]"
+          aria-hidden="true"
+        >
           search
         </span>
         <input
           ref={inputRef}
           type="text"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setActiveIndex(-1); }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setActiveIndex(-1);
+          }}
           onFocus={() => query.trim() && setShowDropdown(true)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
@@ -199,17 +224,24 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
           role="combobox"
           aria-expanded={showDropdown}
           aria-controls={listboxId.current}
-          aria-activedescendant={activeIndex >= 0 ? `${listboxId.current}-option-${activeIndex}` : undefined}
+          aria-activedescendant={
+            activeIndex >= 0 ? `${listboxId.current}-option-${activeIndex}` : undefined
+          }
           aria-autocomplete="list"
-          className="w-full pl-12 pr-4 py-3 bg-[var(--color-surface-container)] rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:bg-white transition-all"
+          className="w-full rounded-full bg-[var(--color-surface-container)] py-3 pr-4 pl-12 text-sm transition-all focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
         />
         {query && (
           <button
-            onClick={() => { setQuery(""); setActiveIndex(-1); }}
+            onClick={() => {
+              setQuery("");
+              setActiveIndex(-1);
+            }}
             aria-label="Clear search"
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center hover:bg-slate-400 transition-colors"
+            className="absolute top-1/2 right-4 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-slate-300 transition-colors hover:bg-slate-400"
           >
-            <span className="material-symbols-outlined text-sm" aria-hidden="true">close</span>
+            <span className="material-symbols-outlined text-sm" aria-hidden="true">
+              close
+            </span>
           </button>
         )}
       </div>
@@ -219,18 +251,25 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
           id={listboxId.current}
           role="listbox"
           aria-label="Search suggestions"
-          className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-xl border border-[var(--color-border-subtle)] overflow-hidden z-50"
+          className="absolute top-full right-0 left-0 z-50 mt-2 overflow-hidden rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-xl"
         >
           {loading && (
             <div className="p-4 text-center text-sm text-[var(--color-outline)]" role="status">
-              <span className="material-symbols-outlined animate-spin text-lg mr-2" aria-hidden="true">progress_activity</span>
+              <span
+                className="material-symbols-outlined mr-2 animate-spin text-lg"
+                aria-hidden="true"
+              >
+                progress_activity
+              </span>
               Searching...
             </div>
           )}
 
           {!loading && suggestions.length > 0 && (
             <div className="p-2">
-              <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase px-3 py-2">Suggestions</div>
+              <div className="px-3 py-2 text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                Suggestions
+              </div>
               {suggestions.map((s, i) => (
                 <button
                   key={s.id}
@@ -238,20 +277,33 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
                   role="option"
                   aria-selected={activeIndex === i}
                   onClick={() => handleSearch(s.text)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left ${activeIndex === i ? "bg-[var(--color-primary)]/10" : "hover:bg-[var(--color-surface-subtle)]"}`}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${activeIndex === i ? "bg-[var(--color-primary)]/10" : "hover:bg-[var(--color-surface-subtle)]"}`}
                 >
-                  <span className="material-symbols-outlined text-[var(--color-outline-variant)] text-lg" aria-hidden="true">
-                    {s.type === "dish" ? "restaurant" : s.type === "popular" ? "local_fire_department" : "search"}
+                  <span
+                    className="material-symbols-outlined text-lg text-[var(--color-outline-variant)]"
+                    aria-hidden="true"
+                  >
+                    {s.type === "dish"
+                      ? "restaurant"
+                      : s.type === "popular"
+                        ? "local_fire_department"
+                        : "search"}
                   </span>
                   <span className="text-[var(--color-on-surface)]">{s.text}</span>
-                  {s.icon && <span className="ml-auto text-lg" aria-hidden="true">{s.icon}</span>}
+                  {s.icon && (
+                    <span className="ml-auto text-lg" aria-hidden="true">
+                      {s.icon}
+                    </span>
+                  )}
                 </button>
               ))}
               <button
                 onClick={() => handleSearch(query)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 bg-[var(--color-primary)]/5 hover:bg-[var(--color-primary)]/10 rounded-lg text-[var(--color-accent)] font-bold mt-2"
+                className="mt-2 flex w-full items-center gap-3 rounded-lg bg-[var(--color-primary)]/5 px-3 py-2.5 font-bold text-[var(--color-accent)] hover:bg-[var(--color-primary)]/10"
               >
-                <span className="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+                <span className="material-symbols-outlined text-lg" aria-hidden="true">
+                  arrow_forward
+                </span>
                 Search for &quot;{query}&quot;
               </button>
             </div>
@@ -260,8 +312,13 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
           {!loading && !query && recentSearches.length > 0 && (
             <div className="p-2">
               <div className="flex items-center justify-between px-3 py-2">
-                <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Recent Searches</div>
-                <button onClick={clearRecentSearches} className="text-xs text-[var(--color-accent)] font-medium">
+                <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                  Recent Searches
+                </div>
+                <button
+                  onClick={clearRecentSearches}
+                  className="text-xs font-medium text-[var(--color-accent)]"
+                >
                   Clear all
                 </button>
               </div>
@@ -272,9 +329,14 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
                   role="option"
                   aria-selected={activeIndex === i}
                   onClick={() => handleSearch(term)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left ${activeIndex === i ? "bg-[var(--color-primary)]/10" : "hover:bg-[var(--color-surface-subtle)]"}`}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${activeIndex === i ? "bg-[var(--color-primary)]/10" : "hover:bg-[var(--color-surface-subtle)]"}`}
                 >
-                  <span className="material-symbols-outlined text-[var(--color-outline-variant)]" aria-hidden="true">history</span>
+                  <span
+                    className="material-symbols-outlined text-[var(--color-outline-variant)]"
+                    aria-hidden="true"
+                  >
+                    history
+                  </span>
                   <span className="text-[var(--color-on-surface)]">{term}</span>
                 </button>
               ))}
@@ -282,14 +344,16 @@ export function SearchAutocomplete({ onSelect, preventNavigation = false, classN
           )}
 
           {!loading && !query && (
-            <div className="p-2 border-t">
-              <div className="text-xs font-bold text-[var(--color-outline-variant)] uppercase px-3 py-2">Popular Searches</div>
+            <div className="border-t p-2">
+              <div className="px-3 py-2 text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                Popular Searches
+              </div>
               <div className="flex flex-wrap gap-2 px-3 py-2">
                 {popularSearches.map((term) => (
                   <button
                     key={term}
                     onClick={() => handleSearch(term)}
-                    className="px-4 py-2.5 bg-[var(--color-surface-container)] hover:bg-[var(--color-surface-container-high)] rounded-full text-sm text-[var(--color-on-surface-variant)] transition-colors"
+                    className="rounded-full bg-[var(--color-surface-container)] px-4 py-2.5 text-sm text-[var(--color-on-surface-variant)] transition-colors hover:bg-[var(--color-surface-container-high)]"
                   >
                     {term}
                   </button>

@@ -38,7 +38,12 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
   const trackedIds = Array.from(new Set(items.map((i) => i.menu_item_id).filter(isUuid)));
 
   try {
-    let menuItems: Array<{ id: string; name: string; stock: number | null; is_available: boolean }> = [];
+    let menuItems: Array<{
+      id: string;
+      name: string;
+      stock: number | null;
+      is_available: boolean;
+    }> = [];
 
     if (trackedIds.length > 0) {
       const { data, error } = await supabase()
@@ -63,8 +68,10 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
       menuItems.map((m) => [m.id, { stock: m.stock, is_available: m.is_available, name: m.name }])
     );
 
-    const results = items.map(item => {
-      const menuData = stockMap.get(item.menu_item_id) as { stock: number | null; is_available: boolean; name: string } | undefined;
+    const results = items.map((item) => {
+      const menuData = stockMap.get(item.menu_item_id) as
+        | { stock: number | null; is_available: boolean; name: string }
+        | undefined;
       if (!menuData) {
         // Item not found in DB → no stock tracking, treat as always available
         return {
@@ -88,7 +95,7 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
       };
     });
 
-    const allAvailable = results.every(r => r.in_stock);
+    const allAvailable = results.every((r) => r.in_stock);
     return { available: allAvailable, checked: true, items: results };
   } catch (err) {
     logger.error({ err }, "Stock check failed");
@@ -104,7 +111,7 @@ export async function checkStock(items: StockCheckItem[]): Promise<StockResult> 
 export async function decrementStock(
   items: StockCheckItem[],
   orderId: string,
-  client?: StockClient,
+  client?: StockClient
 ): Promise<{ success: boolean; error?: string }> {
   const db = client ?? supabase();
   try {
@@ -175,10 +182,7 @@ export async function decrementStock(
   }
 }
 
-export async function restoreStock(
-  orderId: string,
-  client?: StockClient,
-): Promise<void> {
+export async function restoreStock(orderId: string, client?: StockClient): Promise<void> {
   const db = client ?? supabase();
   try {
     const { data: movements, error: movementsErr } = await db

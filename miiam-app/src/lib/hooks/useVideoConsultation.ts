@@ -62,7 +62,7 @@ export function useVideoConsultation() {
       return stream;
     } catch (err) {
       logger.error({ err }, "Failed to access camera");
-      setState(prev => ({ ...prev, error: "Could not access camera/microphone" }));
+      setState((prev) => ({ ...prev, error: "Could not access camera/microphone" }));
       return null;
     }
   }, []);
@@ -70,13 +70,13 @@ export function useVideoConsultation() {
   const createPeerConnection = useCallback((localStream: MediaStream): RTCPeerConnection => {
     const pc = new RTCPeerConnection(ICE_SERVERS);
 
-    localStream.getTracks().forEach(track => {
+    localStream.getTracks().forEach((track) => {
       pc.addTrack(track, localStream);
     });
 
     pc.ontrack = (event) => {
       const [remoteStream] = event.streams;
-      setState(prev => ({ ...prev, remoteStream }));
+      setState((prev) => ({ ...prev, remoteStream }));
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStream;
       }
@@ -91,12 +91,12 @@ export function useVideoConsultation() {
     pc.onconnectionstatechange = () => {
       const connectionState = pc.connectionState;
       if (connectionState === "connected") {
-        setState(prev => ({ ...prev, isConnected: true, error: null }));
+        setState((prev) => ({ ...prev, isConnected: true, error: null }));
         timerRef.current = setInterval(() => {
-          setState(prev => ({ ...prev, callDuration: prev.callDuration + 1 }));
+          setState((prev) => ({ ...prev, callDuration: prev.callDuration + 1 }));
         }, 1000);
       } else if (connectionState === "disconnected" || connectionState === "failed") {
-        setState(prev => ({ ...prev, isConnected: false, error: "Connection lost" }));
+        setState((prev) => ({ ...prev, isConnected: false, error: "Connection lost" }));
         if (timerRef.current) clearInterval(timerRef.current);
       }
     };
@@ -105,48 +105,56 @@ export function useVideoConsultation() {
     return pc;
   }, []);
 
-  const startConsultation = useCallback(async (bookingId: string): Promise<{ success: boolean; offer?: RTCSessionDescriptionInit }> => {
-    try {
-      const stream = await startCamera();
-      if (!stream) return { success: false };
+  const startConsultation = useCallback(
+    async (bookingId: string): Promise<{ success: boolean; offer?: RTCSessionDescriptionInit }> => {
+      try {
+        const stream = await startCamera();
+        if (!stream) return { success: false };
 
-      const pc = createPeerConnection(stream);
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
+        const pc = createPeerConnection(stream);
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(offer);
 
-      setState(prev => ({ ...prev, error: null }));
-      return { success: true, offer };
-    } catch (err) {
-      logger.error({ err }, "Failed to start consultation");
-      setState(prev => ({ ...prev, error: "Failed to start video consultation" }));
-      return { success: false };
-    }
-  }, [startCamera, createPeerConnection]);
+        setState((prev) => ({ ...prev, error: null }));
+        return { success: true, offer };
+      } catch (err) {
+        logger.error({ err }, "Failed to start consultation");
+        setState((prev) => ({ ...prev, error: "Failed to start video consultation" }));
+        return { success: false };
+      }
+    },
+    [startCamera, createPeerConnection]
+  );
 
-  const answerConsultation = useCallback(async (offer: RTCSessionDescriptionInit): Promise<{ success: boolean; answer?: RTCSessionDescriptionInit }> => {
-    try {
-      const stream = await startCamera();
-      if (!stream) return { success: false };
+  const answerConsultation = useCallback(
+    async (
+      offer: RTCSessionDescriptionInit
+    ): Promise<{ success: boolean; answer?: RTCSessionDescriptionInit }> => {
+      try {
+        const stream = await startCamera();
+        if (!stream) return { success: false };
 
-      const pc = createPeerConnection(stream);
-      await pc.setRemoteDescription(new RTCSessionDescription(offer));
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
+        const pc = createPeerConnection(stream);
+        await pc.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
 
-      return { success: true, answer };
-    } catch (err) {
-      logger.error({ err }, "Failed to answer consultation");
-      setState(prev => ({ ...prev, error: "Failed to connect to consultation" }));
-      return { success: false };
-    }
-  }, [startCamera, createPeerConnection]);
+        return { success: true, answer };
+      } catch (err) {
+        logger.error({ err }, "Failed to answer consultation");
+        setState((prev) => ({ ...prev, error: "Failed to connect to consultation" }));
+        return { success: false };
+      }
+    },
+    [startCamera, createPeerConnection]
+  );
 
   const toggleMute = useCallback(() => {
     if (localStreamRef.current) {
       const audioTrack = localStreamRef.current.getAudioTracks()[0];
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
-        setState(prev => ({ ...prev, isMuted: !audioTrack.enabled }));
+        setState((prev) => ({ ...prev, isMuted: !audioTrack.enabled }));
       }
     }
   }, []);
@@ -156,7 +164,7 @@ export function useVideoConsultation() {
       const videoTrack = localStreamRef.current.getVideoTracks()[0];
       if (videoTrack) {
         videoTrack.enabled = !videoTrack.enabled;
-        setState(prev => ({ ...prev, isVideoOff: !videoTrack.enabled }));
+        setState((prev) => ({ ...prev, isVideoOff: !videoTrack.enabled }));
       }
     }
   }, []);
@@ -167,7 +175,7 @@ export function useVideoConsultation() {
       peerConnectionRef.current = null;
     }
     if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach(track => track.stop());
+      localStreamRef.current.getTracks().forEach((track) => track.stop());
       localStreamRef.current = null;
     }
     if (timerRef.current) {

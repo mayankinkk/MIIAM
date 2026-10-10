@@ -15,7 +15,9 @@ export default function SecurityPage() {
 
   const handlePasswordReset = async () => {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (user?.email) {
       await supabase.auth.resetPasswordForEmail(user.email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
@@ -26,32 +28,43 @@ export default function SecurityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-background pb-24">
-      <header className="bg-surface-container px-6 py-4 sticky top-0 z-10 shadow-sm border-b border-outline-variant/10">
+    <div className="bg-background text-on-background min-h-screen pb-24">
+      <header className="bg-surface-container border-outline-variant/10 sticky top-0 z-10 border-b px-6 py-4 shadow-sm">
         <div className="flex items-center gap-4">
-          <Link href="/app/settings" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-surface-container-highest transition-colors">
+          <Link
+            href="/app/settings"
+            className="bg-surface-container-high hover:bg-surface-container-highest flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+          >
             <span className="material-symbols-outlined text-on-background">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-background">{t.settings.security}</h1>
+          <h1 className="text-on-background text-xl font-black">{t.settings.security}</h1>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.common.home, href: '/app/home' }, { label: t.settings.title, href: '/app/settings' }, { label: t.settings.security }]} />
+      <Breadcrumbs
+        items={[
+          { label: t.common.home, href: "/app/home" },
+          { label: t.settings.title, href: "/app/settings" },
+          { label: t.settings.security },
+        ]}
+      />
 
-      <main className="p-6 space-y-4">
+      <main className="space-y-4 p-6">
         {/* Change Password */}
-        <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
+        <div className="bg-surface-container border-outline-variant/10 rounded-2xl border p-5 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-xl">
               <span className="material-symbols-outlined text-accent">lock_reset</span>
             </div>
             <div>
-              <p className="font-bold text-on-surface">{t.settings.securitySub}</p>
-              <p className="text-xs text-on-surface-variant">A reset link will be sent to your email</p>
+              <p className="text-on-surface font-bold">{t.settings.securitySub}</p>
+              <p className="text-on-surface-variant text-xs">
+                A reset link will be sent to your email
+              </p>
             </div>
           </div>
           {sent ? (
-            <div className="flex items-center gap-2 text-green-500 bg-green-500/10 rounded-xl px-4 py-3 border border-green-500/20">
+            <div className="flex items-center gap-2 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-green-500">
               <span className="material-symbols-outlined text-lg">check_circle</span>
               <span className="text-sm font-bold">Reset link sent! Check your inbox.</span>
             </div>
@@ -59,7 +72,7 @@ export default function SecurityPage() {
             <button
               onClick={handlePasswordReset}
               disabled={loading}
-              className="w-full py-3 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary hover:text-on-primary/95 disabled:opacity-50 transition-all active:scale-[0.98]"
+              className="bg-primary text-on-primary hover:bg-primary hover:text-on-primary/95 w-full rounded-xl py-3 font-bold transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {loading ? "Sending..." : "Send Password Reset Email"}
             </button>
@@ -67,27 +80,31 @@ export default function SecurityPage() {
         </div>
 
         {/* Two-Factor Auth */}
-        <div className="bg-surface-container border border-outline-variant/10 rounded-2xl p-5 shadow-sm">
+        <div className="bg-surface-container border-outline-variant/10 rounded-2xl border p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
+              <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-xl">
                 <span className="material-symbols-outlined text-accent">phone_android</span>
               </div>
               <div>
-                <p className="font-bold text-on-surface">{t.settings.securitySub}</p>
-                <p className="text-xs text-on-surface-variant">Extra security for your account</p>
+                <p className="text-on-surface font-bold">{t.settings.securitySub}</p>
+                <p className="text-on-surface-variant text-xs">Extra security for your account</p>
               </div>
             </div>
             <button
               onClick={() => setTwoFAEnabled(!twoFAEnabled)}
-              className={`relative w-12 h-6 rounded-full transition-colors ${twoFAEnabled ? "bg-primary" : "bg-surface-container-high"}`}
+              className={`relative h-6 w-12 rounded-full transition-colors ${twoFAEnabled ? "bg-primary" : "bg-surface-container-high"}`}
             >
-              <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-all ${twoFAEnabled ? "left-7" : "left-1"}`} />
+              <span
+                className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] shadow transition-all ${twoFAEnabled ? "left-7" : "left-1"}`}
+              />
             </button>
           </div>
           {twoFAEnabled && (
-            <div className="mt-3 bg-surface-container-low border border-outline-variant/20 rounded-xl p-3 text-on-surface-variant">
-              <p className="text-xs font-bold">Contact support to enable 2FA via authenticator app.</p>
+            <div className="bg-surface-container-low border-outline-variant/20 text-on-surface-variant mt-3 rounded-xl border p-3">
+              <p className="text-xs font-bold">
+                Contact support to enable 2FA via authenticator app.
+              </p>
             </div>
           )}
         </div>
@@ -95,14 +112,16 @@ export default function SecurityPage() {
         {/* Active Sessions */}
         <Link
           href="/app/settings/security/devices"
-          className="bg-surface-container border border-outline-variant/10 rounded-2xl p-5 shadow-sm flex items-center gap-3 hover:bg-surface-container-high transition-colors"
+          className="bg-surface-container border-outline-variant/10 hover:bg-surface-container-high flex items-center gap-3 rounded-2xl border p-5 shadow-sm transition-colors"
         >
-          <div className="w-10 h-10 bg-surface-container-high rounded-xl flex items-center justify-center">
+          <div className="bg-surface-container-high flex h-10 w-10 items-center justify-center rounded-xl">
             <span className="material-symbols-outlined text-on-surface-variant">devices</span>
           </div>
           <div className="flex-1">
-            <p className="font-bold text-on-surface">Devices &amp; Login Activity</p>
-            <p className="text-xs text-on-surface-variant">Manage signed-in devices, see recent activity</p>
+            <p className="text-on-surface font-bold">Devices &amp; Login Activity</p>
+            <p className="text-on-surface-variant text-xs">
+              Manage signed-in devices, see recent activity
+            </p>
           </div>
           <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
         </Link>

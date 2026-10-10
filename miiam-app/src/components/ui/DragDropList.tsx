@@ -9,7 +9,12 @@ interface DragDropListProps<T> {
   keyExtractor: (item: T) => string;
 }
 
-export default function DragDropList<T>({ items, onReorder, renderItem, keyExtractor }: DragDropListProps<T>) {
+export default function DragDropList<T>({
+  items,
+  onReorder,
+  renderItem,
+  keyExtractor,
+}: DragDropListProps<T>) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const dragItem = useRef<number | null>(null);
   const dragOverItem = useRef<number | null>(null);
@@ -24,7 +29,11 @@ export default function DragDropList<T>({ items, onReorder, renderItem, keyExtra
   };
 
   const handleDragEnd = () => {
-    if (dragItem.current !== null && dragOverItem.current !== null && dragItem.current !== dragOverItem.current) {
+    if (
+      dragItem.current !== null &&
+      dragOverItem.current !== null &&
+      dragItem.current !== dragOverItem.current
+    ) {
       const newItems = [...items];
       const draggedItem = newItems[dragItem.current];
       newItems.splice(dragItem.current, 1);
@@ -46,7 +55,7 @@ export default function DragDropList<T>({ items, onReorder, renderItem, keyExtra
           onDragEnter={() => handleDragEnter(index)}
           onDragEnd={handleDragEnd}
           onDragOver={(e) => e.preventDefault()}
-          className={`cursor-move transition-all ${draggedIndex === index ? "opacity-50 scale-95" : ""}`}
+          className={`cursor-move transition-all ${draggedIndex === index ? "scale-95 opacity-50" : ""}`}
         >
           {renderItem(item, index, draggedIndex === index)}
         </div>

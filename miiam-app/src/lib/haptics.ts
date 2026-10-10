@@ -1,4 +1,6 @@
-export function hapticFeedback(pattern: "light" | "medium" | "heavy" | "success" | "error" = "light") {
+export function hapticFeedback(
+  pattern: "light" | "medium" | "heavy" | "success" | "error" = "light"
+) {
   if (typeof window === "undefined" || !navigator.vibrate) return;
 
   const patterns = {

@@ -15,7 +15,9 @@ export async function POST(req: NextRequest) {
   const logger = createRouteLogger("payment/create-order");
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -26,21 +28,21 @@ export async function POST(req: NextRequest) {
 
     // Rate limit: max 10 payment order creations per minute per IP
     const ip = getClientIp(req);
-    if (!await checkIpRateLimit(ip, 10, 60 * 1000)) {
+    if (!(await checkIpRateLimit(ip, 10, 60 * 1000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      return NextResponse.json(
-        { error: "Payment gateway not configured" },
-        { status: 503 }
-      );
+      return NextResponse.json({ error: "Payment gateway not configured" }, { status: 503 });
     }
 
     const body = await req.json();
     const parsed = createOrderSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: "Invalid input", details: parsed.error.flatten().fieldErrors }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
 
     const { amount, receipt, notes } = parsed.data;
@@ -65,9 +67,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: unknown) {
     logger.error({ err: error }, "Razorpay order creation failed");
-    return NextResponse.json(
-      { error: "Failed to create payment order" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to create payment order" }, { status: 500 });
   }
 }

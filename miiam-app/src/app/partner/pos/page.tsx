@@ -22,8 +22,14 @@ export default function PartnerPOS() {
   const [delayReason, setDelayReason] = useState("");
   const [prepTimeModal, setPrepTimeModal] = useState<{ orderId: string } | null>(null);
   const [prepTime, setPrepTime] = useState(15);
-  const [custHistoryModal, setCustHistoryModal] = useState<{ userId: string; orders: Order[] } | null>(null);
-  const [callMaskModal, setCallMaskModal] = useState<{ orderId: string; maskedNumber: string } | null>(null);
+  const [custHistoryModal, setCustHistoryModal] = useState<{
+    userId: string;
+    orders: Order[];
+  } | null>(null);
+  const [callMaskModal, setCallMaskModal] = useState<{
+    orderId: string;
+    maskedNumber: string;
+  } | null>(null);
   const [scheduledOrders, setScheduledOrders] = useState<Order[]>([]);
   const [showScheduled, setShowScheduled] = useState(false);
   const [batchMode, setBatchMode] = useState(false);
@@ -36,7 +42,7 @@ export default function PartnerPOS() {
 
   // Keep pending count ref in sync with orders state
   useEffect(() => {
-    prevPendingCountRef.current = orders.filter(o => o.status === "pending").length;
+    prevPendingCountRef.current = orders.filter((o) => o.status === "pending").length;
   }, [orders]);
 
   useEffect(() => {
@@ -116,7 +122,11 @@ export default function PartnerPOS() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders", filter: `vendor_id=eq.${vId}` },
-        async (payload: { eventType: string; new: Record<string, unknown>; old: Record<string, unknown> }) => {
+        async (payload: {
+          eventType: string;
+          new: Record<string, unknown>;
+          old: Record<string, unknown>;
+        }) => {
           const prevCount = prevPendingCountRef.current;
           await loadOrders(vId);
           if (prevPendingCountRef.current > prevCount && payload.eventType === "INSERT") {
@@ -133,7 +143,9 @@ export default function PartnerPOS() {
               gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
               osc.start(ctx.currentTime);
               osc.stop(ctx.currentTime + 0.4);
-            } catch { /* audio not supported */ }
+            } catch {
+              /* audio not supported */
+            }
           }
         }
       )
@@ -144,7 +156,11 @@ export default function PartnerPOS() {
     return channel;
   }
 
-  const updateStatus = async (orderId: string, newStatus: OrderStatus, extra?: Record<string, string | number | boolean>) => {
+  const updateStatus = async (
+    orderId: string,
+    newStatus: OrderStatus,
+    extra?: Record<string, string | number | boolean>
+  ) => {
     const { error } = await supabase
       .from("orders")
       .update({ status: newStatus, ...extra })
@@ -166,7 +182,9 @@ export default function PartnerPOS() {
           headers: { "Content-Type": "application/json", "x-csrf-token": "1" },
           body: JSON.stringify({ orderId, status: newStatus }),
         });
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
   };
 
@@ -184,10 +202,23 @@ export default function PartnerPOS() {
     setDelayReason("");
   };
 
-  const statusActions: Record<string, { label: string; next: OrderStatus; color: string }[] | null> = {
-    pending: [{ label: "Accept Order", next: "accepted", color: "bg-green-600 hover:bg-green-700" }],
-    accepted: [{ label: "Start Preparing", next: "preparing", color: "bg-amber-600 hover:bg-amber-700" }],
-    preparing: [{ label: "Mark Ready for Pickup", next: "ready_for_pickup", color: "bg-accent hover:bg-primary-hover" }],
+  const statusActions: Record<
+    string,
+    { label: string; next: OrderStatus; color: string }[] | null
+  > = {
+    pending: [
+      { label: "Accept Order", next: "accepted", color: "bg-green-600 hover:bg-green-700" },
+    ],
+    accepted: [
+      { label: "Start Preparing", next: "preparing", color: "bg-amber-600 hover:bg-amber-700" },
+    ],
+    preparing: [
+      {
+        label: "Mark Ready for Pickup",
+        next: "ready_for_pickup",
+        color: "bg-accent hover:bg-primary-hover",
+      },
+    ],
     ready_for_pickup: null,
     on_the_way: null,
   };
@@ -205,14 +236,20 @@ export default function PartnerPOS() {
   const terminalStatuses = ["delivered", "cancelled", "refunded"];
 
   if (loading) {
-    return <div className="p-8 text-center text-[var(--color-outline-variant)] font-medium animate-pulse">Loading POS...</div>;
+    return (
+      <div className="animate-pulse p-8 text-center font-medium text-[var(--color-outline-variant)]">
+        Loading POS...
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <span className="material-symbols-outlined text-6xl text-red-300 mb-4">error</span>
-        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center p-8 text-center">
+        <span className="material-symbols-outlined mb-4 text-6xl text-red-300">error</span>
+        <h2 className="mb-2 text-2xl font-extrabold text-[var(--color-on-surface)]">
+          Something went wrong
+        </h2>
         <p className="text-[var(--color-outline)]">{error}</p>
       </div>
     );
@@ -220,10 +257,16 @@ export default function PartnerPOS() {
 
   if (!vendorId) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">storefront</span>
-        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">No Vendor Account</h2>
-        <p className="text-[var(--color-outline)]">Register your store to start receiving orders.</p>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center p-8 text-center">
+        <span className="material-symbols-outlined mb-4 text-6xl text-[var(--color-outline-variant)]/60">
+          storefront
+        </span>
+        <h2 className="mb-2 text-2xl font-extrabold text-[var(--color-on-surface)]">
+          No Vendor Account
+        </h2>
+        <p className="text-[var(--color-outline)]">
+          Register your store to start receiving orders.
+        </p>
       </div>
     );
   }
@@ -233,407 +276,548 @@ export default function PartnerPOS() {
 
   return (
     <>
-    <div className="p-4 md:p-8 space-y-8">
-      <div>
-        <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Live Order POS</h1>
-        <p className="text-[var(--color-outline)]">Manage real-time incoming orders — your job ends when order is ready for pickup</p>
-      </div>
+      <div className="space-y-8 p-4 md:p-8">
+        <div>
+          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            Live Order POS
+          </h1>
+          <p className="text-[var(--color-outline)]">
+            Manage real-time incoming orders — your job ends when order is ready for pickup
+          </p>
+        </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Active</p>
-          <p className="text-4xl font-black text-[var(--color-primary)]">{activeOrders.length}</p>
-        </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Pending</p>
-          <p className="text-4xl font-black text-amber-600">{orders.filter((o) => o.status === "pending").length}</p>
-        </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Ready for Pickup</p>
-          <p className="text-4xl font-black text-accent">{orders.filter((o) => o.status === "ready_for_pickup").length}</p>
-        </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Delivered</p>
-          <p className="text-4xl font-black text-green-600">{orders.filter((o) => o.status === "delivered").length}</p>
-        </div>
-        <button onClick={() => setShowScheduled(!showScheduled)} className={`p-6 rounded-2xl shadow-sm border text-left transition-colors ${showScheduled ? "bg-accent/10 border-accent/40 dark:bg-accent/20 dark:border-accent/40" : "bg-[var(--color-surface-container-lowest)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
-          <p className="text-[var(--color-outline)] text-sm font-bold uppercase tracking-wider mb-1">Scheduled</p>
-          <p className="text-4xl font-black text-accent">{scheduledOrders.length}</p>
-        </button>
-      </div>
-
-      {/* Scheduled Orders */}
-      {showScheduled && (
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2">
-              <span className="material-symbols-outlined text-accent">calendar_month</span>
-              Scheduled Orders
-            </h2>
-            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Upcoming</span>
+        {/* Stats */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-5">
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <p className="mb-1 text-sm font-bold tracking-wider text-[var(--color-outline)] uppercase">
+              Active
+            </p>
+            <p className="text-4xl font-black text-[var(--color-primary)]">{activeOrders.length}</p>
           </div>
-          {scheduledOrders.length === 0 ? (
-            <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-12 text-center">
-              <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60 mb-3">calendar_month</span>
-              <p className="text-[var(--color-outline-variant)] font-medium">No scheduled orders</p>
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <p className="mb-1 text-sm font-bold tracking-wider text-[var(--color-outline)] uppercase">
+              Pending
+            </p>
+            <p className="text-4xl font-black text-amber-600">
+              {orders.filter((o) => o.status === "pending").length}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <p className="mb-1 text-sm font-bold tracking-wider text-[var(--color-outline)] uppercase">
+              Ready for Pickup
+            </p>
+            <p className="text-accent text-4xl font-black">
+              {orders.filter((o) => o.status === "ready_for_pickup").length}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <p className="mb-1 text-sm font-bold tracking-wider text-[var(--color-outline)] uppercase">
+              Delivered
+            </p>
+            <p className="text-4xl font-black text-green-600">
+              {orders.filter((o) => o.status === "delivered").length}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowScheduled(!showScheduled)}
+            className={`rounded-2xl border p-6 text-left shadow-sm transition-colors ${showScheduled ? "bg-accent/10 border-accent/40 dark:bg-accent/20 dark:border-accent/40" : "border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] hover:bg-[var(--color-surface-subtle)]"}`}
+          >
+            <p className="mb-1 text-sm font-bold tracking-wider text-[var(--color-outline)] uppercase">
+              Scheduled
+            </p>
+            <p className="text-accent text-4xl font-black">{scheduledOrders.length}</p>
+          </button>
+        </div>
+
+        {/* Scheduled Orders */}
+        {showScheduled && (
+          <section>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-xl font-bold text-[var(--color-on-surface)]">
+                <span className="material-symbols-outlined text-accent">calendar_month</span>
+                Scheduled Orders
+              </h2>
+              <span className="text-xs font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                Upcoming
+              </span>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              {scheduledOrders.map((order) => (
-                <div key={order.id} className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-5 shadow-sm border border-accent/40 border-l-4 border-l-accent">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <span className="text-lg font-black text-[var(--color-on-surface)]">#{order.id.slice(0, 8).toUpperCase()}</span>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="material-symbols-outlined text-sm text-accent">schedule</span>
-                        <span className="text-sm font-bold text-accent">
-                          {order.scheduled_delivery ? new Date(order.scheduled_delivery).toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" }) : "N/A"}
-                        </span>
-                        <span className="text-sm text-accent">
-                          {order.scheduled_delivery ? new Date(order.scheduled_delivery).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-xl font-black text-accent">₹{order.total_amount.toFixed(2)}</p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {order.items?.map((item, idx) => (
-                      <span key={idx} className="text-xs bg-[var(--color-surface-container)] px-2 py-1 rounded-lg font-medium text-[var(--color-on-surface-variant)]">
-                        {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Active Orders Feed */}
-      <section>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-[var(--color-on-surface)] flex items-center gap-2">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-              Active Orders
-            </h2>
-            <button
-              onClick={() => { setBatchMode(!batchMode); setBatchSelected(new Set()); }}
-              className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors ${
-                batchMode ? "bg-[var(--color-primary)] text-on-primary border-[var(--color-primary)]" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
-              }`}
-            >
-              Batch
-            </button>
-          </div>
-          <div className="flex items-center gap-2">
-            {batchMode && batchSelected.size > 0 && (
-              <>
-                <span className="text-xs text-[var(--color-outline)]">{batchSelected.size} selected</span>
-                {activeOrders.some(o => o.status === "pending" && batchSelected.has(o.id)) && (
-                  <button
-                    onClick={async () => {
-                      const ids = activeOrders.filter(o => o.status === "pending" && batchSelected.has(o.id)).map(o => o.id);
-                      for (const oid of ids) await updateStatus(oid, "accepted");
-                      setBatchSelected(new Set());
-                      setBatchMode(false);
-                    }}
-                    className="text-xs font-bold px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            {scheduledOrders.length === 0 ? (
+              <div className="rounded-3xl border-2 border-dashed border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-12 text-center">
+                <span className="material-symbols-outlined mb-3 text-5xl text-[var(--color-outline-variant)]/60">
+                  calendar_month
+                </span>
+                <p className="font-medium text-[var(--color-outline-variant)]">
+                  No scheduled orders
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                {scheduledOrders.map((order) => (
+                  <div
+                    key={order.id}
+                    className="border-accent/40 border-l-accent rounded-3xl border border-l-4 bg-[var(--color-surface-container-lowest)] p-5 shadow-sm"
                   >
-                    Accept All
-                  </button>
-                )}
-                {activeOrders.some(o => o.status === "pending" && batchSelected.has(o.id)) && (
-                  <button
-                    onClick={async () => {
-                      const ok = await confirm({
-                        title: "Decline All Orders",
-                        message: "Are you sure you want to decline all selected pending orders?",
-                        confirmText: "Decline All",
-                        variant: "danger",
-                      });
-                      if (!ok) return;
-                      const ids = activeOrders.filter(o => o.status === "pending" && batchSelected.has(o.id)).map(o => o.id);
-                      for (const oid of ids) await updateStatus(oid, "cancelled");
-                      setBatchSelected(new Set());
-                      setBatchMode(false);
-                    }}
-                    className="text-xs font-bold px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                  >
-                    Decline All
-                  </button>
-                )}
-                {activeOrders.some(o => o.status === "accepted" && batchSelected.has(o.id)) && (
-                  <button
-                    onClick={async () => {
-                      const ids = activeOrders.filter(o => o.status === "accepted" && batchSelected.has(o.id)).map(o => o.id);
-                      for (const oid of ids) await updateStatus(oid, "preparing", { estimated_prep_time: 15 });
-                      setBatchSelected(new Set());
-                      setBatchMode(false);
-                    }}
-                    className="text-xs font-bold px-3 py-1.5 bg-amber-600 text-white rounded-lg hover:bg-amber-700"
-                  >
-                    Start All
-                  </button>
-                )}
-              </>
-            )}
-            <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Real-time</span>
-          </div>
-        </div>
-
-        {activeOrders.length === 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] border-2 border-dashed border-[var(--color-border-subtle)] rounded-3xl p-8 md:p-16 text-center">
-            <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">check_circle</span>
-            <p className="text-[var(--color-outline-variant)] font-medium text-lg">All caught up!</p>
-            <p className="text-[var(--color-outline-variant)]/60 text-sm mt-1">Waiting for new orders...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-            {activeOrders.map((order) => {
-              const actions = statusActions[order.status];
-              return (
-                <div
-                  key={order.id}
-                  className={`bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 shadow-sm border transition-all ${
-                    batchSelected.has(order.id) ? "border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20" : "border-[var(--color-border-subtle)] hover:shadow-md"
-                  }`}
-                >
-                  {batchMode && (
-                    <div className="flex items-center gap-3 mb-3">
-                      <input
-                        type="checkbox"
-                        checked={batchSelected.has(order.id)}
-                        onChange={() => {
-                          const next = new Set(batchSelected);
-                          if (next.has(order.id)) next.delete(order.id); else next.add(order.id);
-                          setBatchSelected(next);
-                        }}
-                        className="w-4 h-4 accent-[var(--color-primary)]"
-                      />
-                      <span className="text-xs text-[var(--color-outline)]">Select</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
+                    <div className="mb-3 flex items-start justify-between">
+                      <div>
                         <span className="text-lg font-black text-[var(--color-on-surface)]">
                           #{order.id.slice(0, 8).toUpperCase()}
                         </span>
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${statusBadge[order.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}>
-                          {order.status.replace(/_/g, " ")}
-                        </span>
-                      </div>
-                      <p className="text-[var(--color-outline-variant)] text-xs font-medium">
-                        {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                        {" • "}
-                        {order.payment_method === "wallet" ? "Wallet" : "Online"}
-                      </p>
-                      {order.user_id && (
-                        <div className="flex items-center gap-2 mt-1">
-                          <button
-                            onClick={async () => {
-                              const customerId = order.user_id;
-                              if (!customerId) return;
-                              const { data: pastOrders } = await supabase
-                                .from("orders")
-                                .select("id, status, total_amount, placed_at, items:order_items(menu_item_id, quantity, unit_price)")
-                                .eq("user_id", customerId)
-                                .eq("vendor_id", vendorId)
-                                .neq("id", order.id)
-                                .order("placed_at", { ascending: false })
-                                .limit(10);
-                              setCustHistoryModal({ userId: customerId, orders: pastOrders || [] });
-                            }}
-                            className="text-[10px] text-[var(--color-primary)] font-bold hover:underline"
-                          >
-                            View customer history
-                          </button>
-                          <span className="text-[var(--color-outline-variant)]/60">|</span>
-                          <button
-                            onClick={() => {
-                              const masked = `+1-800-MIIAM-${order.id.slice(-4).toUpperCase()}`;
-                              navigator.clipboard.writeText(masked);
-                              setCallMaskModal({ orderId: order.id, maskedNumber: masked });
-                            }}
-                            className="text-[10px] text-green-600 font-bold hover:underline flex items-center gap-1"
-                          >
-                            <span className="material-symbols-outlined text-[12px]">call</span>
-                            Call Customer
-                          </button>
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-accent text-sm">
+                            schedule
+                          </span>
+                          <span className="text-accent text-sm font-bold">
+                            {order.scheduled_delivery
+                              ? new Date(order.scheduled_delivery).toLocaleDateString([], {
+                                  weekday: "short",
+                                  month: "short",
+                                  day: "numeric",
+                                })
+                              : "N/A"}
+                          </span>
+                          <span className="text-accent text-sm">
+                            {order.scheduled_delivery
+                              ? new Date(order.scheduled_delivery).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : ""}
+                          </span>
                         </div>
-                      )}
+                      </div>
+                      <p className="text-accent text-xl font-black">
+                        ₹{order.total_amount.toFixed(2)}
+                      </p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-black text-[var(--color-primary)]">₹{order.total_amount.toFixed(2)}</p>
-                      {order.delivery_address && (
-                        <p className="text-[10px] text-[var(--color-outline-variant)] mt-1 max-w-[160px] truncate">{order.delivery_address}</p>
-                      )}
+                    <div className="flex flex-wrap gap-2">
+                      {order.items?.map((item, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-lg bg-[var(--color-surface-container)] px-2 py-1 text-xs font-medium text-[var(--color-on-surface-variant)]"
+                        >
+                          {item.quantity}x {menuItemNames.get(item.menu_item_id)?.name || "Item"}
+                        </span>
+                      ))}
                     </div>
                   </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
 
-                  <div className="space-y-2 mb-6 bg-[var(--color-surface-subtle)] p-4 rounded-2xl border border-[var(--color-border-subtle)]">
-                    {order.items?.map((item, idx) => (
-                      <div key={idx}>
-                        <div className="flex justify-between items-center text-sm">
-                          <p className="text-[var(--color-on-surface)] font-bold">
-                            <span className="text-[var(--color-outline-variant)] mr-2">{item.quantity}x</span>
-                            {menuItemNames.get(item.menu_item_id)?.name || "Unknown Item"}
-                          </p>
-                          <p className="text-[var(--color-outline)] font-medium">
-                            ₹{(item.unit_price * item.quantity).toFixed(0)}
-                          </p>
+        {/* Active Orders Feed */}
+        <section>
+          <div className="mb-6 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="flex items-center gap-2 text-xl font-bold text-[var(--color-on-surface)]">
+                <span className="h-2 w-2 animate-ping rounded-full bg-red-500"></span>
+                Active Orders
+              </h2>
+              <button
+                onClick={() => {
+                  setBatchMode(!batchMode);
+                  setBatchSelected(new Set());
+                }}
+                className={`rounded-lg border px-3 py-1.5 text-xs font-bold transition-colors ${
+                  batchMode
+                    ? "text-on-primary border-[var(--color-primary)] bg-[var(--color-primary)]"
+                    : "border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-outline)] hover:bg-[var(--color-surface-subtle)]"
+                }`}
+              >
+                Batch
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              {batchMode && batchSelected.size > 0 && (
+                <>
+                  <span className="text-xs text-[var(--color-outline)]">
+                    {batchSelected.size} selected
+                  </span>
+                  {activeOrders.some((o) => o.status === "pending" && batchSelected.has(o.id)) && (
+                    <button
+                      onClick={async () => {
+                        const ids = activeOrders
+                          .filter((o) => o.status === "pending" && batchSelected.has(o.id))
+                          .map((o) => o.id);
+                        for (const oid of ids) await updateStatus(oid, "accepted");
+                        setBatchSelected(new Set());
+                        setBatchMode(false);
+                      }}
+                      className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-green-700"
+                    >
+                      Accept All
+                    </button>
+                  )}
+                  {activeOrders.some((o) => o.status === "pending" && batchSelected.has(o.id)) && (
+                    <button
+                      onClick={async () => {
+                        const ok = await confirm({
+                          title: "Decline All Orders",
+                          message: "Are you sure you want to decline all selected pending orders?",
+                          confirmText: "Decline All",
+                          variant: "danger",
+                        });
+                        if (!ok) return;
+                        const ids = activeOrders
+                          .filter((o) => o.status === "pending" && batchSelected.has(o.id))
+                          .map((o) => o.id);
+                        for (const oid of ids) await updateStatus(oid, "cancelled");
+                        setBatchSelected(new Set());
+                        setBatchMode(false);
+                      }}
+                      className="rounded-lg bg-red-500 px-3 py-1.5 text-xs font-bold text-white hover:bg-red-600"
+                    >
+                      Decline All
+                    </button>
+                  )}
+                  {activeOrders.some((o) => o.status === "accepted" && batchSelected.has(o.id)) && (
+                    <button
+                      onClick={async () => {
+                        const ids = activeOrders
+                          .filter((o) => o.status === "accepted" && batchSelected.has(o.id))
+                          .map((o) => o.id);
+                        for (const oid of ids)
+                          await updateStatus(oid, "preparing", { estimated_prep_time: 15 });
+                        setBatchSelected(new Set());
+                        setBatchMode(false);
+                      }}
+                      className="rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-amber-700"
+                    >
+                      Start All
+                    </button>
+                  )}
+                </>
+              )}
+              <span className="text-xs font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                Real-time
+              </span>
+            </div>
+          </div>
+
+          {activeOrders.length === 0 ? (
+            <div className="rounded-3xl border-2 border-dashed border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 text-center md:p-16">
+              <span className="material-symbols-outlined mb-4 text-6xl text-[var(--color-outline-variant)]/60">
+                check_circle
+              </span>
+              <p className="text-lg font-medium text-[var(--color-outline-variant)]">
+                All caught up!
+              </p>
+              <p className="mt-1 text-sm text-[var(--color-outline-variant)]/60">
+                Waiting for new orders...
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+              {activeOrders.map((order) => {
+                const actions = statusActions[order.status];
+                return (
+                  <div
+                    key={order.id}
+                    className={`rounded-3xl border bg-[var(--color-surface-container-lowest)] p-6 shadow-sm transition-all ${
+                      batchSelected.has(order.id)
+                        ? "border-[var(--color-primary)] ring-2 ring-[var(--color-primary)]/20"
+                        : "border-[var(--color-border-subtle)] hover:shadow-md"
+                    }`}
+                  >
+                    {batchMode && (
+                      <div className="mb-3 flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={batchSelected.has(order.id)}
+                          onChange={() => {
+                            const next = new Set(batchSelected);
+                            if (next.has(order.id)) next.delete(order.id);
+                            else next.add(order.id);
+                            setBatchSelected(next);
+                          }}
+                          className="h-4 w-4 accent-[var(--color-primary)]"
+                        />
+                        <span className="text-xs text-[var(--color-outline)]">Select</span>
+                      </div>
+                    )}
+                    <div className="mb-4 flex items-start justify-between">
+                      <div>
+                        <div className="mb-1 flex items-center gap-3">
+                          <span className="text-lg font-black text-[var(--color-on-surface)]">
+                            #{order.id.slice(0, 8).toUpperCase()}
+                          </span>
+                          <span
+                            className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-widest uppercase ${statusBadge[order.status] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"}`}
+                          >
+                            {order.status.replace(/_/g, " ")}
+                          </span>
                         </div>
-                        {item.special_notes && (
-                          <p className="text-xs text-amber-600 ml-6 mt-0.5">📝 {item.special_notes}</p>
+                        <p className="text-xs font-medium text-[var(--color-outline-variant)]">
+                          {new Date(order.placed_at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          {" • "}
+                          {order.payment_method === "wallet" ? "Wallet" : "Online"}
+                        </p>
+                        {order.user_id && (
+                          <div className="mt-1 flex items-center gap-2">
+                            <button
+                              onClick={async () => {
+                                const customerId = order.user_id;
+                                if (!customerId) return;
+                                const { data: pastOrders } = await supabase
+                                  .from("orders")
+                                  .select(
+                                    "id, status, total_amount, placed_at, items:order_items(menu_item_id, quantity, unit_price)"
+                                  )
+                                  .eq("user_id", customerId)
+                                  .eq("vendor_id", vendorId)
+                                  .neq("id", order.id)
+                                  .order("placed_at", { ascending: false })
+                                  .limit(10);
+                                setCustHistoryModal({
+                                  userId: customerId,
+                                  orders: pastOrders || [],
+                                });
+                              }}
+                              className="text-[10px] font-bold text-[var(--color-primary)] hover:underline"
+                            >
+                              View customer history
+                            </button>
+                            <span className="text-[var(--color-outline-variant)]/60">|</span>
+                            <button
+                              onClick={() => {
+                                const masked = `+1-800-MIIAM-${order.id.slice(-4).toUpperCase()}`;
+                                navigator.clipboard.writeText(masked);
+                                setCallMaskModal({ orderId: order.id, maskedNumber: masked });
+                              }}
+                              className="flex items-center gap-1 text-[10px] font-bold text-green-600 hover:underline"
+                            >
+                              <span className="material-symbols-outlined text-[12px]">call</span>
+                              Call Customer
+                            </button>
+                          </div>
                         )}
                       </div>
-                    ))}
-                    {order.special_instructions && (
-                      <div className="mt-3 pt-3 border-t border-[var(--color-border-subtle)]">
-                        <p className="text-xs text-[var(--color-outline)]">
-                          <span className="font-bold">Note: </span>{order.special_instructions}
+                      <div className="text-right">
+                        <p className="text-2xl font-black text-[var(--color-primary)]">
+                          ₹{order.total_amount.toFixed(2)}
                         </p>
+                        {order.delivery_address && (
+                          <p className="mt-1 max-w-[160px] truncate text-[10px] text-[var(--color-outline-variant)]">
+                            {order.delivery_address}
+                          </p>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
 
-                  <div className="flex gap-3">
-                    {actions ? (
-                      actions.map((action, i) => (
+                    <div className="mb-6 space-y-2 rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] p-4">
+                      {order.items?.map((item, idx) => (
+                        <div key={idx}>
+                          <div className="flex items-center justify-between text-sm">
+                            <p className="font-bold text-[var(--color-on-surface)]">
+                              <span className="mr-2 text-[var(--color-outline-variant)]">
+                                {item.quantity}x
+                              </span>
+                              {menuItemNames.get(item.menu_item_id)?.name || "Unknown Item"}
+                            </p>
+                            <p className="font-medium text-[var(--color-outline)]">
+                              ₹{(item.unit_price * item.quantity).toFixed(0)}
+                            </p>
+                          </div>
+                          {item.special_notes && (
+                            <p className="mt-0.5 ml-6 text-xs text-amber-600">
+                              📝 {item.special_notes}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                      {order.special_instructions && (
+                        <div className="mt-3 border-t border-[var(--color-border-subtle)] pt-3">
+                          <p className="text-xs text-[var(--color-outline)]">
+                            <span className="font-bold">Note: </span>
+                            {order.special_instructions}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex gap-3">
+                      {actions ? (
+                        actions.map((action, i) => (
+                          <button
+                            key={i}
+                            onClick={() => {
+                              if (action.label === "Start Preparing") {
+                                setPrepTimeModal({ orderId: order.id });
+                              } else {
+                                updateStatus(order.id, action.next);
+                              }
+                            }}
+                            className={`flex-1 ${action.color} rounded-xl py-4 font-bold text-white shadow-lg shadow-slate-200 transition-all active:scale-95 dark:shadow-none`}
+                          >
+                            {action.label}
+                          </button>
+                        ))
+                      ) : order.status === "ready_for_pickup" ? (
+                        <div className="bg-accent/10 text-accent border-accent/20 dark:bg-accent/20 dark:text-accent dark:border-accent/40 flex-1 rounded-xl border py-4 text-center text-sm font-bold">
+                          <span className="material-symbols-outlined mr-1 align-middle text-lg">
+                            pedal_bike
+                          </span>
+                          Waiting for Rider to Pick Up
+                        </div>
+                      ) : order.status === "on_the_way" ? (
+                        <div className="flex-1 rounded-xl border border-cyan-200 bg-cyan-50 py-4 text-center text-sm font-bold text-cyan-700 dark:border-cyan-800 dark:bg-cyan-900/20 dark:text-cyan-300">
+                          Out for Delivery — Rider on the Way
+                        </div>
+                      ) : null}
+                      {order.delay_minutes && order.delay_minutes > 0 ? (
+                        <div className="mt-2 flex w-full items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+                          <span className="material-symbols-outlined text-sm">warning</span>
+                          Delayed — {order.delay_reason || "Running late"} (+{order.delay_minutes}{" "}
+                          min)
+                        </div>
+                      ) : ["accepted", "preparing"].includes(order.status) ? (
                         <button
-                          key={i}
-                          onClick={() => {
-                            if (action.label === "Start Preparing") {
-                              setPrepTimeModal({ orderId: order.id });
-                            } else {
-                              updateStatus(order.id, action.next);
-                            }
-                          }}
-                          className={`flex-1 ${action.color} text-white py-4 rounded-xl font-bold transition-all active:scale-95 shadow-lg shadow-slate-200 dark:shadow-none`}
+                          onClick={() => setDelayModal({ orderId: order.id })}
+                          className="mt-2 w-full rounded-xl border border-orange-200 py-2 text-xs font-bold text-orange-600 transition-colors hover:bg-orange-50"
                         >
-                          {action.label}
+                          <span className="material-symbols-outlined mr-1 align-middle text-sm">
+                            schedule
+                          </span>
+                          Notify Delay
                         </button>
-                      ))
-                    ) : order.status === "ready_for_pickup" ? (
-                      <div className="flex-1 text-center py-4 rounded-xl bg-accent/10 text-accent font-bold text-sm border border-accent/20 dark:bg-accent/20 dark:text-accent dark:border-accent/40">
-                        <span className="material-symbols-outlined align-middle text-lg mr-1">pedal_bike</span>
-                        Waiting for Rider to Pick Up
-                      </div>
-                    ) : order.status === "on_the_way" ? (
-                      <div className="flex-1 text-center py-4 rounded-xl bg-cyan-50 text-cyan-700 font-bold text-sm border border-cyan-200 dark:bg-cyan-900/20 dark:text-cyan-300 dark:border-cyan-800">
-                        Out for Delivery — Rider on the Way
-                      </div>
-                    ) : null}
-                    {order.delay_minutes && order.delay_minutes > 0 ? (
-                      <div className="w-full mt-2 py-2 px-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold flex items-center gap-2 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
-                        <span className="material-symbols-outlined text-sm">warning</span>
-                        Delayed — {order.delay_reason || "Running late"} (+{order.delay_minutes} min)
-                      </div>
-                    ) : ["accepted", "preparing"].includes(order.status) ? (
-                      <button
-                        onClick={() => setDelayModal({ orderId: order.id })}
-                        className="w-full mt-2 py-2 rounded-xl border border-orange-200 text-orange-600 hover:bg-orange-50 transition-colors text-xs font-bold"
-                      >
-                        <span className="material-symbols-outlined align-middle text-sm mr-1">schedule</span>
-                        Notify Delay
-                      </button>
-                    ) : null}
-                    {order.status === "pending" && (
-                      <button
-                        onClick={async () => {
-                          const ok = await confirm({
-                            title: "Decline Order",
-                            message: "Are you sure you want to decline this order?",
-                            confirmText: "Decline",
-                            variant: "danger",
-                          });
-                          if (ok) updateStatus(order.id, "cancelled");
-                        }}
-                        className="px-6 border border-red-200 text-red-400 hover:text-red-600 hover:border-red-300 transition-colors rounded-xl font-bold text-xs"
-                      >
-                        Decline
-                      </button>
-                    )}
+                      ) : null}
+                      {order.status === "pending" && (
+                        <button
+                          onClick={async () => {
+                            const ok = await confirm({
+                              title: "Decline Order",
+                              message: "Are you sure you want to decline this order?",
+                              confirmText: "Decline",
+                              variant: "danger",
+                            });
+                            if (ok) updateStatus(order.id, "cancelled");
+                          }}
+                          className="rounded-xl border border-red-200 px-6 text-xs font-bold text-red-400 transition-colors hover:border-red-300 hover:text-red-600"
+                        >
+                          Decline
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+                );
+              })}
+            </div>
+          )}
+        </section>
 
-      {/* Past Orders */}
-      <section className="pt-4">
-        <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-6">Completed / Cancelled</h2>
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl overflow-hidden shadow-sm border border-[var(--color-border-subtle)]">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <caption className="sr-only">Past completed and cancelled orders</caption>
-              <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
-                <tr>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Order</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Items</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Status</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Amount</th>
-                  <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Time</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[var(--color-border-subtle)]">
-                {pastOrders.slice(0, 15).map((order) => (
-                  <tr key={order.id} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
-                    <td className="p-4 text-xs font-bold text-[var(--color-on-surface)]">
-                      #{order.id.slice(0, 8).toUpperCase()}
-                    </td>
-                    <td className="p-4 text-xs text-[var(--color-outline)] font-medium">
-                      {order.items?.length || 0} items
-                    </td>
-                    <td className="p-4">
-                      <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                        order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                        order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                        "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
-                      }`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="p-4 text-xs font-black text-[var(--color-on-surface)] text-right">
-                      ₹{order.total_amount.toFixed(0)}
-                    </td>
-                    <td className="p-4 text-xs text-[var(--color-outline-variant)] text-right">
-                      {new Date(order.placed_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                    </td>
+        {/* Past Orders */}
+        <section className="pt-4">
+          <h2 className="mb-6 text-xl font-bold text-[var(--color-on-surface)]">
+            Completed / Cancelled
+          </h2>
+          <div className="overflow-hidden rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <caption className="sr-only">Past completed and cancelled orders</caption>
+                <thead className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
+                  <tr>
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Order
+                    </th>
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Items
+                    </th>
+                    <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Status
+                    </th>
+                    <th className="p-4 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Amount
+                    </th>
+                    <th className="p-4 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Time
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-[var(--color-border-subtle)]">
+                  {pastOrders.slice(0, 15).map((order) => (
+                    <tr
+                      key={order.id}
+                      className="transition-colors hover:bg-[var(--color-surface-subtle)]"
+                    >
+                      <td className="p-4 text-xs font-bold text-[var(--color-on-surface)]">
+                        #{order.id.slice(0, 8).toUpperCase()}
+                      </td>
+                      <td className="p-4 text-xs font-medium text-[var(--color-outline)]">
+                        {order.items?.length || 0} items
+                      </td>
+                      <td className="p-4">
+                        <span
+                          className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${
+                            order.status === "delivered"
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                              : order.status === "cancelled"
+                                ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                                : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right text-xs font-black text-[var(--color-on-surface)]">
+                        ₹{order.total_amount.toFixed(0)}
+                      </td>
+                      <td className="p-4 text-right text-xs text-[var(--color-outline-variant)]">
+                        {new Date(order.placed_at).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       </div>
 
       {/* Delay Notification Modal */}
       {delayModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setDelayModal(null)} role="dialog" aria-modal="true" aria-labelledby="delay-modal-title">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center gap-3 mb-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setDelayModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delay-modal-title"
+        >
+          <div
+            className="w-full max-w-sm rounded-3xl bg-[var(--color-surface-container-lowest)] p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-3xl text-orange-500">schedule</span>
               <div>
-                <h3 id="delay-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Notify Delay</h3>
-                <p className="text-xs text-[var(--color-outline)]">Inform customer about the delay</p>
+                <h3
+                  id="delay-modal-title"
+                  className="text-lg font-extrabold text-[var(--color-on-surface)]"
+                >
+                  Notify Delay
+                </h3>
+                <p className="text-xs text-[var(--color-outline)]">
+                  Inform customer about the delay
+                </p>
               </div>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider block mb-1">Delay (minutes)</label>
+                <label className="mb-1 block text-xs font-bold tracking-wider text-[var(--color-on-surface-variant)] uppercase">
+                  Delay (minutes)
+                </label>
                 <div className="flex gap-2">
                   {[5, 10, 15, 20, 30].map((m) => (
                     <button
                       key={m}
                       onClick={() => setDelayMinutes(m)}
-                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
+                      className={`flex-1 rounded-xl py-3 text-sm font-bold transition-all ${
                         delayMinutes === m
                           ? "bg-orange-500 text-white shadow-md"
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
@@ -645,16 +829,23 @@ export default function PartnerPOS() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider block mb-1">Reason (optional)</label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {["High order volume", "Staff shortage", "Ingredient unavailable", "Equipment issue"].map((r) => (
+                <label className="mb-1 block text-xs font-bold tracking-wider text-[var(--color-on-surface-variant)] uppercase">
+                  Reason (optional)
+                </label>
+                <div className="mb-2 flex flex-wrap gap-2">
+                  {[
+                    "High order volume",
+                    "Staff shortage",
+                    "Ingredient unavailable",
+                    "Equipment issue",
+                  ].map((r) => (
                     <button
                       key={r}
                       onClick={() => setDelayReason(r)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                      className={`rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
                         delayReason === r
-                          ? "bg-orange-100 text-orange-700 border border-orange-300 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800"
-                          : "bg-[var(--color-surface-container)] text-[var(--color-outline)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-container-high)]"
+                          ? "border border-orange-300 bg-orange-100 text-orange-700 dark:border-orange-800 dark:bg-orange-900/30 dark:text-orange-300"
+                          : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container)] text-[var(--color-outline)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
                       {r}
@@ -666,19 +857,19 @@ export default function PartnerPOS() {
                   placeholder="Or type a custom reason..."
                   value={delayReason}
                   onChange={(e) => setDelayReason(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-[var(--color-border-subtle)] text-sm focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:ring-2 focus:ring-orange-300 focus:outline-none"
                 />
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setDelayModal(null)}
-                  className="flex-1 py-3 rounded-xl border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold text-sm hover:bg-[var(--color-surface-subtle)] transition-all"
+                  className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 text-sm font-bold text-[var(--color-on-surface-variant)] transition-all hover:bg-[var(--color-surface-subtle)]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => notifyDelay(delayModal.orderId)}
-                  className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-md"
+                  className="flex-1 rounded-xl bg-orange-500 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-orange-600"
                 >
                   Notify Customer
                 </button>
@@ -690,52 +881,79 @@ export default function PartnerPOS() {
 
       {/* Prep Time Modal */}
       {prepTimeModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPrepTimeModal(null)} role="dialog" aria-modal="true" aria-labelledby="prep-time-modal-title">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-sm w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center gap-3 mb-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setPrepTimeModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="prep-time-modal-title"
+        >
+          <div
+            className="w-full max-w-sm rounded-3xl bg-[var(--color-surface-container-lowest)] p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center gap-3">
               <span className="material-symbols-outlined text-3xl text-amber-500">timer</span>
               <div>
-                <h3 id="prep-time-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Set Preparation Time</h3>
-                <p className="text-xs text-[var(--color-outline)]">How long will this order take to prepare?</p>
+                <h3
+                  id="prep-time-modal-title"
+                  className="text-lg font-extrabold text-[var(--color-on-surface)]"
+                >
+                  Set Preparation Time
+                </h3>
+                <p className="text-xs text-[var(--color-outline)]">
+                  How long will this order take to prepare?
+                </p>
               </div>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[var(--color-on-surface-variant)] uppercase tracking-wider block mb-3">Estimated time</label>
+                <label className="mb-3 block text-xs font-bold tracking-wider text-[var(--color-on-surface-variant)] uppercase">
+                  Estimated time
+                </label>
                 <div className="flex gap-2">
                   {[5, 10, 15, 20, 25, 30, 45, 60].map((m) => (
                     <button
                       key={m}
                       onClick={() => setPrepTime(m)}
-                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
+                      className={`flex-1 rounded-xl py-3 text-sm font-bold transition-all ${
                         prepTime === m
                           ? "bg-amber-500 text-white shadow-md"
                           : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                       }`}
                     >
-                      {m < 60 ? `${m}m` : `${Math.floor(m/60)}h`}
+                      {m < 60 ? `${m}m` : `${Math.floor(m / 60)}h`}
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="bg-amber-50 rounded-xl p-3 text-xs text-amber-700 flex items-start gap-2 dark:bg-amber-900/20 dark:text-amber-300">
+              <div className="flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
                 <span className="material-symbols-outlined text-sm">info</span>
-                <p>The customer will see &ldquo;Estimated ready by {new Date(Date.now() + prepTime * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}&rdquo;</p>
+                <p>
+                  The customer will see &ldquo;Estimated ready by{" "}
+                  {new Date(Date.now() + prepTime * 60000).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  &rdquo;
+                </p>
               </div>
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setPrepTimeModal(null)}
-                  className="flex-1 py-3 rounded-xl border border-[var(--color-border-subtle)] text-[var(--color-on-surface-variant)] font-bold text-sm hover:bg-[var(--color-surface-subtle)] transition-all"
+                  className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 text-sm font-bold text-[var(--color-on-surface-variant)] transition-all hover:bg-[var(--color-surface-subtle)]"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => {
-                    updateStatus(prepTimeModal.orderId, "preparing", { estimated_prep_time: prepTime });
+                    updateStatus(prepTimeModal.orderId, "preparing", {
+                      estimated_prep_time: prepTime,
+                    });
                     setPrepTimeModal(null);
                     setPrepTime(15);
                   }}
-                  className="flex-1 py-3 rounded-xl bg-amber-500 text-white font-bold text-sm hover:bg-amber-600 transition-all shadow-md"
+                  className="flex-1 rounded-xl bg-amber-500 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-amber-600"
                 >
                   Start Preparing
                 </button>
@@ -747,28 +965,62 @@ export default function PartnerPOS() {
 
       {/* Customer History Modal */}
       {custHistoryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCustHistoryModal(null)} role="dialog" aria-modal="true" aria-labelledby="cust-history-modal-title">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl p-6 max-w-lg w-full shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 id="cust-history-modal-title" className="text-lg font-extrabold text-[var(--color-on-surface)]">Customer Order History</h3>
-              <button onClick={() => setCustHistoryModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setCustHistoryModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cust-history-modal-title"
+        >
+          <div
+            className="max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-3xl bg-[var(--color-surface-container-lowest)] p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h3
+                id="cust-history-modal-title"
+                className="text-lg font-extrabold text-[var(--color-on-surface)]"
+              >
+                Customer Order History
+              </h3>
+              <button
+                onClick={() => setCustHistoryModal(null)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
             {custHistoryModal.orders.length === 0 ? (
-              <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No previous orders from this customer</p>
+              <p className="py-8 text-center text-sm text-[var(--color-outline-variant)]">
+                No previous orders from this customer
+              </p>
             ) : (
               <div className="space-y-3">
                 {custHistoryModal.orders.map((o) => (
-                  <div key={o.id} className="bg-[var(--color-surface-subtle)] rounded-xl p-4 border border-[var(--color-border-subtle)]">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-bold text-[var(--color-on-surface)]">#{o.id.slice(0, 8).toUpperCase()}</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        o.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : o.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
-                      }`}>{o.status}</span>
+                  <div
+                    key={o.id}
+                    className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] p-4"
+                  >
+                    <div className="mb-2 flex items-start justify-between">
+                      <span className="text-xs font-bold text-[var(--color-on-surface)]">
+                        #{o.id.slice(0, 8).toUpperCase()}
+                      </span>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                          o.status === "delivered"
+                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                            : o.status === "cancelled"
+                              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                              : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                        }`}
+                      >
+                        {o.status}
+                      </span>
                     </div>
                     <div className="text-xs text-[var(--color-outline)]">
-                      {new Date(o.placed_at).toLocaleDateString()} • ₹{o.total_amount.toFixed(2)} • {o.items?.length || 0} items
+                      {new Date(o.placed_at).toLocaleDateString()} • ₹{o.total_amount.toFixed(2)} •{" "}
+                      {o.items?.length || 0} items
                     </div>
                   </div>
                 ))}
@@ -780,32 +1032,60 @@ export default function PartnerPOS() {
 
       {/* Call Masking Modal */}
       {callMaskModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setCallMaskModal(null)} role="dialog" aria-modal="true" aria-labelledby="call-mask-modal-title">
-          <div className="bg-[var(--color-surface-container-lowest)] w-full max-w-sm rounded-3xl p-6" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 id="call-mask-modal-title" className="font-extrabold text-[var(--color-on-surface)]">Connect Call</h3>
-              <button onClick={() => setCallMaskModal(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center" aria-label="Close">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+          onClick={() => setCallMaskModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="call-mask-modal-title"
+        >
+          <div
+            className="w-full max-w-sm rounded-3xl bg-[var(--color-surface-container-lowest)] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <h3
+                id="call-mask-modal-title"
+                className="font-extrabold text-[var(--color-on-surface)]"
+              >
+                Connect Call
+              </h3>
+              <button
+                onClick={() => setCallMaskModal(null)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+                aria-label="Close"
+              >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto dark:bg-green-900/30">
-                <span className="material-symbols-outlined text-3xl text-green-600 dark:text-green-400" style={{ fontVariationSettings: "'FILL' 1" }}>call</span>
+            <div className="space-y-4 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                <span
+                  className="material-symbols-outlined text-3xl text-green-600 dark:text-green-400"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  call
+                </span>
               </div>
               <div>
                 <p className="text-sm text-[var(--color-outline)]">Masked Number</p>
-                <p className="text-xl font-black text-[var(--color-on-surface)] tracking-wider">{callMaskModal.maskedNumber}</p>
+                <p className="text-xl font-black tracking-wider text-[var(--color-on-surface)]">
+                  {callMaskModal.maskedNumber}
+                </p>
               </div>
-              <p className="text-xs text-[var(--color-outline-variant)]">This masked number connects you to the customer without revealing either party&apos;s real number. Number copied to clipboard.</p>
-              <div className="bg-amber-50 rounded-xl p-3 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
-                <p className="text-xs text-amber-700 flex items-center gap-1 dark:text-amber-300">
+              <p className="text-xs text-[var(--color-outline-variant)]">
+                This masked number connects you to the customer without revealing either
+                party&apos;s real number. Number copied to clipboard.
+              </p>
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-900/20">
+                <p className="flex items-center gap-1 text-xs text-amber-700 dark:text-amber-300">
                   <span className="material-symbols-outlined text-sm">info</span>
                   For production, configure Twilio proxy in your dashboard settings
                 </p>
               </div>
               <button
                 onClick={() => setCallMaskModal(null)}
-                className="block w-full py-3 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl hover:bg-[var(--color-primary-dim)] transition-colors"
+                className="text-on-primary block w-full rounded-xl bg-[var(--color-primary)] py-3 font-bold transition-colors hover:bg-[var(--color-primary-dim)]"
               >
                 Done
               </button>

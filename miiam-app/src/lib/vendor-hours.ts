@@ -13,9 +13,24 @@ export interface DaySchedule {
   is_closed: boolean;
 }
 
-export type WeekDay = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
+export type WeekDay =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
 
-const DAY_NAMES: WeekDay[] = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+const DAY_NAMES: WeekDay[] = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
 
 export function parseOpeningHours(hoursJson: string | null): Record<WeekDay, DaySchedule> | null {
   if (!hoursJson) return null;
@@ -32,7 +47,10 @@ export function parseOpeningHours(hoursJson: string | null): Record<WeekDay, Day
   }
 }
 
-export function isVendorOpen(hoursJson: string | null, timezone?: string): { open: boolean; nextOpen?: string } {
+export function isVendorOpen(
+  hoursJson: string | null,
+  timezone?: string
+): { open: boolean; nextOpen?: string } {
   const schedule = parseOpeningHours(hoursJson);
   if (!schedule) return { open: true };
 

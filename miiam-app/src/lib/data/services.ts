@@ -29,9 +29,19 @@ export const SERVICE_TIME_SLOTS = [
 
 export const SERVICE_CATEGORIES = [
   { id: "ac", name: "AC Service", icon: "ac_unit", color: "bg-accent/10 text-accent" },
-  { id: "cleaning", name: "Home Cleaning", icon: "cleaning_services", color: "bg-green-100 text-green-600" },
+  {
+    id: "cleaning",
+    name: "Home Cleaning",
+    icon: "cleaning_services",
+    color: "bg-green-100 text-green-600",
+  },
   { id: "plumbing", name: "Plumbing", icon: "plumbing", color: "bg-cyan-100 text-cyan-600" },
-  { id: "electrical", name: "Electrical", icon: "electrical_services", color: "bg-yellow-100 text-yellow-600" },
+  {
+    id: "electrical",
+    name: "Electrical",
+    icon: "electrical_services",
+    color: "bg-yellow-100 text-yellow-600",
+  },
   { id: "beauty", name: "Beauty & Spa", icon: "spa", color: "bg-pink-100 text-pink-600" },
   { id: "pest", name: "Pest Control", icon: "pest_control", color: "bg-red-100 text-red-600" },
   { id: "car", name: "Car Care", icon: "directions_car", color: "bg-accent/10 text-accent" },
@@ -69,7 +79,8 @@ export const services: ServiceData[] = [
     included: ["Complete interior cleaning", "Filter cleaning", "Coil cleaning", "Gas check"],
     warranty_days: 30,
     badge: "mostPopular",
-    description: "Get your AC units deep cleaned by certified technicians. Removes dust, mold, and bacteria for cleaner, healthier air.",
+    description:
+      "Get your AC units deep cleaned by certified technicians. Removes dust, mold, and bacteria for cleaner, healthier air.",
   },
   {
     id: "s2",
@@ -84,7 +95,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80",
     included: ["Gas refill", "Leak check", "Performance test"],
     warranty_days: 90,
-    description: "Professional AC gas refill service. Restores cooling efficiency and maintains optimal performance.",
+    description:
+      "Professional AC gas refill service. Restores cooling efficiency and maintains optimal performance.",
   },
   {
     id: "s3",
@@ -97,7 +109,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1631564591547-4d46fe7c9c0a?w=400&q=80",
     included: ["Diagnosis", "Repair", "Testing"],
     warranty_days: 30,
-    description: "Expert AC repair for all brands. Quick diagnosis and fix for cooling issues, noise, and electrical faults.",
+    description:
+      "Expert AC repair for all brands. Quick diagnosis and fix for cooling issues, noise, and electrical faults.",
   },
 
   // ── Cleaning Services ────────────────────────────
@@ -114,7 +127,8 @@ export const services: ServiceData[] = [
     included: ["All rooms", "Kitchen", "Bathrooms", "Balcony"],
     warranty_days: 7,
     badge: "bestSeller",
-    description: "Complete home cleaning service covering all rooms, kitchen, bathrooms, and balcony. Professional team with eco-friendly products.",
+    description:
+      "Complete home cleaning service covering all rooms, kitchen, bathrooms, and balcony. Professional team with eco-friendly products.",
   },
   {
     id: "s5",
@@ -127,7 +141,8 @@ export const services: ServiceData[] = [
     image: "/images/service_cleaning.png",
     included: ["Floor cleaning", "Tile cleaning", "Fitting cleaning", "Disinfection"],
     warranty_days: 7,
-    description: "Deep cleaning for your bathrooms. Removes stains, mold, and limescale. Sanitization included.",
+    description:
+      "Deep cleaning for your bathrooms. Removes stains, mold, and limescale. Sanitization included.",
   },
   {
     id: "s6",
@@ -140,7 +155,8 @@ export const services: ServiceData[] = [
     image: "/images/service_cleaning.png",
     included: ["Chimney cleaning", "Stove cleaning", "Countertops", "Tiles"],
     warranty_days: 7,
-    description: "Professional kitchen deep cleaning. Degreasing, sanitization, and complete appliance exterior cleaning.",
+    description:
+      "Professional kitchen deep cleaning. Degreasing, sanitization, and complete appliance exterior cleaning.",
   },
 
   // ── Plumbing Services ────────────────────────────
@@ -155,7 +171,8 @@ export const services: ServiceData[] = [
     image: "/images/service_plumbing.png",
     included: ["Inspection", "Washer replacement", "Thread check"],
     warranty_days: 30,
-    description: "Professional plumbing repair service. Fix leaking taps, faulty mixers, and replace washers.",
+    description:
+      "Professional plumbing repair service. Fix leaking taps, faulty mixers, and replace washers.",
   },
   {
     id: "s8",
@@ -168,7 +185,8 @@ export const services: ServiceData[] = [
     image: "/images/service_plumbing.png",
     included: ["Flush repair", "Tank cleaning", "Leak fix"],
     warranty_days: 30,
-    description: "Complete toilet repair service. Fix running toilets, clogs, flush issues, and leaky tanks.",
+    description:
+      "Complete toilet repair service. Fix running toilets, clogs, flush issues, and leaky tanks.",
   },
   {
     id: "s9",
@@ -181,7 +199,8 @@ export const services: ServiceData[] = [
     image: "/images/service_plumbing.png",
     included: ["Leak detection", "Pipe repair", "Waterproofing"],
     warranty_days: 90,
-    description: "Expert pipe leak detection and repair. Non-invasive techniques to find and fix hidden leaks.",
+    description:
+      "Expert pipe leak detection and repair. Non-invasive techniques to find and fix hidden leaks.",
   },
 
   // ── Electrical Services ──────────────────────────
@@ -196,7 +215,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80",
     included: ["Installation", "Wiring", "Testing"],
     warranty_days: 90,
-    description: "Professional fan installation service. Safe and secure installation with testing.",
+    description:
+      "Professional fan installation service. Safe and secure installation with testing.",
   },
   {
     id: "s11",
@@ -209,7 +229,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80",
     included: ["Inspection", "Switch replacement", "Testing"],
     warranty_days: 30,
-    description: "Quick switch board repair and replacement. Fix faulty switches, sockets, and wiring issues.",
+    description:
+      "Quick switch board repair and replacement. Fix faulty switches, sockets, and wiring issues.",
   },
   {
     id: "s12",
@@ -222,7 +243,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80",
     included: ["MCB check", "Repair", "Safety check"],
     warranty_days: 90,
-    description: "MCB and distribution board repair. Fix tripping issues, replace faulty MCBs, and safety inspection.",
+    description:
+      "MCB and distribution board repair. Fix tripping issues, replace faulty MCBs, and safety inspection.",
   },
 
   // ── Beauty & Spa ─────────────────────────────────
@@ -239,7 +261,8 @@ export const services: ServiceData[] = [
     included: ["Haircut", "Oiling", "Blow dry", "Styling"],
     warranty_days: 7,
     badge: "popular",
-    description: "Professional salon services at home. Haircut, styling, and grooming by expert beauticians.",
+    description:
+      "Professional salon services at home. Haircut, styling, and grooming by expert beauticians.",
   },
   {
     id: "s14",
@@ -253,7 +276,8 @@ export const services: ServiceData[] = [
     included: ["Body massage", "Scrub", "Facial", "Steam"],
     warranty_days: 7,
     badge: "premium",
-    description: "Luxurious full body spa experience at home. Includes massage, scrub, facial, and steam therapy.",
+    description:
+      "Luxurious full body spa experience at home. Includes massage, scrub, facial, and steam therapy.",
   },
   {
     id: "s15",
@@ -266,7 +290,8 @@ export const services: ServiceData[] = [
     image: "/images/service_beauty.png",
     included: ["Nail paint", "Cuticle care", "Massage", "Polishing"],
     warranty_days: 14,
-    description: "Professional manicure and pedicure at home. Nail care, massage, and polish by experts.",
+    description:
+      "Professional manicure and pedicure at home. Nail care, massage, and polish by experts.",
   },
   {
     id: "s16",
@@ -279,7 +304,8 @@ export const services: ServiceData[] = [
     image: "/images/service_beauty.png",
     included: ["Cleansing", "Scrub", "Face pack", "Moisturizer"],
     warranty_days: 14,
-    description: "Customized facial treatment for your skin type. Deep cleansing, scrubbing, and nourishment.",
+    description:
+      "Customized facial treatment for your skin type. Deep cleansing, scrubbing, and nourishment.",
   },
   {
     id: "s17",
@@ -292,7 +318,8 @@ export const services: ServiceData[] = [
     image: "/images/service_beauty.png",
     included: ["Oil massage", "Steam", "Hair mask", "Conditioning"],
     warranty_days: 14,
-    description: "Rejuvenating hair spa treatment. Deep conditioning, oil massage, and steam therapy for healthy hair.",
+    description:
+      "Rejuvenating hair spa treatment. Deep conditioning, oil massage, and steam therapy for healthy hair.",
   },
   {
     id: "s18",
@@ -305,7 +332,8 @@ export const services: ServiceData[] = [
     image: "/images/service_beauty.png",
     included: ["Haircut", "Shave", "Beard trim", "Styling"],
     warranty_days: 7,
-    description: "Professional grooming services for men at home. Haircut, shave, beard trim, and styling.",
+    description:
+      "Professional grooming services for men at home. Haircut, shave, beard trim, and styling.",
   },
 
   // ── Pest Control ─────────────────────────────────
@@ -320,7 +348,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1624355284486-a4de69fc7241?w=400&q=80",
     included: ["Spray treatment", "Gel application", "Safety coat"],
     warranty_days: 90,
-    description: "Effective cockroach treatment for your home. Gel and spray treatment with long-lasting protection.",
+    description:
+      "Effective cockroach treatment for your home. Gel and spray treatment with long-lasting protection.",
   },
   {
     id: "s20",
@@ -334,7 +363,8 @@ export const services: ServiceData[] = [
     included: ["Inspection", "Chemical treatment", "Barriers"],
     warranty_days: 365,
     badge: "professional",
-    description: "Comprehensive termite control with chemical barriers. Long-lasting protection for your home.",
+    description:
+      "Comprehensive termite control with chemical barriers. Long-lasting protection for your home.",
   },
   {
     id: "s21",
@@ -347,7 +377,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1624355284486-a4de69fc7241?w=400&q=80",
     included: ["Heat treatment", "Spray", "Mattress cover"],
     warranty_days: 180,
-    description: "Complete bed bug elimination using heat and chemical treatment. Includes mattress protection.",
+    description:
+      "Complete bed bug elimination using heat and chemical treatment. Includes mattress protection.",
   },
 
   // ── Car Care ─────────────────────────────────────
@@ -362,7 +393,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1601362840469-51e4d8cb587a?w=400&q=80",
     included: ["Exterior wash", "Interior cleaning", "Polishing", "Tyre shine"],
     warranty_days: 14,
-    description: "Complete car detailing service. Interior and exterior cleaning, polishing, and protection.",
+    description:
+      "Complete car detailing service. Interior and exterior cleaning, polishing, and protection.",
   },
   {
     id: "s23",
@@ -375,7 +407,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1601362840469-51e4d8cb587a?w=400&q=80",
     included: ["Vent cleaning", "Filter replacement", "Deodorization"],
     warranty_days: 30,
-    description: "Car AC vent deep cleaning and sanitization. Filter replacement and deodorization included.",
+    description:
+      "Car AC vent deep cleaning and sanitization. Filter replacement and deodorization included.",
   },
   {
     id: "s24",
@@ -388,7 +421,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1601362840469-51e4d8cb587a?w=400&q=80",
     included: ["Wash", "Wax application", "Buffing", "Shine"],
     warranty_days: 30,
-    description: "Professional car waxing for lasting shine and paint protection. Hand wash and buffing included.",
+    description:
+      "Professional car waxing for lasting shine and paint protection. Hand wash and buffing included.",
   },
 
   // ── Appliances ───────────────────────────────────
@@ -403,7 +437,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1556909212-d5b604d0c0d7?w=400&q=80",
     included: ["Diagnosis", "Repair", "Testing"],
     warranty_days: 30,
-    description: "Expert washing machine repair for all brands. Quick diagnosis and fix for all issues.",
+    description:
+      "Expert washing machine repair for all brands. Quick diagnosis and fix for all issues.",
   },
   {
     id: "s26",
@@ -416,7 +451,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=400&q=80",
     included: ["Cooling check", "Repair", "Gas top-up"],
     warranty_days: 30,
-    description: "Refrigerator repair and maintenance. Cooling issues, gas top-up, and compressor repair.",
+    description:
+      "Refrigerator repair and maintenance. Cooling issues, gas top-up, and compressor repair.",
   },
   {
     id: "s27",
@@ -429,7 +465,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1574269909862-7a39afa545c9?w=400&q=80",
     included: ["Diagnosis", "Repair", "Testing"],
     warranty_days: 30,
-    description: "Microwave oven repair for all brands. Fix heating issues, turntable problems, and electrical faults.",
+    description:
+      "Microwave oven repair for all brands. Fix heating issues, turntable problems, and electrical faults.",
   },
   {
     id: "s28",
@@ -442,7 +479,8 @@ export const services: ServiceData[] = [
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
     included: ["Installation", "Safety check", "Demo"],
     warranty_days: 90,
-    description: "Professional geyser/water heater installation. Includes safety check and usage demo.",
+    description:
+      "Professional geyser/water heater installation. Includes safety check and usage demo.",
   },
 ];
 

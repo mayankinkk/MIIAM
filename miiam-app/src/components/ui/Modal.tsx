@@ -52,40 +52,45 @@ export default function Modal({
       // Return focus to trigger element
       previousFocusRef.current?.focus();
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (closeOnEscape && e.key === "Escape") {
-      e.stopPropagation();
-      handleClose();
-      return;
-    }
-    // Focus trap
-    if (e.key === "Tab" && modalRef.current) {
-      const focusable = modalRef.current.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (closeOnEscape && e.key === "Escape") {
+        e.stopPropagation();
+        handleClose();
+        return;
+      }
+      // Focus trap
+      if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       }
-    }
-  }, [closeOnEscape, handleClose]);
+    },
+    [closeOnEscape, handleClose]
+  );
 
   if (!open) return null;
 
@@ -105,24 +110,24 @@ export default function Modal({
         aria-modal="true"
         aria-labelledby={titleId.current}
         tabIndex={-1}
-        className={`relative bg-surface-container-lowest w-full ${sizeClasses[size]} rounded-2xl shadow-2xl p-6 animate-scale-in outline-none`}
+        className={`bg-surface-container-lowest relative w-full ${sizeClasses[size]} animate-scale-in rounded-2xl p-6 shadow-2xl outline-none`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
         {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1 min-w-0">
-            <h2 id={titleId.current} className="text-lg font-bold text-on-surface truncate">
+        <div className="mb-4 flex items-start justify-between">
+          <div className="min-w-0 flex-1">
+            <h2 id={titleId.current} className="text-on-surface truncate text-lg font-bold">
               {title}
             </h2>
             {subtitle && (
-              <p className="text-sm text-on-surface-variant mt-0.5 truncate">{subtitle}</p>
+              <p className="text-on-surface-variant mt-0.5 truncate text-sm">{subtitle}</p>
             )}
           </div>
           {showCloseButton && (
             <button
               onClick={handleClose}
-              className="ml-4 p-2 rounded-full text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
+              className="text-on-surface-variant hover:text-on-surface hover:bg-surface-container ml-4 rounded-full p-2 transition-colors"
               aria-label="Close dialog"
             >
               <span className="material-symbols-outlined text-xl">close</span>
@@ -131,16 +136,10 @@ export default function Modal({
         </div>
 
         {/* Content */}
-        <div className="text-on-surface">
-          {children}
-        </div>
+        <div className="text-on-surface">{children}</div>
 
         {/* Actions */}
-        {actions && (
-          <div className="flex gap-3 mt-6">
-            {actions}
-          </div>
-        )}
+        {actions && <div className="mt-6 flex gap-3">{actions}</div>}
       </div>
     </div>
   );
@@ -165,7 +164,8 @@ export function ModalButton({
   children,
   className = "",
 }: ModalButtonProps) {
-  const base = "flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all";
+  const base =
+    "flex-1 py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all";
   const styles = {
     primary: "bg-brand-primary text-on-primary hover:bg-brand-primary-hover disabled:opacity-50",
     secondary: "bg-surface-container text-on-surface-variant hover:bg-surface-container-high",
@@ -178,8 +178,10 @@ export function ModalButton({
       disabled={disabled || loading}
       className={`${base} ${styles[variant]} ${className}`}
     >
-      {loading && <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />}
-      {loading ? (loadingText || "Loading...") : children}
+      {loading && (
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+      )}
+      {loading ? loadingText || "Loading..." : children}
     </button>
   );
 }

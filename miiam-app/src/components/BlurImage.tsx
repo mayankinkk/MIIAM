@@ -15,7 +15,16 @@ interface BlurImageProps {
   fallbackSrc?: string;
 }
 
-export default function BlurImage({ src, alt, className = "", fill, width, height, sizes, fallbackSrc }: BlurImageProps) {
+export default function BlurImage({
+  src,
+  alt,
+  className = "",
+  fill,
+  width,
+  height,
+  sizes,
+  fallbackSrc,
+}: BlurImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const [imgSrc, setImgSrc] = useState(src);
@@ -35,7 +44,7 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
 
   if (errored && !fallbackSrc) {
     return (
-      <div className={`flex items-center justify-center bg-surface-container ${className}`}>
+      <div className={`bg-surface-container flex items-center justify-center ${className}`}>
         <span className="material-symbols-outlined text-outline-variant">image</span>
       </div>
     );
@@ -43,17 +52,23 @@ export default function BlurImage({ src, alt, className = "", fill, width, heigh
 
   if (fill) {
     return (
-      <div className={`relative w-full h-full ${className}`}>
+      <div className={`relative h-full w-full ${className}`}>
         <Image {...commonProps} fill alt={alt} unoptimized={!canOptimizeImage(imgSrc)} />
-        {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
+        {!isLoaded && <div className="bg-surface-variant absolute inset-0 animate-pulse" />}
       </div>
     );
   }
 
   return (
     <div className={`relative ${className}`}>
-      <Image {...commonProps} width={width ?? 400} height={height ?? 300} alt={alt} unoptimized={!canOptimizeImage(imgSrc)} />
-      {!isLoaded && <div className="absolute inset-0 bg-surface-variant animate-pulse" />}
+      <Image
+        {...commonProps}
+        width={width ?? 400}
+        height={height ?? 300}
+        alt={alt}
+        unoptimized={!canOptimizeImage(imgSrc)}
+      />
+      {!isLoaded && <div className="bg-surface-variant absolute inset-0 animate-pulse" />}
     </div>
   );
 }

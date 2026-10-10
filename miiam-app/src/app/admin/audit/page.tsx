@@ -25,8 +25,12 @@ export default function AuditLogs() {
 
   useEffect(() => {
     async function fetchLogs() {
-      let query = supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(100);
-      
+      let query = supabase
+        .from("audit_logs")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+
       if (filter !== "all") {
         query = query.eq("action", filter);
       }
@@ -41,23 +45,28 @@ export default function AuditLogs() {
 
     fetchLogs();
 
-    const channel = supabase.channel("audit-logs")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, () => fetchLogs())
+    const channel = supabase
+      .channel("audit-logs")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "audit_logs" }, () =>
+        fetchLogs()
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase, filter, search]);
 
   async function exportLogs() {
     const headers = ["Timestamp", "Admin ID", "Action", "Target Type", "Target ID", "Details"];
-    const rows = logs.map(l => [
+    const rows = logs.map((l) => [
       new Date(l.created_at).toLocaleString(),
       l.admin_id?.slice(0, 8) || "system",
       l.action,
       l.target_type,
       l.target_id?.slice(0, 8),
-      JSON.stringify(l.details || {})
+      JSON.stringify(l.details || {}),
     ]);
-    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
+    const csv = [headers, ...rows].map((r) => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -66,31 +75,46 @@ export default function AuditLogs() {
     a.click();
   }
 
-  const actionStats = logs.reduce((acc, log) => {
-    acc[log.action] = (acc[log.action] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const actionStats = logs.reduce(
+    (acc, log) => {
+      acc[log.action] = (acc[log.action] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
-  const filteredLogs = logs.filter(l => {
-    if (search && !l.action.toLowerCase().includes(search.toLowerCase()) &&
-        !l.target_id?.toLowerCase().includes(search.toLowerCase())) return false;
+  const filteredLogs = logs.filter((l) => {
+    if (
+      search &&
+      !l.action.toLowerCase().includes(search.toLowerCase()) &&
+      !l.target_id?.toLowerCase().includes(search.toLowerCase())
+    )
+      return false;
     if (dateFrom && new Date(l.created_at) < new Date(dateFrom)) return false;
     if (dateTo && new Date(l.created_at) > new Date(dateTo + "T23:59:59")) return false;
     return true;
   });
 
-  if (loading) return <div className="px-8 text-[var(--color-on-surface)]">Loading audit logs...</div>;
+  if (loading)
+    return <div className="px-8 text-[var(--color-on-surface)]">Loading audit logs...</div>;
 
   return (
-    <div className="px-8 space-y-8">
-      <div className="flex justify-between items-end">
+    <div className="space-y-8 px-8">
+      <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Audit Logs</h1>
-          <p className="text-[var(--color-outline)]">Track all admin actions and platform changes.</p>
+          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            Audit Logs
+          </h1>
+          <p className="text-[var(--color-outline)]">
+            Track all admin actions and platform changes.
+          </p>
         </div>
-        <button 
-          onClick={() => { exportLogs(); useToastStore.getState().addToast("Audit logs exported", "success"); }}
-          className="bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-300 px-6 py-3 rounded-xl font-bold hover:bg-green-100 flex items-center gap-2"
+        <button
+          onClick={() => {
+            exportLogs();
+            useToastStore.getState().addToast("Audit logs exported", "success");
+          }}
+          className="flex items-center gap-2 rounded-xl bg-green-50 px-6 py-3 font-bold text-green-600 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300"
         >
           <span className="material-symbols-outlined text-sm">download</span>
           Export CSV
@@ -98,23 +122,28 @@ export default function AuditLogs() {
       </div>
 
       {/* Action Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
         {Object.entries(actionStats).map(([action, count]) => (
-          <div key={action} className="bg-[var(--color-surface-container-lowest)] p-4 rounded-2xl border border-[var(--color-border-subtle)] shadow-sm">
-            <p className="text-xs font-black text-[var(--color-outline-variant)] uppercase truncate">{action}</p>
+          <div
+            key={action}
+            className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-4 shadow-sm"
+          >
+            <p className="truncate text-xs font-black text-[var(--color-outline-variant)] uppercase">
+              {action}
+            </p>
             <p className="text-2xl font-black text-[var(--color-on-surface)]">{count}</p>
           </div>
         ))}
       </div>
 
       {/* Filters */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-4 shadow-sm">
-        <div className="flex gap-4 flex-wrap items-center">
+      <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-4">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             aria-label="Filter by action type"
-            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-2 text-sm focus:outline-none"
           >
             <option value="all">All Actions</option>
             <option value="login">Login</option>
@@ -132,69 +161,95 @@ export default function AuditLogs() {
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
             aria-label="Filter from date"
-            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-2 text-sm focus:outline-none"
           />
           <input
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
             aria-label="Filter to date"
-            className="bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-2 text-sm focus:outline-none"
+            className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-2 text-sm focus:outline-none"
           />
-          <div className="relative flex-1 min-w-[200px]">
-            <span className="material-symbols-outlined absolute left-3 top-2.5 text-[var(--color-outline-variant)] text-sm">search</span>
+          <div className="relative min-w-[200px] flex-1">
+            <span className="material-symbols-outlined absolute top-2.5 left-3 text-sm text-[var(--color-outline-variant)]">
+              search
+            </span>
             <input
               type="text"
               placeholder="Search logs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search audit logs"
-              className="w-full bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
+              className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] py-2 pr-4 pl-10 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/10 focus:outline-none"
             />
           </div>
         </div>
       </div>
 
       {/* Logs Table */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-[var(--color-surface-subtle)] border-b border-[var(--color-border-subtle)]">
+            <thead className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Timestamp</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Admin</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Action</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Target</th>
-                <th className="p-4 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Details</th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Timestamp
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Admin
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Action
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Target
+                </th>
+                <th className="p-4 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                  Details
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredLogs.map(log => (
+              {filteredLogs.map((log) => (
                 <tr key={log.id} className="hover:bg-[var(--color-surface-subtle)]/50">
-                  <td className="p-4 text-xs text-[var(--color-outline)] whitespace-nowrap">
-                    {new Date(log.created_at).toLocaleString("en-IN", { 
-                      month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" 
+                  <td className="p-4 text-xs whitespace-nowrap text-[var(--color-outline)]">
+                    {new Date(log.created_at).toLocaleString("en-IN", {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
                     })}
                   </td>
                   <td className="p-4">
-                    <span className="font-mono text-xs text-[var(--color-on-surface-variant)]">{log.admin_id?.slice(0, 8) || "system"}</span>
+                    <span className="font-mono text-xs text-[var(--color-on-surface-variant)]">
+                      {log.admin_id?.slice(0, 8) || "system"}
+                    </span>
                   </td>
                   <td className="p-4">
-                    <span className={`text-[10px] font-black px-2 py-1 rounded-full uppercase ${
-                      log.action === "create" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                      log.action === "update" ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal" :
-                      log.action === "delete" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                      "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
-                    }`}>
+                    <span
+                      className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${
+                        log.action === "create"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                          : log.action === "update"
+                            ? "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
+                            : log.action === "delete"
+                              ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                              : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                      }`}
+                    >
                       {log.action}
                     </span>
                   </td>
                   <td className="p-4">
-                    <span className="text-xs font-bold text-[var(--color-on-surface)]">{log.target_type}</span>
-                    <span className="font-mono text-xs text-[var(--color-outline-variant)] ml-2">{log.target_id?.slice(0, 8)}</span>
+                    <span className="text-xs font-bold text-[var(--color-on-surface)]">
+                      {log.target_type}
+                    </span>
+                    <span className="ml-2 font-mono text-xs text-[var(--color-outline-variant)]">
+                      {log.target_id?.slice(0, 8)}
+                    </span>
                   </td>
-                  <td className="p-4 max-w-xs">
-                    <span className="text-xs text-[var(--color-outline)] truncate block">
+                  <td className="max-w-xs p-4">
+                    <span className="block truncate text-xs text-[var(--color-outline)]">
                       {JSON.stringify(log.details || {}).slice(0, 50)}...
                     </span>
                   </td>
@@ -205,9 +260,9 @@ export default function AuditLogs() {
         </div>
         {filteredLogs.length === 0 && (
           <div className="p-12 text-center text-[var(--color-outline-variant)]">
-            <span className="material-symbols-outlined text-4xl mb-3 block">policy</span>
+            <span className="material-symbols-outlined mb-3 block text-4xl">policy</span>
             <p className="font-bold text-[var(--color-on-surface-variant)]">No audit logs found</p>
-            <p className="text-sm mt-1">Adjust filters or check back later.</p>
+            <p className="mt-1 text-sm">Adjust filters or check back later.</p>
           </div>
         )}
       </div>

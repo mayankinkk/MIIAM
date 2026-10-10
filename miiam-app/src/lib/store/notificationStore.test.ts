@@ -1,11 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { useNotificationStore } from './notificationStore';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { useNotificationStore } from "./notificationStore";
 
-describe('notificationStore', () => {
+describe("notificationStore", () => {
   beforeEach(() => {
     localStorage.clear();
     useNotificationStore.setState({
-      permission: 'default',
+      permission: "default",
       token: null,
       preferences: {
         orderUpdates: true,
@@ -15,29 +15,29 @@ describe('notificationStore', () => {
     });
   });
 
-  it('should have default values', () => {
+  it("should have default values", () => {
     const state = useNotificationStore.getState();
-    expect(state.permission).toBe('default');
+    expect(state.permission).toBe("default");
     expect(state.token).toBeNull();
     expect(state.preferences.orderUpdates).toBe(true);
     expect(state.preferences.promotions).toBe(true);
     expect(state.preferences.recommendations).toBe(false);
   });
 
-  it('should set token', () => {
+  it("should set token", () => {
     const { setToken } = useNotificationStore.getState();
-    setToken('test-token-123');
-    expect(useNotificationStore.getState().token).toBe('test-token-123');
+    setToken("test-token-123");
+    expect(useNotificationStore.getState().token).toBe("test-token-123");
   });
 
-  it('should update preferences partially', () => {
+  it("should update preferences partially", () => {
     const { updatePreferences } = useNotificationStore.getState();
     updatePreferences({ orderUpdates: false });
     expect(useNotificationStore.getState().preferences.orderUpdates).toBe(false);
     expect(useNotificationStore.getState().preferences.promotions).toBe(true);
   });
 
-  it('should update all preferences', () => {
+  it("should update all preferences", () => {
     const { updatePreferences } = useNotificationStore.getState();
     updatePreferences({
       orderUpdates: false,

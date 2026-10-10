@@ -22,46 +22,71 @@ interface MenuItemCardProps {
   index?: number;
 }
 
-export default memo(function MenuItemCard({ item, quantity = 0, onAdd, onIncrement, onDecrement, index = 0 }: MenuItemCardProps) {
+export default memo(function MenuItemCard({
+  item,
+  quantity = 0,
+  onAdd,
+  onIncrement,
+  onDecrement,
+  index = 0,
+}: MenuItemCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
-      className="flex items-center gap-3 bg-surface-container-lowest rounded-xl p-3 shadow-sm"
+      className="bg-surface-container-lowest flex items-center gap-3 rounded-xl p-3 shadow-sm"
     >
       {/* Image */}
-      <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative">
+      <div className="bg-surface-container relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl">
         {item.image_url ? (
-          <BlurImage src={item.image_url} alt={item.name} fill className="w-full h-full" sizes="80px" />
+          <BlurImage
+            src={item.image_url}
+            alt={item.name}
+            fill
+            className="h-full w-full"
+            sizes="80px"
+          />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-outline-variant text-2xl">fastfood</span>
+          <div className="flex h-full w-full items-center justify-center">
+            <span className="material-symbols-outlined text-outline-variant text-2xl">
+              fastfood
+            </span>
           </div>
         )}
         {/* Veg indicator */}
         {item.is_veg !== undefined && (
-          <span className={`absolute top-1 left-1 w-4 h-4 rounded-sm border-2 flex items-center justify-center ${
-            item.is_veg ? "border-green-600 bg-white" : "border-red-600 bg-white"
-          }`}>
-            <span className={`w-2 h-2 rounded-full ${item.is_veg ? "bg-green-600" : "bg-red-600"}`} />
+          <span
+            className={`absolute top-1 left-1 flex h-4 w-4 items-center justify-center rounded-sm border-2 ${
+              item.is_veg ? "border-green-600 bg-white" : "border-red-600 bg-white"
+            }`}
+          >
+            <span
+              className={`h-2 w-2 rounded-full ${item.is_veg ? "bg-green-600" : "bg-red-600"}`}
+            />
           </span>
         )}
         {item.is_featured && (
-          <span className="absolute top-1 right-1 bg-amber-500 text-white text-[8px] font-black px-1 rounded">★</span>
+          <span className="absolute top-1 right-1 rounded bg-amber-500 px-1 text-[8px] font-black text-white">
+            ★
+          </span>
         )}
       </div>
 
       {/* Details */}
-      <div className="flex-1 min-w-0">
-        <h4 className="font-bold text-on-surface text-sm truncate">{item.name}</h4>
+      <div className="min-w-0 flex-1">
+        <h4 className="text-on-surface truncate text-sm font-bold">{item.name}</h4>
         {item.description && (
-          <p className="text-[10px] text-on-surface-variant/60 truncate mt-0.5">{item.description}</p>
+          <p className="text-on-surface-variant/60 mt-0.5 truncate text-[10px]">
+            {item.description}
+          </p>
         )}
-        <div className="flex flex-col items-start mt-1.5 leading-tight">
-          <span className="text-sm font-extrabold text-on-surface">₹{item.price}</span>
+        <div className="mt-1.5 flex flex-col items-start leading-tight">
+          <span className="text-on-surface text-sm font-extrabold">₹{item.price}</span>
           {item.original_price && item.original_price > item.price && (
-            <span className="text-[11px] text-on-surface-variant/60 line-through">₹{item.original_price}</span>
+            <span className="text-on-surface-variant/60 text-[11px] line-through">
+              ₹{item.original_price}
+            </span>
           )}
         </div>
       </div>
@@ -71,17 +96,25 @@ export default memo(function MenuItemCard({ item, quantity = 0, onAdd, onIncreme
         {quantity === 0 ? (
           <button
             onClick={onAdd}
-            className="min-w-[52px] h-8 px-3 bg-primary text-on-primary border border-primary rounded-lg text-xs font-extrabold hover:brightness-95 transition-all active:scale-95"
+            className="bg-primary text-on-primary border-primary h-8 min-w-[52px] rounded-lg border px-3 text-xs font-extrabold transition-all hover:brightness-95 active:scale-95"
           >
             ADD
           </button>
         ) : (
-          <div className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
-            <button onClick={onDecrement} className="w-8 h-8 bg-primary text-on-primary flex items-center justify-center hover:brightness-95 transition-colors">
+          <div className="bg-surface-container-lowest border-primary flex items-center overflow-hidden rounded-lg border">
+            <button
+              onClick={onDecrement}
+              className="bg-primary text-on-primary flex h-8 w-8 items-center justify-center transition-colors hover:brightness-95"
+            >
               <span className="material-symbols-outlined text-sm">remove</span>
             </button>
-            <span className="w-7 text-center text-xs font-extrabold text-on-surface">{quantity}</span>
-            <button onClick={onIncrement} className="w-8 h-8 bg-primary text-on-primary flex items-center justify-center hover:brightness-95 transition-colors">
+            <span className="text-on-surface w-7 text-center text-xs font-extrabold">
+              {quantity}
+            </span>
+            <button
+              onClick={onIncrement}
+              className="bg-primary text-on-primary flex h-8 w-8 items-center justify-center transition-colors hover:brightness-95"
+            >
               <span className="material-symbols-outlined text-sm">add</span>
             </button>
           </div>

@@ -65,7 +65,9 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg
       {[1, 2, 3, 4, 5].map((star) => (
         <span
           key={star}
-          className={star <= Math.round(rating) ? "text-amber-400" : "text-[var(--color-outline-variant)]/40"}
+          className={
+            star <= Math.round(rating) ? "text-amber-400" : "text-[var(--color-outline-variant)]/40"
+          }
         >
           ★
         </span>
@@ -74,7 +76,17 @@ function StarRating({ rating, size = "sm" }: { rating: number; size?: "sm" | "lg
   );
 }
 
-function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuItem; vendor: Vendor; compact?: boolean; isOpen?: boolean }) {
+function AddToCartButton({
+  item,
+  vendor,
+  compact,
+  isOpen = true,
+}: {
+  item: MenuItem;
+  vendor: Vendor;
+  compact?: boolean;
+  isOpen?: boolean;
+}) {
   const { addItem, items, updateQuantity } = useCartStore();
   const cartItem = items.find((i) => i.menu_item_id === item.id);
   const qty = cartItem?.quantity ?? 0;
@@ -96,10 +108,13 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
 
   if (!isOpen) {
     return (
-      <span className={compact
-        ? "px-2 py-0.5 bg-gray-200 text-gray-500 text-[9px] font-bold rounded-full cursor-not-allowed"
-        : "px-4 py-1.5 bg-gray-200 text-gray-500 text-xs font-bold rounded-full cursor-not-allowed"
-      }>
+      <span
+        className={
+          compact
+            ? "cursor-not-allowed rounded-full bg-gray-200 px-2 py-0.5 text-[9px] font-bold text-gray-500"
+            : "cursor-not-allowed rounded-full bg-gray-200 px-4 py-1.5 text-xs font-bold text-gray-500"
+        }
+      >
         Closed
       </span>
     );
@@ -109,9 +124,10 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
     return (
       <button
         onClick={handleAdd}
-        className={compact
-          ? "min-w-[44px] px-2 h-6 bg-primary text-on-primary text-[9px] font-extrabold rounded-md border border-primary active:scale-95 transition-all"
-          : "min-w-[52px] px-3 h-8 bg-primary text-on-primary text-xs font-extrabold rounded-lg border border-primary active:scale-95 transition-all"
+        className={
+          compact
+            ? "bg-primary text-on-primary border-primary h-6 min-w-[44px] rounded-md border px-2 text-[9px] font-extrabold transition-all active:scale-95"
+            : "bg-primary text-on-primary border-primary h-8 min-w-[52px] rounded-lg border px-3 text-xs font-extrabold transition-all active:scale-95"
         }
       >
         ADD +
@@ -121,18 +137,23 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
 
   if (compact) {
     return (
-      <div className="flex items-center bg-surface-container-lowest border border-primary rounded-md overflow-hidden">
+      <div className="bg-surface-container-lowest border-primary flex items-center overflow-hidden rounded-md border">
         <button
-          onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
-          className="bg-primary text-on-primary font-bold w-5 h-5 flex items-center justify-center active:scale-75 transition-transform text-[10px]"
+          onClick={() => {
+            updateQuantity(item.id, qty - 1);
+            if (navigator.vibrate) navigator.vibrate(10);
+          }}
+          className="bg-primary text-on-primary flex h-5 w-5 items-center justify-center text-[10px] font-bold transition-transform active:scale-75"
           aria-label={`Decrease quantity of ${item.name}`}
         >
           −
         </button>
-        <span className="text-on-surface font-extrabold text-[9px] min-w-[12px] text-center">{qty}</span>
+        <span className="text-on-surface min-w-[12px] text-center text-[9px] font-extrabold">
+          {qty}
+        </span>
         <button
           onClick={handleAdd}
-          className="bg-primary text-on-primary font-bold w-5 h-5 flex items-center justify-center active:scale-125 transition-transform text-[10px]"
+          className="bg-primary text-on-primary flex h-5 w-5 items-center justify-center text-[10px] font-bold transition-transform active:scale-125"
           aria-label={`Increase quantity of ${item.name}`}
         >
           +
@@ -142,18 +163,21 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
   }
 
   return (
-    <div className="flex items-center bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
+    <div className="bg-surface-container-lowest border-primary flex items-center overflow-hidden rounded-lg border">
       <button
-        onClick={() => { updateQuantity(item.id, qty - 1); if (navigator.vibrate) navigator.vibrate(10); }}
-        className="bg-primary text-on-primary font-bold w-7 h-7 flex items-center justify-center active:scale-75 transition-transform text-sm hover:brightness-95"
+        onClick={() => {
+          updateQuantity(item.id, qty - 1);
+          if (navigator.vibrate) navigator.vibrate(10);
+        }}
+        className="bg-primary text-on-primary flex h-7 w-7 items-center justify-center text-sm font-bold transition-transform hover:brightness-95 active:scale-75"
         aria-label={`Decrease quantity of ${item.name}`}
       >
         −
       </button>
-      <span className="text-on-surface font-extrabold text-xs min-w-[16px] text-center">{qty}</span>
+      <span className="text-on-surface min-w-[16px] text-center text-xs font-extrabold">{qty}</span>
       <button
         onClick={handleAdd}
-        className="bg-primary text-on-primary font-bold w-7 h-7 flex items-center justify-center active:scale-125 transition-transform text-sm hover:brightness-95"
+        className="bg-primary text-on-primary flex h-7 w-7 items-center justify-center text-sm font-bold transition-transform hover:brightness-95 active:scale-125"
         aria-label={`Increase quantity of ${item.name}`}
       >
         +
@@ -162,7 +186,15 @@ function AddToCartButton({ item, vendor, compact, isOpen = true }: { item: MenuI
   );
 }
 
-function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onClose: () => void; onSubmitted: () => void }) {
+function ReviewModal({
+  vendorId,
+  onClose,
+  onSubmitted,
+}: {
+  vendorId: string;
+  onClose: () => void;
+  onSubmitted: () => void;
+}) {
   const supabase = useMemo(() => createClient(), []);
   const { t } = useTranslation();
   const [rating, setRating] = useState(0);
@@ -180,7 +212,9 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
     setSubmitting(true);
     setError("");
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       setError("Please log in to submit a review");
       setSubmitting(false);
@@ -201,26 +235,42 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
       return;
     }
     setSubmitting(false);
-    
+
     useToastStore.getState().addToast("Review submitted successfully!", "success");
-    
+
     onSubmitted();
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center animate-fade-in">
-      <div className="bg-surface-container-lowest w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up" role="dialog" aria-modal="true" aria-labelledby="review-modal-title" onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
-        <div className="flex justify-between items-center mb-5">
-          <h3 id="review-modal-title" className="text-xl font-black text-on-surface">{t.food.writeReview}</h3>
-          <button onClick={onClose} aria-label="Close" className="w-11 h-11 bg-surface-container rounded-full flex items-center justify-center">
+    <div className="animate-fade-in fixed inset-0 z-[60] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center">
+      <div
+        className="bg-surface-container-lowest animate-slide-up w-full rounded-t-3xl p-6 sm:max-w-md sm:rounded-3xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="review-modal-title"
+        onKeyDown={(e) => {
+          if (e.key === "Escape") onClose();
+        }}
+      >
+        <div className="mb-5 flex items-center justify-between">
+          <h3 id="review-modal-title" className="text-on-surface text-xl font-black">
+            {t.food.writeReview}
+          </h3>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="bg-surface-container flex h-11 w-11 items-center justify-center rounded-full"
+          >
             <span className="material-symbols-outlined text-sm">close</span>
           </button>
         </div>
 
         {/* Star selector */}
-        <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2">{t.food.yourRating}</p>
-        <div className="flex gap-2 mb-5" role="radiogroup" aria-label="Rating">
+        <p className="text-on-surface-variant mb-2 text-xs font-bold tracking-widest uppercase">
+          {t.food.yourRating}
+        </p>
+        <div className="mb-5 flex gap-2" role="radiogroup" aria-label="Rating">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
@@ -230,43 +280,61 @@ function ReviewModal({ vendorId, onClose, onSubmitted }: { vendorId: string; onC
               onMouseEnter={() => setHoverRating(star)}
               onMouseLeave={() => setHoverRating(0)}
               onClick={() => setRating(star)}
-              className="w-11 h-11 flex items-center justify-center text-3xl transition-transform hover:scale-125 active:scale-90"
+              className="flex h-11 w-11 items-center justify-center text-3xl transition-transform hover:scale-125 active:scale-90"
             >
-              <span className={star <= (hoverRating || rating) ? "text-amber-400" : "text-[var(--color-outline-variant)]/40"}>★</span>
+              <span
+                className={
+                  star <= (hoverRating || rating)
+                    ? "text-amber-400"
+                    : "text-[var(--color-outline-variant)]/40"
+                }
+              >
+                ★
+              </span>
             </button>
           ))}
         </div>
 
-        <div className="space-y-3 mb-5">
+        <div className="mb-5 space-y-3">
           <div>
-            <label htmlFor="reviewer-name" className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourName}</label>
+            <label
+              htmlFor="reviewer-name"
+              className="text-on-surface-variant mb-1 block text-xs font-bold tracking-widest uppercase"
+            >
+              {t.food.yourName}
+            </label>
             <input
               id="reviewer-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="bg-surface-container-low focus:ring-primary/20 w-full rounded-xl px-4 py-3 text-sm focus:ring-2 focus:outline-none"
               placeholder={t.food.namePlaceholder}
             />
           </div>
           <div>
-            <label htmlFor="review-comment" className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-1">{t.food.yourReview}</label>
+            <label
+              htmlFor="review-comment"
+              className="text-on-surface-variant mb-1 block text-xs font-bold tracking-widest uppercase"
+            >
+              {t.food.yourReview}
+            </label>
             <textarea
               id="review-comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               rows={3}
-              className="w-full px-4 py-3 bg-surface-container-low rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+              className="bg-surface-container-low focus:ring-primary/20 w-full resize-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:outline-none"
               placeholder={t.food.reviewPlaceholder}
             />
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-xs mb-3">{error}</p>}
+        {error && <p className="mb-3 text-xs text-red-500">{error}</p>}
 
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full bg-primary text-on-primary py-4 rounded-xl font-extrabold disabled:opacity-50 hover:brightness-95 active:scale-[0.98] transition-all"
+          className="bg-primary text-on-primary w-full rounded-xl py-4 font-extrabold transition-all hover:brightness-95 active:scale-[0.98] disabled:opacity-50"
         >
           {submitting ? t.food.submitting : t.food.submitReview}
         </button>
@@ -279,19 +347,22 @@ function CartFloater() {
   const { items, totalPrice, totalItems } = useCartStore();
   if (items.length === 0) return null;
   return (
-    <div className="fixed bottom-[80px] left-4 right-4 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <div
+      className="fixed right-4 bottom-[80px] left-4 z-50"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
       <Link
         href="/app/cart"
-        className="flex items-center justify-between bg-primary text-on-primary px-5 py-4 rounded-2xl shadow-2xl shadow-primary/40 active:scale-[0.98] transition-transform"
+        className="bg-primary text-on-primary shadow-primary/40 flex items-center justify-between rounded-2xl px-5 py-4 shadow-2xl transition-transform active:scale-[0.98]"
       >
         <div className="flex items-center gap-3">
-          <span className="bg-surface-container-lowest text-accent font-black text-xs px-2 py-0.5 rounded-full">
+          <span className="bg-surface-container-lowest text-accent rounded-full px-2 py-0.5 text-xs font-black">
             {totalItems()}
           </span>
           <span className="font-bold">View Cart</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="font-black text-lg">₹{totalPrice().toFixed(2)}</span>
+          <span className="text-lg font-black">₹{totalPrice().toFixed(2)}</span>
           <span className="material-symbols-outlined text-white/80">arrow_forward</span>
         </div>
       </Link>
@@ -315,7 +386,9 @@ export default function RestaurantProfilePage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [vegOnly, setVegOnly] = useState(false);
-  const [menuSort, setMenuSort] = useState<"default" | "price_low" | "price_high" | "rating">("default");
+  const [menuSort, setMenuSort] = useState<"default" | "price_low" | "price_high" | "rating">(
+    "default"
+  );
   const [menuSearch, setMenuSearch] = useState("");
   const [scheduleDelivery, setScheduleDelivery] = useState(false);
   const [scheduleDate, setScheduleDate] = useState("");
@@ -323,34 +396,56 @@ export default function RestaurantProfilePage() {
   const { favoriteIds, toggle } = useFavoritesStore();
   const isFavorite = favoriteIds.includes(vendorId);
 
-  const coverImage = vendor?.cover_image_url || vendor?.image_url || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
+  const coverImage =
+    vendor?.cover_image_url ||
+    vendor?.image_url ||
+    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80";
   const isOpen = vendor ? parseIsOpen(vendor.opening_hours) : false;
   const specials = menuItems.filter((item) => item.is_featured);
   const filteredMenu = menuItems
     .filter((item) => activeCategory === "All" || item.category === activeCategory)
     .filter((item) => !vegOnly || item.is_veg)
-    .filter((item) => !menuSearch || item.name.toLowerCase().includes(menuSearch.toLowerCase()) || item.description?.toLowerCase().includes(menuSearch.toLowerCase()))
+    .filter(
+      (item) =>
+        !menuSearch ||
+        item.name.toLowerCase().includes(menuSearch.toLowerCase()) ||
+        item.description?.toLowerCase().includes(menuSearch.toLowerCase())
+    )
     .sort((a, b) => {
       switch (menuSort) {
-        case "price_low": return a.price - b.price;
-        case "price_high": return b.price - a.price;
-        case "rating": return (b.order_count || 0) - (a.order_count || 0);
-        default: return a.name.localeCompare(b.name);
+        case "price_low":
+          return a.price - b.price;
+        case "price_high":
+          return b.price - a.price;
+        case "rating":
+          return (b.order_count || 0) - (a.order_count || 0);
+        default:
+          return a.name.localeCompare(b.name);
       }
     });
   const availableCategories = MENU_CATEGORIES.filter(
     (cat) => cat === "All" || menuItems.some((item) => item.category === cat)
   );
 
-  const { visibleItems: visibleMenuItems, hasMore, sentinelRef } = useInfiniteScroll({ items: filteredMenu, pageSize: 10 });
+  const {
+    visibleItems: visibleMenuItems,
+    hasMore,
+    sentinelRef,
+  } = useInfiniteScroll({ items: filteredMenu, pageSize: 10 });
 
   const handleToggleFavorite = async () => {
     toggle(vendorId);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         const { error } = isFavorite
-          ? await supabase.from("favorites").delete().eq("user_id", user.id).eq("vendor_id", vendorId)
+          ? await supabase
+              .from("favorites")
+              .delete()
+              .eq("user_id", user.id)
+              .eq("vendor_id", vendorId)
           : await supabase.from("favorites").insert({ user_id: user.id, vendor_id: vendorId });
         if (error) {
           toggle(vendorId);
@@ -368,9 +463,25 @@ export default function RestaurantProfilePage() {
     setError(null);
     try {
       const [vendorRes, menuRes, reviewsRes] = await Promise.all([
-        supabase.from("vendors").select("id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured, cover_image_url, image_url").eq("id", vendorId).single(),
-        supabase.from("menu_items").select("id, name, price, category, image_url, description, is_veg, is_featured, vendor_id, is_available").eq("vendor_id", vendorId).order("name"),
-        supabase.from("reviews").select("id, user_name, rating, comment, created_at").eq("vendor_id", vendorId).order("created_at", { ascending: false }),
+        supabase
+          .from("vendors")
+          .select(
+            "id, shop_name, cuisine, address, rating, review_count, delivery_time_min, delivery_time_max, delivery_charge, description, opening_hours, is_featured, cover_image_url, image_url"
+          )
+          .eq("id", vendorId)
+          .single(),
+        supabase
+          .from("menu_items")
+          .select(
+            "id, name, price, category, image_url, description, is_veg, is_featured, vendor_id, is_available"
+          )
+          .eq("vendor_id", vendorId)
+          .order("name"),
+        supabase
+          .from("reviews")
+          .select("id, user_name, rating, comment, created_at")
+          .eq("vendor_id", vendorId)
+          .order("created_at", { ascending: false }),
       ]);
       if (vendorRes.error) {
         logger.error({ err: vendorRes.error }, "Vendor query error");
@@ -396,8 +507,8 @@ export default function RestaurantProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface p-6 space-y-6">
-        <div className="h-48 w-full bg-surface-container-high animate-pulse rounded-2xl" />
+      <div className="bg-surface min-h-screen space-y-6 p-6">
+        <div className="bg-surface-container-high h-48 w-full animate-pulse rounded-2xl" />
         <ProfileSkeleton />
         <div className="space-y-4">
           <MenuItemSkeleton />
@@ -410,17 +521,23 @@ export default function RestaurantProfilePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
-        <div className="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mb-4">
-          <span className="material-symbols-outlined text-4xl text-accent">wifi_off</span>
+      <div className="bg-surface flex min-h-screen flex-col items-center justify-center p-6">
+        <div className="bg-surface-container mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+          <span className="material-symbols-outlined text-accent text-4xl">wifi_off</span>
         </div>
-        <p className="text-xl font-black text-on-surface mb-2">{t.common.error}</p>
-        <p className="text-on-surface-variant text-sm mb-6 text-center">{error}</p>
+        <p className="text-on-surface mb-2 text-xl font-black">{t.common.error}</p>
+        <p className="text-on-surface-variant mb-6 text-center text-sm">{error}</p>
         <div className="flex gap-3">
-          <button onClick={fetchData} className="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold hover:opacity-90 transition-opacity">
+          <button
+            onClick={fetchData}
+            className="bg-primary text-on-primary rounded-xl px-6 py-3 font-bold transition-opacity hover:opacity-90"
+          >
             {t.common.retry}
           </button>
-          <Link href="/app/food" className="px-6 py-3 bg-surface-container text-accent rounded-xl font-bold hover:opacity-90 transition-opacity">
+          <Link
+            href="/app/food"
+            className="bg-surface-container text-accent rounded-xl px-6 py-3 font-bold transition-opacity hover:opacity-90"
+          >
             ← Back
           </Link>
         </div>
@@ -430,10 +547,12 @@ export default function RestaurantProfilePage() {
 
   if (!vendor) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface">
+      <div className="bg-surface flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <p className="text-2xl font-black text-on-surface mb-2">{t.food.restaurantNotFound}</p>
-          <Link href="/app/food" className="text-accent font-bold">{t.food.backToFood}</Link>
+          <p className="text-on-surface mb-2 text-2xl font-black">{t.food.restaurantNotFound}</p>
+          <Link href="/app/food" className="text-accent font-bold">
+            {t.food.backToFood}
+          </Link>
         </div>
       </div>
     );
@@ -446,35 +565,42 @@ export default function RestaurantProfilePage() {
   const ratingBreakdown = [5, 4, 3, 2, 1].map((star) => ({
     star,
     count: reviews.filter((r) => r.rating === star).length,
-    pct: reviews.length ? Math.round((reviews.filter((r) => r.rating === star).length / reviews.length) * 100) : 0,
+    pct: reviews.length
+      ? Math.round((reviews.filter((r) => r.rating === star).length / reviews.length) * 100)
+      : 0,
   }));
 
   return (
-    <div className="min-h-screen bg-surface pb-44 md:pb-32">
+    <div className="bg-surface min-h-screen pb-44 md:pb-32">
       {/* Sticky header — back / shop + cuisine / favorite + cart */}
-      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
-        <div className="h-14 flex items-center gap-1 px-2">
+      <header className="bg-surface-container-lowest/95 border-outline-variant/60 sticky top-0 z-30 border-b backdrop-blur-md">
+        <div className="flex h-14 items-center gap-1 px-2">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <div className="flex-1 min-w-0 px-1">
-            <p className="text-[13px] font-bold text-on-surface truncate">{vendor.shop_name}</p>
-            <p className="text-[11px] text-on-surface-variant truncate">{vendor.cuisine}</p>
+          <div className="min-w-0 flex-1 px-1">
+            <p className="text-on-surface truncate text-[13px] font-bold">{vendor.shop_name}</p>
+            <p className="text-on-surface-variant truncate text-[11px]">{vendor.cuisine}</p>
           </div>
           <button
             onClick={handleToggleFavorite}
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
             aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           >
-            <span className={`material-symbols-outlined ${isFavorite ? "text-red-500" : "text-on-surface"}`} style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
+            <span
+              className={`material-symbols-outlined ${isFavorite ? "text-red-500" : "text-on-surface"}`}
+              style={{ fontVariationSettings: isFavorite ? "'FILL' 1" : "'FILL' 0" }}
+            >
+              favorite
+            </span>
           </button>
           <Link
             href="/app/cart"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
             aria-label="Go to cart"
           >
             <span className="material-symbols-outlined">shopping_cart</span>
@@ -483,63 +609,73 @@ export default function RestaurantProfilePage() {
       </header>
 
       {/* Cover image — flat, no overlay */}
-      <div className="relative h-44 sm:h-56 overflow-hidden bg-surface-container">
+      <div className="bg-surface-container relative h-44 overflow-hidden sm:h-56">
         <BlurImage
           src={coverImage}
           alt={vendor.shop_name}
-          className="w-full h-full object-cover scale-105"
+          className="h-full w-full scale-105 object-cover"
           fill
         />
       </div>
 
       {/* Title + rating */}
-      <section className="px-4 py-4 border-b border-outline-variant/60">
+      <section className="border-outline-variant/60 border-b px-4 py-4">
         {vendor.is_featured && (
-          <span className="bg-amber-400 text-amber-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-2 inline-flex items-center gap-1">
+          <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black tracking-wider text-amber-900 uppercase">
             <span className="text-xs">⭐</span> Featured
           </span>
         )}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-black text-on-surface leading-tight">{vendor.shop_name}</h1>
-            <p className="text-sm text-on-surface-variant mt-1 font-medium">{vendor.cuisine}</p>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-on-surface text-xl leading-tight font-black">{vendor.shop_name}</h1>
+            <p className="text-on-surface-variant mt-1 text-sm font-medium">{vendor.cuisine}</p>
           </div>
-          <span className="flex-shrink-0 inline-flex flex-col items-center bg-white border border-outline-variant/60 shadow-sm rounded-lg px-2.5 py-1.5">
-            <span className="text-xs font-black text-accent">{avgRating} ★</span>
-            <span className="text-[10px] text-on-surface-variant mt-0.5">{reviews.length || vendor.review_count || 0} reviews</span>
+          <span className="border-outline-variant/60 inline-flex flex-shrink-0 flex-col items-center rounded-lg border bg-white px-2.5 py-1.5 shadow-sm">
+            <span className="text-accent text-xs font-black">{avgRating} ★</span>
+            <span className="text-on-surface-variant mt-0.5 text-[10px]">
+              {reviews.length || vendor.review_count || 0} reviews
+            </span>
           </span>
         </div>
       </section>
 
       {/* Info Strip */}
-      <div className="bg-surface-container-lowest px-4 py-4 flex items-center gap-4 overflow-x-auto no-scrollbar border-b border-outline-variant/60">
-        <span className={`flex-shrink-0 px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
-          isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
-        }`}>
+      <div className="bg-surface-container-lowest no-scrollbar border-outline-variant/60 flex items-center gap-4 overflow-x-auto border-b px-4 py-4">
+        <span
+          className={`flex-shrink-0 rounded-full px-2.5 py-1 text-xs font-black tracking-wider uppercase ${
+            isOpen ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
+          }`}
+        >
           {isOpen ? "🟢 Open" : "🔴 Closed"}
         </span>
-        <div className="w-px h-4 bg-surface-container-high" />
-        <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
+        <div className="bg-surface-container-high h-4 w-px" />
+        <div className="text-on-surface-variant flex flex-shrink-0 items-center gap-1.5">
           <span className="material-symbols-outlined text-accent text-base">schedule</span>
-          <span className="text-sm font-semibold">{vendor.delivery_time_min && vendor.delivery_time_max ? `${vendor.delivery_time_min}-${vendor.delivery_time_max} min` : "30-40 min"}</span>
+          <span className="text-sm font-semibold">
+            {vendor.delivery_time_min && vendor.delivery_time_max
+              ? `${vendor.delivery_time_min}-${vendor.delivery_time_max} min`
+              : "30-40 min"}
+          </span>
         </div>
-        <div className="w-px h-4 bg-surface-container-high" />
-        <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
+        <div className="bg-surface-container-high h-4 w-px" />
+        <div className="text-on-surface-variant flex flex-shrink-0 items-center gap-1.5">
           <span className="material-symbols-outlined text-accent text-base">delivery_dining</span>
-          <span className="text-sm font-semibold">{vendor.delivery_charge ? `₹${vendor.delivery_charge}` : "₹49 delivery"}</span>
+          <span className="text-sm font-semibold">
+            {vendor.delivery_charge ? `₹${vendor.delivery_charge}` : "₹49 delivery"}
+          </span>
         </div>
-        <div className="w-px h-4 bg-surface-container-high" />
-        <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
+        <div className="bg-surface-container-high h-4 w-px" />
+        <div className="text-on-surface-variant flex flex-shrink-0 items-center gap-1.5">
           <span className="material-symbols-outlined text-accent text-base">storefront</span>
           <span className="text-sm font-semibold">{vendor.opening_hours || "10 AM – 11 PM"}</span>
           <ClosingCountdown openingHours={vendor.opening_hours} />
         </div>
         {vendor.address && (
           <>
-            <div className="w-px h-4 bg-surface-container-high" />
-            <div className="flex items-center gap-1.5 text-on-surface-variant flex-shrink-0">
+            <div className="bg-surface-container-high h-4 w-px" />
+            <div className="text-on-surface-variant flex flex-shrink-0 items-center gap-1.5">
               <span className="material-symbols-outlined text-accent text-base">location_on</span>
-              <span className="text-sm font-semibold truncate max-w-[160px]">{vendor.address}</span>
+              <span className="max-w-[160px] truncate text-sm font-semibold">{vendor.address}</span>
             </div>
           </>
         )}
@@ -547,24 +683,26 @@ export default function RestaurantProfilePage() {
 
       {/* Closed Banner */}
       {!isOpen && (
-        <div className="bg-red-50 border-b border-red-200 px-4 py-3 flex items-center gap-3">
-          <span className="material-symbols-outlined text-red-500 text-2xl">schedule</span>
+        <div className="flex items-center gap-3 border-b border-red-200 bg-red-50 px-4 py-3">
+          <span className="material-symbols-outlined text-2xl text-red-500">schedule</span>
           <div>
-            <p className="font-bold text-red-700 text-sm">Restaurant is currently closed</p>
-            <p className="text-red-500 text-xs">You can browse the menu but cannot place orders right now.</p>
+            <p className="text-sm font-bold text-red-700">Restaurant is currently closed</p>
+            <p className="text-xs text-red-500">
+              You can browse the menu but cannot place orders right now.
+            </p>
           </div>
         </div>
       )}
 
       {/* Schedule Delivery */}
       {isOpen && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
+        <section className="border-outline-variant/60 border-b px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-accent text-xl">event</span>
               <div>
-                <p className="font-bold text-sm text-on-surface">Schedule for Later</p>
-                <p className="text-[10px] text-on-surface-variant">Choose a date & time</p>
+                <p className="text-on-surface text-sm font-bold">Schedule for Later</p>
+                <p className="text-on-surface-variant text-[10px]">Choose a date & time</p>
               </div>
             </div>
             <button
@@ -572,25 +710,27 @@ export default function RestaurantProfilePage() {
               aria-checked={scheduleDelivery}
               aria-label="Schedule delivery for later"
               onClick={() => setScheduleDelivery(!scheduleDelivery)}
-              className={`relative w-12 h-7 rounded-full transition-colors ${scheduleDelivery ? "bg-primary" : "bg-surface-container-high"}`}
+              className={`relative h-7 w-12 rounded-full transition-colors ${scheduleDelivery ? "bg-primary" : "bg-surface-container-high"}`}
             >
-              <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${scheduleDelivery ? "translate-x-6" : "translate-x-1"}`} />
+              <div
+                className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${scheduleDelivery ? "translate-x-6" : "translate-x-1"}`}
+              />
             </button>
           </div>
           {scheduleDelivery && (
-            <div className="flex gap-2 mt-3">
+            <div className="mt-3 flex gap-2">
               <input
                 type="date"
                 value={scheduleDate}
                 onChange={(e) => setScheduleDate(e.target.value)}
                 min={new Date().toISOString().split("T")[0]}
-                className="flex-1 px-3 py-2 bg-surface-container-low rounded-xl text-sm border border-outline focus:outline-none focus:border-primary"
+                className="bg-surface-container-low border-outline focus:border-primary flex-1 rounded-xl border px-3 py-2 text-sm focus:outline-none"
               />
               <input
                 type="time"
                 value={scheduleTime}
                 onChange={(e) => setScheduleTime(e.target.value)}
-                className="w-28 px-3 py-2 bg-surface-container-low rounded-xl text-sm border border-outline focus:outline-none focus:border-primary"
+                className="bg-surface-container-low border-outline focus:border-primary w-28 rounded-xl border px-3 py-2 text-sm focus:outline-none"
               />
             </div>
           )}
@@ -599,39 +739,51 @@ export default function RestaurantProfilePage() {
 
       {/* Description */}
       {vendor.description && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <p className="text-sm text-on-surface-variant leading-relaxed">{vendor.description}</p>
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <p className="text-on-surface-variant text-sm leading-relaxed">{vendor.description}</p>
         </section>
       )}
 
       {/* Chef's Specials */}
       {specials.length > 0 && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <div className="flex items-center gap-2 mb-3">
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <div className="mb-3 flex items-center gap-2">
             <span className="text-lg">⭐</span>
-            <h2 className="text-[15px] font-bold text-on-surface">{t.food.chefSpecials}</h2>
+            <h2 className="text-on-surface text-[15px] font-bold">{t.food.chefSpecials}</h2>
           </div>
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4">
+          <div className="scrollbar-hide -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
             {specials.map((item) => (
-              <div key={item.id} className="flex-shrink-0 w-32 bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm border border-amber-100">
-                <div className="h-20 overflow-hidden bg-surface-container">
+              <div
+                key={item.id}
+                className="bg-surface-container-lowest w-32 flex-shrink-0 overflow-hidden rounded-2xl border border-amber-100 shadow-sm"
+              >
+                <div className="bg-surface-container h-20 overflow-hidden">
                   <BlurImage
-                    src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                    src={
+                      item.image_url ||
+                      "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                    }
                     alt={item.name}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                     fill
                     fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                   />
                 </div>
                 <div className="p-2">
-                  <div className="flex items-center gap-1 mb-0.5">
-                    <span className={`w-2.5 h-2.5 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
-                      <span className={`w-1 h-1 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                  <div className="mb-0.5 flex items-center gap-1">
+                    <span
+                      className={`h-2.5 w-2.5 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} flex flex-shrink-0 items-center justify-center rounded-sm`}
+                    >
+                      <span
+                        className={`h-1 w-1 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}
+                      />
                     </span>
-                    <p className="font-bold text-on-surface text-[10px] line-clamp-2">{item.name}</p>
+                    <p className="text-on-surface line-clamp-2 text-[10px] font-bold">
+                      {item.name}
+                    </p>
                   </div>
-                  <div className="flex items-center justify-between mt-0.5">
-                    <span className="font-black text-on-surface text-xs">₹{item.price}</span>
+                  <div className="mt-0.5 flex items-center justify-between">
+                    <span className="text-on-surface text-xs font-black">₹{item.price}</span>
                     <AddToCartButton item={item} vendor={vendor} compact isOpen={isOpen} />
                   </div>
                 </div>
@@ -642,33 +794,49 @@ export default function RestaurantProfilePage() {
       )}
 
       {/* Menu Tabs */}
-      <section className="border-b border-outline-variant/60">
-        <div className="px-4 pt-4 mb-3 flex items-center justify-between gap-3">
-          <h2 className="text-[15px] font-bold text-on-surface">{t.food.fullMenu}</h2>
-          <label className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full cursor-pointer text-xs font-bold transition-all ${
-            vegOnly ? "bg-green-600 text-white" : "bg-surface-container-low text-green-700 border border-green-200"
-          }`}>
-            <input type="checkbox" checked={vegOnly} onChange={(e) => setVegOnly(e.target.checked)} className="sr-only" aria-label={t.food.vegOnly} />
-            <span className="w-3 h-3 border-2 border-current rounded-sm flex items-center justify-center flex-shrink-0">
-              <span className="w-1.5 h-1.5 bg-current rounded-full" />
+      <section className="border-outline-variant/60 border-b">
+        <div className="mb-3 flex items-center justify-between gap-3 px-4 pt-4">
+          <h2 className="text-on-surface text-[15px] font-bold">{t.food.fullMenu}</h2>
+          <label
+            className={`flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
+              vegOnly
+                ? "bg-green-600 text-white"
+                : "bg-surface-container-low border border-green-200 text-green-700"
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={vegOnly}
+              onChange={(e) => setVegOnly(e.target.checked)}
+              className="sr-only"
+              aria-label={t.food.vegOnly}
+            />
+            <span className="flex h-3 w-3 flex-shrink-0 items-center justify-center rounded-sm border-2 border-current">
+              <span className="h-1.5 w-1.5 rounded-full bg-current" />
             </span>
             {t.food.vegOnly}
           </label>
         </div>
 
         {/* Search bar */}
-        <div className="px-4 mb-3">
+        <div className="mb-3 px-4">
           <div className="relative">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-base">search</span>
+            <span className="material-symbols-outlined text-outline absolute top-1/2 left-3 -translate-y-1/2 text-base">
+              search
+            </span>
             <input
               type="text"
               value={menuSearch}
               onChange={(e) => setMenuSearch(e.target.value)}
               placeholder={t.food.searchMenu}
-              className="w-full pl-9 pr-4 py-2.5 bg-surface-container-lowest border border-outline rounded-xl text-sm focus:outline-none focus:border-primary shadow-sm"
+              className="bg-surface-container-lowest border-outline focus:border-primary w-full rounded-xl border py-2.5 pr-4 pl-9 text-sm shadow-sm focus:outline-none"
             />
             {menuSearch && (
-              <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant" aria-label="Clear search">
+              <button
+                onClick={() => setMenuSearch("")}
+                className="text-outline hover:text-on-surface-variant absolute top-1/2 right-3 -translate-y-1/2"
+                aria-label="Clear search"
+              >
                 <span className="material-symbols-outlined text-base">close</span>
               </button>
             )}
@@ -676,16 +844,19 @@ export default function RestaurantProfilePage() {
         </div>
 
         {/* Category tabs */}
-        <div className="sticky top-14 z-20 bg-surface pt-2 pb-1 -mx-4 px-4">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+        <div className="bg-surface sticky top-14 z-20 -mx-4 px-4 pt-2 pb-1">
+          <div className="scrollbar-hide flex gap-2 overflow-x-auto">
             {availableCategories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => { setActiveCategory(cat); if (navigator.vibrate) navigator.vibrate(10); }}
-                className={`flex-shrink-0 px-4 py-2 rounded-full font-bold text-sm transition-all active:scale-95 ${
+                onClick={() => {
+                  setActiveCategory(cat);
+                  if (navigator.vibrate) navigator.vibrate(10);
+                }}
+                className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-bold transition-all active:scale-95 ${
                   activeCategory === cat
                     ? "bg-primary text-on-primary"
-                    : "bg-surface-container-lowest text-on-surface-variant border border-outline"
+                    : "bg-surface-container-lowest text-on-surface-variant border-outline border"
                 }`}
               >
                 {cat}
@@ -695,7 +866,7 @@ export default function RestaurantProfilePage() {
         </div>
 
         {/* Sort tabs */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 pb-3">
+        <div className="scrollbar-hide flex gap-2 overflow-x-auto px-4 pb-3">
           {[
             { key: "default" as const, label: "Default", icon: "sort" },
             { key: "price_low" as const, label: "Price: Low", icon: "arrow_upward" },
@@ -705,7 +876,7 @@ export default function RestaurantProfilePage() {
             <button
               key={opt.key}
               onClick={() => setMenuSort(opt.key)}
-              className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-[10px] font-bold transition-all active:scale-95 ${
+              className={`flex flex-shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[10px] font-bold transition-all active:scale-95 ${
                 menuSort === opt.key
                   ? "bg-surface-container text-on-surface"
                   : "bg-surface-container-low text-on-surface-variant"
@@ -720,64 +891,80 @@ export default function RestaurantProfilePage() {
         {/* Menu Items */}
         <div className="px-4">
           {filteredMenu.length === 0 ? (
-            <div className="bg-surface-container-lowest rounded-2xl p-8 text-center text-outline shadow-sm my-4">
+            <div className="bg-surface-container-lowest text-outline my-4 rounded-2xl p-8 text-center shadow-sm">
               {menuSearch ? `${t.food.noResults} "${menuSearch}"` : t.food.noItemsInCategory}
             </div>
           ) : (
             <>
               {visibleMenuItems.map((item) => (
-                <div key={item.id} className="py-3 border-b border-outline-variant/40 last:border-0 flex items-center gap-3">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0 relative">
+                <div
+                  key={item.id}
+                  className="border-outline-variant/40 flex items-center gap-3 border-b py-3 last:border-0"
+                >
+                  <div className="bg-surface-container relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl">
                     <BlurImage
-                      src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                      src={
+                        item.image_url ||
+                        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                      }
                       alt={item.name}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                       fill
                       fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                     />
                     {item.is_featured && (
-                      <span className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[9px] font-black text-center py-0.5 tracking-wider">
+                      <span className="absolute right-0 bottom-0 left-0 bg-black/50 py-0.5 text-center text-[9px] font-black tracking-wider text-white backdrop-blur-sm">
                         ⭐ {t.food.chefsSpecial}
                       </span>
                     )}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`w-3.5 h-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
-                        <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-0.5 flex items-center gap-1.5">
+                      <span
+                        className={`h-3.5 w-3.5 border-2 ${item.is_veg ? "border-green-600" : "border-red-600"} flex flex-shrink-0 items-center justify-center rounded-sm`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}
+                        />
                       </span>
-                      <p className="font-bold text-on-surface text-sm line-clamp-2">{item.name}</p>
+                      <p className="text-on-surface line-clamp-2 text-sm font-bold">{item.name}</p>
                       {item.is_featured && (
-                        <span className="text-amber-500 text-xs flex-shrink-0">⭐</span>
+                        <span className="flex-shrink-0 text-xs text-amber-500">⭐</span>
                       )}
                       {item.order_count > 0 && (
-                        <span className="text-[9px] font-bold text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded-full flex-shrink-0">
+                        <span className="flex-shrink-0 rounded-full bg-orange-50 px-1.5 py-0.5 text-[9px] font-bold text-orange-600">
                           🔥 {item.order_count}+ orders
                         </span>
                       )}
                     </div>
                     {/* Dietary badges */}
-                    <div className="flex items-center gap-1.5 mt-0.5">
+                    <div className="mt-0.5 flex items-center gap-1.5">
                       {item.is_vegan && (
-                        <span className="text-[9px] font-bold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-full">🌱 Vegan</span>
+                        <span className="rounded-full bg-green-50 px-1.5 py-0.5 text-[9px] font-bold text-green-700">
+                          🌱 Vegan
+                        </span>
                       )}
                       {item.is_gluten_free && (
-                        <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">🌾 Gluten-Free</span>
+                        <span className="rounded-full bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">
+                          🌾 Gluten-Free
+                        </span>
                       )}
                     </div>
                     {item.description && (
-                      <p className="text-xs text-on-surface-variant mt-0.5 line-clamp-1">{item.description}</p>
+                      <p className="text-on-surface-variant mt-0.5 line-clamp-1 text-xs">
+                        {item.description}
+                      </p>
                     )}
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="font-black text-on-surface text-base">₹{item.price}</span>
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-on-surface text-base font-black">₹{item.price}</span>
                       <AddToCartButton item={item} vendor={vendor} isOpen={isOpen} />
                     </div>
                   </div>
                 </div>
               ))}
               {hasMore && (
-                <div ref={sentinelRef} className="py-4 flex justify-center">
-                  <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                <div ref={sentinelRef} className="flex justify-center py-4">
+                  <div className="border-primary/30 border-t-primary h-6 w-6 animate-spin rounded-full border-2" />
                 </div>
               )}
             </>
@@ -787,12 +974,12 @@ export default function RestaurantProfilePage() {
 
       {/* Frequently Ordered Together */}
       {menuItems.length > 2 && (
-        <section className="px-4 py-4 border-b border-outline-variant/60">
-          <div className="flex items-center gap-2 mb-3">
+        <section className="border-outline-variant/60 border-b px-4 py-4">
+          <div className="mb-3 flex items-center gap-2">
             <span className="text-lg">🤝</span>
-            <h2 className="text-[15px] font-bold text-on-surface">Frequently Ordered Together</h2>
+            <h2 className="text-on-surface text-[15px] font-bold">Frequently Ordered Together</h2>
           </div>
-          <div className="border border-outline-variant/40 rounded-xl p-4">
+          <div className="border-outline-variant/40 rounded-xl border p-4">
             {(() => {
               const popular = [...menuItems]
                 .sort((a, b) => (b.order_count || 0) - (a.order_count || 0))
@@ -803,19 +990,29 @@ export default function RestaurantProfilePage() {
                   <div className="space-y-2">
                     {popular.map((item, idx) => (
                       <div key={item.id} className="flex items-center gap-3">
-                        <span className="w-5 h-5 rounded-full bg-primary/10 text-accent text-[10px] font-black flex items-center justify-center flex-shrink-0">{idx + 1}</span>
-                        <span className={`w-3 h-3 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} rounded-sm flex items-center justify-center flex-shrink-0`}>
-                          <span className={`w-1.5 h-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`} />
+                        <span className="bg-primary/10 text-accent flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-black">
+                          {idx + 1}
                         </span>
-                        <p className="font-bold text-sm text-on-surface flex-1 line-clamp-1">{item.name}</p>
-                        <span className="text-xs font-bold text-on-surface-variant">₹{item.price}</span>
+                        <span
+                          className={`h-3 w-3 border-[1.5px] ${item.is_veg ? "border-green-600" : "border-red-600"} flex flex-shrink-0 items-center justify-center rounded-sm`}
+                        >
+                          <span
+                            className={`h-1.5 w-1.5 ${item.is_veg ? "bg-green-600" : "bg-red-600"} rounded-full`}
+                          />
+                        </span>
+                        <p className="text-on-surface line-clamp-1 flex-1 text-sm font-bold">
+                          {item.name}
+                        </p>
+                        <span className="text-on-surface-variant text-xs font-bold">
+                          ₹{item.price}
+                        </span>
                       </div>
                     ))}
                   </div>
-                  <div className="mt-3 pt-3 border-t border-outline-variant flex items-center justify-between">
+                  <div className="border-outline-variant mt-3 flex items-center justify-between border-t pt-3">
                     <div>
-                      <p className="text-xs text-on-surface-variant">Order all together</p>
-                      <p className="font-black text-on-surface">₹{totalComboPrice}</p>
+                      <p className="text-on-surface-variant text-xs">Order all together</p>
+                      <p className="text-on-surface font-black">₹{totalComboPrice}</p>
                     </div>
                     <button
                       onClick={() => {
@@ -833,7 +1030,7 @@ export default function RestaurantProfilePage() {
                         });
                         if (navigator.vibrate) navigator.vibrate([20, 10, 20]);
                       }}
-                      className="px-4 py-2 bg-primary text-on-primary text-xs font-bold rounded-full active:scale-95 transition-transform"
+                      className="bg-primary text-on-primary rounded-full px-4 py-2 text-xs font-bold transition-transform active:scale-95"
                     >
                       Add All
                     </button>
@@ -847,11 +1044,11 @@ export default function RestaurantProfilePage() {
 
       {/* Reviews */}
       <section className="px-4 py-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[15px] font-bold text-on-surface">{t.food.reviews}</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-on-surface text-[15px] font-bold">{t.food.reviews}</h2>
           <button
             onClick={() => setShowReviewModal(true)}
-            className="text-sm font-bold text-accent bg-surface px-3 py-1.5 rounded-lg hover:bg-[#fff7e0] transition-colors active:scale-95"
+            className="text-accent bg-surface rounded-lg px-3 py-1.5 text-sm font-bold transition-colors hover:bg-[#fff7e0] active:scale-95"
           >
             + {t.food.writeReview}
           </button>
@@ -863,22 +1060,24 @@ export default function RestaurantProfilePage() {
             <div className="mb-4">
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <p className="text-5xl font-black text-on-surface">{avgRating}</p>
+                  <p className="text-on-surface text-5xl font-black">{avgRating}</p>
                   <StarRating rating={parseFloat(avgRating)} size="sm" />
-                  <p className="text-xs text-on-surface-variant mt-1">{reviews.length} {t.food.reviewsCount}</p>
+                  <p className="text-on-surface-variant mt-1 text-xs">
+                    {reviews.length} {t.food.reviewsCount}
+                  </p>
                 </div>
                 <div className="flex-1 space-y-1.5">
                   {ratingBreakdown.map(({ star, count, pct }) => (
                     <div key={star} className="flex items-center gap-2">
-                      <span className="text-xs text-on-surface-variant w-3">{star}</span>
-                      <span className="text-amber-400 text-xs">★</span>
-                      <div className="flex-1 h-1.5 bg-surface-container rounded-full overflow-hidden">
+                      <span className="text-on-surface-variant w-3 text-xs">{star}</span>
+                      <span className="text-xs text-amber-400">★</span>
+                      <div className="bg-surface-container h-1.5 flex-1 overflow-hidden rounded-full">
                         <div
-                          className="h-full bg-amber-400 rounded-full transition-all duration-500"
+                          className="h-full rounded-full bg-amber-400 transition-all duration-500"
                           style={{ width: `${pct}%` }}
                         />
                       </div>
-                      <span className="text-xs text-outline w-5 text-right">{count}</span>
+                      <span className="text-outline w-5 text-right text-xs">{count}</span>
                     </div>
                   ))}
                 </div>
@@ -888,21 +1087,32 @@ export default function RestaurantProfilePage() {
             {/* Review list */}
             <div>
               {reviews.map((review) => (
-                <div key={review.id} className="py-3 border-b border-outline-variant/40 last:border-0">
+                <div
+                  key={review.id}
+                  className="border-outline-variant/40 border-b py-3 last:border-0"
+                >
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-container flex items-center justify-center text-on-primary font-black text-sm flex-shrink-0">
+                    <div className="from-primary to-primary-container text-on-primary flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-sm font-black">
                       {review.user_name?.charAt(0).toUpperCase() || "U"}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="font-bold text-on-surface text-sm truncate">{review.user_name || "Anonymous"}</p>
-                        <p className="text-[10px] text-outline flex-shrink-0">
-                          {new Date(review.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                        <p className="text-on-surface truncate text-sm font-bold">
+                          {review.user_name || "Anonymous"}
+                        </p>
+                        <p className="text-outline flex-shrink-0 text-[10px]">
+                          {new Date(review.created_at).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
                         </p>
                       </div>
                       <StarRating rating={review.rating} size="sm" />
                       {review.comment && (
-                        <p className="text-sm text-on-surface-variant mt-2 leading-relaxed">{review.comment}</p>
+                        <p className="text-on-surface-variant mt-2 text-sm leading-relaxed">
+                          {review.comment}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -911,13 +1121,13 @@ export default function RestaurantProfilePage() {
             </div>
           </>
         ) : (
-          <div className="bg-surface-container-lowest rounded-2xl p-8 shadow-sm text-center">
-            <p className="text-3xl mb-2">💬</p>
-            <p className="font-bold text-on-surface mb-1">{t.food.noReviews}</p>
-            <p className="text-sm text-outline mb-4">{t.food.beFirst}</p>
+          <div className="bg-surface-container-lowest rounded-2xl p-8 text-center shadow-sm">
+            <p className="mb-2 text-3xl">💬</p>
+            <p className="text-on-surface mb-1 font-bold">{t.food.noReviews}</p>
+            <p className="text-outline mb-4 text-sm">{t.food.beFirst}</p>
             <button
               onClick={() => setShowReviewModal(true)}
-              className="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg text-sm hover:brightness-95 active:scale-[0.98] transition-all"
+              className="bg-primary text-on-primary rounded-lg px-6 py-2.5 text-sm font-bold transition-all hover:brightness-95 active:scale-[0.98]"
             >
               {t.food.writeReview}
             </button>

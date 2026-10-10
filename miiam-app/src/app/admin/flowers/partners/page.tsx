@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/client";
 import { useToastStore } from "@/lib/store/toastStore";
 import logger from "@/lib/logger";
 
-
 interface FlowerPartner {
   id: string;
   shop_name: string;
@@ -81,7 +80,8 @@ export default function FlowersPartnersPage() {
 
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const newThisMonth = data?.filter((p: FlowerPartner) => new Date(p.created_at ?? "") >= monthStart).length || 0;
+      const newThisMonth =
+        data?.filter((p: FlowerPartner) => new Date(p.created_at ?? "") >= monthStart).length || 0;
 
       setStats({
         total: data?.length || 0,
@@ -114,10 +114,15 @@ export default function FlowersPartnersPage() {
 
   const handleSavePartner = async () => {
     if (!newPartner.shop_name || !newPartner.owner_name || !newPartner.phone) {
-      useToastStore.getState().addToast("Please fill in all required fields (Shop Name, Owner Name, Phone)", "error");
+      useToastStore
+        .getState()
+        .addToast("Please fill in all required fields (Shop Name, Owner Name, Phone)", "error");
       return;
     }
-    if (newPartner.pincode && (newPartner.pincode.length !== 6 || !/^\d{6}$/.test(newPartner.pincode))) {
+    if (
+      newPartner.pincode &&
+      (newPartner.pincode.length !== 6 || !/^\d{6}$/.test(newPartner.pincode))
+    ) {
       useToastStore.getState().addToast("Please enter a valid 6-digit PIN code", "error");
       return;
     }
@@ -156,7 +161,12 @@ export default function FlowersPartnersPage() {
 
       resetModal();
       loadPartners();
-      useToastStore.getState().addToast(editingPartner ? "Partner updated successfully!" : "Partner added successfully!", "success");
+      useToastStore
+        .getState()
+        .addToast(
+          editingPartner ? "Partner updated successfully!" : "Partner added successfully!",
+          "success"
+        );
     } catch (error: unknown) {
       logger.error({ err: error }, "Error saving partner");
       const msg = error instanceof Error ? error.message : "Unknown error";
@@ -187,11 +197,24 @@ export default function FlowersPartnersPage() {
   const resetModal = () => {
     setShowAddModal(false);
     setEditingPartner(null);
-    setNewPartner({ shop_name: "", owner_name: "", phone: "", email: "", address: "", city: "", state: "", pincode: "", landmark: "", delivery_charge: "", min_order_amount: "" });
+    setNewPartner({
+      shop_name: "",
+      owner_name: "",
+      phone: "",
+      email: "",
+      address: "",
+      city: "",
+      state: "",
+      pincode: "",
+      landmark: "",
+      delivery_charge: "",
+      min_order_amount: "",
+    });
   };
 
-  const filteredPartners = partners.filter(partner => {
-    const matchesSearch = searchTerm === "" ||
+  const filteredPartners = partners.filter((partner) => {
+    const matchesSearch =
+      searchTerm === "" ||
       partner.shop_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       partner.owner_name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || partner.status === statusFilter;
@@ -200,44 +223,62 @@ export default function FlowersPartnersPage() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Link href="/admin/flowers" className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+      <div className="mb-6 flex items-center gap-4">
+        <Link
+          href="/admin/flowers"
+          className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
+        >
           <span className="material-symbols-outlined text-3xl">arrow_back</span>
         </Link>
         <div className="flex-1">
           <h1 className="text-2xl font-black text-[var(--color-on-surface)]">Flowers Partners</h1>
-          <p className="text-[var(--color-outline)] text-sm">Manage flower shop partners</p>
+          <p className="text-sm text-[var(--color-outline)]">Manage flower shop partners</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-lg font-bold text-sm hover:bg-[#a00018]">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="text-on-primary rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-bold hover:bg-[#a00018]"
+        >
           + Add Partner
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        <div className="bg-[var(--color-surface-container-lowest)] p-4 rounded-xl border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline-variant)] text-xs font-bold">TOTAL PARTNERS</p>
-          <p className="text-2xl font-black text-[var(--color-on-surface)] mt-1">{stats.total}</p>
+      <div className="mb-6 grid grid-cols-4 gap-4">
+        <div className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-4">
+          <p className="text-xs font-bold text-[var(--color-outline-variant)]">TOTAL PARTNERS</p>
+          <p className="mt-1 text-2xl font-black text-[var(--color-on-surface)]">{stats.total}</p>
         </div>
-        <div className="bg-green-50 p-4 rounded-xl border border-green-200">
-          <p className="text-green-600 text-xs font-bold">ACTIVE</p>
-          <p className="text-2xl font-black text-green-700 mt-1">{stats.active}</p>
+        <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+          <p className="text-xs font-bold text-green-600">ACTIVE</p>
+          <p className="mt-1 text-2xl font-black text-green-700">{stats.active}</p>
         </div>
-        <div className="bg-red-50 p-4 rounded-xl border border-red-200">
-          <p className="text-red-600 text-xs font-bold">INACTIVE</p>
-          <p className="text-2xl font-black text-red-700 mt-1">{stats.inactive}</p>
+        <div className="rounded-xl border border-red-200 bg-red-50 p-4">
+          <p className="text-xs font-bold text-red-600">INACTIVE</p>
+          <p className="mt-1 text-2xl font-black text-red-700">{stats.inactive}</p>
         </div>
-        <div className="bg-accent/10 p-4 rounded-xl border border-accent/30">
+        <div className="bg-accent/10 border-accent/30 rounded-xl border p-4">
           <p className="text-accent text-xs font-bold">NEW THIS MONTH</p>
-          <p className="text-2xl font-black text-accent mt-1">{stats.newThisMonth}</p>
+          <p className="text-accent mt-1 text-2xl font-black">{stats.newThisMonth}</p>
         </div>
       </div>
 
-      <div className="flex gap-4 mb-6">
-        <div className="flex-1 relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)] material-symbols-outlined">search</span>
-          <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search by shop name or owner..." className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]" />
+      <div className="mb-6 flex gap-4">
+        <div className="relative flex-1">
+          <span className="material-symbols-outlined absolute top-1/2 left-3 -translate-y-1/2 text-[var(--color-outline-variant)]">
+            search
+          </span>
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search by shop name or owner..."
+            className="w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] py-3 pr-4 pl-10 focus:border-[var(--color-primary)] focus:outline-none"
+          />
         </div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-4 py-3 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:border-[var(--color-primary)]">
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+        >
           <option value="all">All Status</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -246,43 +287,66 @@ export default function FlowersPartnersPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-[var(--color-outline)]">Loading partners...</div>
+        <div className="py-12 text-center text-[var(--color-outline)]">Loading partners...</div>
       ) : filteredPartners.length === 0 ? (
-        <div className="text-center py-12 text-[var(--color-outline)] bg-[var(--color-surface-container-lowest)] rounded-xl">
-          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">store</span>
+        <div className="rounded-xl bg-[var(--color-surface-container-lowest)] py-12 text-center text-[var(--color-outline)]">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]/60">
+            store
+          </span>
           <p className="mt-4 font-bold">No partners found</p>
         </div>
       ) : (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)]">
           <table className="w-full">
             <thead className="bg-[var(--color-surface-subtle)]">
               <tr>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Shop Name</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Owner</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Contact</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Orders</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Status</th>
-                <th className="text-left p-4 font-bold text-[var(--color-on-surface-variant)] text-sm">Action</th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Shop Name
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Owner
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Contact
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Orders
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Status
+                </th>
+                <th className="p-4 text-left text-sm font-bold text-[var(--color-on-surface-variant)]">
+                  Action
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredPartners.map((partner) => (
-                <tr key={partner.id} className="border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]">
+                <tr
+                  key={partner.id}
+                  className="border-t border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"
+                >
                   <td className="p-4">
-                    <div className="font-bold text-[var(--color-on-surface)]">{partner.shop_name}</div>
+                    <div className="font-bold text-[var(--color-on-surface)]">
+                      {partner.shop_name}
+                    </div>
                     <div className="text-xs text-[var(--color-outline)]">Flowers</div>
                   </td>
-                  <td className="p-4 text-[var(--color-on-surface-variant)]">{partner.owner_name}</td>
+                  <td className="p-4 text-[var(--color-on-surface-variant)]">
+                    {partner.owner_name}
+                  </td>
                   <td className="p-4">
                     <div className="text-[var(--color-on-surface)]">{partner.phone}</div>
                     <div className="text-xs text-[var(--color-outline)]">{partner.email || ""}</div>
                   </td>
-                  <td className="p-4 font-bold text-[var(--color-on-surface)]">{partner.total_orders || 0}</td>
+                  <td className="p-4 font-bold text-[var(--color-on-surface)]">
+                    {partner.total_orders || 0}
+                  </td>
                   <td className="p-4">
                     <select
                       value={partner.status}
                       onChange={(e) => updatePartnerStatus(partner.id, e.target.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-bold border-0 cursor-pointer ${partner.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"}`}
+                      className={`cursor-pointer rounded-full border-0 px-3 py-1 text-xs font-bold ${partner.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"}`}
                     >
                       <option value="active">Active</option>
                       <option value="inactive">Inactive</option>
@@ -290,7 +354,12 @@ export default function FlowersPartnersPage() {
                     </select>
                   </td>
                   <td className="p-4">
-                    <button onClick={() => openEditModal(partner)} className="text-[var(--color-primary)] font-bold text-sm hover:underline mr-4">Edit</button>
+                    <button
+                      onClick={() => openEditModal(partner)}
+                      className="mr-4 text-sm font-bold text-[var(--color-primary)] hover:underline"
+                    >
+                      Edit
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -300,34 +369,67 @@ export default function FlowersPartnersPage() {
       )}
 
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-8">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-lg mx-4 my-auto">
-            <div className="p-6 border-b">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 py-8">
+          <div className="mx-4 my-auto w-full max-w-lg rounded-2xl bg-[var(--color-surface-container-lowest)]">
+            <div className="border-b p-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-black text-[var(--color-on-surface)]">{editingPartner ? "Edit Partner" : "Add Flower Partner"}</h2>
-                <button onClick={resetModal} className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]">
+                <h2 className="text-xl font-black text-[var(--color-on-surface)]">
+                  {editingPartner ? "Edit Partner" : "Add Flower Partner"}
+                </h2>
+                <button
+                  onClick={resetModal}
+                  className="text-[var(--color-outline-variant)] hover:text-[var(--color-on-surface-variant)]"
+                >
                   <span className="material-symbols-outlined text-3xl">close</span>
                 </button>
               </div>
-              <p className="text-[var(--color-outline)] text-sm mt-1">All fields marked * are required</p>
+              <p className="mt-1 text-sm text-[var(--color-outline)]">
+                All fields marked * are required
+              </p>
             </div>
-            <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+            <div className="max-h-[70vh] space-y-5 overflow-y-auto p-6">
               {/* Owner / Contact */}
               <div>
-                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">Owner Details</h3>
+                <h3 className="mb-3 text-xs font-black tracking-widest text-[var(--color-outline)] uppercase">
+                  Owner Details
+                </h3>
                 <div className="grid grid-cols-1 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Owner Name *</label>
-                    <input type="text" value={newPartner.owner_name} onChange={(e) => setNewPartner({ ...newPartner, owner_name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="Enter owner name" />
+                    <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                      Owner Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={newPartner.owner_name}
+                      onChange={(e) => setNewPartner({ ...newPartner, owner_name: e.target.value })}
+                      className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                      placeholder="Enter owner name"
+                    />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Phone *</label>
-                      <input type="tel" value={newPartner.phone} onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="99578 73472" />
+                      <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                        Phone *
+                      </label>
+                      <input
+                        type="tel"
+                        value={newPartner.phone}
+                        onChange={(e) => setNewPartner({ ...newPartner, phone: e.target.value })}
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="99578 73472"
+                      />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Email</label>
-                      <input type="email" value={newPartner.email} onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="owner@email.com" />
+                      <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        value={newPartner.email}
+                        onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })}
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="owner@email.com"
+                      />
                     </div>
                   </div>
                 </div>
@@ -335,42 +437,91 @@ export default function FlowersPartnersPage() {
 
               {/* Shop Details */}
               <div>
-                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">Shop Details</h3>
+                <h3 className="mb-3 text-xs font-black tracking-widest text-[var(--color-outline)] uppercase">
+                  Shop Details
+                </h3>
                 <div className="space-y-3">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Shop / Store Name *</label>
-                    <input type="text" value={newPartner.shop_name} onChange={(e) => setNewPartner({ ...newPartner, shop_name: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="e.g. Floral Studio, Bloom & Blossom" />
+                    <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                      Shop / Store Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={newPartner.shop_name}
+                      onChange={(e) => setNewPartner({ ...newPartner, shop_name: e.target.value })}
+                      className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                      placeholder="e.g. Floral Studio, Bloom & Blossom"
+                    />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Full Address *</label>
-                    <textarea value={newPartner.address} onChange={(e) => setNewPartner({ ...newPartner, address: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="House/Shop No., Building, Street, Area" rows={2} />
+                    <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                      Full Address *
+                    </label>
+                    <textarea
+                      value={newPartner.address}
+                      onChange={(e) => setNewPartner({ ...newPartner, address: e.target.value })}
+                      className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                      placeholder="House/Shop No., Building, Street, Area"
+                      rows={2}
+                    />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">City *</label>
-                      <input type="text" value={newPartner.city} onChange={(e) => setNewPartner({ ...newPartner, city: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="e.g. Delhi, Mumbai" />
+                      <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        value={newPartner.city}
+                        onChange={(e) => setNewPartner({ ...newPartner, city: e.target.value })}
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="e.g. Delhi, Mumbai"
+                      />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">State</label>
-                      <input type="text" value={newPartner.state} onChange={(e) => setNewPartner({ ...newPartner, state: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="e.g. Assam, Delhi" />
+                      <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                        State
+                      </label>
+                      <input
+                        type="text"
+                        value={newPartner.state}
+                        onChange={(e) => setNewPartner({ ...newPartner, state: e.target.value })}
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="e.g. Assam, Delhi"
+                      />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">PIN Code *</label>
+                      <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                        PIN Code *
+                      </label>
                       <input
                         type="tel"
                         inputMode="numeric"
                         maxLength={6}
                         value={newPartner.pincode}
-                        onChange={(e) => setNewPartner({ ...newPartner, pincode: e.target.value.replace(/\D/g, "") })}
-                        className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        onChange={(e) =>
+                          setNewPartner({
+                            ...newPartner,
+                            pincode: e.target.value.replace(/\D/g, ""),
+                          })
+                        }
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                         placeholder="e.g. 783331"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Landmark</label>
-                      <input type="text" value={newPartner.landmark} onChange={(e) => setNewPartner({ ...newPartner, landmark: e.target.value })} className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="Near Metro Station" />
+                      <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                        Landmark
+                      </label>
+                      <input
+                        type="text"
+                        value={newPartner.landmark}
+                        onChange={(e) => setNewPartner({ ...newPartner, landmark: e.target.value })}
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="Near Metro Station"
+                      />
                     </div>
                   </div>
                 </div>
@@ -378,28 +529,65 @@ export default function FlowersPartnersPage() {
 
               {/* Delivery Settings */}
               <div>
-                <h3 className="text-xs font-black text-[var(--color-outline)] uppercase tracking-widest mb-3">Delivery Settings</h3>
+                <h3 className="mb-3 text-xs font-black tracking-widest text-[var(--color-outline)] uppercase">
+                  Delivery Settings
+                </h3>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Delivery Charge (₹)</label>
+                    <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                      Delivery Charge (₹)
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
-                      <input type="number" min="0" value={newPartner.delivery_charge} onChange={(e) => setNewPartner({ ...newPartner, delivery_charge: e.target.value })} className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="0" />
+                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-[var(--color-outline-variant)]">
+                        ₹
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={newPartner.delivery_charge}
+                        onChange={(e) =>
+                          setNewPartner({ ...newPartner, delivery_charge: e.target.value })
+                        }
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 pl-7 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="0"
+                      />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-on-surface-variant)] mb-1 block">Min Order Amount (₹)</label>
+                    <label className="mb-1 block text-xs font-bold text-[var(--color-on-surface-variant)]">
+                      Min Order Amount (₹)
+                    </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">₹</span>
-                      <input type="number" min="0" value={newPartner.min_order_amount} onChange={(e) => setNewPartner({ ...newPartner, min_order_amount: e.target.value })} className="w-full p-3 pl-7 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none" placeholder="0" />
+                      <span className="absolute top-1/2 left-3 -translate-y-1/2 text-[var(--color-outline-variant)]">
+                        ₹
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={newPartner.min_order_amount}
+                        onChange={(e) =>
+                          setNewPartner({ ...newPartner, min_order_amount: e.target.value })
+                        }
+                        className="w-full rounded-xl border border-[var(--color-border-subtle)] p-3 pl-7 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                        placeholder="0"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t flex gap-4">
-              <button onClick={resetModal} className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]">Cancel</button>
-              <button onClick={handleSavePartner} disabled={saving} className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50">
+            <div className="flex gap-4 border-t p-6">
+              <button
+                onClick={resetModal}
+                className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSavePartner}
+                disabled={saving}
+                className="text-on-primary flex-1 rounded-xl bg-[var(--color-primary)] py-3 text-sm font-bold hover:bg-[#a00018] disabled:opacity-50"
+              >
                 {saving ? "Saving..." : editingPartner ? "Update Partner" : "Add Partner"}
               </button>
             </div>

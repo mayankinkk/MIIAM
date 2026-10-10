@@ -12,13 +12,11 @@ export const metadata: Metadata = {
 
 import AdminThemeLock from "@/components/AdminThemeLock";
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/auth/login?redirect=/admin");
@@ -36,17 +34,15 @@ export default async function AdminLayout({
 
   return (
     <AdminThemeLock>
-      <div className="min-h-screen bg-surface flex">
-        <Suspense fallback={<div className="w-64 bg-surface animate-pulse" />}>
+      <div className="bg-surface flex min-h-screen">
+        <Suspense fallback={<div className="bg-surface w-64 animate-pulse" />}>
           <AdminSidebar />
         </Suspense>
 
         {/* Main Content */}
-        <main className="flex-1 md:ml-64 relative">
+        <main className="relative flex-1 md:ml-64">
           <AdminHeader />
-          <div className="pt-24 pb-12">
-            {children}
-          </div>
+          <div className="pt-24 pb-12">{children}</div>
         </main>
       </div>
     </AdminThemeLock>

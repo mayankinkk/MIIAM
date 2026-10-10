@@ -6,14 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: [
-          "/admin/",
-          "/rider/",
-          "/api/",
-          "/auth/",
-          "/app/settings/",
-          "/app/wallet/",
-        ],
+        disallow: ["/admin/", "/rider/", "/api/", "/auth/", "/app/settings/", "/app/wallet/"],
       },
     ],
     sitemap: "https://miiam.in/sitemap.xml",

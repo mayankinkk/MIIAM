@@ -7,13 +7,16 @@ const logger = createRouteLogger("user/data-export");
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 5, 60 * 1000)) {
+  if (!(await checkIpRateLimit(ip, 5, 60 * 1000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -36,10 +39,7 @@ export async function GET(request: NextRequest) {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false });
 
-    const { data: reviews } = await supabase
-      .from("reviews")
-      .select("*")
-      .eq("user_id", user.id);
+    const { data: reviews } = await supabase.from("reviews").select("*").eq("user_id", user.id);
 
     const { data: addresses } = await supabase
       .from("user_addresses")

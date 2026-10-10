@@ -2,7 +2,11 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { filterLocation, TRACKING_POSITION_OPTIONS, SINGLESHOT_POSITION_OPTIONS } from "@/lib/location-detection";
+import {
+  filterLocation,
+  TRACKING_POSITION_OPTIONS,
+  SINGLESHOT_POSITION_OPTIONS,
+} from "@/lib/location-detection";
 import logger from "@/lib/logger";
 
 export interface SharedLocation {
@@ -89,7 +93,7 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
         });
       } catch (e: unknown) {
         logger.error({ err: e }, "Failed to share location");
-        setError((e instanceof Error ? e.message : "Failed to share location"));
+        setError(e instanceof Error ? e.message : "Failed to share location");
       }
     };
 
@@ -100,7 +104,11 @@ export function useShareLocation({ orderId, userId, active = true }: UseShareLoc
 
     navigator.geolocation.getCurrentPosition(write, onError, SINGLESHOT_POSITION_OPTIONS);
 
-    watchIdRef.current = navigator.geolocation.watchPosition(write, onError, TRACKING_POSITION_OPTIONS);
+    watchIdRef.current = navigator.geolocation.watchPosition(
+      write,
+      onError,
+      TRACKING_POSITION_OPTIONS
+    );
     return true;
   }, [orderId, userId, supabase, stop]);
 
@@ -171,7 +179,14 @@ export function useCustomerLocation({ orderId, enabled }: UseCustomerLocationOpt
           filter: `order_id=eq.${orderId}`,
         },
         (payload: { new: Record<string, unknown> }) => {
-          const row = payload.new as { lat: number; lng: number; accuracy?: number; heading?: number; speed?: number; updated_at?: string };
+          const row = payload.new as {
+            lat: number;
+            lng: number;
+            accuracy?: number;
+            heading?: number;
+            speed?: number;
+            updated_at?: string;
+          };
           if (!row) return;
           setLocation({
             lat: row.lat,

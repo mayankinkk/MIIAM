@@ -64,20 +64,13 @@ export async function sendServiceCompletion(
   });
 }
 
-export async function sendPrescriptionApproval(
-  phoneNumber: string,
-  rxId: string
-) {
+export async function sendPrescriptionApproval(phoneNumber: string, rxId: string) {
   return sendWhatsAppMessage(phoneNumber, "prescription_approved", {
     rx_id: rxId,
   });
 }
 
-export async function sendPrescriptionRejection(
-  phoneNumber: string,
-  rxId: string,
-  reason: string
-) {
+export async function sendPrescriptionRejection(phoneNumber: string, rxId: string, reason: string) {
   return sendWhatsAppMessage(phoneNumber, "prescription_rejected", {
     rx_id: rxId,
     reason,

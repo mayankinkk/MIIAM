@@ -27,7 +27,9 @@ export function useAddresses() {
     setLoading(true);
     setError(null);
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       setLoading(false);
       return;
@@ -47,7 +49,9 @@ export function useAddresses() {
   }, [loadAddresses]);
 
   const addAddress = async (addressData: Omit<Address, "id" | "user_id" | "created_at">) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
     const res = await fetch("/api/addresses", {
@@ -64,7 +68,9 @@ export function useAddresses() {
   };
 
   const updateAddress = async (id: string, addressData: Partial<Address>) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
     const res = await fetch("/api/addresses", {
@@ -89,13 +95,15 @@ export function useAddresses() {
   };
 
   const setDefault = async (id: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
     await updateAddress(id, { is_default: true });
   };
 
-  const defaultAddress = addresses.find(a => a.is_default);
+  const defaultAddress = addresses.find((a) => a.is_default);
 
   return {
     addresses,

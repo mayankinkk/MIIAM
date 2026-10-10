@@ -12,15 +12,20 @@ export async function POST(request: NextRequest) {
 
   // Rate limit: max 3 rider applications per hour per IP
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 3, 60 * 60 * 1000)) {
-    return NextResponse.json({ error: "Too many applications. Please try again later." }, { status: 429 });
+  if (!(await checkIpRateLimit(ip, 3, 60 * 60 * 1000))) {
+    return NextResponse.json(
+      { error: "Too many applications. Please try again later." },
+      { status: 429 }
+    );
   }
-  
+
   const supabase = await createClient();
-  const { data: { user: currentUser } } = await supabase.auth.getUser();
-  
+  const {
+    data: { user: currentUser },
+  } = await supabase.auth.getUser();
+
   const adminClient = createAdminClient();
-  
+
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
@@ -30,20 +35,20 @@ export async function POST(request: NextRequest) {
   const id_proof_type = formData.get("id_proof_type") as string;
   const profile_photo = formData.get("profile_photo") as File | null;
   const id_proof_image = formData.get("id_proof_image") as File | null;
-  
+
   if (!email || !phone || !full_name) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
-  
+
   if (currentUser && currentUser.email !== email) {
     return NextResponse.json(
       { error: "Logged-in email does not match application email" },
       { status: 403 }
     );
   }
-  
+
   let userId = currentUser?.id || "";
-  
+
   if (!userId) {
     // Unauthenticated users must have verified their email via OTP before applying
     const supabaseAdmin2 = createAdminClient();
@@ -69,7 +74,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (authError) {
-      if (authError.message.toLowerCase().includes("email") || authError.message.toLowerCase().includes("phone") || authError.code === "email_exists" || authError.code === "phone_exists") {
+      if (
+        authError.message.toLowerCase().includes("email") ||
+        authError.message.toLowerCase().includes("phone") ||
+        authError.code === "email_exists" ||
+        authError.code === "phone_exists"
+      ) {
         const { data: existingProfile } = await adminClient
           .from("profiles")
           .select("id")
@@ -81,7 +91,10 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "User already exists" }, { status: 400 });
         }
       } else {
-        return NextResponse.json({ error: authError.message || "Failed to create user" }, { status: 400 });
+        return NextResponse.json(
+          { error: authError.message || "Failed to create user" },
+          { status: 400 }
+        );
       }
     } else if (authData.user) {
       userId = authData.user.id;
@@ -89,10 +102,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Failed to create user" }, { status: 400 });
     }
   }
-  
+
   let profilePhotoUrl = "";
   let idProofUrl = "";
-  
+
   try {
     if (profile_photo && profile_photo.size > 0) {
       const fileExt = profile_photo.name.split(".").pop();
@@ -100,9 +113,11 @@ export async function POST(request: NextRequest) {
       const { error: uploadError } = await adminClient.storage
         .from("riders")
         .upload(filePath, profile_photo, { upsert: true });
-      
+
       if (!uploadError) {
-        const { data: { publicUrl } } = adminClient.storage.from("riders").getPublicUrl(filePath);
+        const {
+          data: { publicUrl },
+        } = adminClient.storage.from("riders").getPublicUrl(filePath);
         profilePhotoUrl = publicUrl;
       } else {
         logger.error({ err: uploadError }, "Profile photo upload error");
@@ -115,9 +130,11 @@ export async function POST(request: NextRequest) {
       const { error: uploadError } = await adminClient.storage
         .from("riders")
         .upload(filePath, id_proof_image, { upsert: true });
-      
+
       if (!uploadError) {
-        const { data: { publicUrl } } = adminClient.storage.from("riders").getPublicUrl(filePath);
+        const {
+          data: { publicUrl },
+        } = adminClient.storage.from("riders").getPublicUrl(filePath);
         idProofUrl = publicUrl;
       } else {
         logger.error({ err: uploadError }, "ID proof upload error");
@@ -126,26 +143,35 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     logger.error({ err: e }, "Upload error");
   }
-  
+
   try {
-    const { error: profileError } = await adminClient.from("profiles").upsert({
-      id: userId,
-      full_name,
-      email,
-      phone,
-      role: "rider",
-      avatar_url: profilePhotoUrl || undefined,
-    }, { onConflict: 'id' });
-    
+    const { error: profileError } = await adminClient.from("profiles").upsert(
+      {
+        id: userId,
+        full_name,
+        email,
+        phone,
+        role: "rider",
+        avatar_url: profilePhotoUrl || undefined,
+      },
+      { onConflict: "id" }
+    );
+
     if (profileError) {
       logger.error({ err: profileError }, "Profile error");
-      return NextResponse.json({ error: "Failed to update profile: " + profileError.message }, { status: 400 });
+      return NextResponse.json(
+        { error: "Failed to update profile: " + profileError.message },
+        { status: 400 }
+      );
     }
   } catch (e: unknown) {
     logger.error({ err: e }, "Profile catch error");
-    return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 400 });
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "Unknown error" },
+      { status: 400 }
+    );
   }
-  
+
   try {
     const { error: riderError } = await adminClient.from("riders").insert({
       user_id: userId,
@@ -156,15 +182,21 @@ export async function POST(request: NextRequest) {
       vehicle_number: vehicle_number || "",
       status: "pending",
     });
-    
+
     if (riderError) {
       logger.error({ err: riderError }, "Rider error");
-      return NextResponse.json({ error: "Failed to create rider: " + riderError.message }, { status: 400 });
+      return NextResponse.json(
+        { error: "Failed to create rider: " + riderError.message },
+        { status: 400 }
+      );
     }
   } catch (e: unknown) {
     logger.error({ err: e }, "Rider catch error");
-    return NextResponse.json({ error: e instanceof Error ? e.message : "Unknown error" }, { status: 400 });
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : "Unknown error" },
+      { status: 400 }
+    );
   }
-  
+
   return NextResponse.json({ success: true, userId: userId });
 }

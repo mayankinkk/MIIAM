@@ -112,8 +112,19 @@ export function useVendorView(vendorId: string, vendorName: string): void {
   }, [vendorId, vendorName]);
 }
 
-export function trackAddToCart(menuItemId: string, vendorId: string, price: number, quantity: number): void {
-  trackFunnelEvent("add_to_cart", { menuItemId, vendorId, price, quantity, value: price * quantity });
+export function trackAddToCart(
+  menuItemId: string,
+  vendorId: string,
+  price: number,
+  quantity: number
+): void {
+  trackFunnelEvent("add_to_cart", {
+    menuItemId,
+    vendorId,
+    price,
+    quantity,
+    value: price * quantity,
+  });
 }
 
 export function trackRemoveFromCart(menuItemId: string, vendorId: string): void {
@@ -136,8 +147,19 @@ export function trackPaymentFailure(method: string, amount: number, error?: stri
   trackFunnelEvent("payment_failure", { method, amount, error });
 }
 
-export function trackOrderPlaced(orderId: string, totalAmount: number, vendorIds: string[], itemIds: string[]): void {
-  trackFunnelEvent("order_placed", { orderId, totalAmount, vendorIds, itemIds, itemCount: itemIds.length });
+export function trackOrderPlaced(
+  orderId: string,
+  totalAmount: number,
+  vendorIds: string[],
+  itemIds: string[]
+): void {
+  trackFunnelEvent("order_placed", {
+    orderId,
+    totalAmount,
+    vendorIds,
+    itemIds,
+    itemCount: itemIds.length,
+  });
 }
 
 export function trackOrderDelivered(orderId: string, deliveryTimeMinutes: number): void {
@@ -164,10 +186,10 @@ export function getFunnelEvents(): FunnelEventData[] {
 export function getConversionRate(
   events: FunnelEventData[],
   fromEvent: FunnelEvent,
-  toEvent: FunnelEvent,
+  toEvent: FunnelEvent
 ): number {
-  const fromCount = events.filter(e => e.event === fromEvent).length;
-  const toCount = events.filter(e => e.event === toEvent).length;
+  const fromCount = events.filter((e) => e.event === fromEvent).length;
+  const toCount = events.filter((e) => e.event === toEvent).length;
   if (fromCount === 0) return 0;
   return +((toCount / fromCount) * 100).toFixed(1);
 }

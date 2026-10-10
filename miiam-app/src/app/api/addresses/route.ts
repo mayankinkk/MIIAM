@@ -23,13 +23,15 @@ type AddressInput = z.infer<typeof addressSchema>;
 
 export async function GET(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 30, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 30, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -59,7 +61,9 @@ export async function POST(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -72,17 +76,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
     }
 
-    const { user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = parsed.data;
+    const { user_id, label, address, city, state, pincode, lat, lng, is_default, phone } =
+      parsed.data;
 
     if (user_id !== user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     if (is_default) {
-      await supabase
-        .from("user_addresses")
-        .update({ is_default: false })
-        .eq("user_id", user_id);
+      await supabase.from("user_addresses").update({ is_default: false }).eq("user_id", user_id);
     }
 
     const { data: addressData, error } = await supabase
@@ -117,7 +119,9 @@ export async function PUT(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -131,7 +135,8 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Validation failed", errors }, { status: 400 });
     }
 
-    const { id, user_id, label, address, city, state, pincode, lat, lng, is_default, phone } = parsed.data;
+    const { id, user_id, label, address, city, state, pincode, lat, lng, is_default, phone } =
+      parsed.data;
 
     // Verify the address belongs to the authenticated user
     const { data: existingAddress } = await supabase
@@ -147,10 +152,7 @@ export async function PUT(request: NextRequest) {
     }
 
     if (is_default && user_id) {
-      await supabase
-        .from("user_addresses")
-        .update({ is_default: false })
-        .eq("user_id", user_id);
+      await supabase.from("user_addresses").update({ is_default: false }).eq("user_id", user_id);
     }
 
     const { data: addressData, error } = await supabase
@@ -189,7 +191,9 @@ export async function DELETE(request: NextRequest) {
   }
 
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

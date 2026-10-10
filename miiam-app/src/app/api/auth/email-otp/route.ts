@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { randomInt } from "crypto";
-import { checkVerifyRateLimit, incrementVerifyAttempts, checkIpRateLimit, getClientIp } from "@/lib/security";
+import {
+  checkVerifyRateLimit,
+  incrementVerifyAttempts,
+  checkIpRateLimit,
+  getClientIp,
+} from "@/lib/security";
 import { createRouteLogger } from "@/lib/logger";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -15,15 +20,18 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-async function sendEmail(email: string, otp: string, purpose?: string): Promise<{ success: boolean; error?: string }> {
+async function sendEmail(
+  email: string,
+  otp: string,
+  purpose?: string
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
     return { success: false, error: "Email service not configured. Please contact support." };
   }
 
   const logger = createRouteLogger("auth/email-otp");
-  const subject = purpose === "password_reset"
-    ? "MIIAM - Reset Your Password"
-    : "MIIAM - Your Verification Code";
+  const subject =
+    purpose === "password_reset" ? "MIIAM - Reset Your Password" : "MIIAM - Your Verification Code";
 
   try {
     const { error } = await resend.emails.send({
@@ -65,7 +73,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const ip = getClientIp(request);
-    if (!await checkIpRateLimit(ip, 10, 60_000)) {
+    if (!(await checkIpRateLimit(ip, 10, 60_000))) {
       return NextResponse.json({ error: "Too many requests" }, { status: 429 });
     }
 
@@ -76,7 +84,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cleanEmail = email.toLowerCase().trim();
-    
+
     if (!isValidEmail(cleanEmail)) {
       return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
     }
@@ -89,7 +97,10 @@ export async function POST(request: NextRequest) {
       .eq("email", cleanEmail)
       .gte("created_at", tenMinAgo);
     if (count && count >= 5) {
-      return NextResponse.json({ error: "Too many requests. Please try again after 10 minutes." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many requests. Please try again after 10 minutes." },
+        { status: 429 }
+      );
     }
 
     // For password_reset, check if user exists
@@ -107,7 +118,7 @@ export async function POST(request: NextRequest) {
         logger.error({ err: e }, "User lookup error");
       }
     }
-    
+
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
@@ -119,7 +130,14 @@ export async function POST(request: NextRequest) {
     const { error: insertError } = await supabase
       .from("email_otps")
       .upsert(
-        { email: cleanEmail, otp: otpHash, purpose: purpose || "signup", expires_at: expiresAt, verified: false, attempts: 0 },
+        {
+          email: cleanEmail,
+          otp: otpHash,
+          purpose: purpose || "signup",
+          expires_at: expiresAt,
+          verified: false,
+          attempts: 0,
+        },
         { onConflict: "email,purpose" }
       );
 
@@ -161,7 +179,10 @@ export async function PUT(request: NextRequest) {
 
     // Rate limit verification attempts
     if (!(await checkVerifyRateLimit(supabase, "email_otps", cleanEmail, "email"))) {
-      return NextResponse.json({ error: "Too many verification attempts. Please request a new code." }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many verification attempts. Please request a new code." },
+        { status: 429 }
+      );
     }
 
     // Fetch OTP from database - filter by purpose

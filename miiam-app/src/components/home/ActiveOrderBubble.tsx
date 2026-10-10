@@ -25,29 +25,40 @@ interface ActiveOrderBubbleProps {
   onClose: () => void;
 }
 
-export default function ActiveOrderBubble({ activeOrder, expanded, onToggle, onClose }: ActiveOrderBubbleProps) {
+export default function ActiveOrderBubble({
+  activeOrder,
+  expanded,
+  onToggle,
+  onClose,
+}: ActiveOrderBubbleProps) {
   const { t } = useTranslation();
 
   return (
     <div
-      className="fixed bottom-20 right-4 z-40"
+      className="fixed right-4 bottom-20 z-40"
       style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       {/* Expanded Order Details */}
       {expanded && (
-        <div className="absolute bottom-16 right-0 w-72 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-2xl p-4 mb-2 animate-in fade-in zoom-in duration-300">
-          <div className="flex items-center justify-between mb-4">
+        <div className="bg-surface-container-lowest border-outline-variant/10 animate-in fade-in zoom-in absolute right-0 bottom-16 mb-2 w-72 rounded-2xl border p-4 shadow-2xl duration-300">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100">
                 <span className="material-symbols-outlined text-orange-600">delivery_dining</span>
               </div>
               <div>
-                <p className="font-bold text-on-surface">{activeOrder.vendor}</p>
-                <p className="text-xs text-on-surface-variant">{activeOrder.items}</p>
+                <p className="text-on-surface font-bold">{activeOrder.vendor}</p>
+                <p className="text-on-surface-variant text-xs">{activeOrder.items}</p>
               </div>
             </div>
-            <button onClick={onClose} aria-label="Close order details" className="text-gray-400 w-11 h-11 flex items-center justify-center rounded-full">
-              <span className="material-symbols-outlined" aria-hidden="true">close</span>
+            <button
+              onClick={onClose}
+              aria-label="Close order details"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-gray-400"
+            >
+              <span className="material-symbols-outlined" aria-hidden="true">
+                close
+              </span>
             </button>
           </div>
 
@@ -55,34 +66,44 @@ export default function ActiveOrderBubble({ activeOrder, expanded, onToggle, onC
           <div className="space-y-3">
             {activeOrder.steps.map((step: OrderStep, index: number) => (
               <div key={step.id} className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  step.completed ? 'bg-green-500' : index === 2 ? 'bg-orange-500 animate-pulse' : 'bg-surface-container-high'
-                }`}>
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-full ${
+                    step.completed
+                      ? "bg-green-500"
+                      : index === 2
+                        ? "animate-pulse bg-orange-500"
+                        : "bg-surface-container-high"
+                  }`}
+                >
                   {step.completed ? (
-                    <span className="material-symbols-outlined text-white text-sm">check</span>
+                    <span className="material-symbols-outlined text-sm text-white">check</span>
                   ) : index === 2 ? (
-                    <span className="material-symbols-outlined text-white text-xs">local_shipping</span>
+                    <span className="material-symbols-outlined text-xs text-white">
+                      local_shipping
+                    </span>
                   ) : (
-                    <div className="w-2 h-2 bg-on-surface-variant/40 rounded-full" />
+                    <div className="bg-on-surface-variant/40 h-2 w-2 rounded-full" />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className={`text-sm font-bold ${step.completed ? 'text-on-surface' : index === 2 ? 'text-orange-600' : 'text-on-surface-variant/60'}`}>
+                  <p
+                    className={`text-sm font-bold ${step.completed ? "text-on-surface" : index === 2 ? "text-orange-600" : "text-on-surface-variant/60"}`}
+                  >
                     {step.label}
                   </p>
-                  {step.time && <p className="text-xs text-on-surface-variant/60">{step.time}</p>}
+                  {step.time && <p className="text-on-surface-variant/60 text-xs">{step.time}</p>}
                 </div>
               </div>
             ))}
           </div>
 
           {/* ETA */}
-          <div className="mt-4 p-3 bg-orange-50 rounded-xl flex items-center justify-between">
+          <div className="mt-4 flex items-center justify-between rounded-xl bg-orange-50 p-3">
             <div>
-              <p className="text-xs text-on-surface-variant">{t.home.estimatedDelivery}</p>
+              <p className="text-on-surface-variant text-xs">{t.home.estimatedDelivery}</p>
               <p className="font-bold text-orange-600">{activeOrder.eta}</p>
             </div>
-            <Link href={`/app/orders/${activeOrder.id}`} className="text-accent font-bold text-sm">
+            <Link href={`/app/orders/${activeOrder.id}`} className="text-accent text-sm font-bold">
               {t.home.trackOrder}
             </Link>
           </div>
@@ -93,13 +114,15 @@ export default function ActiveOrderBubble({ activeOrder, expanded, onToggle, onC
       <button
         onClick={onToggle}
         aria-label="Toggle order details"
-        className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all ${
-          expanded ? 'bg-primary' : 'bg-surface-container-lowest border border-outline-variant/15'
+        className={`flex h-14 w-14 items-center justify-center rounded-full shadow-xl transition-all ${
+          expanded ? "bg-primary" : "bg-surface-container-lowest border-outline-variant/15 border"
         }`}
       >
-        <span className={`material-symbols-outlined text-2xl ${
-          expanded ? 'text-white' : 'text-orange-600'
-        }`}>
+        <span
+          className={`material-symbols-outlined text-2xl ${
+            expanded ? "text-white" : "text-orange-600"
+          }`}
+        >
           delivery_dining
         </span>
       </button>

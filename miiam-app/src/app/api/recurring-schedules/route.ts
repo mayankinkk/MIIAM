@@ -4,7 +4,10 @@ import { withRateLimit } from "@/lib/api-utils";
 
 export const GET = withRateLimit(async function GET() {
   const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -24,19 +27,38 @@ export const GET = withRateLimit(async function GET() {
 
 export const POST = withRateLimit(async function POST(request: Request) {
   const supabase = await createClient();
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
   if (authError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await request.json();
-  const { vendor_id, frequency, day_of_week, day_of_month, delivery_time, delivery_address, payment_method, items, start_date, end_date } = body;
+  const {
+    vendor_id,
+    frequency,
+    day_of_week,
+    day_of_month,
+    delivery_time,
+    delivery_address,
+    payment_method,
+    items,
+    start_date,
+    end_date,
+  } = body;
 
   if (!vendor_id || !frequency || !items || items.length === 0) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  const nextDate = calculateNextDeliveryDate(frequency, day_of_week, day_of_month, start_date ? new Date(start_date) : new Date());
+  const nextDate = calculateNextDeliveryDate(
+    frequency,
+    day_of_week,
+    day_of_month,
+    start_date ? new Date(start_date) : new Date()
+  );
 
   const { data, error } = await supabase
     .from("recurring_schedules")

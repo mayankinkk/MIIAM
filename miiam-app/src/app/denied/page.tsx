@@ -9,28 +9,30 @@ function AccessDeniedContent() {
   const fromVendor = searchParams.get("from") === "partner";
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)] px-6">
       <div className="w-full max-w-md text-center">
-        <div className="mb-8 inline-flex items-center justify-center w-24 h-24 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-accent)] animate-pulse">
+        <div className="mb-8 inline-flex h-24 w-24 animate-pulse items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-[var(--color-accent)]">
           <span className="material-symbols-outlined text-5xl">lock</span>
         </div>
 
         {fromVendor ? (
           <>
-            <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)] mb-4">Vendor Access Only</h1>
-            <p className="text-[var(--color-on-surface-variant)] text-lg mb-10 leading-relaxed">
+            <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+              Vendor Access Only
+            </h1>
+            <p className="mb-10 text-lg leading-relaxed text-[var(--color-on-surface-variant)]">
               This section is for registered vendors only. Register your store to get access.
             </p>
             <div className="space-y-4">
               <Link
                 href="/partner/register"
-                className="block w-full bg-[var(--color-primary)] text-on-primary rounded-xl py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="text-on-primary block w-full rounded-xl bg-[var(--color-primary)] py-4 font-bold shadow-lg shadow-red-900/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 Register Your Store
               </Link>
               <Link
                 href="/"
-                className="block w-full bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-2 border-[var(--color-border-subtle)] rounded-xl py-4 font-bold hover:bg-[var(--color-surface-subtle)] transition-all"
+                className="block w-full rounded-xl border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] py-4 font-bold text-[var(--color-on-surface)] transition-all hover:bg-[var(--color-surface-subtle)]"
               >
                 Back to Home
               </Link>
@@ -38,20 +40,23 @@ function AccessDeniedContent() {
           </>
         ) : (
           <>
-            <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)] mb-4">Access Denied</h1>
-            <p className="text-[var(--color-on-surface-variant)] text-lg mb-10 leading-relaxed">
-              You don't have the necessary permissions to access this area. Please contact the system administrator.
+            <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+              Access Denied
+            </h1>
+            <p className="mb-10 text-lg leading-relaxed text-[var(--color-on-surface-variant)]">
+              You don't have the necessary permissions to access this area. Please contact the
+              system administrator.
             </p>
             <div className="space-y-4">
               <Link
                 href="/"
-                className="block w-full bg-[var(--color-primary)] text-on-primary rounded-xl py-4 font-bold shadow-lg shadow-red-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="text-on-primary block w-full rounded-xl bg-[var(--color-primary)] py-4 font-bold shadow-lg shadow-red-900/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 Back to Home
               </Link>
               <Link
                 href="/auth/login"
-                className="block w-full bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border-2 border-[var(--color-border-subtle)] rounded-xl py-4 font-bold hover:bg-[var(--color-surface-subtle)] transition-all"
+                className="block w-full rounded-xl border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] py-4 font-bold text-[var(--color-on-surface)] transition-all hover:bg-[var(--color-surface-subtle)]"
               >
                 Sign in with another account
               </Link>
@@ -65,7 +70,13 @@ function AccessDeniedContent() {
 
 export default function AccessDenied() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[var(--color-surface-container-lowest)]"><div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
+        </div>
+      }
+    >
       <AccessDeniedContent />
     </Suspense>
   );

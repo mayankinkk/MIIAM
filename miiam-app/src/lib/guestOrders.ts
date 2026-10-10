@@ -36,7 +36,10 @@ export function rememberGuestOrder(id: string, phone: string): void {
   if (typeof window === "undefined" || !id || !phone) return;
   try {
     const existing = readGuestOrders().filter((ref) => ref.id !== id);
-    const next = [{ id, phone, placed_at: new Date().toISOString() }, ...existing].slice(0, MAX_REFS);
+    const next = [{ id, phone, placed_at: new Date().toISOString() }, ...existing].slice(
+      0,
+      MAX_REFS
+    );
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {
     // storage full / private mode — tracking on this device is best-effort

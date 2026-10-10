@@ -34,10 +34,16 @@ export const useLocationStore = create<LocationState>()(
       lng: null,
       displayAddress: "Select Location",
       setLocation: (loc) => set((prev) => ({ ...prev, ...loc })),
-      clearLocation: () => set({
-        city: null, pincode: null, state: null, country: null,
-        lat: null, lng: null, displayAddress: "Select Location"
-      }),
+      clearLocation: () =>
+        set({
+          city: null,
+          pincode: null,
+          state: null,
+          country: null,
+          lat: null,
+          lng: null,
+          displayAddress: "Select Location",
+        }),
     }),
     { name: "miiam-user-location" }
   )

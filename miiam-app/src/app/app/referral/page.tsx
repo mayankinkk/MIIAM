@@ -22,7 +22,9 @@ export default function ReferralPage() {
   async function loadReferralData() {
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       // Generate referral code from user ID
@@ -51,7 +53,9 @@ export default function ReferralPage() {
       await navigator.clipboard.writeText(referralCode);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   async function share() {
@@ -66,47 +70,66 @@ export default function ReferralPage() {
       } else {
         await copyCode();
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
-      <header className="bg-surface border-b border-outline-variant/10 px-5 pt-5 pb-3">
+    <div className="bg-surface min-h-screen pb-24">
+      <header className="bg-surface border-outline-variant/10 border-b px-5 pt-5 pb-3">
         <div className="flex items-center gap-3">
-          <Link href="/app/profile" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+          <Link
+            href="/app/profile"
+            className="bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+          >
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h1 className="text-xl font-black text-on-surface">Refer & Earn</h1>
+          <h1 className="text-on-surface text-xl font-black">Refer & Earn</h1>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Profile", href: "/app/profile" }, { label: "Refer & Earn" }]} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/home" },
+          { label: "Profile", href: "/app/profile" },
+          { label: "Refer & Earn" },
+        ]}
+      />
 
-      <main className="px-5 py-6 max-w-2xl mx-auto space-y-6">
+      <main className="mx-auto max-w-2xl space-y-6 px-5 py-6">
         {/* Hero */}
-        <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-3xl p-6 text-white text-center shadow-lg">
-          <span className="text-5xl mb-3 block">🎁</span>
+        <div className="rounded-3xl bg-gradient-to-br from-amber-500 to-orange-500 p-6 text-center text-white shadow-lg">
+          <span className="mb-3 block text-5xl">🎁</span>
           <h2 className="text-2xl font-black">Invite Friends, Earn Rewards</h2>
-          <p className="text-white/80 text-sm mt-2">Share your code and get ₹50 for each friend who orders</p>
+          <p className="mt-2 text-sm text-white/80">
+            Share your code and get ₹50 for each friend who orders
+          </p>
         </div>
 
         {/* Referral Code */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 text-center">
-          <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">Your Referral Code</p>
-          <div className="bg-surface-container rounded-xl px-6 py-4 mb-4">
-            <p className="text-2xl font-black text-accent tracking-[0.2em] font-mono">{referralCode || "------"}</p>
+        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5 text-center">
+          <p className="text-on-surface-variant mb-3 text-xs font-bold tracking-wider uppercase">
+            Your Referral Code
+          </p>
+          <div className="bg-surface-container mb-4 rounded-xl px-6 py-4">
+            <p className="text-accent font-mono text-2xl font-black tracking-[0.2em]">
+              {referralCode || "------"}
+            </p>
           </div>
           <div className="flex gap-3">
             <button
               onClick={copyCode}
-              className="flex-1 py-3 bg-surface-container rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+              className="bg-surface-container flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-transform active:scale-95"
             >
-              <span className="material-symbols-outlined text-lg">{copied ? "check" : "content_copy"}</span>
+              <span className="material-symbols-outlined text-lg">
+                {copied ? "check" : "content_copy"}
+              </span>
               {copied ? "Copied!" : "Copy Code"}
             </button>
             <button
               onClick={share}
-              className="flex-1 py-3 bg-primary text-on-primary rounded-xl font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
+              className="bg-primary text-on-primary flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-transform active:scale-95"
             >
               <span className="material-symbols-outlined text-lg">share</span>
               Share
@@ -116,32 +139,47 @@ export default function ReferralPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 text-center">
-            <p className="text-3xl font-black text-accent">{referralCount}</p>
-            <p className="text-xs text-on-surface-variant mt-1">Friends Referred</p>
+          <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5 text-center">
+            <p className="text-accent text-3xl font-black">{referralCount}</p>
+            <p className="text-on-surface-variant mt-1 text-xs">Friends Referred</p>
           </div>
-          <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10 text-center">
+          <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5 text-center">
             <p className="text-3xl font-black text-green-600">₹{totalEarned}</p>
-            <p className="text-xs text-on-surface-variant mt-1">Total Earned</p>
+            <p className="text-on-surface-variant mt-1 text-xs">Total Earned</p>
           </div>
         </div>
 
         {/* How it Works */}
-        <div className="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/10">
-          <h3 className="font-bold text-on-surface mb-4">How it Works</h3>
+        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-2xl border p-5">
+          <h3 className="text-on-surface mb-4 font-bold">How it Works</h3>
           <div className="space-y-4">
             {[
-              { step: 1, icon: "share", title: "Share your code", desc: "Send your referral code to friends" },
-              { step: 2, icon: "person_add", title: "Friend signs up", desc: "They create an account using your code" },
-              { step: 3, icon: "redeem", title: "Both earn ₹50", desc: "You get ₹50, they get ₹50 off first order" },
+              {
+                step: 1,
+                icon: "share",
+                title: "Share your code",
+                desc: "Send your referral code to friends",
+              },
+              {
+                step: 2,
+                icon: "person_add",
+                title: "Friend signs up",
+                desc: "They create an account using your code",
+              },
+              {
+                step: 3,
+                icon: "redeem",
+                title: "Both earn ₹50",
+                desc: "You get ₹50, they get ₹50 off first order",
+              },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="bg-primary text-on-primary flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold">
                   {item.step}
                 </div>
                 <div>
-                  <p className="font-bold text-on-surface text-sm">{item.title}</p>
-                  <p className="text-xs text-on-surface-variant">{item.desc}</p>
+                  <p className="text-on-surface text-sm font-bold">{item.title}</p>
+                  <p className="text-on-surface-variant text-xs">{item.desc}</p>
                 </div>
               </div>
             ))}

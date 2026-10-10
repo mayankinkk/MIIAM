@@ -37,7 +37,9 @@ vi.mock("@/lib/supabase/server", () => ({
     auth: {
       admin: {
         listUsers: vi.fn().mockResolvedValue({ data: { users: [] }, error: null }),
-        getUserById: vi.fn().mockResolvedValue({ data: { user: { id: "test-user" } }, error: null }),
+        getUserById: vi
+          .fn()
+          .mockResolvedValue({ data: { user: { id: "test-user" } }, error: null }),
       },
     },
     rpc: vi.fn().mockResolvedValue({ data: null, error: null }),

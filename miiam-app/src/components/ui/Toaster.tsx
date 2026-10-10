@@ -24,7 +24,7 @@ export default function Toaster() {
 
   return (
     <div
-      className="fixed bottom-24 left-4 right-4 md:bottom-6 md:left-auto md:right-6 md:max-w-sm z-[9999] flex flex-col gap-2 pointer-events-none"
+      className="pointer-events-none fixed right-4 bottom-24 left-4 z-[9999] flex flex-col gap-2 md:right-6 md:bottom-6 md:left-auto md:max-w-sm"
       role="log"
       aria-label="Notifications"
     >
@@ -37,13 +37,7 @@ export default function Toaster() {
   );
 }
 
-function ToastItem({
-  toast,
-  onDismiss,
-}: {
-  toast: Toast;
-  onDismiss: (id: string) => void;
-}) {
+function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: (id: string) => void }) {
   const [progress, setProgress] = useState(100);
   const duration = toast.duration || 3500;
 
@@ -58,10 +52,22 @@ function ToastItem({
   }, [duration]);
 
   const styles: Record<string, { bg: string; icon: string; bar: string }> = {
-    success: { bg: "bg-emerald-500/10 dark:bg-emerald-500/15", icon: "text-emerald-500", bar: "bg-emerald-500" },
-    error:   { bg: "bg-status-error/10 dark:bg-status-error/15", icon: "text-status-error", bar: "bg-status-error" },
-    warning: { bg: "bg-status-warning/10 dark:bg-status-warning/15", icon: "text-status-warning", bar: "bg-status-warning" },
-    info:    { bg: "bg-primary/10", icon: "text-accent", bar: "bg-primary" },
+    success: {
+      bg: "bg-emerald-500/10 dark:bg-emerald-500/15",
+      icon: "text-emerald-500",
+      bar: "bg-emerald-500",
+    },
+    error: {
+      bg: "bg-status-error/10 dark:bg-status-error/15",
+      icon: "text-status-error",
+      bar: "bg-status-error",
+    },
+    warning: {
+      bg: "bg-status-warning/10 dark:bg-status-warning/15",
+      icon: "text-status-warning",
+      bar: "bg-status-warning",
+    },
+    info: { bg: "bg-primary/10", icon: "text-accent", bar: "bg-primary" },
   };
 
   const icons: Record<string, string> = {
@@ -80,14 +86,12 @@ function ToastItem({
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: 80, scale: 0.95, transition: { duration: 0.2 } }}
       transition={{ type: "spring", stiffness: 400, damping: 30 }}
-      className={`pointer-events-auto ${s.bg} backdrop-blur-lg rounded-2xl px-4 py-3 flex items-center gap-3 shadow-lg border border-white/10 dark:border-white/5 overflow-hidden`}
+      className={`pointer-events-auto ${s.bg} flex items-center gap-3 overflow-hidden rounded-2xl border border-white/10 px-4 py-3 shadow-lg backdrop-blur-lg dark:border-white/5`}
     >
-      <span className={`material-symbols-outlined ${s.icon} text-xl shrink-0`} aria-hidden="true">
+      <span className={`material-symbols-outlined ${s.icon} shrink-0 text-xl`} aria-hidden="true">
         {icons[toast.type]}
       </span>
-      <span className="text-sm font-medium text-on-surface flex-1 min-w-0">
-        {toast.message}
-      </span>
+      <span className="text-on-surface min-w-0 flex-1 text-sm font-medium">{toast.message}</span>
       {toast.action && (
         <button
           onClick={(e) => {
@@ -95,25 +99,22 @@ function ToastItem({
             toast.action!.onClick();
             onDismiss(toast.id);
           }}
-          className="text-xs font-bold text-accent hover:text-accent/80 transition-colors shrink-0"
+          className="text-accent hover:text-accent/80 shrink-0 text-xs font-bold transition-colors"
         >
           {toast.action.label}
         </button>
       )}
       <button
         onClick={() => onDismiss(toast.id)}
-        className="p-1 -mr-1 rounded-full hover:bg-on-surface/10 transition-colors shrink-0"
+        className="hover:bg-on-surface/10 -mr-1 shrink-0 rounded-full p-1 transition-colors"
         aria-label="Dismiss"
       >
-        <span className="material-symbols-outlined text-sm text-on-surface-variant">close</span>
+        <span className="material-symbols-outlined text-on-surface-variant text-sm">close</span>
       </button>
 
       {/* Progress bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-on-surface/5">
-        <motion.div
-          className={`h-full ${s.bar}`}
-          style={{ width: `${progress}%` }}
-        />
+      <div className="bg-on-surface/5 absolute right-0 bottom-0 left-0 h-[2px]">
+        <motion.div className={`h-full ${s.bar}`} style={{ width: `${progress}%` }} />
       </div>
     </motion.div>
   );

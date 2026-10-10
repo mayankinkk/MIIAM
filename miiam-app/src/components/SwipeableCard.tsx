@@ -39,11 +39,11 @@ export default function SwipeableCard({
       {leftAction && (
         <motion.div
           style={{ opacity: leftOpacity }}
-          className="absolute inset-0 rounded-2xl flex items-center pl-5 z-0"
+          className="absolute inset-0 z-0 flex items-center rounded-2xl pl-5"
         >
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${leftAction.color}`}>
+          <div className={`flex items-center gap-2 rounded-full px-4 py-2 ${leftAction.color}`}>
             <span className="material-symbols-outlined text-sm text-white">{leftAction.icon}</span>
-            <span className="text-white text-xs font-bold">{leftAction.label}</span>
+            <span className="text-xs font-bold text-white">{leftAction.label}</span>
           </div>
         </motion.div>
       )}
@@ -52,11 +52,11 @@ export default function SwipeableCard({
       {rightAction && (
         <motion.div
           style={{ opacity: rightOpacity }}
-          className="absolute inset-0 rounded-2xl flex items-center justify-end pr-5 z-0"
+          className="absolute inset-0 z-0 flex items-center justify-end rounded-2xl pr-5"
         >
-          <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${rightAction.color}`}>
+          <div className={`flex items-center gap-2 rounded-full px-4 py-2 ${rightAction.color}`}>
             <span className="material-symbols-outlined text-sm text-white">{rightAction.icon}</span>
-            <span className="text-white text-xs font-bold">{rightAction.label}</span>
+            <span className="text-xs font-bold text-white">{rightAction.label}</span>
           </div>
         </motion.div>
       )}

@@ -65,7 +65,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-bold text-[var(--color-on-surface)] mb-1.5"
+            className="mb-1.5 block text-sm font-bold text-[var(--color-on-surface)]"
           >
             {label}
           </label>
@@ -74,7 +74,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className={wrapperClasses}>
           {icon && iconPosition === "left" && (
             <span
-              className={`material-symbols-outlined text-[var(--color-on-surface-variant)] text-xl ${
+              className={`material-symbols-outlined text-xl text-[var(--color-on-surface-variant)] ${
                 focused ? "text-[var(--color-accent)]" : ""
               }`}
             >
@@ -95,13 +95,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               setFocused(false);
               rest.onBlur?.(e);
             }}
-            className="flex-1 bg-transparent text-[var(--color-on-surface)] placeholder:text-[var(--color-on-surface-variant)] text-base outline-none border-none py-2 min-h-[48px] [font-size:16px]"
+            className="min-h-[48px] flex-1 border-none bg-transparent py-2 text-base [font-size:16px] text-[var(--color-on-surface)] outline-none placeholder:text-[var(--color-on-surface-variant)]"
             {...rest}
           />
 
           {icon && iconPosition === "right" && (
             <span
-              className={`material-symbols-outlined text-[var(--color-on-surface-variant)] text-xl ${
+              className={`material-symbols-outlined text-xl text-[var(--color-on-surface-variant)] ${
                 focused ? "text-[var(--color-accent)]" : ""
               }`}
             >
@@ -113,7 +113,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={handleClear}
-              className="p-0.5 rounded-full hover:bg-[var(--color-surface-variant)] transition-colors"
+              className="rounded-full p-0.5 transition-colors hover:bg-[var(--color-surface-variant)]"
               aria-label="Clear input"
             >
               <span className="material-symbols-outlined text-lg text-[var(--color-on-surface-variant)]">
@@ -124,15 +124,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && (
-          <p className="text-xs font-medium text-[var(--color-status-error)] mt-1 flex items-center gap-1">
+          <p className="mt-1 flex items-center gap-1 text-xs font-medium text-[var(--color-status-error)]">
             <span className="material-symbols-outlined text-sm">error</span>
             {error}
           </p>
         )}
         {helperText && !error && (
-          <p className="text-xs text-[var(--color-on-surface-variant)] mt-1">
-            {helperText}
-          </p>
+          <p className="mt-1 text-xs text-[var(--color-on-surface-variant)]">{helperText}</p>
         )}
       </div>
     );

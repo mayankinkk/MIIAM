@@ -55,11 +55,16 @@ export function checkDeliveryZone(params: {
     };
   }
 
-  const activeZones = zones.filter(z => z.is_active);
+  const activeZones = zones.filter((z) => z.is_active);
 
   for (const zone of activeZones) {
     if (zone.type === "radius" && zone.center_lat && zone.center_lng && zone.radius_km) {
-      const distToCenter = calculateDistance(customerLat, customerLng, zone.center_lat, zone.center_lng);
+      const distToCenter = calculateDistance(
+        customerLat,
+        customerLng,
+        zone.center_lat,
+        zone.center_lng
+      );
       if (distToCenter <= zone.radius_km) {
         return {
           inZone: true,
@@ -106,7 +111,7 @@ export function checkDeliveryZone(params: {
 function isPointInPolygon(
   lat: number,
   lng: number,
-  polygon: Array<{ lat: number; lng: number }>,
+  polygon: Array<{ lat: number; lng: number }>
 ): boolean {
   let inside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
@@ -115,8 +120,7 @@ function isPointInPolygon(
     const xj = polygon[j].lng;
     const yj = polygon[j].lat;
 
-    const intersect =
-      yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
+    const intersect = yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
   return inside;
@@ -124,13 +128,19 @@ function isPointInPolygon(
 
 export async function getVendorDeliveryZones(
   vendorId: string,
-  supabase: { from: (table: string) => { select: (cols: string) => { eq: (col: string, val: string) => { then: (resolve: (result: { data: DeliveryZone[] | null }) => void) => void } } } },
+  supabase: {
+    from: (table: string) => {
+      select: (cols: string) => {
+        eq: (
+          col: string,
+          val: string
+        ) => { then: (resolve: (result: { data: DeliveryZone[] | null }) => void) => void };
+      };
+    };
+  }
 ): Promise<DeliveryZone[]> {
   try {
-    const result = await supabase
-      .from("delivery_zones")
-      .select("*")
-      .eq("vendor_id", vendorId);
+    const result = await supabase.from("delivery_zones").select("*").eq("vendor_id", vendorId);
     return result.data || [];
   } catch (err) {
     logger.error({ err }, "Failed to get delivery zones");

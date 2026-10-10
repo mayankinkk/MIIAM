@@ -55,7 +55,14 @@ export async function requestPushPermission(): Promise<string | null> {
   }
 }
 
-export function onPushMessage(callback: (payload: { title?: string; body?: string; icon?: string; data?: Record<string, string> }) => void): (() => void) | null {
+export function onPushMessage(
+  callback: (payload: {
+    title?: string;
+    body?: string;
+    icon?: string;
+    data?: Record<string, string>;
+  }) => void
+): (() => void) | null {
   const fcm = getFirebaseMessaging();
   if (!fcm) return null;
 

@@ -23,16 +23,20 @@ export function useRecentlyViewed() {
       if (stored) {
         setRecentlyViewed(JSON.parse(stored));
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   const trackView = useCallback((vendor: Omit<RecentlyViewedItem, "viewed_at">) => {
-    setRecentlyViewed(prev => {
-      const filtered = prev.filter(v => v.id !== vendor.id);
+    setRecentlyViewed((prev) => {
+      const filtered = prev.filter((v) => v.id !== vendor.id);
       const updated = [{ ...vendor, viewed_at: Date.now() }, ...filtered].slice(0, MAX_ITEMS);
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       return updated;
     });
   }, []);
@@ -41,7 +45,9 @@ export function useRecentlyViewed() {
     setRecentlyViewed([]);
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   return { recentlyViewed, trackView, clearRecentlyViewed };

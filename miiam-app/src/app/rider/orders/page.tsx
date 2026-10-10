@@ -12,7 +12,7 @@ import CashCollectModal from "@/components/rider/orders/CashCollectModal";
 import IssueReportModal from "@/components/rider/orders/IssueReportModal";
 import ActiveDeliveryView from "@/components/rider/orders/OrderDetailView";
 import type { Order, OrderItem } from "@/components/rider/orders/types";
-import type * as Leaflet from 'leaflet';
+import type * as Leaflet from "leaflet";
 import logger from "@/lib/logger";
 import { sanitizeHtml } from "@/lib/utils/sanitize";
 
@@ -21,7 +21,9 @@ export default function RiderOrdersPage() {
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"available" | "shopping" | "completed" | "history">("available");
+  const [activeTab, setActiveTab] = useState<"available" | "shopping" | "completed" | "history">(
+    "available"
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [dateFilter, setDateFilter] = useState<"today" | "week" | "month">("today");
   const [sortBy, setSortBy] = useState<"newest" | "earnings_high" | "distance">("newest");
@@ -33,10 +35,13 @@ export default function RiderOrdersPage() {
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
   const [showIssueModal, setShowIssueModal] = useState(false);
   const [issueType, setIssueType] = useState("");
-  const [riderLocation, setRiderLocation] = useState({ lat: 28.6139, lng: 77.2090 });
+  const [riderLocation, setRiderLocation] = useState({ lat: 28.6139, lng: 77.209 });
   const [error, setError] = useState<string | null>(null);
   const [riderProfile, setRiderProfile] = useState<{ id: string } | null>(null);
-  const [toast, setToast] = useState<{ message: string; type?: "success" | "error" | "info" } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    type?: "success" | "error" | "info";
+  } | null>(null);
 
   function showToast(message: string, type: "success" | "error" | "info" = "info") {
     setToast({ message, type });
@@ -53,7 +58,9 @@ export default function RiderOrdersPage() {
       // Fetch available orders (not assigned to any rider)
       const { data: availableOrders, error: dbError } = await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_lat, delivery_lng, special_instructions, placed_at, delivered_at")
+        .select(
+          "id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_lat, delivery_lng, special_instructions, placed_at, delivered_at"
+        )
         .is("rider_id", null)
         .in("status", ["pending", "ready_for_pickup"])
         .gte("placed_at", yesterday.toISOString())
@@ -62,61 +69,101 @@ export default function RiderOrdersPage() {
       if (dbError) throw new Error(dbError.message);
 
       // Also fetch this rider's own accepted orders
-  const { data: myOrders } = riderId ? await supabase
-        .from("orders")
-        .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_lat, delivery_lng, special_instructions, placed_at, delivered_at")
-        .eq("rider_id", riderId)
-        .in("status", ["accepted", "shopping", "picked_up", "on_the_way"])
-        .order("placed_at", { ascending: false }) : { data: [] };
+      const { data: myOrders } = riderId
+        ? await supabase
+            .from("orders")
+            .select(
+              "id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, delivery_address, delivery_lat, delivery_lng, special_instructions, placed_at, delivered_at"
+            )
+            .eq("rider_id", riderId)
+            .in("status", ["accepted", "shopping", "picked_up", "on_the_way"])
+            .order("placed_at", { ascending: false })
+        : { data: [] };
 
       const allDbOrders = [...(availableOrders || []), ...(myOrders || [])];
       // Deduplicate by id
       const seen = new Set<string>();
-      const uniqueOrders = allDbOrders.filter(o => {
+      const uniqueOrders = allDbOrders.filter((o) => {
         if (seen.has(o.id)) return false;
         seen.add(o.id);
         return true;
       });
 
       if (uniqueOrders.length > 0) {
-        const vendorIds = [...new Set(uniqueOrders.map(o => o.vendor_id).filter(Boolean))] as string[];
-        const userIds = [...new Set(uniqueOrders.map(o => o.user_id).filter(Boolean))] as string[];
-        const orderIds = uniqueOrders.map(o => o.id);
+        const vendorIds = [
+          ...new Set(uniqueOrders.map((o) => o.vendor_id).filter(Boolean)),
+        ] as string[];
+        const userIds = [
+          ...new Set(uniqueOrders.map((o) => o.user_id).filter(Boolean)),
+        ] as string[];
+        const orderIds = uniqueOrders.map((o) => o.id);
 
         const [vendorsRes, allItemsRes, profilesRes] = await Promise.all([
-          vendorIds.length > 0 ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").in("id", vendorIds) : Promise.resolve({ data: [] }),
-          supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked").in("order_id", orderIds),
-          userIds.length > 0 ? supabase.from("profiles").select("id, full_name").in("id", userIds) : Promise.resolve({ data: [] }),
+          vendorIds.length > 0
+            ? supabase
+                .from("vendors")
+                .select("id, shop_name, address, phone, latitude, longitude")
+                .in("id", vendorIds)
+            : Promise.resolve({ data: [] }),
+          supabase
+            .from("order_items")
+            .select(
+              "id, order_id, menu_item_id, name, quantity, price, unit_price, status, actual_price, picked"
+            )
+            .in("order_id", orderIds),
+          userIds.length > 0
+            ? supabase.from("profiles").select("id, full_name").in("id", userIds)
+            : Promise.resolve({ data: [] }),
         ]);
 
-        const vendorsMap = new Map((vendorsRes.data || []).map((v: Record<string, unknown>) => [v.id, v]));
-        const profilesMap = new Map((profilesRes.data || []).map((p: Record<string, unknown>) => [p.id, p]));
+        const vendorsMap = new Map(
+          (vendorsRes.data || []).map((v: Record<string, unknown>) => [v.id, v])
+        );
+        const profilesMap = new Map(
+          (profilesRes.data || []).map((p: Record<string, unknown>) => [p.id, p])
+        );
         const allItems = allItemsRes.data || [];
 
-        const allMenuItemIds = [...new Set(allItems.map((i: OrderItem) => i.menu_item_id).filter(Boolean))] as string[];
+        const allMenuItemIds = [
+          ...new Set(allItems.map((i: OrderItem) => i.menu_item_id).filter(Boolean)),
+        ] as string[];
         let menuItemsMap = new Map();
         if (allMenuItemIds.length > 0) {
-          const { data: menuItems } = await supabase.from("menu_items").select("id, name, category").in("id", allMenuItemIds);
-          menuItemsMap = new Map((menuItems || []).map((mi: Record<string, unknown>) => [mi.id, mi]));
+          const { data: menuItems } = await supabase
+            .from("menu_items")
+            .select("id, name, category")
+            .in("id", allMenuItemIds);
+          menuItemsMap = new Map(
+            (menuItems || []).map((mi: Record<string, unknown>) => [mi.id, mi])
+          );
         }
 
-        const fullOrders = uniqueOrders.map(order => {
-          const items = (allItems.filter((i: OrderItem) => i.order_id === order.id)).map((item: OrderItem) => ({
-            ...item,
-            menu_item: item.menu_item_id ? menuItemsMap.get(item.menu_item_id) || null : null,
-          }));
-          const rawVendor = order.vendor_id ? (vendorsMap.get(order.vendor_id) as Record<string, unknown> | null) : null;
-          const vendor = rawVendor ? {
-            ...rawVendor,
-            lat: (rawVendor.latitude as number) ?? (rawVendor.lat as number),
-            lng: (rawVendor.longitude as number) ?? (rawVendor.lng as number),
-          } : null;
+        const fullOrders = uniqueOrders.map((order) => {
+          const items = allItems
+            .filter((i: OrderItem) => i.order_id === order.id)
+            .map((item: OrderItem) => ({
+              ...item,
+              menu_item: item.menu_item_id ? menuItemsMap.get(item.menu_item_id) || null : null,
+            }));
+          const rawVendor = order.vendor_id
+            ? (vendorsMap.get(order.vendor_id) as Record<string, unknown> | null)
+            : null;
+          const vendor = rawVendor
+            ? {
+                ...rawVendor,
+                lat: (rawVendor.latitude as number) ?? (rawVendor.lat as number),
+                lng: (rawVendor.longitude as number) ?? (rawVendor.lng as number),
+              }
+            : null;
           return {
             ...order,
             vendor,
             address: null,
             items,
-            customer_name: order.user_id ? (profilesMap.get(order.user_id) as Record<string, unknown> | undefined)?.full_name || "Customer" : "Customer",
+            customer_name: order.user_id
+              ? (profilesMap.get(order.user_id) as Record<string, unknown> | undefined)
+                  ?.full_name || "Customer"
+              : "Customer",
           };
         });
         setOrders(fullOrders);
@@ -131,17 +178,24 @@ export default function RiderOrdersPage() {
   }
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
-      if (!user) return;
-      supabase.from("riders").select("id").eq("user_id", user.id).single().then(({ data }: { data: { id: string } | null }) => {
-        if (data) {
-          setRiderProfile(data);
-          loadOrders(data.id);
-        } else {
-          loadOrders();
-        }
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
+        if (!user) return;
+        supabase
+          .from("riders")
+          .select("id")
+          .eq("user_id", user.id)
+          .single()
+          .then(({ data }: { data: { id: string } | null }) => {
+            if (data) {
+              setRiderProfile(data);
+              loadOrders(data.id);
+            } else {
+              loadOrders();
+            }
+          });
       });
-    });
 
     // Use real GPS location
     if (navigator.geolocation) {
@@ -149,7 +203,7 @@ export default function RiderOrdersPage() {
         (pos) => {
           setRiderLocation({
             lat: pos.coords.latitude,
-            lng: pos.coords.longitude
+            lng: pos.coords.longitude,
           });
         },
         () => {
@@ -160,41 +214,55 @@ export default function RiderOrdersPage() {
     }
 
     const channel = supabase
-      .channel('rider-orders')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'orders',
-      }, (payload: { new: Record<string, unknown> }) => {
-        const newOrder = payload.new as { id?: string; status: string; total_amount: number };
-        if (newOrder.status === 'ready_for_pickup' || newOrder.status === 'pending') {
-          setOrders(prev => [newOrder as Order, ...prev]);
-          if (Notification.permission === 'granted') {
-            new Notification('New Order Available!', {
-              body: `Order #${newOrder.id?.slice(0,8)} - ₹${newOrder.total_amount}`,
-              icon: '/icon.png',
-            });
-          } else if (Notification.permission === 'default') {
-            Notification.requestPermission();
+      .channel("rider-orders")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "orders",
+        },
+        (payload: { new: Record<string, unknown> }) => {
+          const newOrder = payload.new as { id?: string; status: string; total_amount: number };
+          if (newOrder.status === "ready_for_pickup" || newOrder.status === "pending") {
+            setOrders((prev) => [newOrder as Order, ...prev]);
+            if (Notification.permission === "granted") {
+              new Notification("New Order Available!", {
+                body: `Order #${newOrder.id?.slice(0, 8)} - ₹${newOrder.total_amount}`,
+                icon: "/icon.png",
+              });
+            } else if (Notification.permission === "default") {
+              Notification.requestPermission();
+            }
           }
         }
-      })
-      .on('postgres_changes', {
-        event: 'UPDATE',
-        schema: 'public',
-        table: 'orders',
-      }, (payload: { new: Record<string, unknown> }) => {
-        const updatedOrder = payload.new as { id: string; status: string };
-        setOrders(prev => prev.map(o => o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o));
-      })
-      .on('postgres_changes', {
-        event: 'DELETE',
-        schema: 'public',
-        table: 'orders',
-      }, (payload: { old: Record<string, unknown> }) => {
-        const deletedOrder = payload.old as { id: string };
-        setOrders(prev => prev.filter(o => o.id !== deletedOrder.id));
-      })
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "orders",
+        },
+        (payload: { new: Record<string, unknown> }) => {
+          const updatedOrder = payload.new as { id: string; status: string };
+          setOrders((prev) =>
+            prev.map((o) => (o.id === updatedOrder.id ? { ...o, status: updatedOrder.status } : o))
+          );
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "DELETE",
+          schema: "public",
+          table: "orders",
+        },
+        (payload: { old: Record<string, unknown> }) => {
+          const deletedOrder = payload.old as { id: string };
+          setOrders((prev) => prev.filter((o) => o.id !== deletedOrder.id));
+        }
+      )
       .subscribe();
 
     return () => {
@@ -210,14 +278,14 @@ export default function RiderOrdersPage() {
       }
 
       // Determine which status to set based on current order status
-      const orderToAccept = orders.find(o => o.id === orderId);
+      const orderToAccept = orders.find((o) => o.id === orderId);
       const newStatus = orderToAccept?.status === "ready_for_pickup" ? "shopping" : "accepted";
 
       let accepted = false;
 
       // Try atomic RPC first
       try {
-        const { data: success, error } = await supabase.rpc('accept_order_as_rider', {
+        const { data: success, error } = await supabase.rpc("accept_order_as_rider", {
           p_order_id: orderId,
           p_rider_id: riderProfile.id,
         });
@@ -245,7 +313,7 @@ export default function RiderOrdersPage() {
         }
       }
 
-      const order = orders.find(o => o.id === orderId);
+      const order = orders.find((o) => o.id === orderId);
       if (order?.user_id) {
         try {
           const isDirectPickup = order.status === "ready_for_pickup";
@@ -285,11 +353,22 @@ export default function RiderOrdersPage() {
         }
       }
 
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, rider_id: riderProfile.id, status: newStatus } : o));
-      showToast(newStatus === "shopping" ? "Heading to store to pick up!" : "Order accepted!", "success");
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId ? { ...o, rider_id: riderProfile.id, status: newStatus } : o
+        )
+      );
+      showToast(
+        newStatus === "shopping" ? "Heading to store to pick up!" : "Order accepted!",
+        "success"
+      );
     } catch (err: unknown) {
       logger.error({ err }, "Error accepting order");
-      showToast("Failed to accept order: " + ((err instanceof Error ? err.message : null) || "Unknown error"), "error");
+      showToast(
+        "Failed to accept order: " +
+          ((err instanceof Error ? err.message : null) || "Unknown error"),
+        "error"
+      );
     }
   }
 
@@ -305,7 +384,7 @@ export default function RiderOrdersPage() {
       for (const orderId of selectedOrders) {
         let accepted = false;
         try {
-          const { data: success, error } = await supabase.rpc('accept_order_as_rider', {
+          const { data: success, error } = await supabase.rpc("accept_order_as_rider", {
             p_order_id: orderId,
             p_rider_id: riderProfile.id,
           });
@@ -331,7 +410,7 @@ export default function RiderOrdersPage() {
           }
         }
 
-        const order = orders.find(o => o.id === orderId);
+        const order = orders.find((o) => o.id === orderId);
         if (order?.user_id) {
           try {
             await supabase.from("notifications").insert({
@@ -341,13 +420,20 @@ export default function RiderOrdersPage() {
               type: "order",
               is_read: false,
             });
-          } catch (e) { logger.warn({ err: e }, "Failed to insert notification"); }
+          } catch (e) {
+            logger.warn({ err: e }, "Failed to insert notification");
+          }
         }
       }
-      
+
       const successCount = selectedOrders.length - failedCount;
-      setOrders(prev => prev.map(o => selectedOrders.includes(o.id) ? { ...o, rider_id: riderProfile.id } : o));
-      showToast(`${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} already taken.` : ''}`, "success");
+      setOrders((prev) =>
+        prev.map((o) => (selectedOrders.includes(o.id) ? { ...o, rider_id: riderProfile.id } : o))
+      );
+      showToast(
+        `${successCount} order(s) accepted!${failedCount > 0 ? ` ${failedCount} already taken.` : ""}`,
+        "success"
+      );
       setSelectedOrders([]);
     } catch (err) {
       logger.error({ err }, "Error batch accepting");
@@ -356,23 +442,28 @@ export default function RiderOrdersPage() {
   }
 
   function toggleSelectOrder(orderId: string) {
-    setSelectedOrders(prev => 
-      prev.includes(orderId) ? prev.filter(id => id !== orderId) : [...prev, orderId]
+    setSelectedOrders((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
     );
   }
 
-  async function updateItemStatus(orderId: string, itemId: string, status: string, actualPrice?: number) {
+  async function updateItemStatus(
+    orderId: string,
+    itemId: string,
+    status: string,
+    actualPrice?: number
+  ) {
     try {
       // Update database
       const { error } = await supabase
         .from("order_items")
-        .update({ 
+        .update({
           status: status,
           actual_price: actualPrice ?? null,
-          picked: status === "available"
+          picked: status === "available",
         })
         .eq("id", itemId);
-      
+
       if (error) {
         logger.error({ err: error }, "Error updating item");
         showToast("Failed to update item: " + error.message, "error");
@@ -381,23 +472,34 @@ export default function RiderOrdersPage() {
     } catch (err) {
       logger.error({ err }, "Update error");
     }
-    
+
     // Update local state
-    setOrders(prev => prev.map(o => {
-      if (o.id === orderId) {
-        return {
-          ...o,
-          items: o.items?.map(i => i.id === itemId ? { ...i, status: status as OrderItem['status'], actual_price: actualPrice ?? i.actual_price } : i)
-        };
-      }
-      return o;
-    }));
+    setOrders((prev) =>
+      prev.map((o) => {
+        if (o.id === orderId) {
+          return {
+            ...o,
+            items: o.items?.map((i) =>
+              i.id === itemId
+                ? {
+                    ...i,
+                    status: status as OrderItem["status"],
+                    actual_price: actualPrice ?? i.actual_price,
+                  }
+                : i
+            ),
+          };
+        }
+        return o;
+      })
+    );
   }
 
   async function markDelivered(orderId: string) {
-    const order = orders.find(o => o.id === orderId);
+    const order = orders.find((o) => o.id === orderId);
     if (order) {
-      const totalSpent = order.items?.reduce((sum, item) => sum + (item.actual_price || 0) * item.quantity, 0) || 0;
+      const totalSpent =
+        order.items?.reduce((sum, item) => sum + (item.actual_price || 0) * item.quantity, 0) || 0;
       setCurrentOrderId(orderId);
       setCashToCollect(order.total_amount - totalSpent + (order.delivery_fee || 0));
       setShowCashCollectModal(true);
@@ -407,7 +509,7 @@ export default function RiderOrdersPage() {
   async function confirmDelivery() {
     try {
       if (!currentOrderId) return;
-      const order = orders.find(o => o.id === currentOrderId);
+      const order = orders.find((o) => o.id === currentOrderId);
       if (!order) return;
       if (!riderProfile) {
         showToast("Rider profile not found. Please refresh.", "error");
@@ -422,7 +524,7 @@ export default function RiderOrdersPage() {
         .update({
           status: "delivered",
           delivered_at: new Date().toISOString(),
-          rider_id: riderProfile.id,         // ensure rider_id is set
+          rider_id: riderProfile.id, // ensure rider_id is set
           customer_collected: cashToCollect,
         })
         .eq("id", currentOrderId)
@@ -445,14 +547,29 @@ export default function RiderOrdersPage() {
         if (retryErr) {
           const { error: lastErr } = await supabase
             .from("orders")
-            .update({ status: "delivered", delivered_at: new Date().toISOString(), rider_id: riderProfile.id })
+            .update({
+              status: "delivered",
+              delivered_at: new Date().toISOString(),
+              rider_id: riderProfile.id,
+            })
             .eq("id", currentOrderId);
           if (lastErr) throw new Error(lastErr.message + " [" + lastErr.code + "] - contact admin");
         }
       }
 
       // Update local state immediately so UI responds
-      setOrders(prev => prev.map(o => o.id === currentOrderId ? { ...o, status: "delivered", delivered_at: new Date().toISOString(), customer_collected: cashToCollect } : o));
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === currentOrderId
+            ? {
+                ...o,
+                status: "delivered",
+                delivered_at: new Date().toISOString(),
+                customer_collected: cashToCollect,
+              }
+            : o
+        )
+      );
       setShowCashCollectModal(false);
       showToast(`Delivery complete! You earned ₹${riderEarning}!`, "success");
 
@@ -474,15 +591,13 @@ export default function RiderOrdersPage() {
               })
               .eq("id", wallet.id);
           } else {
-            await supabase
-              .from("rider_wallets")
-              .insert({
-                rider_id: rId,
-                balance: riderEarning,
-                total_earnings: riderEarning,
-                pending_payout: 0,
-                advance_used: 0,
-              });
+            await supabase.from("rider_wallets").insert({
+              rider_id: rId,
+              balance: riderEarning,
+              total_earnings: riderEarning,
+              pending_payout: 0,
+              advance_used: 0,
+            });
           }
         } catch (walletErr) {
           logger.error({ err: walletErr }, "Wallet credit failed (non-critical)");
@@ -499,7 +614,9 @@ export default function RiderOrdersPage() {
             .from("riders")
             .update({ total_deliveries: (rider?.total_deliveries || 0) + 1 })
             .eq("id", rId);
-        } catch (err) { logger.error({ err }, "Failed to update rider stats (column may not exist)"); }
+        } catch (err) {
+          logger.error({ err }, "Failed to update rider stats (column may not exist)");
+        }
       }
 
       // 3. Non-critical: send notifications
@@ -512,7 +629,9 @@ export default function RiderOrdersPage() {
             type: "order",
             is_read: false,
           });
-        } catch (err) { logger.error({ err }, "Failed to send delivery notification"); }
+        } catch (err) {
+          logger.error({ err }, "Failed to send delivery notification");
+        }
         try {
           await fetch("/api/emails/order-status", {
             method: "POST",
@@ -537,7 +656,11 @@ export default function RiderOrdersPage() {
       // Include rider_id in update + filter to ensure RLS passes
       const { error: updateErr } = await supabase
         .from("orders")
-        .update({ status: "picked_up", picked_at: new Date().toISOString(), rider_id: riderProfile.id })
+        .update({
+          status: "picked_up",
+          picked_at: new Date().toISOString(),
+          rider_id: riderProfile.id,
+        })
         .eq("id", orderId);
 
       if (updateErr) {
@@ -546,7 +669,7 @@ export default function RiderOrdersPage() {
         return;
       }
 
-      const order = orders.find(o => o.id === orderId);
+      const order = orders.find((o) => o.id === orderId);
       if (order?.user_id) {
         try {
           await supabase.from("notifications").insert({
@@ -557,7 +680,9 @@ export default function RiderOrdersPage() {
             is_read: false,
             created_at: new Date().toISOString(),
           });
-        } catch (err) { logger.error({ err }, "Failed to send pickup notification"); }
+        } catch (err) {
+          logger.error({ err }, "Failed to send pickup notification");
+        }
 
         try {
           await fetch("/api/emails/order-status", {
@@ -580,15 +705,21 @@ export default function RiderOrdersPage() {
           await supabase.from("rider_locations").insert({
             order_id: orderId,
             rider_id: riderProfile.id,
-            rider_name: '',
-            rider_phone: '',
+            rider_name: "",
+            rider_phone: "",
             lat: riderLocation.lat,
             lng: riderLocation.lng,
           });
-        } catch (err) { logger.error({ err }, "Failed to insert rider location"); }
+        } catch (err) {
+          logger.error({ err }, "Failed to insert rider location");
+        }
       }
 
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: "picked_up", rider_id: riderProfile!.id } : o));
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId ? { ...o, status: "picked_up", rider_id: riderProfile!.id } : o
+        )
+      );
       showToast("Order picked up! Navigate to customer.", "success");
     } catch (err) {
       logger.error({ err }, "Error starting delivery");
@@ -602,72 +733,97 @@ export default function RiderOrdersPage() {
       await supabase.from("rider_locations").insert({
         order_id: orderId,
         rider_id: riderProfile.id,
-        rider_name: '',
-        rider_phone: '',
+        rider_name: "",
+        rider_phone: "",
         lat: position.coords.latitude,
         lng: position.coords.longitude,
       });
     });
   }
 
-  const filteredOrders = orders.filter(o => {
-    if (searchQuery) {
-      const search = searchQuery.toLowerCase();
-      const matchSearch = o.id.toLowerCase().includes(search) ||
-             (o.vendor?.shop_name || o.vendor?.name || "").toLowerCase().includes(search) ||
-             o.address?.street?.toLowerCase().includes(search);
-      if (!matchSearch) return false;
-    }
-    if (dateFilter) {
-      const placed = new Date(o.placed_at);
-      const now = new Date();
-      if (dateFilter === "today") {
-        if (placed.toDateString() !== now.toDateString()) return false;
-      } else if (dateFilter === "week") {
-        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-        if (placed < weekAgo) return false;
-      } else if (dateFilter === "month") {
-        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-        if (placed < monthAgo) return false;
+  const filteredOrders = orders
+    .filter((o) => {
+      if (searchQuery) {
+        const search = searchQuery.toLowerCase();
+        const matchSearch =
+          o.id.toLowerCase().includes(search) ||
+          (o.vendor?.shop_name || o.vendor?.name || "").toLowerCase().includes(search) ||
+          o.address?.street?.toLowerCase().includes(search);
+        if (!matchSearch) return false;
       }
-    }
-    return true;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case "earnings_high": return ((b.total_amount || 0) + (b.delivery_fee || 0)) - ((a.total_amount || 0) + (a.delivery_fee || 0));
-      case "distance": {
-        const toRad = (d: number) => d * Math.PI / 180;
-        const R = 6371;
-        const dLat = toRad((a.vendor?.lat ?? 0) - riderLocation.lat);
-        const dLng = toRad((a.vendor?.lng ?? 0) - riderLocation.lng);
-        const distA = Math.sqrt(dLat * dLat + Math.cos(toRad(riderLocation.lat)) * dLng * dLng) * R;
-        const dLat2 = toRad((b.vendor?.lat ?? 0) - riderLocation.lat);
-        const dLng2 = toRad((b.vendor?.lng ?? 0) - riderLocation.lng);
-        const distB = Math.sqrt(dLat2 * dLat2 + Math.cos(toRad(riderLocation.lat)) * dLng2 * dLng2) * R;
-        return distA - distB;
+      if (dateFilter) {
+        const placed = new Date(o.placed_at);
+        const now = new Date();
+        if (dateFilter === "today") {
+          if (placed.toDateString() !== now.toDateString()) return false;
+        } else if (dateFilter === "week") {
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          if (placed < weekAgo) return false;
+        } else if (dateFilter === "month") {
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          if (placed < monthAgo) return false;
+        }
       }
-      default: return new Date(b.placed_at || 0).getTime() - new Date(a.placed_at || 0).getTime();
-    }
-  });
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "earnings_high":
+          return (
+            (b.total_amount || 0) +
+            (b.delivery_fee || 0) -
+            ((a.total_amount || 0) + (a.delivery_fee || 0))
+          );
+        case "distance": {
+          const toRad = (d: number) => (d * Math.PI) / 180;
+          const R = 6371;
+          const dLat = toRad((a.vendor?.lat ?? 0) - riderLocation.lat);
+          const dLng = toRad((a.vendor?.lng ?? 0) - riderLocation.lng);
+          const distA =
+            Math.sqrt(dLat * dLat + Math.cos(toRad(riderLocation.lat)) * dLng * dLng) * R;
+          const dLat2 = toRad((b.vendor?.lat ?? 0) - riderLocation.lat);
+          const dLng2 = toRad((b.vendor?.lng ?? 0) - riderLocation.lng);
+          const distB =
+            Math.sqrt(dLat2 * dLat2 + Math.cos(toRad(riderLocation.lat)) * dLng2 * dLng2) * R;
+          return distA - distB;
+        }
+        default:
+          return new Date(b.placed_at || 0).getTime() - new Date(a.placed_at || 0).getTime();
+      }
+    });
 
-  const availableOrders = filteredOrders.filter(o => ["pending", "ready_for_pickup"].includes(o.status) && !o.rider_id);
-  const shoppingOrders = filteredOrders.filter(o => o.rider_id && ["accepted", "shopping", "picked_up", "on_the_way"].includes(o.status));
-  const completedOrders = filteredOrders.filter(o => o.status === "delivered");
+  const availableOrders = filteredOrders.filter(
+    (o) => ["pending", "ready_for_pickup"].includes(o.status) && !o.rider_id
+  );
+  const shoppingOrders = filteredOrders.filter(
+    (o) => o.rider_id && ["accepted", "shopping", "picked_up", "on_the_way"].includes(o.status)
+  );
+  const completedOrders = filteredOrders.filter((o) => o.status === "delivered");
 
   const todayEarnings = completedOrders
-    .filter(o => new Date(o.delivered_at || "").toDateString() === new Date().toDateString())
-    .reduce((sum, o) => sum + (o.customer_collected || 0) - (o.items?.reduce((s, i) => s + (i.actual_price || 0) * i.quantity, 0) || 0), 0);
+    .filter((o) => new Date(o.delivered_at || "").toDateString() === new Date().toDateString())
+    .reduce(
+      (sum, o) =>
+        sum +
+        (o.customer_collected || 0) -
+        (o.items?.reduce((s, i) => s + (i.actual_price || 0) * i.quantity, 0) || 0),
+      0
+    );
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-4">
-        <div className="text-center max-w-sm">
-          <span className="material-symbols-outlined text-5xl text-red-400 mb-4 block">wifi_off</span>
-          <h2 className="text-xl font-bold text-[var(--color-on-surface)] mb-2">Something went wrong</h2>
-          <p className="text-[var(--color-outline)] mb-6">{error}</p>
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)] p-4">
+        <div className="max-w-sm text-center">
+          <span className="material-symbols-outlined mb-4 block text-5xl text-red-400">
+            wifi_off
+          </span>
+          <h2 className="mb-2 text-xl font-bold text-[var(--color-on-surface)]">
+            Something went wrong
+          </h2>
+          <p className="mb-6 text-[var(--color-outline)]">{error}</p>
           <button
             onClick={() => loadOrders()}
-            className="px-6 py-3 bg-brand-secondary text-white rounded-xl font-bold"
+            className="bg-brand-secondary rounded-xl px-6 py-3 font-bold text-white"
           >
             Try Again
           </button>
@@ -678,10 +834,10 @@ export default function RiderOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)]">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-secondary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="mt-4 text-[var(--color-outline)] font-medium">Loading orders...</p>
+          <div className="border-brand-secondary mx-auto h-12 w-12 animate-spin rounded-full border-4 border-t-transparent" />
+          <p className="mt-4 font-medium text-[var(--color-outline)]">Loading orders...</p>
         </div>
       </div>
     );
@@ -689,262 +845,359 @@ export default function RiderOrdersPage() {
 
   return (
     <>
-    <PullToRefresh onRefresh={loadOrders}>
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
-      <header className="bg-brand-secondary text-white p-4 pb-6 rounded-b-[3rem]">
-        <div className="flex justify-between items-center mb-4">
-          <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">MIIAM</Link>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setShowAutoSkip(!showAutoSkip)} className="relative p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full" aria-label="Toggle auto-skip settings">
-              <span className="material-symbols-outlined">timer</span>
-              {showAutoSkip && <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>}
-            </button>
-            <Link href="/rider/analytics" className="p-2 bg-[var(--color-surface-container-lowest)]/20 rounded-full" aria-label="View analytics">
-              <span className="material-symbols-outlined">insights</span>
-            </Link>
-            <Link href="/rider/incident" className="p-2 bg-red-500/20 rounded-full" aria-label="Report incident">
-              <span className="material-symbols-outlined text-red-400">emergency</span>
-            </Link>
-            <Link href="/rider/account" className="w-10 h-10 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center" aria-label="View account">
-              <span className="material-symbols-outlined">person</span>
-            </Link>
-          </div>
-        </div>
+      <PullToRefresh onRefresh={loadOrders}>
+        <div className="min-h-screen bg-[var(--color-surface-container-lowest)]">
+          <header className="bg-brand-secondary rounded-b-[3rem] p-4 pb-6 text-white">
+            <div className="mb-4 flex items-center justify-between">
+              <Link href="/rider/dashboard" className="text-2xl font-black tracking-tighter">
+                MIIAM
+              </Link>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setShowAutoSkip(!showAutoSkip)}
+                  className="relative rounded-full bg-[var(--color-surface-container-lowest)]/20 p-2"
+                  aria-label="Toggle auto-skip settings"
+                >
+                  <span className="material-symbols-outlined">timer</span>
+                  {showAutoSkip && (
+                    <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500"></span>
+                  )}
+                </button>
+                <Link
+                  href="/rider/analytics"
+                  className="rounded-full bg-[var(--color-surface-container-lowest)]/20 p-2"
+                  aria-label="View analytics"
+                >
+                  <span className="material-symbols-outlined">insights</span>
+                </Link>
+                <Link
+                  href="/rider/incident"
+                  className="rounded-full bg-red-500/20 p-2"
+                  aria-label="Report incident"
+                >
+                  <span className="material-symbols-outlined text-red-400">emergency</span>
+                </Link>
+                <Link
+                  href="/rider/account"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)]/20"
+                  aria-label="View account"
+                >
+                  <span className="material-symbols-outlined">person</span>
+                </Link>
+              </div>
+            </div>
 
-        {/* Search */}
-        <div className="relative mb-3">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-outline-variant)]">search</span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search order ID or customer..."
-            className="w-full pl-10 pr-4 py-2 rounded-xl text-sm text-[var(--color-on-surface)]"
+            {/* Search */}
+            <div className="relative mb-3">
+              <span className="absolute top-1/2 left-3 -translate-y-1/2 text-[var(--color-outline-variant)]">
+                search
+              </span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search order ID or customer..."
+                className="w-full rounded-xl py-2 pr-4 pl-10 text-sm text-[var(--color-on-surface)]"
+              />
+            </div>
+
+            {/* Date Filter */}
+            <div className="flex flex-wrap gap-2">
+              {(["today", "week", "month"] as const).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setDateFilter(p)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-bold ${
+                    dateFilter === p
+                      ? "text-brand-secondary bg-[var(--color-surface-container-lowest)]"
+                      : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
+                  }`}
+                >
+                  {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
+                </button>
+              ))}
+              <select
+                value={sortBy}
+                onChange={(e) =>
+                  setSortBy(e.target.value as "newest" | "earnings_high" | "distance")
+                }
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold ${
+                  sortBy !== "newest"
+                    ? "text-brand-secondary bg-[var(--color-surface-container-lowest)]"
+                    : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
+                }`}
+              >
+                <option value="newest">Newest First</option>
+                <option value="earnings_high">Highest Earnings</option>
+                <option value="distance">Nearest</option>
+              </select>
+            </div>
+          </header>
+
+          {/* Auto Skip Settings */}
+          {showAutoSkip && (
+            <div className="mx-4 -mt-2 rounded-xl bg-[var(--color-surface-container-lowest)] p-4 shadow-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold">Auto-Skip Orders</p>
+                  <p className="text-xs text-[var(--color-outline)]">
+                    Decline after {autoSkipTime} seconds
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))}
+                    className="h-10 w-10 rounded-full bg-[var(--color-surface-container)] font-bold"
+                  >
+                    -
+                  </button>
+                  <span className="w-8 text-center font-bold">{autoSkipTime}s</span>
+                  <button
+                    onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))}
+                    className="h-10 w-10 rounded-full bg-[var(--color-surface-container)] font-bold"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <span
+                  className={`h-2 w-2 rounded-full ${autoSkipTime > 0 ? "bg-green-500" : "bg-slate-300"}`}
+                ></span>
+                <span className="text-xs text-[var(--color-outline)]">
+                  {autoSkipTime > 0 ? "Auto-skip enabled" : "Disabled"}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Quick Stats */}
+          <div className="no-scrollbar flex gap-3 overflow-x-auto px-4 py-3">
+            <div className="min-w-[90px] shrink-0 rounded-xl bg-[var(--color-surface-container-lowest)] px-4 py-2 shadow-sm">
+              <p className="text-[10px] text-[var(--color-outline-variant)]">TODAY'S EARNINGS</p>
+              <p className="text-sm font-black text-green-600">₹{todayEarnings}</p>
+            </div>
+            <div className="min-w-[80px] shrink-0 rounded-xl bg-[var(--color-surface-container-lowest)] px-4 py-2 shadow-sm">
+              <p className="text-[10px] text-[var(--color-outline-variant)]">COMPLETED</p>
+              <p className="text-brand-secondary text-sm font-black">{completedOrders.length}</p>
+            </div>
+            <div className="min-w-[90px] shrink-0 rounded-xl bg-[var(--color-surface-container-lowest)] px-4 py-2 shadow-sm">
+              <p className="text-[10px] text-[var(--color-outline-variant)]">IN PROGRESS</p>
+              <p className="text-accent text-sm font-black">{shoppingOrders.length}</p>
+            </div>
+          </div>
+
+          <main className="space-y-4 p-4 pb-32">
+            {/* Tabs */}
+            <div className="flex gap-2 rounded-xl bg-[var(--color-surface-container-lowest)] p-1">
+              {(["available", "shopping", "completed", "history"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 rounded-lg py-2 text-xs font-bold capitalize ${
+                    activeTab === tab
+                      ? "bg-brand-secondary text-white"
+                      : "text-[var(--color-outline)]"
+                  }`}
+                >
+                  {tab}{" "}
+                  {tab === "available"
+                    ? `(${availableOrders.length})`
+                    : tab === "shopping"
+                      ? `(${shoppingOrders.length})`
+                      : tab === "completed"
+                        ? `(${completedOrders.length})`
+                        : ""}
+                </button>
+              ))}
+            </div>
+
+            {/* Batch Accept Bar */}
+            {activeTab === "available" && selectedOrders.length > 0 && (
+              <div
+                className="fixed right-4 bottom-24 left-4 z-40 flex items-center justify-between rounded-xl bg-green-500 p-3 text-white shadow-lg"
+                style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
+              >
+                <span className="font-bold">{selectedOrders.length} orders selected</span>
+                <button
+                  onClick={batchAccept}
+                  className="rounded-lg bg-[var(--color-surface-container-lowest)] px-4 py-2.5 font-bold text-green-600"
+                >
+                  Accept All
+                </button>
+              </div>
+            )}
+
+            {activeTab === "available" && (
+              <>
+                {availableOrders.map((order) => (
+                  <OrderCard
+                    key={order.id}
+                    order={order}
+                    onAccept={() => acceptOrder(order.id)}
+                    isSelected={selectedOrders.includes(order.id)}
+                    onToggleSelect={() => toggleSelectOrder(order.id)}
+                  />
+                ))}
+                {availableOrders.length === 0 && (
+                  <div className="py-12 text-center text-[var(--color-outline-variant)]">
+                    <span className="material-symbols-outlined text-4xl">shopping_bag</span>
+                    <p className="mt-2">No orders available</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "shopping" && (
+              <>
+                {shoppingOrders.map((order) => (
+                  <ActiveDeliveryView
+                    key={order.id}
+                    order={order}
+                    riderId={riderProfile?.id || ""}
+                    onUpdateItemStatus={(itemId, status, price) =>
+                      updateItemStatus(order.id, itemId, status, price)
+                    }
+                    onMarkDelivered={() => markDelivered(order.id)}
+                    onReportIssue={() => {
+                      setCurrentOrderId(order.id);
+                      setShowIssueModal(true);
+                    }}
+                    onStartDelivery={() => startDelivery(order.id)}
+                    onShareLocation={() => updateRiderLocation(order.id)}
+                  />
+                ))}
+                {shoppingOrders.length === 0 && (
+                  <div className="py-12 text-center text-[var(--color-outline-variant)]">
+                    <span className="material-symbols-outlined text-4xl">check_circle</span>
+                    <p className="mt-2">No active shopping</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "completed" && (
+              <>
+                {completedOrders.map((order) => (
+                  <CompletedCard key={order.id} order={order} />
+                ))}
+                {completedOrders.length === 0 && (
+                  <div className="py-12 text-center text-[var(--color-outline-variant)]">
+                    <span className="material-symbols-outlined text-4xl">history</span>
+                    <p className="mt-2">No completed orders</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {activeTab === "history" && (
+              <>
+                <div className="rounded-xl bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
+                  <h3 className="mb-3 font-bold text-[var(--color-on-surface)]">
+                    📊 Performance Stats
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3 text-center">
+                      <p className="text-brand-secondary text-2xl font-black">{orders.length}</p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">Total Orders</p>
+                    </div>
+                    <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3 text-center">
+                      <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">
+                        Today&apos;s Earnings
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {orders.map((order) => (
+                  <HistoryCard key={order.id} order={order} />
+                ))}
+              </>
+            )}
+          </main>
+
+          <CashCollectModal
+            open={showCashCollectModal}
+            cashToCollect={cashToCollect}
+            onCashToCollectChange={setCashToCollect}
+            onConfirm={confirmDelivery}
+            onClose={() => setShowCashCollectModal(false)}
+          />
+
+          <IssueReportModal
+            open={showIssueModal}
+            onClose={() => setShowIssueModal(false)}
+            onSubmit={async (issue) => {
+              setIssueType(issue);
+              try {
+                const {
+                  data: { user },
+                } = await supabase.auth.getUser();
+                if (user) {
+                  const { data: rider } = await supabase
+                    .from("riders")
+                    .select("id")
+                    .eq("user_id", user.id)
+                    .single();
+                  if (rider) {
+                    await supabase.from("rider_incidents").insert({
+                      rider_id: rider.id,
+                      type: issue,
+                      description: `Issue with order ${currentOrderId}`,
+                      status: "reported",
+                    });
+                  }
+                }
+                showToast(`Issue "${issue}" reported.`, "success");
+              } catch (e) {
+                showToast("Failed to report issue. Please try again.", "error");
+              }
+              setShowIssueModal(false);
+            }}
           />
         </div>
-
-        {/* Date Filter */}
-        <div className="flex gap-2 flex-wrap">
-          {(["today", "week", "month"] as const).map(p => (
-            <button
-              key={p}
-              onClick={() => setDateFilter(p)}
-              className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
-                dateFilter === p ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
-              }`}
-            >
-              {p === "today" ? "Today" : p === "week" ? "This Week" : "This Month"}
-            </button>
-          ))}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as "newest" | "earnings_high" | "distance")}
-            className={`py-1.5 px-3 rounded-lg text-xs font-bold ${
-              sortBy !== "newest" ? "bg-[var(--color-surface-container-lowest)] text-brand-secondary" : "bg-[var(--color-surface-container-lowest)]/10 text-white/70"
-            }`}
-          >
-            <option value="newest">Newest First</option>
-            <option value="earnings_high">Highest Earnings</option>
-            <option value="distance">Nearest</option>
-          </select>
-        </div>
-      </header>
-
-      {/* Auto Skip Settings */}
-      {showAutoSkip && (
-        <div className="mx-4 -mt-2 bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-bold text-sm">Auto-Skip Orders</p>
-              <p className="text-xs text-[var(--color-outline)]">Decline after {autoSkipTime} seconds</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => setAutoSkipTime(Math.max(10, autoSkipTime - 5))} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full font-bold">-</button>
-              <span className="font-bold w-8 text-center">{autoSkipTime}s</span>
-              <button onClick={() => setAutoSkipTime(Math.min(60, autoSkipTime + 5))} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full font-bold">+</button>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-            <span className={`w-2 h-2 rounded-full ${autoSkipTime > 0 ? "bg-green-500" : "bg-slate-300"}`}></span>
-            <span className="text-xs text-[var(--color-outline)]">{autoSkipTime > 0 ? "Auto-skip enabled" : "Disabled"}</span>
-          </div>
+      </PullToRefresh>
+      {toast && (
+        <div
+          className={`fixed bottom-24 left-1/2 z-[200] -translate-x-1/2 rounded-xl px-4 py-3 text-sm font-bold text-white shadow-lg ${
+            toast.type === "success"
+              ? "bg-green-500"
+              : toast.type === "error"
+                ? "bg-red-500"
+                : "bg-slate-700"
+          }`}
+        >
+          {toast.message}
         </div>
       )}
-
-      {/* Quick Stats */}
-      <div className="px-4 py-3 flex gap-3 overflow-x-auto no-scrollbar">
-        <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
-          <p className="text-[10px] text-[var(--color-outline-variant)]">TODAY'S EARNINGS</p>
-          <p className="font-black text-green-600 text-sm">₹{todayEarnings}</p>
-        </div>
-        <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[80px] shrink-0">
-          <p className="text-[10px] text-[var(--color-outline-variant)]">COMPLETED</p>
-          <p className="font-black text-brand-secondary text-sm">{completedOrders.length}</p>
-        </div>
-        <div className="bg-[var(--color-surface-container-lowest)] px-4 py-2 rounded-xl shadow-sm min-w-[90px] shrink-0">
-          <p className="text-[10px] text-[var(--color-outline-variant)]">IN PROGRESS</p>
-          <p className="font-black text-accent text-sm">{shoppingOrders.length}</p>
-        </div>
-      </div>
-
-      <main className="p-4 space-y-4 pb-32">
-        {/* Tabs */}
-        <div className="flex gap-2 bg-[var(--color-surface-container-lowest)] p-1 rounded-xl">
-          {(["available", "shopping", "completed", "history"] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2 rounded-lg text-xs font-bold capitalize ${
-                activeTab === tab ? "bg-brand-secondary text-white" : "text-[var(--color-outline)]"
-              }`}
-            >
-              {tab} {tab === "available" ? `(${availableOrders.length})` : tab === "shopping" ? `(${shoppingOrders.length})` : tab === "completed" ? `(${completedOrders.length})` : ""}
-            </button>
-          ))}
-        </div>
-
-        {/* Batch Accept Bar */}
-        {activeTab === "available" && selectedOrders.length > 0 && (
-          <div className="fixed bottom-24 left-4 right-4 bg-green-500 text-white p-3 rounded-xl flex items-center justify-between shadow-lg z-40"
-            style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
-            <span className="font-bold">{selectedOrders.length} orders selected</span>
-            <button onClick={batchAccept} className="bg-[var(--color-surface-container-lowest)] text-green-600 px-4 py-2.5 rounded-lg font-bold">
-              Accept All
-            </button>
-          </div>
-        )}
-
-        {activeTab === "available" && (
-          <>
-            {availableOrders.map(order => (
-              <OrderCard 
-                key={order.id} 
-                order={order} 
-                onAccept={() => acceptOrder(order.id)}
-                isSelected={selectedOrders.includes(order.id)}
-                onToggleSelect={() => toggleSelectOrder(order.id)}
-              />
-            ))}
-            {availableOrders.length === 0 && (
-              <div className="text-center py-12 text-[var(--color-outline-variant)]">
-                <span className="material-symbols-outlined text-4xl">shopping_bag</span>
-                <p className="mt-2">No orders available</p>
-              </div>
-            )}
-          </>
-        )}
-
-        {activeTab === "shopping" && (
-          <>
-            {shoppingOrders.map(order => (
-              <ActiveDeliveryView 
-                key={order.id} 
-                order={order}
-                riderId={riderProfile?.id || ''}
-                onUpdateItemStatus={(itemId, status, price) => updateItemStatus(order.id, itemId, status, price)}
-                onMarkDelivered={() => markDelivered(order.id)}
-                onReportIssue={() => { setCurrentOrderId(order.id); setShowIssueModal(true); }}
-                onStartDelivery={() => startDelivery(order.id)}
-                onShareLocation={() => updateRiderLocation(order.id)}
-              />
-            ))}
-            {shoppingOrders.length === 0 && (
-              <div className="text-center py-12 text-[var(--color-outline-variant)]">
-                <span className="material-symbols-outlined text-4xl">check_circle</span>
-                <p className="mt-2">No active shopping</p>
-              </div>
-            )}
-          </>
-        )}
-
-        {activeTab === "completed" && (
-          <>
-            {completedOrders.map(order => (
-              <CompletedCard key={order.id} order={order} />
-            ))}
-            {completedOrders.length === 0 && (
-              <div className="text-center py-12 text-[var(--color-outline-variant)]">
-                <span className="material-symbols-outlined text-4xl">history</span>
-                <p className="mt-2">No completed orders</p>
-              </div>
-            )}
-          </>
-        )}
-
-        {activeTab === "history" && (
-          <>
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
-              <h3 className="font-bold text-[var(--color-on-surface)] mb-3">📊 Performance Stats</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
-                  <p className="text-2xl font-black text-brand-secondary">{orders.length}</p>
-                  <p className="text-xs text-[var(--color-outline-variant)]">Total Orders</p>
-                </div>
-                <div className="text-center p-3 bg-[var(--color-surface-subtle)] rounded-xl">
-                  <p className="text-2xl font-black text-green-600">₹{todayEarnings}</p>
-                  <p className="text-xs text-[var(--color-outline-variant)]">Today&apos;s Earnings</p>
-                </div>
-              </div>
-            </div>
-            {orders.map(order => (
-              <HistoryCard key={order.id} order={order} />
-            ))}
-          </>
-        )}
-      </main>
-
-      <CashCollectModal
-        open={showCashCollectModal}
-        cashToCollect={cashToCollect}
-        onCashToCollectChange={setCashToCollect}
-        onConfirm={confirmDelivery}
-        onClose={() => setShowCashCollectModal(false)}
-      />
-
-      <IssueReportModal
-        open={showIssueModal}
-        onClose={() => setShowIssueModal(false)}
-        onSubmit={async (issue) => {
-          setIssueType(issue);
-          try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
-              if (rider) {
-                await supabase.from("rider_incidents").insert({
-                  rider_id: rider.id,
-                  type: issue,
-                  description: `Issue with order ${currentOrderId}`,
-                  status: "reported",
-                });
-              }
-            }
-            showToast(`Issue "${issue}" reported.`, "success");
-          } catch (e) {
-            showToast("Failed to report issue. Please try again.", "error");
-          }
-          setShowIssueModal(false);
-        }}
-      />
-
-    </div>
-    </PullToRefresh>
-    {toast && (
-      <div className={`fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-4 py-3 rounded-xl shadow-lg text-sm font-bold text-white ${
-        toast.type === "success" ? "bg-green-500" : toast.type === "error" ? "bg-red-500" : "bg-slate-700"
-      }`}>
-        {toast.message}
-      </div>
-    )}
     </>
   );
 }
 
-function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onReportIssue, onStartDelivery, onShareLocation }: { order: Order; riderId: string; onUpdateItemStatus: (itemId: string, status: string, price?: number) => void; onMarkDelivered: () => void; onReportIssue: () => void; onStartDelivery?: () => void; onShareLocation?: () => void }) {
+function ShoppingCard({
+  order,
+  riderId,
+  onUpdateItemStatus,
+  onMarkDelivered,
+  onReportIssue,
+  onStartDelivery,
+  onShareLocation,
+}: {
+  order: Order;
+  riderId: string;
+  onUpdateItemStatus: (itemId: string, status: string, price?: number) => void;
+  onMarkDelivered: () => void;
+  onReportIssue: () => void;
+  onStartDelivery?: () => void;
+  onShareLocation?: () => void;
+}) {
   const supabase = useMemo(() => createClient(), []);
   const items = order.items || [];
   const pickedCount = items.filter((i: OrderItem) => i.status === "available").length;
-  const totalSpent = items.reduce((s: number, i: OrderItem) => s + ((i.actual_price || 0) * i.quantity), 0);
+  const totalSpent = items.reduce(
+    (s: number, i: OrderItem) => s + (i.actual_price || 0) * i.quantity,
+    0
+  );
   const profit = (order.total_amount || 0) + (order.delivery_fee || 0) - totalSpent;
 
   // In new flow: shopping = rider at store picking items (pickup phase)
@@ -997,34 +1250,42 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
     async function initMap() {
       if (!isMounted || !mapRef.current) return;
-      const L = await import('leaflet');
-      await import('leaflet/dist/leaflet.css');
+      const L = await import("leaflet");
+      await import("leaflet/dist/leaflet.css");
 
       // Get rider GPS
-      let riderLat = 26.1445, riderLng = 91.7362;
+      let riderLat = 26.1445,
+        riderLng = 91.7362;
       await new Promise<void>((res) => {
         navigator.geolocation.getCurrentPosition(
-          (p) => { riderLat = p.coords.latitude; riderLng = p.coords.longitude; res(); },
-          () => res(), { timeout: 6000, enableHighAccuracy: true }
+          (p) => {
+            riderLat = p.coords.latitude;
+            riderLng = p.coords.longitude;
+            res();
+          },
+          () => res(),
+          { timeout: 6000, enableHighAccuracy: true }
         );
       });
 
       const map = L.map(mapRef.current!, { zoomControl: false }).setView([riderLat, riderLng], 15);
-      L.control.zoom({ position: 'bottomright' }).addTo(map);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+      L.control.zoom({ position: "bottomright" }).addTo(map);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
       mapInstanceRef.current = map;
 
       // Rider marker (blue scooter)
       const riderIcon = L.divIcon({
-        className: '',
+        className: "",
         html: `<div style="position:relative;width:46px;height:46px">
           <div style="position:absolute;inset:0;background:rgba(11,80,213,0.2);border-radius:50%;animation:pulse-ring 1s ease-out infinite"></div>
           <div style="position:absolute;inset:4px;background:#0b50d5;border-radius:50%;border:3px solid white;box-shadow:0 4px 14px rgba(11,80,213,0.5);display:flex;align-items:center;justify-content:center;font-size:20px;">🛵</div>
         </div>`,
-        iconSize: [46, 46], iconAnchor: [23, 46],
+        iconSize: [46, 46],
+        iconAnchor: [23, 46],
       });
       const riderMarker = L.marker([riderLat, riderLng], { icon: riderIcon, zIndexOffset: 1000 })
-        .bindPopup('<b>You</b>').addTo(map);
+        .bindPopup("<b>You</b>")
+        .addTo(map);
       riderMarkerRef.current = riderMarker;
 
       // Destination marker colour/emoji by phase
@@ -1035,12 +1296,13 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
       const destAddr = isPickup ? vendorAddress : deliveryAddress;
 
       const destIcon = L.divIcon({
-        className: '',
+        className: "",
         html: `<div style="position:relative;width:44px;height:44px">
           <div style="position:absolute;inset:0;background:${destColor}22;border-radius:50%;animation:pulse-ring 1.4s ease-out infinite"></div>
           <div style="position:absolute;inset:4px;background:${destColor};border-radius:50%;border:3px solid white;box-shadow:0 4px 12px ${destColor}66;display:flex;align-items:center;justify-content:center;font-size:18px;">${destEmoji}</div>
         </div>`,
-        iconSize: [44, 44], iconAnchor: [22, 44],
+        iconSize: [44, 44],
+        iconAnchor: [22, 44],
       });
 
       async function drawRoute(rLat: number, rLng: number, dLat: number, dLng: number) {
@@ -1051,28 +1313,51 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           const data = await res.json();
           if (data.routes?.[0] && isMounted && mapInstanceRef.current) {
             // Remove old route layers
-            routeLayerRef.current.forEach(l => map.removeLayer(l));
+            routeLayerRef.current.forEach((l) => map.removeLayer(l));
             routeLayerRef.current = [];
-            const coords = data.routes[0].geometry.coordinates.map((c: [number,number]) => [c[1], c[0]]);
-            const shadow = L.polyline(coords, { color: `${destColor}33`, weight: 10, lineCap: 'round' }).addTo(map);
-            const line = L.polyline(coords, { color: destColor, weight: 5, lineCap: 'round' }).addTo(map);
+            const coords = data.routes[0].geometry.coordinates.map((c: [number, number]) => [
+              c[1],
+              c[0],
+            ]);
+            const shadow = L.polyline(coords, {
+              color: `${destColor}33`,
+              weight: 10,
+              lineCap: "round",
+            }).addTo(map);
+            const line = L.polyline(coords, {
+              color: destColor,
+              weight: 5,
+              lineCap: "round",
+            }).addTo(map);
             routeLayerRef.current = [shadow, line];
             const eta = Math.round(data.routes[0].duration / 60);
             const dist = (data.routes[0].distance / 1000).toFixed(1);
             if (isMounted) setTrackingInfo({ eta, distance: dist });
-            map.fitBounds([[rLat, rLng], [dLat, dLng]], { padding: [40, 40] });
+            map.fitBounds(
+              [
+                [rLat, rLng],
+                [dLat, dLng],
+              ],
+              { padding: [40, 40] }
+            );
           }
-        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
+        } catch (e) {
+          logger.warn({ err: e }, "Map routing error");
+        }
       }
 
       // Geocode destination address
       let geoSuccess = false;
-      const searchAddr = destAddr || (isPickup && (order.vendor?.shop_name || order.vendor?.name) ? (order.vendor?.shop_name || order.vendor?.name) : null);
+      const searchAddr =
+        destAddr ||
+        (isPickup && (order.vendor?.shop_name || order.vendor?.name)
+          ? order.vendor?.shop_name || order.vendor?.name
+          : null);
       if (searchAddr) {
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddr)}&limit=1`,
-            { headers: { 'Accept-Language': 'en', 'User-Agent': 'MIIAM/1.0' } }
+            { headers: { "Accept-Language": "en", "User-Agent": "MIIAM/1.0" } }
           );
           const data = await res.json();
           if (data[0] && isMounted) {
@@ -1080,12 +1365,17 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             const dLng = parseFloat(data[0].lon);
             destLatLngRef.current = [dLat, dLng];
             L.marker([dLat, dLng], { icon: destIcon })
-              .bindPopup(`<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(searchAddr)}</span>`)
-              .openPopup().addTo(map);
+              .bindPopup(
+                `<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(searchAddr)}</span>`
+              )
+              .openPopup()
+              .addTo(map);
             await drawRoute(riderLat, riderLng, dLat, dLng);
             geoSuccess = true;
           }
-        } catch (e) { logger.warn({ err: e }, "Map routing error"); }
+        } catch (e) {
+          logger.warn({ err: e }, "Map routing error");
+        }
       }
 
       // Fallback: use vendor's stored lat/lng for pickup phase
@@ -1094,8 +1384,11 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
         const dLng = order.vendor.lng;
         destLatLngRef.current = [dLat, dLng];
         L.marker([dLat, dLng], { icon: destIcon })
-          .bindPopup(`<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(order.vendor?.shop_name || order.vendor?.name || "Vendor")}</span>`)
-          .openPopup().addTo(map);
+          .bindPopup(
+            `<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(order.vendor?.shop_name || order.vendor?.name || "Vendor")}</span>`
+          )
+          .openPopup()
+          .addTo(map);
         await drawRoute(riderLat, riderLng, dLat, dLng);
         geoSuccess = true;
       }
@@ -1106,8 +1399,11 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
         const dLng = order.delivery_lng;
         destLatLngRef.current = [dLat, dLng];
         L.marker([dLat, dLng], { icon: destIcon })
-          .bindPopup(`<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(deliveryAddress || "Customer")}</span>`)
-          .openPopup().addTo(map);
+          .bindPopup(
+            `<b>${sanitizeHtml(destLabel)}</b><br><span style="font-size:11px">${sanitizeHtml(deliveryAddress || "Customer")}</span>`
+          )
+          .openPopup()
+          .addTo(map);
         await drawRoute(riderLat, riderLng, dLat, dLng);
         geoSuccess = true;
       }
@@ -1118,30 +1414,59 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
       }
 
       // Live rider position updates from Supabase
-      const channel = supabase.channel(`rider-loc-${order.id}-${phase}`)
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'rider_locations', filter: `order_id=eq.${order.id}` },
+      const channel = supabase
+        .channel(`rider-loc-${order.id}-${phase}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "rider_locations",
+            filter: `order_id=eq.${order.id}`,
+          },
           async (payload: { new: Record<string, unknown> }) => {
             const loc = payload.new as { lat: number; lng: number };
             if (loc?.lat && loc?.lng && isMounted && mapInstanceRef.current) {
               riderMarkerRef.current?.setLatLng([loc.lat, loc.lng]);
               if (destLatLngRef.current) {
-                await drawRoute(loc.lat, loc.lng, destLatLngRef.current[0], destLatLngRef.current[1]);
+                await drawRoute(
+                  loc.lat,
+                  loc.lng,
+                  destLatLngRef.current[0],
+                  destLatLngRef.current[1]
+                );
               }
             }
-          }).subscribe();
+          }
+        )
+        .subscribe();
 
-      return () => { isMounted = false; supabase.removeChannel(channel); };
+      return () => {
+        isMounted = false;
+        supabase.removeChannel(channel);
+      };
     }
 
     initMap();
     return () => {
       isMounted = false;
-      if (mapInstanceRef.current) { mapInstanceRef.current.remove(); mapInstanceRef.current = null; }
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
-  }, [showMap, phase, order.id, vendorAddress, deliveryAddress, order.delivery_lat, order.delivery_lng]);
+  }, [
+    showMap,
+    phase,
+    order.id,
+    vendorAddress,
+    deliveryAddress,
+    order.delivery_lat,
+    order.delivery_lng,
+  ]);
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl shadow-lg overflow-hidden">
+    <div className="overflow-hidden rounded-2xl bg-[var(--color-surface-container-lowest)] shadow-lg">
       <style>{`
         @keyframes pulse-ring { 0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
         @keyframes slide-up { from{transform:translateY(6px);opacity:0} to{transform:translateY(0);opacity:1} }
@@ -1149,24 +1474,37 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
       {/* === Compact Header — always visible === */}
       <button onClick={() => setExpanded(!expanded)} className="w-full text-left">
-        <div className={`px-4 py-3 flex items-center gap-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "bg-gradient-to-r from-brand-secondary to-accent/70"}`}>
-          <div className="w-9 h-9 bg-[var(--color-surface-container-lowest)]/20 rounded-full flex items-center justify-center text-base flex-shrink-0">
+        <div
+          className={`flex items-center gap-3 px-4 py-3 ${phase === "pickup" ? "bg-gradient-to-r from-green-600 to-emerald-500" : "from-brand-secondary to-accent/70 bg-gradient-to-r"}`}
+        >
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-container-lowest)]/20 text-base">
             {phase === "pickup" ? "🏪" : "🏠"}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="text-white font-extrabold text-xs truncate">{order.vendor?.shop_name || order.vendor?.name || "Order"}</p>
-              <span className="text-[10px] text-white/70 font-bold bg-[var(--color-surface-container-lowest)]/10 px-1.5 py-0.5 rounded-full shrink-0">{phase === "pickup" ? "Pickup" : "Delivery"}</span>
+              <p className="truncate text-xs font-extrabold text-white">
+                {order.vendor?.shop_name || order.vendor?.name || "Order"}
+              </p>
+              <span className="shrink-0 rounded-full bg-[var(--color-surface-container-lowest)]/10 px-1.5 py-0.5 text-[10px] font-bold text-white/70">
+                {phase === "pickup" ? "Pickup" : "Delivery"}
+              </span>
             </div>
-            <p className="text-white/80 text-[10px] truncate mt-0.5">
+            <p className="mt-0.5 truncate text-[10px] text-white/80">
               {phase === "pickup" ? vendorAddress : deliveryAddress}
             </p>
           </div>
-          <div className="text-right shrink-0">
-            <p className="text-white font-extrabold text-sm">₹{order.total_amount + (order.delivery_fee || 0)}</p>
-            <p className="text-[9px] text-white/70 font-bold">{pickedCount}/{items.length} picked</p>
+          <div className="shrink-0 text-right">
+            <p className="text-sm font-extrabold text-white">
+              ₹{order.total_amount + (order.delivery_fee || 0)}
+            </p>
+            <p className="text-[9px] font-bold text-white/70">
+              {pickedCount}/{items.length} picked
+            </p>
           </div>
-          <span className="material-symbols-outlined text-white text-lg transition-transform" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+          <span
+            className="material-symbols-outlined text-lg text-white transition-transform"
+            style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
+          >
             expand_more
           </span>
         </div>
@@ -1174,24 +1512,47 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
 
       {/* === Expanded Details === */}
       {expanded && (
-        <div style={{ animation: 'slide-up 0.25s ease' }}>
+        <div style={{ animation: "slide-up 0.25s ease" }}>
           {/* ETA Strip */}
           {trackingInfo && (
             <div className="flex border-b border-[var(--color-border-subtle)]">
-              <div className={`flex-1 py-2 text-center border-r border-[var(--color-border-subtle)] ${phase === "pickup" ? "bg-green-50 dark:bg-green-900/20" : "bg-accent/10 dark:bg-accent/20"}`}>
-                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">ETA</p>
-                <p className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-brand-secondary"}`}>
-                  {trackingInfo.eta}<span className="text-xs font-normal ml-0.5">min</span>
+              <div
+                className={`flex-1 border-r border-[var(--color-border-subtle)] py-2 text-center ${phase === "pickup" ? "bg-green-50 dark:bg-green-900/20" : "bg-accent/10 dark:bg-accent/20"}`}
+              >
+                <p className="text-[9px] font-bold tracking-wide text-[var(--color-outline-variant)] uppercase">
+                  ETA
+                </p>
+                <p
+                  className={`text-lg font-black ${phase === "pickup" ? "text-green-600" : "text-brand-secondary"}`}
+                >
+                  {trackingInfo.eta}
+                  <span className="ml-0.5 text-xs font-normal">min</span>
                 </p>
               </div>
               <div className="flex-1 py-2 text-center">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">Distance</p>
-                <p className="text-lg font-black text-[var(--color-on-surface)]">{trackingInfo.distance}<span className="text-xs font-normal ml-0.5">km</span></p>
+                <p className="text-[9px] font-bold tracking-wide text-[var(--color-outline-variant)] uppercase">
+                  Distance
+                </p>
+                <p className="text-lg font-black text-[var(--color-on-surface)]">
+                  {trackingInfo.distance}
+                  <span className="ml-0.5 text-xs font-normal">km</span>
+                </p>
               </div>
-              <div className="flex-1 py-2 text-center border-l border-[var(--color-border-subtle)]">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-[var(--color-outline-variant)]">GPS</p>
-                <div className="flex items-center justify-center gap-1 mt-0.5">
-                  <span style={{ width:7,height:7,borderRadius:'50%',background:'#22c55e',display:'inline-block',boxShadow:'0 0 0 2px rgba(34,197,94,0.25)'}}></span>
+              <div className="flex-1 border-l border-[var(--color-border-subtle)] py-2 text-center">
+                <p className="text-[9px] font-bold tracking-wide text-[var(--color-outline-variant)] uppercase">
+                  GPS
+                </p>
+                <div className="mt-0.5 flex items-center justify-center gap-1">
+                  <span
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: "50%",
+                      background: "#22c55e",
+                      display: "inline-block",
+                      boxShadow: "0 0 0 2px rgba(34,197,94,0.25)",
+                    }}
+                  ></span>
                   <span className="text-[10px] font-bold text-green-600">Live</span>
                 </div>
               </div>
@@ -1203,49 +1564,76 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
             <div className="relative">
               <div ref={mapRef} className="w-full" style={{ height: 200 }} />
               {!trackingInfo && (
-                <div className="absolute inset-0 bg-slate-900/20 flex items-center justify-center z-[400]">
-                  <div className="bg-[var(--color-surface-container-lowest)] rounded-xl px-4 py-3 flex items-center gap-2 shadow-lg">
-                    <div className="w-4 h-4 border-2 border-brand-secondary border-t-transparent rounded-full animate-spin"/>
-                    <span className="text-sm font-bold text-[var(--color-on-surface)]">Loading route...</span>
+                <div className="absolute inset-0 z-[400] flex items-center justify-center bg-slate-900/20">
+                  <div className="flex items-center gap-2 rounded-xl bg-[var(--color-surface-container-lowest)] px-4 py-3 shadow-lg">
+                    <div className="border-brand-secondary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
+                    <span className="text-sm font-bold text-[var(--color-on-surface)]">
+                      Loading route...
+                    </span>
                   </div>
                 </div>
               )}
             </div>
           )}
-          <div className="px-4 pt-2 pb-1 flex gap-2">
-            <button onClick={() => setShowMap(!showMap)} className="text-[10px] font-bold text-brand-secondary bg-accent/10 dark:bg-accent/20 px-4 py-2.5 rounded-lg flex items-center gap-1">
-              <span className="material-symbols-outlined text-sm">{showMap ? "visibility_off" : "map"}</span>
+          <div className="flex gap-2 px-4 pt-2 pb-1">
+            <button
+              onClick={() => setShowMap(!showMap)}
+              className="text-brand-secondary bg-accent/10 dark:bg-accent/20 flex items-center gap-1 rounded-lg px-4 py-2.5 text-[10px] font-bold"
+            >
+              <span className="material-symbols-outlined text-sm">
+                {showMap ? "visibility_off" : "map"}
+              </span>
               {showMap ? "Hide Map" : "Show Map"}
             </button>
-            <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-white bg-brand-secondary px-4 py-2.5 rounded-lg flex items-center gap-1">
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(phase === "pickup" ? vendorAddress : deliveryAddress)}&travelmode=driving`}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-brand-secondary flex items-center gap-1 rounded-lg px-4 py-2.5 text-[10px] font-bold text-white"
+            >
               <span className="material-symbols-outlined text-sm">navigation</span>
               Google Maps
             </a>
           </div>
 
           {/* Vendor / Customer Info */}
-          <div className="px-4 py-2 space-y-1">
-            <div className="flex justify-between items-start">
-              <div className="flex-1 min-w-0">
+          <div className="space-y-1 px-4 py-2">
+            <div className="flex items-start justify-between">
+              <div className="min-w-0 flex-1">
                 {phase === "pickup" ? (
                   <>
                     <div className="mb-1.5">
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-brand-secondary">Pickup From</span>
-                      <p className="text-xs font-medium text-[var(--color-on-surface)] truncate">{vendorAddress}</p>
+                      <span className="text-brand-secondary text-[9px] font-bold tracking-wider uppercase">
+                        Pickup From
+                      </span>
+                      <p className="truncate text-xs font-medium text-[var(--color-on-surface)]">
+                        {vendorAddress}
+                      </p>
                     </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-[var(--color-outline)]">Dropoff To</span>
-                      <p className="text-[10px] text-[var(--color-outline-variant)] truncate">{deliveryAddress}</p>
+                      <span className="text-[9px] font-bold tracking-wider text-[var(--color-outline)] uppercase">
+                        Dropoff To
+                      </span>
+                      <p className="truncate text-[10px] text-[var(--color-outline-variant)]">
+                        {deliveryAddress}
+                      </p>
                     </div>
                   </>
                 ) : (
                   <div className="mb-1">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-green-600">Deliver To</span>
-                    <p className="text-xs font-bold text-[var(--color-on-surface)] truncate">{deliveryAddress}</p>
+                    <span className="text-[9px] font-bold tracking-wider text-green-600 uppercase">
+                      Deliver To
+                    </span>
+                    <p className="truncate text-xs font-bold text-[var(--color-on-surface)]">
+                      {deliveryAddress}
+                    </p>
                   </div>
                 )}
                 {customerPhone && (
-                  <a href={`tel:${customerPhone}`} className="text-[10px] text-brand-secondary font-semibold flex items-center gap-1 mt-1">
+                  <a
+                    href={`tel:${customerPhone}`}
+                    className="text-brand-secondary mt-1 flex items-center gap-1 text-[10px] font-semibold"
+                  >
                     <span className="material-symbols-outlined text-[10px]">call</span>
                     Call {customerPhone}
                   </a>
@@ -1253,26 +1641,39 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
               </div>
             </div>
             {/* Progress */}
-            <div className="bg-[var(--color-surface-subtle)] rounded-lg p-2">
-              <div className="bg-[var(--color-surface-container-high)] rounded-full h-1.5 overflow-hidden">
-                <div className="h-full bg-green-500 transition-all" style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }} />
+            <div className="rounded-lg bg-[var(--color-surface-subtle)] p-2">
+              <div className="h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-container-high)]">
+                <div
+                  className="h-full bg-green-500 transition-all"
+                  style={{ width: `${items.length ? (pickedCount / items.length) * 100 : 0}%` }}
+                />
               </div>
-              <p className="text-[10px] text-[var(--color-outline)] mt-1">{pickedCount}/{items.length} items picked</p>
+              <p className="mt-1 text-[10px] text-[var(--color-outline)]">
+                {pickedCount}/{items.length} items picked
+              </p>
             </div>
           </div>
 
           {/* Items List (compact) */}
-          <div className="px-4 space-y-1 mb-2 max-h-40 overflow-y-auto">
+          <div className="mb-2 max-h-40 space-y-1 overflow-y-auto px-4">
             {items.map((item: OrderItem) => (
-              <div key={item.id} className="flex items-center gap-1.5 p-2 bg-[var(--color-surface-subtle)] rounded-lg">
+              <div
+                key={item.id}
+                className="flex items-center gap-1.5 rounded-lg bg-[var(--color-surface-subtle)] p-2"
+              >
                 <select
                   value={item.status || "pending"}
-                  onChange={(e) => onUpdateItemStatus(item.id, e.target.value, item.actual_price ?? undefined)}
-                  className={`text-[10px] font-bold px-1.5 py-1 rounded border-0 ${
-                    item.status === "available" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                    item.status === "unavailable" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                    item.status === "different_brand" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                    "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
+                  onChange={(e) =>
+                    onUpdateItemStatus(item.id, e.target.value, item.actual_price ?? undefined)
+                  }
+                  className={`rounded border-0 px-1.5 py-1 text-[10px] font-bold ${
+                    item.status === "available"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                      : item.status === "unavailable"
+                        ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                        : item.status === "different_brand"
+                          ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                          : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"
                   }`}
                 >
                   <option value="pending">Pending</option>
@@ -1280,15 +1681,21 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
                   <option value="unavailable">❌ Unavail</option>
                   <option value="different_brand">🔄 Diff Brand</option>
                 </select>
-                <span className="flex-1 text-[11px] font-medium truncate">{item.quantity}x {item.menu_item?.name || item.name}</span>
-                <span className="text-[10px] text-[var(--color-outline-variant)] shrink-0">₹{item.unit_price}</span>
+                <span className="flex-1 truncate text-[11px] font-medium">
+                  {item.quantity}x {item.menu_item?.name || item.name}
+                </span>
+                <span className="shrink-0 text-[10px] text-[var(--color-outline-variant)]">
+                  ₹{item.unit_price}
+                </span>
                 {item.status === "available" && (
                   <input
                     type="number"
                     placeholder="Actual"
                     value={item.actual_price || ""}
-                    onChange={(e) => onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))}
-                    className="w-14 text-[10px] border border-[var(--color-border-subtle)] rounded px-1.5 py-1 bg-white dark:bg-[var(--color-surface)]"
+                    onChange={(e) =>
+                      onUpdateItemStatus(item.id, "available", parseFloat(e.target.value))
+                    }
+                    className="w-14 rounded border border-[var(--color-border-subtle)] bg-white px-1.5 py-1 text-[10px] dark:bg-[var(--color-surface)]"
                   />
                 )}
               </div>
@@ -1296,17 +1703,19 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           </div>
 
           {/* Financial Summary */}
-          <div className="px-4 mb-2">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-2 rounded-lg">
+          <div className="mb-2 px-4">
+            <div className="rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 p-2 dark:from-green-900/20 dark:to-emerald-900/20">
               <div className="flex justify-between text-[11px]">
                 <span className="text-[var(--color-outline)]">Spent</span>
                 <span className="font-bold">₹{totalSpent.toFixed(0)}</span>
               </div>
               <div className="flex justify-between text-[11px]">
                 <span className="text-[var(--color-outline)]">Collect</span>
-                <span className="font-bold text-brand-secondary">₹{order.total_amount + (order.delivery_fee || 0)}</span>
+                <span className="text-brand-secondary font-bold">
+                  ₹{order.total_amount + (order.delivery_fee || 0)}
+                </span>
               </div>
-              <div className="flex justify-between text-[11px] border-t pt-0.5 mt-0.5">
+              <div className="mt-0.5 flex justify-between border-t pt-0.5 text-[11px]">
                 <span className="font-bold">Profit</span>
                 <span className="font-black text-green-600">₹{profit.toFixed(0)}</span>
               </div>
@@ -1314,27 +1723,45 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
           </div>
 
           {/* Actions */}
-          <div className="px-4 pb-4 space-y-1.5">
+          <div className="space-y-1.5 px-4 pb-4">
             <div className="flex gap-1.5">
-              {pickedCount === items.length && items.length > 0 && onStartDelivery && order.status !== "on_the_way" && (
-                <button onClick={onStartDelivery} className="flex-1 py-2 bg-brand-secondary text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
-                  <span className="material-symbols-outlined text-sm">directions_bike</span>
-                  Start Delivery
-                </button>
-              )}
+              {pickedCount === items.length &&
+                items.length > 0 &&
+                onStartDelivery &&
+                order.status !== "on_the_way" && (
+                  <button
+                    onClick={onStartDelivery}
+                    className="bg-brand-secondary flex flex-1 items-center justify-center gap-1 rounded-lg py-2 text-[11px] font-bold text-white"
+                  >
+                    <span className="material-symbols-outlined text-sm">directions_bike</span>
+                    Start Delivery
+                  </button>
+                )}
               {order.status === "on_the_way" && onShareLocation && (
-                <button onClick={onShareLocation} className="flex-1 py-2 bg-green-500 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1">
+                <button
+                  onClick={onShareLocation}
+                  className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-green-500 py-2 text-[11px] font-bold text-white"
+                >
                   <span className="material-symbols-outlined text-sm">share_location</span>
                   Share Location
                 </button>
               )}
-              <button onClick={onReportIssue} className="py-2 px-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-[11px] font-bold border border-red-100 dark:border-red-800">
+              <button
+                onClick={onReportIssue}
+                className="rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-[11px] font-bold text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+              >
                 Report
               </button>
             </div>
-            <button onClick={onMarkDelivered} disabled={phase === "pickup"} className="w-full bg-green-500 text-white py-2.5 rounded-lg font-bold disabled:opacity-40 flex items-center justify-center gap-1.5 text-xs">
+            <button
+              onClick={onMarkDelivered}
+              disabled={phase === "pickup"}
+              className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-green-500 py-2.5 text-xs font-bold text-white disabled:opacity-40"
+            >
               <span className="material-symbols-outlined text-sm">payments</span>
-              {phase === "delivery" ? `Delivered — Collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}` : `Start delivery to collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}`}
+              {phase === "delivery"
+                ? `Delivered — Collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}`
+                : `Start delivery to collect ₹${(order.total_amount || 0) + (order.delivery_fee || 0)}`}
             </button>
           </div>
         </div>
@@ -1343,14 +1770,17 @@ function ShoppingCard({ order, riderId, onUpdateItemStatus, onMarkDelivered, onR
   );
 }
 
-
 function CompletedCard({ order }: { order: Order }) {
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-4 shadow-lg">
-      <div className="flex justify-between items-start">
+    <div className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 shadow-lg">
+      <div className="flex items-start justify-between">
         <div>
-          <h3 className="font-bold text-[var(--color-on-surface)]">{order.vendor?.shop_name || order.vendor?.name}</h3>
-          <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.delivered_at || "").toLocaleString()}</p>
+          <h3 className="font-bold text-[var(--color-on-surface)]">
+            {order.vendor?.shop_name || order.vendor?.name}
+          </h3>
+          <p className="text-xs text-[var(--color-outline-variant)]">
+            {new Date(order.delivered_at || "").toLocaleString()}
+          </p>
         </div>
         <div className="text-right">
           <p className="text-lg font-black text-green-600">₹{order.customer_collected || 0}</p>
@@ -1362,15 +1792,17 @@ function CompletedCard({ order }: { order: Order }) {
 }
 
 function HistoryCard({ order }: { order: Order }) {
-  const spent = order.items?.reduce((s, i) => s + ((i.actual_price || 0) * i.quantity), 0) || 0;
+  const spent = order.items?.reduce((s, i) => s + (i.actual_price || 0) * i.quantity, 0) || 0;
   const earned = (order.customer_collected || 0) - spent;
 
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-3 shadow-sm mb-2">
-      <div className="flex justify-between items-center">
+    <div className="mb-2 rounded-xl bg-[var(--color-surface-container-lowest)] p-3 shadow-sm">
+      <div className="flex items-center justify-between">
         <div>
-          <p className="font-bold text-sm">{order.vendor?.shop_name || order.vendor?.name}</p>
-          <p className="text-xs text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString("en-IN")}</p>
+          <p className="text-sm font-bold">{order.vendor?.shop_name || order.vendor?.name}</p>
+          <p className="text-xs text-[var(--color-outline-variant)]">
+            {new Date(order.placed_at).toLocaleDateString("en-IN")}
+          </p>
         </div>
         <div className="text-right">
           <p className={`font-bold ${earned >= 0 ? "text-green-600" : "text-red-500"}`}>

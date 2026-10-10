@@ -22,7 +22,7 @@ export function EmptyState({
   actionLabel,
   actionHref,
   onAction,
-  type = "default"
+  type = "default",
 }: EmptyStateProps) {
   const typeStyles: Record<string, { bg: string; icon: string }> = {
     cart: { bg: "bg-primary/10", icon: "text-accent" },
@@ -39,21 +39,24 @@ export function EmptyState({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="flex flex-col items-center justify-center py-16 px-6 text-center"
+      className="flex flex-col items-center justify-center px-6 py-16 text-center"
     >
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
-        className={`w-24 h-24 ${style.bg} rounded-full flex items-center justify-center mb-6 relative`}
+        className={`h-24 w-24 ${style.bg} relative mb-6 flex items-center justify-center rounded-full`}
       >
-        <div className="absolute -top-2 -right-2 w-5 h-5 bg-amber-200/50 rounded-full" />
-        <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-primary/20 rounded-full" />
+        <div className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-amber-200/50" />
+        <div className="bg-primary/20 absolute -bottom-2 -left-2 h-4 w-4 rounded-full" />
 
         {emoji ? (
           <span className="text-5xl">{emoji}</span>
         ) : (
-          <span className={`material-symbols-outlined text-5xl ${style.icon}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+          <span
+            className={`material-symbols-outlined text-5xl ${style.icon}`}
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
             {icon}
           </span>
         )}
@@ -63,7 +66,7 @@ export function EmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-xl font-bold text-on-surface mb-2"
+        className="text-on-surface mb-2 text-xl font-bold"
       >
         {title}
       </motion.h3>
@@ -72,7 +75,7 @@ export function EmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-on-surface-variant text-sm mb-6 max-w-xs"
+        className="text-on-surface-variant mb-6 max-w-xs text-sm"
       >
         {description}
       </motion.p>
@@ -85,12 +88,14 @@ export function EmptyState({
         >
           <Link
             href={actionHref}
-            className="group relative px-6 py-3 bg-primary text-on-primary font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+            className="group bg-primary text-on-primary relative overflow-hidden rounded-xl px-6 py-3 font-bold transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <span className="relative flex items-center gap-2">
               {actionLabel}
-              <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
+                arrow_forward
+              </span>
             </span>
           </Link>
         </motion.div>
@@ -103,12 +108,14 @@ export function EmptyState({
         >
           <button
             onClick={onAction}
-            className="group relative px-6 py-3 bg-primary text-on-primary font-bold rounded-xl overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+            className="group bg-primary text-on-primary relative overflow-hidden rounded-xl px-6 py-3 font-bold transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             <span className="relative flex items-center gap-2">
               {actionLabel}
-              <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
+                arrow_forward
+              </span>
             </span>
           </button>
         </motion.div>
@@ -179,7 +186,11 @@ export function EmptySearch({ query }: { query?: string }) {
       icon="search"
       emoji="🔍"
       title="No results found"
-      description={query ? `We couldn't find anything for "${query}". Try different keywords.` : "Start typing to search for restaurants and dishes."}
+      description={
+        query
+          ? `We couldn't find anything for "${query}". Try different keywords.`
+          : "Start typing to search for restaurants and dishes."
+      }
       actionLabel="Clear Search"
       actionHref="/app/search"
       type="search"
@@ -206,19 +217,19 @@ export function NetworkError({ onRetry }: { onRetry?: () => void }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center justify-center py-12 px-6 text-center"
+      className="flex flex-col items-center justify-center px-6 py-12 text-center"
     >
-      <div className="w-24 h-24 bg-status-error/10 rounded-full flex items-center justify-center mb-6">
+      <div className="bg-status-error/10 mb-6 flex h-24 w-24 items-center justify-center rounded-full">
         <span className="text-5xl">📡</span>
       </div>
-      <h3 className="text-xl font-bold text-on-surface mb-2">Connection Lost</h3>
-      <p className="text-on-surface-variant text-sm mb-6 max-w-xs">
+      <h3 className="text-on-surface mb-2 text-xl font-bold">Connection Lost</h3>
+      <p className="text-on-surface-variant mb-6 max-w-xs text-sm">
         Please check your internet connection and try again.
       </p>
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-6 py-3 bg-primary text-on-primary font-bold rounded-xl hover:opacity-90 transition-colors flex items-center gap-2"
+          className="bg-primary text-on-primary flex items-center gap-2 rounded-xl px-6 py-3 font-bold transition-colors hover:opacity-90"
         >
           <span className="material-symbols-outlined">refresh</span>
           Retry

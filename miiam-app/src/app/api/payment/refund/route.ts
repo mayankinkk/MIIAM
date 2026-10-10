@@ -6,14 +6,16 @@ import { createRouteLogger } from "@/lib/logger";
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  if (!await checkIpRateLimit(ip, 5, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 5, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   const logger = createRouteLogger("payment/refund");
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -45,7 +47,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (!order.payment_id || order.payment_method !== "online") {
-      return NextResponse.json({ error: "No online payment found for this order" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No online payment found for this order" },
+        { status: 400 }
+      );
     }
 
     if (order.status === "refunded") {
@@ -83,7 +88,10 @@ export async function POST(req: NextRequest) {
       logger.error({ err: updateError }, "Failed to update order after refund");
     }
 
-    logger.info({ orderId, refundId: refund.id, amount: Number(refund.amount) / 100 }, "Refund processed");
+    logger.info(
+      { orderId, refundId: refund.id, amount: Number(refund.amount) / 100 },
+      "Refund processed"
+    );
 
     return NextResponse.json({
       success: true,

@@ -140,7 +140,11 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [riderLocation, setRiderLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [trackingInfo, setTrackingInfo] = useState<{ eta: number; distance: string; leg: "to_pickup" | "to_drop" } | null>(null);
+  const [trackingInfo, setTrackingInfo] = useState<{
+    eta: number;
+    distance: string;
+    leg: "to_pickup" | "to_drop";
+  } | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const statusRef = useRef(order?.status);
@@ -152,76 +156,103 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
     statusRef.current = order?.status;
   }, [order?.status]);
 
-  const enrichMenuItems = useCallback(async (items: OrderItemRecord[]): Promise<OrderItemRecord[]> => {
-    if (items.length === 0) return items;
-    const menuItemIds = items.map((i) => i.menu_item_id).filter(Boolean) as string[];
-    if (menuItemIds.length === 0) return items;
-    const { data: menuItems } = await supabase
-      .from("menu_items")
-      .select("id, name, price, image_url, category")
-      .in("id", menuItemIds);
-    if (menuItems) {
-      items.forEach((item) => {
-        item.menu_item = (menuItems as MenuItemRecord[]).find((mi: MenuItemRecord) => mi.id === item.menu_item_id) || null;
-      });
-    }
-    return items;
-  }, [supabase]);
-
-  const fetchOrderData = useCallback(async (id: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-
-    // Signed out: only orders this device placed are readable, via the
-    // id + phone pair captured at checkout.
-    if (!user) {
-      const ref = getGuestOrder(id);
-      if (!ref) return null;
-      try {
-        const res = await fetch(
-          `/api/orders/guest?refs=${encodeURIComponent(JSON.stringify([{ id, phone: ref.phone }]))}`
-        );
-        if (!res.ok) return null;
-        const payload = (await res.json()) as { orders?: Record<string, unknown>[] };
-        const guestOrder = payload.orders?.[0];
-        if (!guestOrder) return null;
-        const guestItems = await enrichMenuItems((guestOrder.items as OrderItemRecord[]) || []);
-        return { ...guestOrder, items: guestItems };
-      } catch (err) {
-        logger.warn({ err }, "Guest order lookup failed");
-        return null;
+  const enrichMenuItems = useCallback(
+    async (items: OrderItemRecord[]): Promise<OrderItemRecord[]> => {
+      if (items.length === 0) return items;
+      const menuItemIds = items.map((i) => i.menu_item_id).filter(Boolean) as string[];
+      if (menuItemIds.length === 0) return items;
+      const { data: menuItems } = await supabase
+        .from("menu_items")
+        .select("id, name, price, image_url, category")
+        .in("id", menuItemIds);
+      if (menuItems) {
+        items.forEach((item) => {
+          item.menu_item =
+            (menuItems as MenuItemRecord[]).find(
+              (mi: MenuItemRecord) => mi.id === item.menu_item_id
+            ) || null;
+        });
       }
-    }
+      return items;
+    },
+    [supabase]
+  );
 
-    const { data: orderData, error: orderError } = await supabase
-      .from("orders")
-      .select("id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, discount_amount, payment_method, delivery_address, special_instructions, placed_at, delivered_at")
-      .eq("id", id)
-      .eq("user_id", user.id)
-      .maybeSingle();
+  const fetchOrderData = useCallback(
+    async (id: string) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-    if (orderError || !orderData) return null;
+      // Signed out: only orders this device placed are readable, via the
+      // id + phone pair captured at checkout.
+      if (!user) {
+        const ref = getGuestOrder(id);
+        if (!ref) return null;
+        try {
+          const res = await fetch(
+            `/api/orders/guest?refs=${encodeURIComponent(JSON.stringify([{ id, phone: ref.phone }]))}`
+          );
+          if (!res.ok) return null;
+          const payload = (await res.json()) as { orders?: Record<string, unknown>[] };
+          const guestOrder = payload.orders?.[0];
+          if (!guestOrder) return null;
+          const guestItems = await enrichMenuItems((guestOrder.items as OrderItemRecord[]) || []);
+          return { ...guestOrder, items: guestItems };
+        } catch (err) {
+          logger.warn({ err }, "Guest order lookup failed");
+          return null;
+        }
+      }
 
-    const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
-      orderData.vendor_id
-        ? supabase.from("vendors").select("id, shop_name, address, phone, latitude, longitude").eq("id", orderData.vendor_id).single()
-        : Promise.resolve({ data: null }),
-      orderData.rider_id
-        ? supabase.from("riders").select("id, name, phone").eq("id", orderData.rider_id).single()
-        : Promise.resolve({ data: null }),
-      supabase.from("order_items").select("id, order_id, menu_item_id, name, quantity, price, unit_price, special_notes, status, actual_price, picked").eq("order_id", id),
-      supabase.from("rider_locations").select("lat, lng").eq("order_id", id).limit(1).maybeSingle(),
-    ]);
+      const { data: orderData, error: orderError } = await supabase
+        .from("orders")
+        .select(
+          "id, user_id, vendor_id, rider_id, status, total_amount, delivery_fee, discount_amount, payment_method, delivery_address, special_instructions, placed_at, delivered_at"
+        )
+        .eq("id", id)
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-    const items = await enrichMenuItems((itemsRes.data as OrderItemRecord[]) || []);
+      if (orderError || !orderData) return null;
 
-    return {
-      ...orderData,
-      vendor: vendorRes.data,
-      rider: riderRes.data,
-      items,
-      _location: locationRes.data,
-    };
-  }, [supabase, enrichMenuItems]);
+      const [vendorRes, riderRes, itemsRes, locationRes] = await Promise.all([
+        orderData.vendor_id
+          ? supabase
+              .from("vendors")
+              .select("id, shop_name, address, phone, latitude, longitude")
+              .eq("id", orderData.vendor_id)
+              .single()
+          : Promise.resolve({ data: null }),
+        orderData.rider_id
+          ? supabase.from("riders").select("id, name, phone").eq("id", orderData.rider_id).single()
+          : Promise.resolve({ data: null }),
+        supabase
+          .from("order_items")
+          .select(
+            "id, order_id, menu_item_id, name, quantity, price, unit_price, special_notes, status, actual_price, picked"
+          )
+          .eq("order_id", id),
+        supabase
+          .from("rider_locations")
+          .select("lat, lng")
+          .eq("order_id", id)
+          .limit(1)
+          .maybeSingle(),
+      ]);
+
+      const items = await enrichMenuItems((itemsRes.data as OrderItemRecord[]) || []);
+
+      return {
+        ...orderData,
+        vendor: vendorRes.data,
+        rider: riderRes.data,
+        items,
+        _location: locationRes.data,
+      };
+    },
+    [supabase, enrichMenuItems]
+  );
 
   const refreshOrder = useCallback(async () => {
     setIsRefreshing(true);
@@ -245,7 +276,9 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
       try {
         setLoading(true);
 
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (user && mounted) setCurrentUserId(user.id);
 
         const data = await fetchOrderData(orderId);
@@ -278,7 +311,7 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
           table: "orders",
           filter: `id=eq.${orderId}`,
         },
-        async         (payload: { new: Record<string, unknown> }) => {
+        async (payload: { new: Record<string, unknown> }) => {
           if (!payload.new || typeof payload.new !== "object") return;
           const newData = payload.new as Record<string, unknown>;
           const newStatus = newData.status as string;
@@ -303,7 +336,14 @@ export function useOrderTracking(orderId: string, supabaseClient?: SupabaseClien
             const msg = STATUS_MESSAGES[newStatus];
             if (msg) addToastRef.current(msg, "info");
 
-            const notifyStatuses = ["accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "delivered"];
+            const notifyStatuses = [
+              "accepted",
+              "preparing",
+              "ready_for_pickup",
+              "shopping",
+              "picked_up",
+              "delivered",
+            ];
             if (
               notifyStatuses.includes(newStatus) &&
               typeof window !== "undefined" &&
@@ -405,11 +445,21 @@ export function useActiveOrders(userId: string) {
     async function fetchActiveOrders() {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, user_id, vendor_id, status, total_amount, placed_at, vendor:vendors(shop_name)")
+        .select(
+          "id, user_id, vendor_id, status, total_amount, placed_at, vendor:vendors(shop_name)"
+        )
         .eq("user_id", userId)
         .in("status", [
-          "pending", "accepted", "preparing", "ready_for_pickup",
-          "shopping", "picked_up", "picking_up", "on_the_way", "arrived", "scheduled",
+          "pending",
+          "accepted",
+          "preparing",
+          "ready_for_pickup",
+          "shopping",
+          "picked_up",
+          "picking_up",
+          "on_the_way",
+          "arrived",
+          "scheduled",
         ])
         .order("created_at", { ascending: false });
 

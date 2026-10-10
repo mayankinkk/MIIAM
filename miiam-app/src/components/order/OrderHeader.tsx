@@ -10,27 +10,54 @@ interface OrderHeaderProps {
   extraActions?: React.ReactNode;
 }
 
-export default function OrderHeader({ orderId, isRefreshing, onRefresh, extraActions }: OrderHeaderProps) {
+export default function OrderHeader({
+  orderId,
+  isRefreshing,
+  onRefresh,
+  extraActions,
+}: OrderHeaderProps) {
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-2xl shadow-sm">
+      <nav className="fixed top-0 z-50 flex w-full items-center justify-between bg-[var(--color-surface-container-lowest)]/90 px-3 py-4 shadow-sm backdrop-blur-2xl sm:px-6">
         <div className="flex items-center gap-4">
-          <Link href="/app/orders" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high transition-all" aria-label="Go to orders">
+          <Link
+            href="/app/orders"
+            className="bg-surface-container hover:bg-surface-container-high flex h-10 w-10 items-center justify-center rounded-full transition-all"
+            aria-label="Go to orders"
+          >
             <span className="material-symbols-outlined text-accent">arrow_back</span>
           </Link>
-          <span className="text-2xl font-extrabold tracking-tighter text-accent">MIIAM</span>
+          <span className="text-accent text-2xl font-extrabold tracking-tighter">MIIAM</span>
         </div>
         <div className="flex items-center gap-3">
           {extraActions}
-          <button onClick={onRefresh} className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all" title="Refresh Order" aria-label="Refresh order">
-            <span className={`material-symbols-outlined text-on-surface ${isRefreshing ? "animate-spin" : ""}`}>refresh</span>
+          <button
+            onClick={onRefresh}
+            className="bg-surface-container-high flex h-10 w-10 items-center justify-center rounded-full transition-all hover:bg-[var(--color-surface-container-high)]"
+            title="Refresh Order"
+            aria-label="Refresh order"
+          >
+            <span
+              className={`material-symbols-outlined text-on-surface ${isRefreshing ? "animate-spin" : ""}`}
+            >
+              refresh
+            </span>
           </button>
-          <Link href="/app/notifications" className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high hover:bg-[var(--color-surface-container-high)] transition-all">
+          <Link
+            href="/app/notifications"
+            className="bg-surface-container-high flex h-10 w-10 items-center justify-center rounded-full transition-all hover:bg-[var(--color-surface-container-high)]"
+          >
             <span className="material-symbols-outlined text-on-surface">notifications</span>
           </Link>
         </div>
       </nav>
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'My Orders', href: '/app/orders' }, { label: `Order #${orderId.slice(0, 8).toUpperCase()}` }]} />
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/app/home" },
+          { label: "My Orders", href: "/app/orders" },
+          { label: `Order #${orderId.slice(0, 8).toUpperCase()}` },
+        ]}
+      />
     </>
   );
 }

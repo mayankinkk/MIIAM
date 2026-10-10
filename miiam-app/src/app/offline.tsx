@@ -2,29 +2,28 @@ export const dynamic = "force-static";
 
 export default function OfflinePage() {
   return (
-    <div className="min-h-screen bg-[var(--color-surface)] flex items-center justify-center p-6">
-      <div className="text-center max-w-sm">
-        <div className="w-20 h-20 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center mx-auto mb-5">
-          <span className="material-symbols-outlined text-[var(--color-accent)] text-[40px]">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface)] p-6">
+      <div className="max-w-sm text-center">
+        <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-primary)]/10">
+          <span className="material-symbols-outlined text-[40px] text-[var(--color-accent)]">
             wifi_off
           </span>
         </div>
-        <h1 className="text-xl font-extrabold text-[var(--color-on-surface)] mb-2">
+        <h1 className="mb-2 text-xl font-extrabold text-[var(--color-on-surface)]">
           You&apos;re Offline
         </h1>
-        <p className="text-sm text-[var(--color-outline)] leading-relaxed mb-8">
-          No internet connection detected. Your recent activity is still
-          available locally.
+        <p className="mb-8 text-sm leading-relaxed text-[var(--color-outline)]">
+          No internet connection detected. Your recent activity is still available locally.
         </p>
-        <div className="space-y-3 text-left mb-8">
+        <div className="mb-8 space-y-3 text-left">
           <div className="flex items-start gap-3 text-sm text-[var(--color-outline)]">
-            <span className="material-symbols-outlined text-[var(--color-accent)] text-base mt-0.5">
+            <span className="material-symbols-outlined mt-0.5 text-base text-[var(--color-accent)]">
               check_circle
             </span>
             <span>Cached orders, cart, and profile are still accessible</span>
           </div>
           <div className="flex items-start gap-3 text-sm text-[var(--color-outline)]">
-            <span className="material-symbols-outlined text-[var(--color-accent)] text-base mt-0.5">
+            <span className="material-symbols-outlined mt-0.5 text-base text-[var(--color-accent)]">
               info
             </span>
             <span>New orders will sync when you&apos;re back online</span>
@@ -33,13 +32,13 @@ export default function OfflinePage() {
         <div className="flex flex-col gap-3">
           <button
             onClick={() => window.location.reload()}
-            className="w-full py-3.5 px-6 rounded-2xl bg-[var(--color-primary)] text-on-primary text-sm font-bold hover:opacity-90 active:scale-[0.98] transition-all"
+            className="text-on-primary w-full rounded-2xl bg-[var(--color-primary)] px-6 py-3.5 text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98]"
           >
             Try Again
           </button>
           <button
             onClick={() => (window.location.href = "/")}
-            className="w-full py-3.5 px-6 rounded-2xl border border-[var(--color-border-subtle)] text-[var(--color-outline)] text-sm font-bold hover:bg-[var(--color-surface-container)] active:scale-[0.98] transition-all"
+            className="w-full rounded-2xl border border-[var(--color-border-subtle)] px-6 py-3.5 text-sm font-bold text-[var(--color-outline)] transition-all hover:bg-[var(--color-surface-container)] active:scale-[0.98]"
           >
             Go to Home
           </button>

@@ -54,11 +54,19 @@ export default function CheckoutPage() {
   useEffect(() => {
     const saved = localStorage.getItem("miiam_selected_address");
     if (saved) {
-      try { setDeliveryAddress(JSON.parse(saved)); } catch { /* corrupted data, ignore */ }
+      try {
+        setDeliveryAddress(JSON.parse(saved));
+      } catch {
+        /* corrupted data, ignore */
+      }
     }
     const allSaved = localStorage.getItem("miiam_addresses");
     if (allSaved) {
-      try { setSavedAddresses(JSON.parse(allSaved)); } catch { /* corrupted data, ignore */ }
+      try {
+        setSavedAddresses(JSON.parse(allSaved));
+      } catch {
+        /* corrupted data, ignore */
+      }
     }
 
     // Pre-fill the phone number from a previous order on this device.
@@ -88,9 +96,15 @@ export default function CheckoutPage() {
 
     async function loadServiceCharge() {
       try {
-        const { data } = await supabase.from("site_settings").select("value").eq("key", "service_charge").maybeSingle();
+        const { data } = await supabase
+          .from("site_settings")
+          .select("value")
+          .eq("key", "service_charge")
+          .maybeSingle();
         if (data?.value) setServiceCharge(Number(data.value));
-      } catch { /* use default */ }
+      } catch {
+        /* use default */
+      }
     }
     loadServiceCharge();
   }, [items, supabase]);
@@ -99,9 +113,19 @@ export default function CheckoutPage() {
   const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
   const serviceVendorIds = vendorIds.filter((id) => id !== SERVICES_VENDOR_ID);
 
-  const hasClosedVendor = serviceVendorIds.some((id) => vendorHours[id] && !isVendorOpen(vendorHours[id]).open);
+  const hasClosedVendor = serviceVendorIds.some(
+    (id) => vendorHours[id] && !isVendorOpen(vendorHours[id]).open
+  );
 
-  const { discount: computedDiscount, totalDeliveryFee, totalServiceCharge, gstAmount, packagingFee, platformFee, grand } = calculateOrderTotals({
+  const {
+    discount: computedDiscount,
+    totalDeliveryFee,
+    totalServiceCharge,
+    gstAmount,
+    packagingFee,
+    platformFee,
+    grand,
+  } = calculateOrderTotals({
     subtotal,
     tipAmount,
     serviceCharge,
@@ -132,7 +156,7 @@ export default function CheckoutPage() {
     } catch {
       setPromoCode("");
       setDiscount(0);
-        setPromoError(t.checkout.validateFailed);
+      setPromoError(t.checkout.validateFailed);
     }
     setApplyingPromo(false);
   };
@@ -168,7 +192,9 @@ export default function CheckoutPage() {
         /* keep last known discount; server re-validates at order time */
       }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subtotal, promoCode]);
 
@@ -182,8 +208,8 @@ export default function CheckoutPage() {
 
   if (!hydrated) {
     return (
-      <div className="min-h-screen bg-surface p-4" aria-label="Loading...">
-        <div className="max-w-2xl mx-auto space-y-4">
+      <div className="bg-surface min-h-screen p-4" aria-label="Loading...">
+        <div className="mx-auto max-w-2xl space-y-4">
           <Skeleton className="h-5 w-32" />
           <Skeleton className="h-28 w-full" />
           <Skeleton className="h-44 w-full" />
@@ -229,43 +255,55 @@ export default function CheckoutPage() {
     placeOrder(orderArgs)
       .then((ok) => {
         if (ok) {
-          try { window.localStorage.setItem("miiam_customer_phone", phoneE164); } catch { /* ignore */ }
+          try {
+            window.localStorage.setItem("miiam_customer_phone", phoneE164);
+          } catch {
+            /* ignore */
+          }
         }
       })
       .finally(() => setPlacing(false));
   };
 
   return (
-    <div className="min-h-screen bg-surface pb-28 md:pb-32">
+    <div className="bg-surface min-h-screen pb-28 md:pb-32">
       {/* Sticky header — Blinkit style */}
-      <header className="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md border-b border-outline-variant/60">
-        <div className="h-14 flex items-center gap-1 px-2" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
+      <header className="bg-surface-container-lowest/95 border-outline-variant/60 sticky top-0 z-30 border-b backdrop-blur-md">
+        <div
+          className="flex h-14 items-center gap-1 px-2"
+          style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+        >
           <Link
             href="/app/cart"
             aria-label="Back to cart"
-            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container-high active:scale-90 transition-all"
+            className="text-on-surface hover:bg-surface-container-high flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all active:scale-90"
           >
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <div className="flex-1 min-w-0 px-1">
-            <p className="text-[13px] font-bold text-on-surface truncate">{t.checkout.title}</p>
-            <p className="text-[11px] text-on-surface-variant truncate">{t.checkout.subtitle}</p>
+          <div className="min-w-0 flex-1 px-1">
+            <p className="text-on-surface truncate text-[13px] font-bold">{t.checkout.title}</p>
+            <p className="text-on-surface-variant truncate text-[11px]">{t.checkout.subtitle}</p>
           </div>
-          <span className="w-10 h-10 shrink-0 flex items-center justify-center text-on-surface-variant" aria-hidden="true">
+          <span
+            className="text-on-surface-variant flex h-10 w-10 shrink-0 items-center justify-center"
+            aria-hidden="true"
+          >
             <span className="material-symbols-outlined text-[20px]">lock</span>
           </span>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto">
+      <div className="mx-auto max-w-2xl">
         {items.length === 0 ? (
           <section className="px-4 py-16 text-center">
-            <span className="material-symbols-outlined text-6xl text-outline-variant/60">shopping_cart</span>
-            <h2 className="text-base font-bold text-on-surface mt-4">{t.checkout.cartEmpty}</h2>
-            <p className="text-sm text-on-surface-variant mt-1">{t.checkout.cartEmptyDesc}</p>
+            <span className="material-symbols-outlined text-outline-variant/60 text-6xl">
+              shopping_cart
+            </span>
+            <h2 className="text-on-surface mt-4 text-base font-bold">{t.checkout.cartEmpty}</h2>
+            <p className="text-on-surface-variant mt-1 text-sm">{t.checkout.cartEmptyDesc}</p>
             <Link
               href="/app/home"
-              className="inline-block mt-5 px-6 py-3 bg-primary text-on-primary rounded-xl font-black text-sm shadow-md shadow-primary/20 active:scale-95 transition-all"
+              className="bg-primary text-on-primary shadow-primary/20 mt-5 inline-block rounded-xl px-6 py-3 text-sm font-black shadow-md transition-all active:scale-95"
             >
               {t.checkout.browseMenu}
             </Link>
@@ -279,12 +317,18 @@ export default function CheckoutPage() {
             />
 
             {/* Contact phone */}
-            <section className="px-4 py-4 border-b border-outline-variant/60">
-              <label htmlFor="customer-phone" className="text-[15px] font-bold text-on-surface block">
-                {t.checkout.phoneLabel} <span className="text-status-error">{t.checkout.phoneRequired}</span>
+            <section className="border-outline-variant/60 border-b px-4 py-4">
+              <label
+                htmlFor="customer-phone"
+                className="text-on-surface block text-[15px] font-bold"
+              >
+                {t.checkout.phoneLabel}{" "}
+                <span className="text-status-error">{t.checkout.phoneRequired}</span>
               </label>
               <div className="relative mt-2.5">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant text-[18px]">call</span>
+                <span className="material-symbols-outlined text-on-surface-variant absolute top-1/2 left-3.5 -translate-y-1/2 text-[18px]">
+                  call
+                </span>
                 <input
                   id="customer-phone"
                   type="tel"
@@ -292,10 +336,13 @@ export default function CheckoutPage() {
                   autoComplete="tel"
                   maxLength={16}
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm"
+                  className="bg-surface border-outline-variant/40 focus:border-primary focus:ring-primary/15 w-full rounded-xl border py-3 pr-4 pl-10 text-sm focus:ring-2 focus:outline-none"
                   placeholder={t.checkout.phonePlaceholder}
                   value={phone}
-                  onChange={(e) => { setPhone(e.target.value); setPhoneError(false); }}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    setPhoneError(false);
+                  }}
                   aria-describedby="customer-phone-help"
                   aria-invalid={phoneError}
                 />
@@ -329,38 +376,51 @@ export default function CheckoutPage() {
                 recurringDayOfWeek={recurringDayOfWeek}
                 onRecurringDayOfWeekChange={setRecurringDayOfWeek}
                 vendorIds={vendorIds}
-                onClearSchedule={() => { setScheduledDate(""); setScheduledTime(""); setIsRecurring(false); }}
+                onClearSchedule={() => {
+                  setScheduledDate("");
+                  setScheduledTime("");
+                  setIsRecurring(false);
+                }}
               />
             )}
 
             {/* Payment method */}
-            <CheckoutPaymentMethods
-              paymentMethod={paymentMethod}
-              onChange={setPaymentMethod}
-            />
+            <CheckoutPaymentMethods paymentMethod={paymentMethod} onChange={setPaymentMethod} />
 
             {/* Closed vendor warning */}
             {hasClosedVendor && (
-              <section className="px-4 py-3 bg-status-error/10 border-b border-outline-variant/60 flex items-start gap-2">
-                <span className="material-symbols-outlined text-status-error text-[18px] mt-0.5">schedule</span>
-                <p className="text-sm font-medium text-status-error">{t.checkout.closedVendorWarning}</p>
+              <section className="bg-status-error/10 border-outline-variant/60 flex items-start gap-2 border-b px-4 py-3">
+                <span className="material-symbols-outlined text-status-error mt-0.5 text-[18px]">
+                  schedule
+                </span>
+                <p className="text-status-error text-sm font-medium">
+                  {t.checkout.closedVendorWarning}
+                </p>
               </section>
             )}
 
             {/* Promo code */}
-            <section className="px-4 py-4 border-b border-outline-variant/60">
-              <div className="flex items-center gap-2 mb-2.5">
-                <span className="material-symbols-outlined text-accent text-[20px]">local_offer</span>
-                <h2 className="text-[15px] font-bold text-on-surface">{t.checkout.promoCode}</h2>
+            <section className="border-outline-variant/60 border-b px-4 py-4">
+              <div className="mb-2.5 flex items-center gap-2">
+                <span className="material-symbols-outlined text-accent text-[20px]">
+                  local_offer
+                </span>
+                <h2 className="text-on-surface text-[15px] font-bold">{t.checkout.promoCode}</h2>
               </div>
               {promoCode ? (
-                <div className="flex items-center justify-between gap-2 px-4 py-3 bg-status-success/10 border border-status-success/30 rounded-xl">
-                  <div className="flex items-center gap-2 min-w-0">
+                <div className="bg-status-success/10 border-status-success/30 flex items-center justify-between gap-2 rounded-xl border px-4 py-3">
+                  <div className="flex min-w-0 items-center gap-2">
                     <span className="material-symbols-outlined text-accent text-lg">verified</span>
-                    <span className="text-sm font-bold text-accent truncate">{promoCode}</span>
-                    <span className="text-xs font-semibold text-accent">-₹{computedDiscount.toFixed(2)}</span>
+                    <span className="text-accent truncate text-sm font-bold">{promoCode}</span>
+                    <span className="text-accent text-xs font-semibold">
+                      -₹{computedDiscount.toFixed(2)}
+                    </span>
                   </div>
-                  <button onClick={removePromo} className="text-xs font-semibold text-on-surface-variant hover:text-on-surface shrink-0" aria-label={t.checkout.removePromo}>
+                  <button
+                    onClick={removePromo}
+                    className="text-on-surface-variant hover:text-on-surface shrink-0 text-xs font-semibold"
+                    aria-label={t.checkout.removePromo}
+                  >
                     {t.cart.remove}
                   </button>
                 </div>
@@ -369,34 +429,45 @@ export default function CheckoutPage() {
                   <input
                     id="promo-code"
                     type="text"
-                    className="flex-1 min-w-0 px-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm uppercase"
+                    className="bg-surface border-outline-variant/40 focus:border-primary focus:ring-primary/15 min-w-0 flex-1 rounded-xl border px-4 py-3 text-sm uppercase focus:ring-2 focus:outline-none"
                     placeholder={t.checkout.enterCode}
                     value={promoInput}
-                    onChange={(e) => { setPromoInput(e.target.value); setPromoError(null); }}
+                    onChange={(e) => {
+                      setPromoInput(e.target.value);
+                      setPromoError(null);
+                    }}
                     autoComplete="off"
                   />
                   <button
                     onClick={applyPromo}
                     disabled={applyingPromo || !promoInput.trim()}
-                    className="px-5 py-3 bg-primary text-on-primary rounded-xl text-sm font-black hover:bg-primary-dim active:scale-95 transition-all disabled:opacity-50 shrink-0"
+                    className="bg-primary text-on-primary hover:bg-primary-dim shrink-0 rounded-xl px-5 py-3 text-sm font-black transition-all active:scale-95 disabled:opacity-50"
                   >
                     {applyingPromo ? "..." : t.checkout.apply}
                   </button>
                 </div>
               )}
               {promoError && (
-                <p className="mt-1.5 text-xs text-status-error font-semibold" role="alert">{promoError}</p>
+                <p className="text-status-error mt-1.5 text-xs font-semibold" role="alert">
+                  {promoError}
+                </p>
               )}
             </section>
 
             {/* Special instructions */}
-            <section className="px-4 py-4 border-b border-outline-variant/60">
-              <label htmlFor="special-instructions" className="text-[15px] font-bold text-on-surface block">
-                {t.checkout.specialInstructions} <span className="text-xs font-medium text-on-surface-variant">{t.checkout.optional}</span>
+            <section className="border-outline-variant/60 border-b px-4 py-4">
+              <label
+                htmlFor="special-instructions"
+                className="text-on-surface block text-[15px] font-bold"
+              >
+                {t.checkout.specialInstructions}{" "}
+                <span className="text-on-surface-variant text-xs font-medium">
+                  {t.checkout.optional}
+                </span>
               </label>
               <textarea
                 id="special-instructions"
-                className="w-full mt-2.5 px-4 py-3 bg-surface rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15 text-sm resize-none"
+                className="bg-surface border-outline-variant/40 focus:border-primary focus:ring-primary/15 mt-2.5 w-full resize-none rounded-xl border px-4 py-3 text-sm focus:ring-2 focus:outline-none"
                 rows={2}
                 placeholder={t.checkout.specialInstructionsPlaceholder}
                 value={specialInstructions}
@@ -417,8 +488,14 @@ export default function CheckoutPage() {
               grand={grand}
               showTipSelector={showTipSelector}
               tipAmount={tipAmount}
-              onTipSelect={(amount) => { setTipAmount(amount); setShowTipSelector(false); }}
-              onSkipTip={() => { setTipAmount(0); setShowTipSelector(false); }}
+              onTipSelect={(amount) => {
+                setTipAmount(amount);
+                setShowTipSelector(false);
+              }}
+              onSkipTip={() => {
+                setTipAmount(0);
+                setShowTipSelector(false);
+              }}
               onEditTip={() => setShowTipSelector(true)}
             />
           </>
@@ -427,25 +504,33 @@ export default function CheckoutPage() {
 
       {/* Sticky bottom bar — price + Place Order (Blinkit style). Bottom nav is hidden on checkout, so the bar sits at the viewport edge. */}
       {items.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 md:left-auto md:bottom-6 md:right-6 md:max-w-md z-40 bg-surface-container-lowest border-t md:border md:rounded-2xl border-outline-variant/60 shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:shadow-xl">
+        <div className="bg-surface-container-lowest border-outline-variant/60 fixed right-0 bottom-0 left-0 z-40 border-t shadow-[0_-6px_20px_rgba(0,0,0,0.08)] md:right-6 md:bottom-6 md:left-auto md:max-w-md md:rounded-2xl md:border md:shadow-xl">
           {(showAddressWarning || phoneError) && (
-            <p className="px-4 pt-2 text-xs font-semibold text-status-error text-center" role="alert">
+            <p
+              className="text-status-error px-4 pt-2 text-center text-xs font-semibold"
+              role="alert"
+            >
               {!deliveryAddress ? t.checkout.selectAddressFirst : t.checkout.phoneInvalid}
             </p>
           )}
-          <div className="flex items-center gap-3 px-4 py-3" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}>
+          <div
+            className="flex items-center gap-3 px-4 py-3"
+            style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 12px)" }}
+          >
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant truncate">{t.checkout.totalAmount}</p>
-              <p className="text-lg font-black text-on-surface truncate">₹{grand.toFixed(2)}</p>
+              <p className="text-on-surface-variant truncate text-[10px] font-bold tracking-wider uppercase">
+                {t.checkout.totalAmount}
+              </p>
+              <p className="text-on-surface truncate text-lg font-black">₹{grand.toFixed(2)}</p>
             </div>
             <button
               onClick={handlePlaceOrder}
               disabled={placing || items.length === 0 || !deliveryAddress || hasClosedVendor}
-              className="flex-1 min-w-0 bg-primary text-on-primary py-3 rounded-xl font-black text-sm hover:bg-primary-dim active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-md shadow-primary/20"
+              className="bg-primary text-on-primary hover:bg-primary-dim shadow-primary/20 flex min-w-0 flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-black shadow-md transition-all active:scale-95 disabled:opacity-60"
             >
               {placing ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+                  <span className="border-on-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
                   {t.checkout.placingOrder}
                 </>
               ) : (
@@ -462,7 +547,12 @@ export default function CheckoutPage() {
           onSelect={(addr) => {
             setDeliveryAddress(addr);
             localStorage.setItem("miiam_selected_address", JSON.stringify(addr));
-            const existing = savedAddresses.find(a => a.street === addr.street && a.city === addr.city && a.postal_code === addr.postal_code);
+            const existing = savedAddresses.find(
+              (a) =>
+                a.street === addr.street &&
+                a.city === addr.city &&
+                a.postal_code === addr.postal_code
+            );
             if (!existing) {
               const updated = [...savedAddresses, addr];
               setSavedAddresses(updated);

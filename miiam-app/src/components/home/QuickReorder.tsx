@@ -31,7 +31,12 @@ export default function QuickReorder({ order }: QuickReorderProps) {
   const handleReorder = async () => {
     setReordering(true);
     try {
-      type ReorderItem = { menu_item_id: string; name?: string; quantity: number; unit_price: number };
+      type ReorderItem = {
+        menu_item_id: string;
+        name?: string;
+        quantity: number;
+        unit_price: number;
+      };
       const { data: orderItems } = await supabase
         .from("order_items")
         .select("menu_item_id, name, quantity, unit_price")
@@ -52,7 +57,9 @@ export default function QuickReorder({ order }: QuickReorderProps) {
 
       const menuMap = new Map<string, { name: string; image_url?: string }>();
       if (menuItems) {
-        menuItems.forEach((mi: { id: string; name: string; image_url?: string }) => menuMap.set(mi.id, mi));
+        menuItems.forEach((mi: { id: string; name: string; image_url?: string }) =>
+          menuMap.set(mi.id, mi)
+        );
       }
 
       for (const item of items) {
@@ -71,7 +78,11 @@ export default function QuickReorder({ order }: QuickReorderProps) {
       }
 
       addToast(`${items.length} item${items.length > 1 ? "s" : ""} added to cart`, "success");
-      try { navigator.vibrate?.([10, 50, 20]); } catch { /* ignore */ }
+      try {
+        navigator.vibrate?.([10, 50, 20]);
+      } catch {
+        /* ignore */
+      }
       router.push("/app/cart");
     } catch (error) {
       logger.error({ err: error }, "Home quick reorder failed");
@@ -85,11 +96,11 @@ export default function QuickReorder({ order }: QuickReorderProps) {
     <button
       onClick={handleReorder}
       disabled={reordering}
-      className="flex-shrink-0 bg-primary text-on-primary text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-transform shadow-sm disabled:opacity-60 flex items-center gap-1.5"
+      className="bg-primary text-on-primary flex flex-shrink-0 items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-bold shadow-sm transition-transform active:scale-95 disabled:opacity-60"
     >
       {reordering ? (
         <>
-          <span className="w-3 h-3 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+          <span className="border-on-primary h-3 w-3 animate-spin rounded-full border-2 border-t-transparent" />
           Adding…
         </>
       ) : (

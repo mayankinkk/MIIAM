@@ -11,13 +11,18 @@ function isValidCartItem(i: unknown): i is CartItem {
   return (
     !!i &&
     typeof i === "object" &&
-    "menu_item_id" in i && typeof (i as { menu_item_id: unknown }).menu_item_id === "string" &&
-    "vendor_id" in i && typeof (i as { vendor_id: unknown }).vendor_id === "string" &&
+    "menu_item_id" in i &&
+    typeof (i as { menu_item_id: unknown }).menu_item_id === "string" &&
+    "vendor_id" in i &&
+    typeof (i as { vendor_id: unknown }).vendor_id === "string" &&
     (i as { vendor_id: string }).vendor_id.length > 0 &&
-    "name" in i && typeof (i as { name: unknown }).name === "string" &&
-    "price" in i && typeof (i as { price: unknown }).price === "number" &&
+    "name" in i &&
+    typeof (i as { name: unknown }).name === "string" &&
+    "price" in i &&
+    typeof (i as { price: unknown }).price === "number" &&
     Number.isFinite((i as { price: number }).price) &&
-    "quantity" in i && typeof (i as { quantity: unknown }).quantity === "number" &&
+    "quantity" in i &&
+    typeof (i as { quantity: unknown }).quantity === "number" &&
     Number.isFinite((i as { quantity: number }).quantity) &&
     (i as { quantity: number }).quantity > 0
   );
@@ -101,7 +106,9 @@ export const useCartStore = create<CartStore>()(
         set({ items: currentItems.filter((i) => i.id !== id && i.menu_item_id !== id) });
 
         // Haptic feedback on remove
-        try { navigator.vibrate?.(15); } catch {}
+        try {
+          navigator.vibrate?.(15);
+        } catch {}
         if (item) {
           useToastStore.getState().addToast(`Removed ${item.name}`, "info");
         }
@@ -162,7 +169,9 @@ export const useCartStore = create<CartStore>()(
         const existing = items.find((i) => i.id === id);
         if (existing) {
           set({
-            items: items.map((i) => i.id === id ? { ...i, quantity: i.quantity + item.quantity } : i),
+            items: items.map((i) =>
+              i.id === id ? { ...i, quantity: i.quantity + item.quantity } : i
+            ),
             savedItems: saved.filter((i) => i.id !== id),
           });
         } else {

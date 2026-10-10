@@ -30,36 +30,45 @@ export default memo(function ServiceCard({ service, index = 0 }: ServiceCardProp
     >
       <Link
         href={`/app/services/${service.id}`}
-        className="block bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200"
+        className="bg-surface-container-lowest block overflow-hidden rounded-2xl shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.98]"
       >
-        <div className="relative h-32 bg-surface-container">
+        <div className="bg-surface-container relative h-32">
           <BlurImage
-            src={service.image || "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"}
+            src={
+              service.image ||
+              "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
+            }
             alt={service.name}
             fill
-            className="w-full h-full"
+            className="h-full w-full"
             sizes="(max-width: 640px) 50vw, 25vw"
             fallbackSrc="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&q=80"
           />
           {service.badge && (
-            <span className="absolute top-2 left-2 bg-primary text-on-primary text-[9px] font-black px-2 py-0.5 rounded-full shadow-sm">
+            <span className="bg-primary text-on-primary absolute top-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-black shadow-sm">
               {service.badge}
             </span>
           )}
         </div>
 
         <div className="p-3">
-          <h3 className="font-bold text-on-surface text-sm truncate">{service.name}</h3>
-          <p className="text-xs text-on-surface-variant/60 mt-0.5">{service.duration}</p>
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-sm font-black text-accent">
-              ₹{service.priceMin && service.priceMax
+          <h3 className="text-on-surface truncate text-sm font-bold">{service.name}</h3>
+          <p className="text-on-surface-variant/60 mt-0.5 text-xs">{service.duration}</p>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="text-accent text-sm font-black">
+              ₹
+              {service.priceMin && service.priceMax
                 ? `${service.priceMin}–${service.priceMax}`
                 : service.price}
             </span>
             {service.rating != null && (
               <span className="flex items-center gap-0.5 text-xs font-bold text-amber-600">
-                <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                <span
+                  className="material-symbols-outlined text-sm"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  star
+                </span>
                 {typeof service.rating === "number" ? service.rating.toFixed(1) : service.rating}
               </span>
             )}

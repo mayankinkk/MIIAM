@@ -15,15 +15,22 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
   const [toggling, setToggling] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
-      if (!user) return;
-      supabase.from("riders").select("id, is_online").eq("user_id", user.id).maybeSingle().then(({ data }: { data: { id: string; is_online: boolean | null } | null }) => {
-        if (data) {
-          setRiderId(data.id);
-          setIsOnline(data.is_online ?? true);
-        }
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
+        if (!user) return;
+        supabase
+          .from("riders")
+          .select("id, is_online")
+          .eq("user_id", user.id)
+          .maybeSingle()
+          .then(({ data }: { data: { id: string; is_online: boolean | null } | null }) => {
+            if (data) {
+              setRiderId(data.id);
+              setIsOnline(data.is_online ?? true);
+            }
+          });
       });
-    });
   }, []);
 
   const toggleOnline = async () => {
@@ -45,7 +52,7 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-4 bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-xl shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] rounded-t-[2rem]"
+      className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around rounded-t-[2rem] bg-[var(--color-surface-container-lowest)]/90 px-4 pt-4 shadow-[0px_-10px_30px_rgba(11,80,213,0.1)] backdrop-blur-xl"
       style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}
     >
       <button
@@ -55,23 +62,36 @@ export default function RiderNavBar({ active }: RiderNavBarProps) {
         aria-pressed={isOnline}
         title={isOnline ? "Go Offline" : "Go Online"}
       >
-        <span className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${isOnline ? "bg-status-success border-status-success" : "bg-[var(--color-surface-container-high)] border-[var(--color-outline-variant)]"}`}>
-          <span className={`w-2 h-2 rounded-full ${isOnline ? "bg-[var(--color-surface-container-lowest)]" : "bg-slate-400"}`} />
+        <span
+          className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${isOnline ? "bg-status-success border-status-success" : "border-[var(--color-outline-variant)] bg-[var(--color-surface-container-high)]"}`}
+        >
+          <span
+            className={`h-2 w-2 rounded-full ${isOnline ? "bg-[var(--color-surface-container-lowest)]" : "bg-slate-400"}`}
+          />
         </span>
-        <span className={`text-[8px] font-bold mt-0.5 ${isOnline ? "text-status-success" : "text-[var(--color-outline-variant)]"}`}>
+        <span
+          className={`mt-0.5 text-[8px] font-bold ${isOnline ? "text-status-success" : "text-[var(--color-outline-variant)]"}`}
+        >
           {isOnline ? "ONLINE" : "OFF"}
         </span>
       </button>
-      {navItems.map(item => (
+      {navItems.map((item) => (
         <Link
           key={item.name}
           href={item.href}
           aria-label={item.name}
           className={`flex flex-col items-center p-2 ${
-            active === item.name.toLowerCase() ? "text-brand-secondary" : "text-[var(--color-on-surface-variant)]"
+            active === item.name.toLowerCase()
+              ? "text-brand-secondary"
+              : "text-[var(--color-on-surface-variant)]"
           }`}
         >
-          <span className="material-symbols-outlined text-3xl" style={{ fontVariationSettings: active === item.name.toLowerCase() ? "'FILL' 1" : "'FILL' 0" }}>
+          <span
+            className="material-symbols-outlined text-3xl"
+            style={{
+              fontVariationSettings: active === item.name.toLowerCase() ? "'FILL' 1" : "'FILL' 0",
+            }}
+          >
             {item.icon}
           </span>
           <span className="text-[10px] font-bold">{item.name}</span>

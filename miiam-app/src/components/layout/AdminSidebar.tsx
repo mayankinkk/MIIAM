@@ -33,9 +33,7 @@ const menuGroups = [
   },
   {
     title: "Services",
-    items: [
-      { name: "All Services", href: "/admin/services", icon: "handyman" },
-    ],
+    items: [{ name: "All Services", href: "/admin/services", icon: "handyman" }],
   },
   {
     title: "Fleet",
@@ -85,32 +83,38 @@ export default function AdminSidebar() {
   const fullPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "");
 
   return (
-    <aside className={`${collapsed ? "w-[72px]" : "w-64"} bg-surface-container-lowest border-r border-outline/10 fixed h-full z-20 flex flex-col hidden md:flex shadow-2xl shadow-red-900/5 overflow-y-auto custom-scrollbar transition-all duration-300`}>
+    <aside
+      className={`${collapsed ? "w-[72px]" : "w-64"} bg-surface-container-lowest border-outline/10 custom-scrollbar fixed z-20 flex hidden h-full flex-col overflow-y-auto border-r shadow-2xl shadow-red-900/5 transition-all duration-300 md:flex`}
+    >
       {/* Header */}
-      <div className={`${collapsed ? "px-3 py-4" : "px-6 py-6"} border-b border-outline/5 flex items-center ${collapsed ? "justify-center" : "gap-3"}`}>
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary font-black shrink-0">M</div>
+      <div
+        className={`${collapsed ? "px-3 py-4" : "px-6 py-6"} border-outline/5 flex items-center border-b ${collapsed ? "justify-center" : "gap-3"}`}
+      >
+        <div className="bg-primary text-on-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-black">
+          M
+        </div>
         {!collapsed && (
-          <Link href="/admin" className="text-xl font-black tracking-tighter text-primary">
+          <Link href="/admin" className="text-primary text-xl font-black tracking-tighter">
             MIIAM <span className="text-outline-variant text-xs tracking-normal">Staff</span>
           </Link>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`${collapsed ? "mt-3" : "ml-auto"} p-1 rounded-lg hover:bg-surface-container-high transition-colors`}
+          className={`${collapsed ? "mt-3" : "ml-auto"} hover:bg-surface-container-high rounded-lg p-1 transition-colors`}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <span className="material-symbols-outlined text-sm text-on-surface-variant">
+          <span className="material-symbols-outlined text-on-surface-variant text-sm">
             {collapsed ? "chevron_right" : "chevron_left"}
           </span>
         </button>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 space-y-1 p-3">
         {menuGroups.map((group) => (
           <div key={group.title}>
             {!collapsed && (
-              <p className="text-[10px] font-black text-outline-variant uppercase tracking-[2px] px-4 py-3 mt-4 first:mt-0">
+              <p className="text-outline-variant mt-4 px-4 py-3 text-[10px] font-black tracking-[2px] uppercase first:mt-0">
                 {group.title}
               </p>
             )}
@@ -121,14 +125,14 @@ export default function AdminSidebar() {
                   key={item.name}
                   href={item.href}
                   title={collapsed ? item.name : undefined}
-                  className={`flex items-center ${collapsed ? "justify-center" : "gap-3 px-4"} py-3 rounded-xl font-bold transition-all duration-200 group ${
+                  className={`flex items-center ${collapsed ? "justify-center" : "gap-3 px-4"} group rounded-xl py-3 font-bold transition-all duration-200 ${
                     isActive
                       ? "bg-primary text-on-primary shadow-lg shadow-red-900/20"
                       : "text-on-surface-variant hover:bg-surface-subtle"
                   }`}
                 >
                   <span
-                    className={`material-symbols-outlined text-[20px] shrink-0 ${isActive ? "" : "group-hover:text-primary"}`}
+                    className={`material-symbols-outlined shrink-0 text-[20px] ${isActive ? "" : "group-hover:text-primary"}`}
                     style={{ fontVariationSettings: isActive ? "'FILL' 1" : "'FILL' 0" }}
                   >
                     {item.icon}
@@ -142,7 +146,7 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className={`${collapsed ? "p-2" : "p-4"} border-t border-outline/5`}>
+      <div className={`${collapsed ? "p-2" : "p-4"} border-outline/5 border-t`}>
         <SignOutButton collapsed={collapsed} />
       </div>
     </aside>

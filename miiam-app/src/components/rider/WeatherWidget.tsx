@@ -9,17 +9,17 @@ interface WeatherData {
 }
 
 const CONDITION_ICONS: Record<string, string> = {
-  "clear": "☀️",
+  clear: "☀️",
   "partly cloudy": "⛅",
-  "cloudy": "☁️",
-  "overcast": "☁️",
-  "rain": "🌧️",
+  cloudy: "☁️",
+  overcast: "☁️",
+  rain: "🌧️",
   "light rain": "🌦️",
   "heavy rain": "🌧️",
-  "snow": "❄️",
-  "fog": "🌫️",
-  "thunderstorm": "⛈️",
-  "drizzle": "🌦️",
+  snow: "❄️",
+  fog: "🌫️",
+  thunderstorm: "⛈️",
+  drizzle: "🌦️",
 };
 
 const WEATHER_CODES: Record<number, string> = {
@@ -82,7 +82,9 @@ export default function WeatherWidget({ className = "" }: { className?: string }
   if (loading || !weather) return null;
 
   return (
-    <div className={`bg-[var(--color-surface-container-lowest)]/90 backdrop-blur-xl rounded-xl shadow-lg px-3 py-2 flex items-center gap-2 ${className}`}>
+    <div
+      className={`flex items-center gap-2 rounded-xl bg-[var(--color-surface-container-lowest)]/90 px-3 py-2 shadow-lg backdrop-blur-xl ${className}`}
+    >
       <span className="text-xl">{weather.icon}</span>
       <div className="leading-tight">
         <p className="text-sm font-bold text-[var(--color-on-surface)]">{weather.temperature}°C</p>

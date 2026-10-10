@@ -5,7 +5,10 @@ import logger from "@/lib/logger";
 export async function GET() {
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -37,7 +40,9 @@ export async function GET() {
       return NextResponse.json({ orders: [], orderItems: {} });
     }
 
-    const userIds = [...new Set(orders.map((o: Record<string, unknown>) => o.user_id).filter(Boolean))] as string[];
+    const userIds = [
+      ...new Set(orders.map((o: Record<string, unknown>) => o.user_id).filter(Boolean)),
+    ] as string[];
     const profileMap: Record<string, { full_name: string | null; phone: string | null }> = {};
 
     if (userIds.length > 0) {
@@ -53,10 +58,15 @@ export async function GET() {
     }
 
     // No FK between orders and riders, so riders are matched by id here.
-    const riderIds = [...new Set(orders.map((o: Record<string, unknown>) => o.rider_id).filter(Boolean))] as string[];
+    const riderIds = [
+      ...new Set(orders.map((o: Record<string, unknown>) => o.rider_id).filter(Boolean)),
+    ] as string[];
     const riderMap: Record<string, { id: string; name: string | null; phone: string | null }> = {};
     if (riderIds.length > 0) {
-      const { data: riders } = await admin.from("riders").select("id, name, phone").in("id", riderIds);
+      const { data: riders } = await admin
+        .from("riders")
+        .select("id, name, phone")
+        .in("id", riderIds);
       (riders || []).forEach((r: { id: string; name: string | null; phone: string | null }) => {
         riderMap[r.id] = r;
       });
@@ -65,7 +75,10 @@ export async function GET() {
     const addressIds = orders
       .map((o: Record<string, unknown>) => o.delivery_address_id)
       .filter(Boolean) as string[];
-    const addressMap: Record<string, { street: string; city: string; state: string; postal_code: string; label?: string }> = {};
+    const addressMap: Record<
+      string,
+      { street: string; city: string; state: string; postal_code: string; label?: string }
+    > = {};
 
     if (addressIds.length > 0) {
       const { data: addresses } = await admin
@@ -73,9 +86,18 @@ export async function GET() {
         .select("id, street, city, state, postal_code, label")
         .in("id", addressIds);
       if (addresses) {
-        addresses.forEach((a: { id: string; street: string; city: string; state: string; postal_code: string; label?: string }) => {
-          addressMap[a.id] = a;
-        });
+        addresses.forEach(
+          (a: {
+            id: string;
+            street: string;
+            city: string;
+            state: string;
+            postal_code: string;
+            label?: string;
+          }) => {
+            addressMap[a.id] = a;
+          }
+        );
       }
     }
 
@@ -88,11 +110,22 @@ export async function GET() {
         .select("order_id, quantity, unit_price, menu_item:menu_items(name)")
         .in("order_id", orderIds);
       if (allItems) {
-        allItems.forEach((i: { order_id: string; quantity: number; unit_price: number; menu_item?: { name: string }[] | { name: string } | null }) => {
-          if (!itemsMap[i.order_id]) itemsMap[i.order_id] = [];
-          const menuName = Array.isArray(i.menu_item) ? i.menu_item[0]?.name : i.menu_item?.name;
-          itemsMap[i.order_id].push({ name: menuName || "Item", quantity: i.quantity, unit_price: i.unit_price });
-        });
+        allItems.forEach(
+          (i: {
+            order_id: string;
+            quantity: number;
+            unit_price: number;
+            menu_item?: { name: string }[] | { name: string } | null;
+          }) => {
+            if (!itemsMap[i.order_id]) itemsMap[i.order_id] = [];
+            const menuName = Array.isArray(i.menu_item) ? i.menu_item[0]?.name : i.menu_item?.name;
+            itemsMap[i.order_id].push({
+              name: menuName || "Item",
+              quantity: i.quantity,
+              unit_price: i.unit_price,
+            });
+          }
+        );
       }
     }
 
@@ -102,11 +135,17 @@ export async function GET() {
       return {
         ...o,
         rider,
-        customer_profile: profile ? {
-          full_name: profile.full_name,
-          phone: profile.phone || (o.customer_phone as string) || null,
-        } : (o.customer_phone ? { full_name: null, phone: o.customer_phone as string } : null),
-        customer_address: o.delivery_address_id ? addressMap[o.delivery_address_id as string] || null : null,
+        customer_profile: profile
+          ? {
+              full_name: profile.full_name,
+              phone: profile.phone || (o.customer_phone as string) || null,
+            }
+          : o.customer_phone
+            ? { full_name: null, phone: o.customer_phone as string }
+            : null,
+        customer_address: o.delivery_address_id
+          ? addressMap[o.delivery_address_id as string] || null
+          : null,
       };
     });
 
@@ -115,7 +154,10 @@ export async function GET() {
       orderItems: itemsMap,
     });
   } catch (error) {
-    logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Admin orders API error");
+    logger.error(
+      { err: error instanceof Error ? error : new Error(String(error)) },
+      "Admin orders API error"
+    );
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

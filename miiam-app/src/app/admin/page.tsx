@@ -7,8 +7,22 @@ import logger from "@/lib/logger";
 import { useKeyboardShortcuts } from "@/lib/hooks/useKeyboardShortcuts";
 
 const modules = [
-  { id: "foods", title: "Foods", icon: "restaurant", color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]", route: "/admin/foods", type: "food" },
-  { id: "services", title: "Services", icon: "home_repair_service", color: "bg-accent/10 text-accent", route: "/admin/services", type: "services" },
+  {
+    id: "foods",
+    title: "Foods",
+    icon: "restaurant",
+    color: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
+    route: "/admin/foods",
+    type: "food",
+  },
+  {
+    id: "services",
+    title: "Services",
+    icon: "home_repair_service",
+    color: "bg-accent/10 text-accent",
+    route: "/admin/services",
+    type: "services",
+  },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -22,14 +36,17 @@ export default function AdminDashboard() {
 
   // Keyboard shortcuts
   useKeyboardShortcuts({
-    "g": () => router.push("/admin"),
-    "o": () => router.push("/admin/orders"),
-    "r": () => router.push("/admin/vendors"),
-    "s": () => router.push("/admin/services"),
-    "m": () => router.push("/admin/foods/menu-items"),
-    "u": () => router.push("/admin/users"),
-    "b": () => router.push("/admin/banners"),
-    "?": () => alert("Shortcuts: G=Dashboard, O=Orders, R=Restaurants, S=Services, M=Menu, U=Users, B=Banners"),
+    g: () => router.push("/admin"),
+    o: () => router.push("/admin/orders"),
+    r: () => router.push("/admin/vendors"),
+    s: () => router.push("/admin/services"),
+    m: () => router.push("/admin/foods/menu-items"),
+    u: () => router.push("/admin/users"),
+    b: () => router.push("/admin/banners"),
+    "?": () =>
+      alert(
+        "Shortcuts: G=Dashboard, O=Orders, R=Restaurants, S=Services, M=Menu, U=Users, B=Banners"
+      ),
   });
 
   const [loading, setLoading] = useState(true);
@@ -53,11 +70,40 @@ export default function AdminDashboard() {
     completedBookings: 0,
     cancelledBookings: 0,
   });
-  const [categoryRevenue, setCategoryRevenue] = useState<Record<string, { revenue: number; orders: number }>>({});
-  const [recentOrders, setRecentOrders] = useState<{ id: string; total_amount: number | null; status: string; placed_at: string; vendor_id: string }[]>([]);
-  const [recentBookings, setRecentBookings] = useState<{ id: string; service_type: string; status: string; amount: number | null; created_at: string }[]>([]);
-  const [recentVendors, setRecentVendors] = useState<{ id: string; shop_name: string; owner_name: string | null; type: string | null; status: string; created_at: string }[]>([]);
-  const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; message: string; amount: number | null; time: string }[]>([]);
+  const [categoryRevenue, setCategoryRevenue] = useState<
+    Record<string, { revenue: number; orders: number }>
+  >({});
+  const [recentOrders, setRecentOrders] = useState<
+    {
+      id: string;
+      total_amount: number | null;
+      status: string;
+      placed_at: string;
+      vendor_id: string;
+    }[]
+  >([]);
+  const [recentBookings, setRecentBookings] = useState<
+    {
+      id: string;
+      service_type: string;
+      status: string;
+      amount: number | null;
+      created_at: string;
+    }[]
+  >([]);
+  const [recentVendors, setRecentVendors] = useState<
+    {
+      id: string;
+      shop_name: string;
+      owner_name: string | null;
+      type: string | null;
+      status: string;
+      created_at: string;
+    }[]
+  >([]);
+  const [recentActivity, setRecentActivity] = useState<
+    { id: string; type: string; message: string; amount: number | null; time: string }[]
+  >([]);
   const [dbStatus, setDbStatus] = useState<"checking" | "ok" | "missing" | "error" | null>(null);
   const [migrating, setMigrating] = useState(false);
   const [migrateMsg, setMigrateMsg] = useState("");
@@ -74,22 +120,35 @@ export default function AdminDashboard() {
       .on("postgres_changes", { event: "UPDATE", schema: "public", table: "orders" }, () => {
         loadDashboardData();
       })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "service_bookings" }, () => {
-        loadDashboardData();
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "service_bookings" }, () => {
-        loadDashboardData();
-      })
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "service_bookings" },
+        () => {
+          loadDashboardData();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "service_bookings" },
+        () => {
+          loadDashboardData();
+        }
+      )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const checkDbHealth = async () => {
     setDbStatus("checking");
     try {
       const res = await fetch("/api/admin/run-migration");
-      if (res.status === 403 || res.status === 401) { setDbStatus(null); return; }
+      if (res.status === 403 || res.status === 401) {
+        setDbStatus(null);
+        return;
+      }
       const data = await res.json();
       setDbStatus(data.tableExists ? "ok" : "missing");
     } catch {
@@ -130,26 +189,66 @@ export default function AdminDashboard() {
       }
       const { orders, vendors, riders, users, bookings } = await res.json();
 
-      const totalRevenue = orders.filter((o: { status: string; total_amount: number | null }) => o.status === "delivered").reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0);
-      const ordersToday = orders.filter((o: { placed_at: string }) => new Date(o.placed_at) >= today).length;
-      const pendingOrders = orders.filter((o: { status: string }) => ["pending", "accepted", "preparing", "ready_for_pickup", "shopping", "picked_up", "on_the_way"].includes(o.status)).length;
-      const cancelledOrders = orders.filter((o: { status: string }) => o.status === "cancelled").length;
+      const totalRevenue = orders
+        .filter((o: { status: string; total_amount: number | null }) => o.status === "delivered")
+        .reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0);
+      const ordersToday = orders.filter(
+        (o: { placed_at: string }) => new Date(o.placed_at) >= today
+      ).length;
+      const pendingOrders = orders.filter((o: { status: string }) =>
+        [
+          "pending",
+          "accepted",
+          "preparing",
+          "ready_for_pickup",
+          "shopping",
+          "picked_up",
+          "on_the_way",
+        ].includes(o.status)
+      ).length;
+      const cancelledOrders = orders.filter(
+        (o: { status: string }) => o.status === "cancelled"
+      ).length;
       const activeVendors = vendors.filter((v: { status: string }) => v.status === "active").length;
       const onlineRiders = riders.filter((r: { status: string }) => r.status === "active").length;
       const totalUsers = users.length;
-      const newUsersToday = users.filter((u: { created_at: string }) => new Date(u.created_at) >= today).length;
-      const avgOrderValue = orders.filter((o: { status: string }) => o.status === "delivered").length > 0
-        ? totalRevenue / orders.filter((o: { status: string }) => o.status === "delivered").length
-        : 0;
+      const newUsersToday = users.filter(
+        (u: { created_at: string }) => new Date(u.created_at) >= today
+      ).length;
+      const avgOrderValue =
+        orders.filter((o: { status: string }) => o.status === "delivered").length > 0
+          ? totalRevenue / orders.filter((o: { status: string }) => o.status === "delivered").length
+          : 0;
 
-      setStats({ totalRevenue, ordersToday, totalOrders: orders.length, activeVendors, onlineRiders, pendingOrders, totalUsers, newUsersToday, cancelledOrders, avgOrderValue });
+      setStats({
+        totalRevenue,
+        ordersToday,
+        totalOrders: orders.length,
+        activeVendors,
+        onlineRiders,
+        pendingOrders,
+        totalUsers,
+        newUsersToday,
+        cancelledOrders,
+        avgOrderValue,
+      });
       setRecentOrders(orders.slice(0, 8));
 
       // Service bookings stats (separate vertical)
-      const safeBookings: { id: string; service_type: string; status: string; amount: number | null; created_at: string }[] = Array.isArray(bookings) ? bookings : [];
-      const svcRevenue = safeBookings.filter((b) => b.status === "completed").reduce((s, b) => s + (b.amount || 0), 0);
+      const safeBookings: {
+        id: string;
+        service_type: string;
+        status: string;
+        amount: number | null;
+        created_at: string;
+      }[] = Array.isArray(bookings) ? bookings : [];
+      const svcRevenue = safeBookings
+        .filter((b) => b.status === "completed")
+        .reduce((s, b) => s + (b.amount || 0), 0);
       const svcToday = safeBookings.filter((b) => new Date(b.created_at) >= today).length;
-      const svcPending = safeBookings.filter((b) => ["pending", "confirmed", "in_progress"].includes(b.status)).length;
+      const svcPending = safeBookings.filter((b) =>
+        ["pending", "confirmed", "in_progress"].includes(b.status)
+      ).length;
       const svcCompleted = safeBookings.filter((b) => b.status === "completed").length;
       const svcCancelled = safeBookings.filter((b) => b.status === "cancelled").length;
       setServiceStats({
@@ -164,18 +263,24 @@ export default function AdminDashboard() {
       setRecentVendors(vendors.slice(0, 8));
 
       // Build activity feed from recent orders
-      const activity = orders.slice(0, 20).map((o: { id: string; status: string; total_amount: number | null; placed_at: string }) => ({
-        id: o.id,
-        type: o.status,
-        message: `Order #${o.id.slice(0, 6).toUpperCase()} ${o.status}`,
-        amount: o.total_amount,
-        time: o.placed_at,
-      }));
+      const activity = orders
+        .slice(0, 20)
+        .map(
+          (o: { id: string; status: string; total_amount: number | null; placed_at: string }) => ({
+            id: o.id,
+            type: o.status,
+            message: `Order #${o.id.slice(0, 6).toUpperCase()} ${o.status}`,
+            amount: o.total_amount,
+            time: o.placed_at,
+          })
+        );
       setRecentActivity(activity);
 
       // Build vendor map for type lookup
       const vendorMap: Record<string, string> = {};
-      vendors.forEach((v: { id: string; type: string | null }) => { vendorMap[v.id] = v.type || "food"; });
+      vendors.forEach((v: { id: string; type: string | null }) => {
+        vendorMap[v.id] = v.type || "food";
+      });
 
       // Calculate revenue by category
       const catRev: Record<string, { revenue: number; orders: number }> = {};
@@ -197,22 +302,31 @@ export default function AdminDashboard() {
     }
   };
 
-  const maxCatRevenue = Math.max(...Object.values(categoryRevenue).map(c => c.revenue), 1);
+  const maxCatRevenue = Math.max(...Object.values(categoryRevenue).map((c) => c.revenue), 1);
 
   const getCategoryLabel = (type: string) => {
-    const m = modules.find(mod => mod.type === type || (type === "flower" && mod.type === "flowers"));
+    const m = modules.find(
+      (mod) => mod.type === type || (type === "flower" && mod.type === "flowers")
+    );
     return m?.title || type;
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="space-y-8 p-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Super Admin Dashboard</h1>
-          <p className="text-[var(--color-outline)] text-sm mt-1">Real-time overview of MIIAM platform</p>
+          <h1 className="text-3xl font-black text-[var(--color-on-surface)]">
+            Super Admin Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-[var(--color-outline)]">
+            Real-time overview of MIIAM platform
+          </p>
         </div>
-        <button onClick={loadDashboardData} className="flex items-center gap-2 px-4 py-2 bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] rounded-xl text-sm font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]">
+        <button
+          onClick={loadDashboardData}
+          className="flex items-center gap-2 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-2 text-sm font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
+        >
           <span className="material-symbols-outlined text-sm">refresh</span>
           Refresh
         </button>
@@ -220,158 +334,247 @@ export default function AdminDashboard() {
 
       {/* DB Health Banner */}
       {dbStatus === "missing" && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <span className="material-symbols-outlined text-red-500 text-3xl">table_chart</span>
+        <div className="flex flex-col items-start gap-4 rounded-2xl border border-red-200 bg-red-50 p-5 sm:flex-row sm:items-center dark:border-red-800 dark:bg-red-900/20">
+          <span className="material-symbols-outlined text-3xl text-red-500">table_chart</span>
           <div className="flex-1">
-            <p className="font-black text-red-700 dark:text-red-300">Service Bookings table is missing</p>
-            <p className="text-sm text-red-600 dark:text-red-400 mt-0.5">This is why bookings are failing with a 500 error. Click the button to create the table automatically.</p>
-            {migrateMsg && <p className="text-sm font-bold mt-2">{migrateMsg}</p>}
+            <p className="font-black text-red-700 dark:text-red-300">
+              Service Bookings table is missing
+            </p>
+            <p className="mt-0.5 text-sm text-red-600 dark:text-red-400">
+              This is why bookings are failing with a 500 error. Click the button to create the
+              table automatically.
+            </p>
+            {migrateMsg && <p className="mt-2 text-sm font-bold">{migrateMsg}</p>}
           </div>
           <button
             onClick={runMigration}
             disabled={migrating}
-            className="px-5 py-2.5 bg-red-600 text-white rounded-xl font-bold text-sm hover:bg-red-700 disabled:opacity-60 flex items-center gap-2 whitespace-nowrap"
+            className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold whitespace-nowrap text-white hover:bg-red-700 disabled:opacity-60"
           >
-            {migrating ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <span className="material-symbols-outlined text-sm">build</span>}
+            {migrating ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+            ) : (
+              <span className="material-symbols-outlined text-sm">build</span>
+            )}
             {migrating ? "Creating tables..." : "Fix Database Now"}
           </button>
         </div>
       )}
       {dbStatus === "ok" && migrateMsg && (
-        <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-4">
-          <p className="text-green-700 dark:text-green-300 font-bold text-sm">{migrateMsg}</p>
+        <div className="rounded-2xl border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
+          <p className="text-sm font-bold text-green-700 dark:text-green-300">{migrateMsg}</p>
         </div>
       )}
 
       {loading ? (
         <div className="flex items-center justify-center py-24">
-          <div className="w-10 h-10 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--color-primary)] border-t-transparent" />
         </div>
       ) : (
         <>
           {/* Food & Groceries KPIs */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-[var(--color-primary)] text-xl">restaurant</span>
-              <h2 className="text-lg font-black text-[var(--color-on-surface)]">Food & Groceries</h2>
-              <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Orders</span>
+            <div className="mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-xl text-[var(--color-primary)]">
+                restaurant
+              </span>
+              <h2 className="text-lg font-black text-[var(--color-on-surface)]">
+                Food & Groceries
+              </h2>
+              <span className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                Orders
+              </span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary)]/70 text-on-primary p-5 rounded-2xl shadow-lg col-span-2">
-                <p className="text-xs font-bold opacity-80 uppercase tracking-wider">Food Revenue</p>
-                <p className="text-3xl font-black mt-2">₹{stats.totalRevenue.toLocaleString()}</p>
-                <p className="text-xs opacity-60 mt-1">{stats.totalOrders} total orders</p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+              <div className="text-on-primary col-span-2 rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary)]/70 p-5 shadow-lg">
+                <p className="text-xs font-bold tracking-wider uppercase opacity-80">
+                  Food Revenue
+                </p>
+                <p className="mt-2 text-3xl font-black">₹{stats.totalRevenue.toLocaleString()}</p>
+                <p className="mt-1 text-xs opacity-60">{stats.totalOrders} total orders</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Orders Today</p>
-                <p className="text-3xl font-black text-[var(--color-on-surface)] mt-2">{stats.ordersToday}</p>
-                <p className="text-xs text-accent mt-1">since midnight</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Orders Today
+                </p>
+                <p className="mt-2 text-3xl font-black text-[var(--color-on-surface)]">
+                  {stats.ordersToday}
+                </p>
+                <p className="text-accent mt-1 text-xs">since midnight</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Pending</p>
-                <p className="text-3xl font-black text-amber-600 mt-2">{stats.pendingOrders}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">active orders</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Pending
+                </p>
+                <p className="mt-2 text-3xl font-black text-amber-600">{stats.pendingOrders}</p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">active orders</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Live Vendors</p>
-                <p className="text-3xl font-black text-green-600 mt-2">{stats.activeVendors}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">active partners</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Live Vendors
+                </p>
+                <p className="mt-2 text-3xl font-black text-green-600">{stats.activeVendors}</p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">active partners</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Cancelled</p>
-                <p className="text-3xl font-black text-red-600 mt-2">{stats.cancelledOrders}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">{stats.totalOrders > 0 ? ((stats.cancelledOrders / stats.totalOrders) * 100).toFixed(1) : 0}% rate</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Cancelled
+                </p>
+                <p className="mt-2 text-3xl font-black text-red-600">{stats.cancelledOrders}</p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                  {stats.totalOrders > 0
+                    ? ((stats.cancelledOrders / stats.totalOrders) * 100).toFixed(1)
+                    : 0}
+                  % rate
+                </p>
               </div>
             </div>
           </div>
 
           {/* Services KPIs */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="material-symbols-outlined text-accent text-xl">home_repair_service</span>
+            <div className="mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-accent text-xl">
+                home_repair_service
+              </span>
               <h2 className="text-lg font-black text-[var(--color-on-surface)]">Home Services</h2>
-              <span className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Bookings</span>
+              <span className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                Bookings
+              </span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              <div className="bg-gradient-to-br from-accent to-accent/70 text-white p-5 rounded-2xl shadow-lg shadow-red-900/20 col-span-2">
-                <p className="text-xs font-bold opacity-80 uppercase tracking-wider">Services Revenue</p>
-                <p className="text-3xl font-black mt-2">₹{serviceStats.totalRevenue.toLocaleString()}</p>
-                <p className="text-xs opacity-60 mt-1">{serviceStats.totalBookings} total bookings</p>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+              <div className="from-accent to-accent/70 col-span-2 rounded-2xl bg-gradient-to-br p-5 text-white shadow-lg shadow-red-900/20">
+                <p className="text-xs font-bold tracking-wider uppercase opacity-80">
+                  Services Revenue
+                </p>
+                <p className="mt-2 text-3xl font-black">
+                  ₹{serviceStats.totalRevenue.toLocaleString()}
+                </p>
+                <p className="mt-1 text-xs opacity-60">
+                  {serviceStats.totalBookings} total bookings
+                </p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Bookings Today</p>
-                <p className="text-3xl font-black text-[var(--color-on-surface)] mt-2">{serviceStats.bookingsToday}</p>
-                <p className="text-xs text-accent mt-1">since midnight</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Bookings Today
+                </p>
+                <p className="mt-2 text-3xl font-black text-[var(--color-on-surface)]">
+                  {serviceStats.bookingsToday}
+                </p>
+                <p className="text-accent mt-1 text-xs">since midnight</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Pending</p>
-                <p className="text-3xl font-black text-amber-600 mt-2">{serviceStats.pendingBookings}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">active bookings</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Pending
+                </p>
+                <p className="mt-2 text-3xl font-black text-amber-600">
+                  {serviceStats.pendingBookings}
+                </p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">active bookings</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Completed</p>
-                <p className="text-3xl font-black text-green-600 mt-2">{serviceStats.completedBookings}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">all time</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Completed
+                </p>
+                <p className="mt-2 text-3xl font-black text-green-600">
+                  {serviceStats.completedBookings}
+                </p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">all time</p>
               </div>
-              <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-wider">Cancelled</p>
-                <p className="text-3xl font-black text-red-600 mt-2">{serviceStats.cancelledBookings}</p>
-                <p className="text-xs text-[var(--color-outline-variant)] mt-1">{serviceStats.totalBookings > 0 ? ((serviceStats.cancelledBookings / serviceStats.totalBookings) * 100).toFixed(1) : 0}% rate</p>
+              <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+                <p className="text-xs font-bold tracking-wider text-[var(--color-outline-variant)] uppercase">
+                  Cancelled
+                </p>
+                <p className="mt-2 text-3xl font-black text-red-600">
+                  {serviceStats.cancelledBookings}
+                </p>
+                <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                  {serviceStats.totalBookings > 0
+                    ? ((serviceStats.cancelledBookings / serviceStats.totalBookings) * 100).toFixed(
+                        1
+                      )
+                    : 0}
+                  % rate
+                </p>
               </div>
             </div>
           </div>
 
           {/* System Health */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
                 <span className="material-symbols-outlined text-accent text-lg">group</span>
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Total Users</p>
+                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                  Total Users
+                </p>
               </div>
-              <p className="text-2xl font-black text-[var(--color-on-surface)]">{stats.totalUsers}</p>
-              <p className="text-xs text-green-500 mt-1">+{stats.newUsersToday} today</p>
+              <p className="text-2xl font-black text-[var(--color-on-surface)]">
+                {stats.totalUsers}
+              </p>
+              <p className="mt-1 text-xs text-green-500">+{stats.newUsersToday} today</p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="material-symbols-outlined text-green-500 text-lg">paid</span>
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Avg Food Order</p>
+            <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="material-symbols-outlined text-lg text-green-500">paid</span>
+                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                  Avg Food Order
+                </p>
               </div>
-              <p className="text-2xl font-black text-[var(--color-on-surface)]">₹{stats.avgOrderValue.toFixed(0)}</p>
-              <p className="text-xs text-[var(--color-outline-variant)] mt-1">per delivered order</p>
+              <p className="text-2xl font-black text-[var(--color-on-surface)]">
+                ₹{stats.avgOrderValue.toFixed(0)}
+              </p>
+              <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                per delivered order
+              </p>
             </div>
-            <div className="bg-[var(--color-surface-container-lowest)] border border-[var(--color-border-subtle)] p-5 rounded-2xl shadow-sm">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-5 shadow-sm">
+              <div className="mb-2 flex items-center gap-2">
                 <span className="material-symbols-outlined text-accent text-lg">two_wheeler</span>
-                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Riders Online</p>
+                <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                  Riders Online
+                </p>
               </div>
-              <p className="text-2xl font-black text-[var(--color-on-surface)]">{stats.onlineRiders}</p>
-              <p className="text-xs text-[var(--color-outline-variant)] mt-1">active riders</p>
+              <p className="text-2xl font-black text-[var(--color-on-surface)]">
+                {stats.onlineRiders}
+              </p>
+              <p className="mt-1 text-xs text-[var(--color-outline-variant)]">active riders</p>
             </div>
           </div>
 
           {/* Category Revenue Breakdown */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-            <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-6">Revenue by Category</h2>
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <h2 className="mb-6 text-lg font-black text-[var(--color-on-surface)]">
+              Revenue by Category
+            </h2>
             {Object.keys(categoryRevenue).length === 0 ? (
-              <p className="text-[var(--color-outline-variant)] text-center py-8">No order data yet</p>
+              <p className="py-8 text-center text-[var(--color-outline-variant)]">
+                No order data yet
+              </p>
             ) : (
               <div className="space-y-5">
                 {Object.entries(categoryRevenue)
                   .sort((a, b) => b[1].revenue - a[1].revenue)
                   .map(([type, data]) => (
                     <div key={type} className="flex items-center gap-4">
-                      <div className="w-28 text-sm font-bold text-[var(--color-on-surface)] capitalize">{getCategoryLabel(type)}</div>
-                      <div className="flex-1 bg-[var(--color-surface-container)] rounded-full h-4 overflow-hidden">
+                      <div className="w-28 text-sm font-bold text-[var(--color-on-surface)] capitalize">
+                        {getCategoryLabel(type)}
+                      </div>
+                      <div className="h-4 flex-1 overflow-hidden rounded-full bg-[var(--color-surface-container)]">
                         <div
                           className={`h-full ${categoryColors[type] || "bg-slate-400"} rounded-full transition-all duration-500`}
                           style={{ width: `${(data.revenue / maxCatRevenue) * 100}%` }}
                         />
                       </div>
                       <div className="w-28 text-right">
-                        <span className="font-bold text-[var(--color-on-surface)] text-sm">₹{data.revenue.toLocaleString()}</span>
+                        <span className="text-sm font-bold text-[var(--color-on-surface)]">
+                          ₹{data.revenue.toLocaleString()}
+                        </span>
                       </div>
                       <div className="w-20 text-right">
-                        <span className="text-xs text-[var(--color-outline-variant)]">{data.orders} orders</span>
+                        <span className="text-xs text-[var(--color-outline-variant)]">
+                          {data.orders} orders
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -379,45 +582,83 @@ export default function AdminDashboard() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* Recent Food Orders */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
+            <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+              <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-primary)] text-lg">restaurant</span>
-                  <h2 className="text-lg font-black text-[var(--color-on-surface)]">Recent Food Orders</h2>
+                  <span className="material-symbols-outlined text-lg text-[var(--color-primary)]">
+                    restaurant
+                  </span>
+                  <h2 className="text-lg font-black text-[var(--color-on-surface)]">
+                    Recent Food Orders
+                  </h2>
                 </div>
-                <button onClick={() => router.push("/admin/orders")} className="text-sm font-bold text-[var(--color-primary)]">View All →</button>
+                <button
+                  onClick={() => router.push("/admin/orders")}
+                  className="text-sm font-bold text-[var(--color-primary)]"
+                >
+                  View All →
+                </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[var(--color-border-subtle)]">
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Order ID</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Amount</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Status</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Date</th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Order ID
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Amount
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Status
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Date
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {recentOrders.map(order => (
-                      <tr key={order.id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
-                        <td className="py-3 font-bold text-[var(--color-on-surface)]">{order.id.slice(0, 8).toUpperCase()}</td>
-                        <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{order.total_amount?.toFixed(0)}</td>
-                        <td className="py-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                            order.status === "delivered" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                            order.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                            order.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                            "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
-                          }`}>{order.status}</span>
+                    {recentOrders.map((order) => (
+                      <tr
+                        key={order.id}
+                        className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]"
+                      >
+                        <td className="py-3 font-bold text-[var(--color-on-surface)]">
+                          {order.id.slice(0, 8).toUpperCase()}
                         </td>
-                        <td className="py-3 text-[var(--color-outline-variant)]">{new Date(order.placed_at).toLocaleDateString()}</td>
+                        <td className="py-3 font-bold text-[var(--color-on-surface)]">
+                          ₹{order.total_amount?.toFixed(0)}
+                        </td>
+                        <td className="py-3">
+                          <span
+                            className={`rounded-full px-2 py-1 text-xs font-bold ${
+                              order.status === "delivered"
+                                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                                : order.status === "cancelled"
+                                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                                  : order.status === "pending"
+                                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                                    : "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
+                            }`}
+                          >
+                            {order.status}
+                          </span>
+                        </td>
+                        <td className="py-3 text-[var(--color-outline-variant)]">
+                          {new Date(order.placed_at).toLocaleDateString()}
+                        </td>
                       </tr>
                     ))}
                     {recentOrders.length === 0 && (
                       <tr>
-                        <td colSpan={4} className="py-8 text-center text-[var(--color-outline-variant)]">No orders yet</td>
+                        <td
+                          colSpan={4}
+                          className="py-8 text-center text-[var(--color-outline-variant)]"
+                        >
+                          No orders yet
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -426,45 +667,87 @@ export default function AdminDashboard() {
             </div>
 
             {/* Recent Service Bookings */}
-            <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
+            <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+              <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-accent text-lg">home_repair_service</span>
-                  <h2 className="text-lg font-black text-[var(--color-on-surface)]">Recent Service Bookings</h2>
+                  <span className="material-symbols-outlined text-accent text-lg">
+                    home_repair_service
+                  </span>
+                  <h2 className="text-lg font-black text-[var(--color-on-surface)]">
+                    Recent Service Bookings
+                  </h2>
                 </div>
-                <button onClick={() => router.push("/admin/services")} className="text-sm font-bold text-[var(--color-primary)]">View All →</button>
+                <button
+                  onClick={() => router.push("/admin/services")}
+                  className="text-sm font-bold text-[var(--color-primary)]"
+                >
+                  View All →
+                </button>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-[var(--color-border-subtle)]">
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Booking ID</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Service</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Amount</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Status</th>
-                      <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Date</th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Booking ID
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Service
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Amount
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Status
+                      </th>
+                      <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                        Date
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {recentBookings.map(booking => (
-                      <tr key={booking.id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
-                        <td className="py-3 font-bold text-[var(--color-on-surface)]">{booking.id.slice(0, 8).toUpperCase()}</td>
-                        <td className="py-3 capitalize text-[var(--color-on-surface-variant)]">{booking.service_type || "—"}</td>
-                        <td className="py-3 font-bold text-[var(--color-on-surface)]">₹{booking.amount?.toFixed(0) || 0}</td>
-                        <td className="py-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                            booking.status === "completed" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                            booking.status === "cancelled" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                            booking.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                            "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
-                          }`}>{booking.status}</span>
+                    {recentBookings.map((booking) => (
+                      <tr
+                        key={booking.id}
+                        className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]"
+                      >
+                        <td className="py-3 font-bold text-[var(--color-on-surface)]">
+                          {booking.id.slice(0, 8).toUpperCase()}
                         </td>
-                        <td className="py-3 text-[var(--color-outline-variant)]">{new Date(booking.created_at).toLocaleDateString()}</td>
+                        <td className="py-3 text-[var(--color-on-surface-variant)] capitalize">
+                          {booking.service_type || "—"}
+                        </td>
+                        <td className="py-3 font-bold text-[var(--color-on-surface)]">
+                          ₹{booking.amount?.toFixed(0) || 0}
+                        </td>
+                        <td className="py-3">
+                          <span
+                            className={`rounded-full px-2 py-1 text-xs font-bold ${
+                              booking.status === "completed"
+                                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                                : booking.status === "cancelled"
+                                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                                  : booking.status === "pending"
+                                    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                                    : "bg-deal/10 text-deal dark:bg-deal/20 dark:text-deal"
+                            }`}
+                          >
+                            {booking.status}
+                          </span>
+                        </td>
+                        <td className="py-3 text-[var(--color-outline-variant)]">
+                          {new Date(booking.created_at).toLocaleDateString()}
+                        </td>
                       </tr>
                     ))}
                     {recentBookings.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center text-[var(--color-outline-variant)]">No bookings yet</td>
+                        <td
+                          colSpan={5}
+                          className="py-8 text-center text-[var(--color-outline-variant)]"
+                        >
+                          No bookings yet
+                        </td>
                       </tr>
                     )}
                   </tbody>
@@ -474,25 +757,43 @@ export default function AdminDashboard() {
           </div>
 
           {/* Recent Activity Feed */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-            <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-4">Recent Activity</h2>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-black text-[var(--color-on-surface)]">
+              Recent Activity
+            </h2>
+            <div className="max-h-96 space-y-3 overflow-y-auto">
               {recentActivity.length === 0 ? (
-                <p className="text-[var(--color-outline-variant)] text-center py-8">No activity yet</p>
+                <p className="py-8 text-center text-[var(--color-outline-variant)]">
+                  No activity yet
+                </p>
               ) : (
                 recentActivity.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0">
-                    <span className={`w-2 h-2 rounded-full ${
-                      item.type === "delivered" ? "bg-green-500" :
-                      item.type === "cancelled" ? "bg-red-500" :
-                      item.type === "pending" ? "bg-amber-500" :
-                      "bg-deal"
-                    }`}></span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-[var(--color-on-surface)] truncate">{item.message}</p>
-                      <p className="text-xs text-[var(--color-outline-variant)]">{new Date(item.time).toLocaleTimeString()}</p>
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 border-b border-slate-50 py-2 last:border-0"
+                  >
+                    <span
+                      className={`h-2 w-2 rounded-full ${
+                        item.type === "delivered"
+                          ? "bg-green-500"
+                          : item.type === "cancelled"
+                            ? "bg-red-500"
+                            : item.type === "pending"
+                              ? "bg-amber-500"
+                              : "bg-deal"
+                      }`}
+                    ></span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-[var(--color-on-surface)]">
+                        {item.message}
+                      </p>
+                      <p className="text-xs text-[var(--color-outline-variant)]">
+                        {new Date(item.time).toLocaleTimeString()}
+                      </p>
                     </div>
-                    <span className="text-sm font-bold text-[var(--color-on-surface)]">₹{item.amount?.toFixed(0) || 0}</span>
+                    <span className="text-sm font-bold text-[var(--color-on-surface)]">
+                      ₹{item.amount?.toFixed(0) || 0}
+                    </span>
                   </div>
                 ))
               )}
@@ -500,44 +801,82 @@ export default function AdminDashboard() {
           </div>
 
           {/* Recent Vendors */}
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-black text-[var(--color-on-surface)]">Recent Vendors</h2>
-              <button onClick={() => router.push("/admin/vendors")} className="text-sm font-bold text-[var(--color-primary)]">View All →</button>
+              <button
+                onClick={() => router.push("/admin/vendors")}
+                className="text-sm font-bold text-[var(--color-primary)]"
+              >
+                View All →
+              </button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[var(--color-border-subtle)]">
-                    <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Shop Name</th>
-                    <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Owner</th>
-                    <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Category</th>
-                    <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Status</th>
-                    <th className="text-left py-3 text-xs font-bold text-[var(--color-outline-variant)] uppercase">Added</th>
+                    <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                      Shop Name
+                    </th>
+                    <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                      Owner
+                    </th>
+                    <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                      Category
+                    </th>
+                    <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                      Status
+                    </th>
+                    <th className="py-3 text-left text-xs font-bold text-[var(--color-outline-variant)] uppercase">
+                      Added
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {recentVendors.map(v => (
-                    <tr key={v.id} className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]">
-                      <td className="py-3 font-bold text-[var(--color-on-surface)]">{v.shop_name}</td>
-                      <td className="py-3 text-[var(--color-on-surface-variant)]">{v.owner_name || "—"}</td>
-                      <td className="py-3">
-                        <span className="capitalize text-[var(--color-on-surface-variant)]">{v.type || "food"}</span>
+                  {recentVendors.map((v) => (
+                    <tr
+                      key={v.id}
+                      className="border-b border-slate-50 hover:bg-[var(--color-surface-subtle)]"
+                    >
+                      <td className="py-3 font-bold text-[var(--color-on-surface)]">
+                        {v.shop_name}
+                      </td>
+                      <td className="py-3 text-[var(--color-on-surface-variant)]">
+                        {v.owner_name || "—"}
                       </td>
                       <td className="py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          v.status === "active" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
-                          v.status === "pending" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" :
-                          v.status === "suspended" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
-                          "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
-                        }`}>{v.status}</span>
+                        <span className="text-[var(--color-on-surface-variant)] capitalize">
+                          {v.type || "food"}
+                        </span>
                       </td>
-                      <td className="py-3 text-[var(--color-outline-variant)]">{new Date(v.created_at).toLocaleDateString()}</td>
+                      <td className="py-3">
+                        <span
+                          className={`rounded-full px-2 py-1 text-xs font-bold ${
+                            v.status === "active"
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                              : v.status === "pending"
+                                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                                : v.status === "suspended"
+                                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+                                  : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                          }`}
+                        >
+                          {v.status}
+                        </span>
+                      </td>
+                      <td className="py-3 text-[var(--color-outline-variant)]">
+                        {new Date(v.created_at).toLocaleDateString()}
+                      </td>
                     </tr>
                   ))}
                   {recentVendors.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-[var(--color-outline-variant)]">No vendors yet</td>
+                      <td
+                        colSpan={5}
+                        className="py-8 text-center text-[var(--color-outline-variant)]"
+                      >
+                        No vendors yet
+                      </td>
                     </tr>
                   )}
                 </tbody>
@@ -547,20 +886,28 @@ export default function AdminDashboard() {
 
           {/* Module Navigation */}
           <div>
-            <h2 className="text-lg font-black text-[var(--color-on-surface)] mb-4">Manage Modules</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <h2 className="mb-4 text-lg font-black text-[var(--color-on-surface)]">
+              Manage Modules
+            </h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {modules.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => router.push(item.route)}
-                  className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl border-2 border-[var(--color-border-subtle)] shadow-sm hover:border-[var(--color-primary)] hover:shadow-lg transition-all text-left group"
+                  className="group rounded-2xl border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 text-left shadow-sm transition-all hover:border-[var(--color-primary)] hover:shadow-lg"
                 >
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${item.color}`}>
+                  <div
+                    className={`mb-3 flex h-12 w-12 items-center justify-center rounded-xl ${item.color}`}
+                  >
                     <span className="material-symbols-outlined text-2xl">{item.icon}</span>
                   </div>
-                  <h3 className="text-base font-black text-[var(--color-on-surface)]">{item.title}</h3>
-                  <div className="flex items-center gap-1 mt-2">
-                    <span className={`w-2 h-2 rounded-full ${categoryColors[item.type] || "bg-slate-400"}`} />
+                  <h3 className="text-base font-black text-[var(--color-on-surface)]">
+                    {item.title}
+                  </h3>
+                  <div className="mt-2 flex items-center gap-1">
+                    <span
+                      className={`h-2 w-2 rounded-full ${categoryColors[item.type] || "bg-slate-400"}`}
+                    />
                     <span className="text-xs text-[var(--color-outline-variant)]">
                       {item.type === "services"
                         ? serviceStats.totalBookings > 0

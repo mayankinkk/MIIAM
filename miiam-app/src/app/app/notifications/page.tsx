@@ -37,7 +37,9 @@ export default function NotificationsPage() {
   const fetchNotifications = async () => {
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         setLoading(false);
         return;
@@ -50,7 +52,10 @@ export default function NotificationsPage() {
         .limit(50);
       setNotifications(data || []);
     } catch (error) {
-      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to fetch notifications");
+      logger.error(
+        { err: error instanceof Error ? error : new Error(String(error)) },
+        "Failed to fetch notifications"
+      );
       addToast("Failed to load notifications. Please try again.", "error");
     } finally {
       setLoading(false);
@@ -59,177 +64,213 @@ export default function NotificationsPage() {
 
   const markAllRead = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
       await supabase
         .from("notifications")
         .update({ is_read: true })
         .eq("user_id", user.id)
         .eq("is_read", false);
-      setNotifications(notifications.map(n => ({ ...n, is_read: true })));
+      setNotifications(notifications.map((n) => ({ ...n, is_read: true })));
     } catch (error) {
-      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to mark all read");
+      logger.error(
+        { err: error instanceof Error ? error : new Error(String(error)) },
+        "Failed to mark all read"
+      );
       addToast("Failed to mark notifications as read. Please try again.", "error");
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
     <PullToRefresh onRefresh={fetchNotifications}>
-    <div className="min-h-screen bg-surface pb-24">
-      <header className="fixed top-0 w-full z-50 bg-surface-container-lowest shadow-sm">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <Link href="/app/home" aria-label="Go back" className="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-accent">arrow_back</span>
-            </Link>
-            <span className="text-2xl font-extrabold text-accent">MIIAM</span>
-          </div>
-          {unreadCount > 0 && (
-            <button onClick={markAllRead} className="text-sm font-bold text-accent">
-              Mark all read
-            </button>
-          )}
-        </div>
-      </header>
-
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Notifications' }]} />
-
-      <main className="pt-20 px-6 max-w-2xl mx-auto">
-        <section className="mb-8">
-          <h1 className="text-3xl font-extrabold text-on-surface mb-1">Notifications</h1>
-          <p className="text-on-surface-variant">Stay updated with your orders and offers</p>
-        </section>
-
-        {/* Push Notification Settings */}
-        <section className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm mb-8">
-          <h2 className="text-lg font-bold text-on-surface mb-4">Push Notifications</h2>
-          
-          {permission === "denied" ? (
-            <div className="bg-error/10 border border-error/20 rounded-xl p-4">
-              <p className="text-sm text-error font-medium">
-                Notifications are blocked. Please enable them in your browser settings.
-              </p>
-            </div>
-          ) : permission === "granted" ? (
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 bg-status-success/10 border border-status-success/20 rounded-xl p-4">
-                <span className="material-symbols-outlined text-status-success">notifications_active</span>
-                <div>
-                  <p className="font-bold text-status-success">Notifications Enabled</p>
-                  <p className="text-xs text-on-surface-variant">You'll receive updates about your orders</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <label className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
-                  <div>
-                    <p className="font-bold text-on-surface">Order Updates</p>
-                    <p className="text-xs text-on-surface-variant">Get notified when order status changes</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={preferences.orderUpdates}
-                    onChange={(e) => updatePreferences({ orderUpdates: e.target.checked })}
-                    className="w-5 h-5 accent-primary"
-                  />
-                </label>
-                <label className="flex items-center justify-between p-4 bg-surface-container-low rounded-xl cursor-pointer">
-                  <div>
-                    <p className="font-bold text-on-surface">Promotions & Offers</p>
-                    <p className="text-xs text-on-surface-variant">Receive deals and discounts</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={preferences.promotions}
-                    onChange={(e) => updatePreferences({ promotions: e.target.checked })}
-                    className="w-5 h-5 accent-primary"
-                  />
-                </label>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <p className="text-sm text-on-surface-variant">
-                Enable notifications to get real-time updates about your orders and exclusive offers.
-              </p>
-              <button
-                onClick={requestPermission}
-                className="w-full py-4 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-dim hover:text-on-primary transition-colors"
+      <div className="bg-surface min-h-screen pb-24">
+        <header className="bg-surface-container-lowest fixed top-0 z-50 w-full shadow-sm">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-4">
+              <Link
+                href="/app/home"
+                aria-label="Go back"
+                className="bg-surface-container-high flex h-10 w-10 items-center justify-center rounded-full"
               >
-                Enable Notifications
+                <span className="material-symbols-outlined text-accent">arrow_back</span>
+              </Link>
+              <span className="text-accent text-2xl font-extrabold">MIIAM</span>
+            </div>
+            {unreadCount > 0 && (
+              <button onClick={markAllRead} className="text-accent text-sm font-bold">
+                Mark all read
               </button>
-            </div>
-          )}
-        </section>
+            )}
+          </div>
+        </header>
 
-        {/* Notification History */}
-        <section>
-          <h2 className="text-lg font-bold text-on-surface mb-4">Recent</h2>
-          {loading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-surface-container-lowest rounded-2xl p-4 animate-pulse">
-                  <div className="h-4 bg-surface-container-high rounded w-3/4 mb-2"></div>
-                  <div className="h-3 bg-surface-container-high rounded w-1/2"></div>
+        <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Notifications" }]} />
+
+        <main className="mx-auto max-w-2xl px-6 pt-20">
+          <section className="mb-8">
+            <h1 className="text-on-surface mb-1 text-3xl font-extrabold">Notifications</h1>
+            <p className="text-on-surface-variant">Stay updated with your orders and offers</p>
+          </section>
+
+          {/* Push Notification Settings */}
+          <section className="bg-surface-container-lowest mb-8 rounded-2xl p-6 shadow-sm">
+            <h2 className="text-on-surface mb-4 text-lg font-bold">Push Notifications</h2>
+
+            {permission === "denied" ? (
+              <div className="bg-error/10 border-error/20 rounded-xl border p-4">
+                <p className="text-error text-sm font-medium">
+                  Notifications are blocked. Please enable them in your browser settings.
+                </p>
+              </div>
+            ) : permission === "granted" ? (
+              <div className="space-y-4">
+                <div className="bg-status-success/10 border-status-success/20 flex items-center gap-3 rounded-xl border p-4">
+                  <span className="material-symbols-outlined text-status-success">
+                    notifications_active
+                  </span>
+                  <div>
+                    <p className="text-status-success font-bold">Notifications Enabled</p>
+                    <p className="text-on-surface-variant text-xs">
+                      You'll receive updates about your orders
+                    </p>
+                  </div>
                 </div>
-              ))}
-            </div>
-          ) : notifications.length === 0 ? (
-            <div className="text-center py-12 bg-surface-container-lowest rounded-2xl">
-              <span className="text-5xl">🔔</span>
-              <p className="text-on-surface-variant mt-4">No notifications yet</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {notifications.map((notification) => (
-                <SwipeableRow
-                  key={notification.id}
-                  onSwipeLeft={async () => {
-                    if (!await confirm({ title: "Delete Notification", message: "Remove this notification?", variant: "danger" })) return;
-                    try {
-                      await supabase.from("notifications").delete().eq("id", notification.id);
-                      setNotifications(prev => prev.filter(n => n.id !== notification.id));
-                      addToast("Notification dismissed", "success");
-                    } catch {
-                      addToast("Failed to dismiss notification", "error");
-                    }
-                  }}
+                <div className="space-y-3">
+                  <label className="bg-surface-container-low flex cursor-pointer items-center justify-between rounded-xl p-4">
+                    <div>
+                      <p className="text-on-surface font-bold">Order Updates</p>
+                      <p className="text-on-surface-variant text-xs">
+                        Get notified when order status changes
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={preferences.orderUpdates}
+                      onChange={(e) => updatePreferences({ orderUpdates: e.target.checked })}
+                      className="accent-primary h-5 w-5"
+                    />
+                  </label>
+                  <label className="bg-surface-container-low flex cursor-pointer items-center justify-between rounded-xl p-4">
+                    <div>
+                      <p className="text-on-surface font-bold">Promotions & Offers</p>
+                      <p className="text-on-surface-variant text-xs">Receive deals and discounts</p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={preferences.promotions}
+                      onChange={(e) => updatePreferences({ promotions: e.target.checked })}
+                      className="accent-primary h-5 w-5"
+                    />
+                  </label>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-on-surface-variant text-sm">
+                  Enable notifications to get real-time updates about your orders and exclusive
+                  offers.
+                </p>
+                <button
+                  onClick={requestPermission}
+                  className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary w-full rounded-xl py-4 font-bold transition-colors"
                 >
+                  Enable Notifications
+                </button>
+              </div>
+            )}
+          </section>
+
+          {/* Notification History */}
+          <section>
+            <h2 className="text-on-surface mb-4 text-lg font-bold">Recent</h2>
+            {loading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
                   <div
-                    className={`bg-surface-container-lowest rounded-2xl p-4 ${notification.is_read ? "opacity-70" : "border-l-4 border-primary"}`}
+                    key={i}
+                    className="bg-surface-container-lowest animate-pulse rounded-2xl p-4"
                   >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        notification.type === "order" ? "bg-surface-container-high" :
-                        notification.type === "promo" ? "bg-amber-100 dark:bg-amber-900/30" : "bg-surface-container"
-                      }`}>
-                        <span className="material-symbols-outlined text-lg text-accent">
-                          {notification.type === "order" ? "restaurant" :
-                           notification.type === "promo" ? "local_offer" : "info"}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-on-surface">{notification.title}</p>
-                        <p className="text-sm text-on-surface-variant mt-1">{notification.body}</p>
-                        <p className="text-xs text-on-surface-variant/60 mt-2">
-                          {new Date(notification.created_at).toLocaleDateString("en-IN", {
-                            day: "numeric",
-                            month: "short",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </p>
+                    <div className="bg-surface-container-high mb-2 h-4 w-3/4 rounded"></div>
+                    <div className="bg-surface-container-high h-3 w-1/2 rounded"></div>
+                  </div>
+                ))}
+              </div>
+            ) : notifications.length === 0 ? (
+              <div className="bg-surface-container-lowest rounded-2xl py-12 text-center">
+                <span className="text-5xl">🔔</span>
+                <p className="text-on-surface-variant mt-4">No notifications yet</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {notifications.map((notification) => (
+                  <SwipeableRow
+                    key={notification.id}
+                    onSwipeLeft={async () => {
+                      if (
+                        !(await confirm({
+                          title: "Delete Notification",
+                          message: "Remove this notification?",
+                          variant: "danger",
+                        }))
+                      )
+                        return;
+                      try {
+                        await supabase.from("notifications").delete().eq("id", notification.id);
+                        setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+                        addToast("Notification dismissed", "success");
+                      } catch {
+                        addToast("Failed to dismiss notification", "error");
+                      }
+                    }}
+                  >
+                    <div
+                      className={`bg-surface-container-lowest rounded-2xl p-4 ${notification.is_read ? "opacity-70" : "border-primary border-l-4"}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                            notification.type === "order"
+                              ? "bg-surface-container-high"
+                              : notification.type === "promo"
+                                ? "bg-amber-100 dark:bg-amber-900/30"
+                                : "bg-surface-container"
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-accent text-lg">
+                            {notification.type === "order"
+                              ? "restaurant"
+                              : notification.type === "promo"
+                                ? "local_offer"
+                                : "info"}
+                          </span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-on-surface font-bold">{notification.title}</p>
+                          <p className="text-on-surface-variant mt-1 text-sm">
+                            {notification.body}
+                          </p>
+                          <p className="text-on-surface-variant/60 mt-2 text-xs">
+                            {new Date(notification.created_at).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </SwipeableRow>
-              ))}
-            </div>
-          )}
-        </section>
-      </main>
-    </div>
+                  </SwipeableRow>
+                ))}
+              </div>
+            )}
+          </section>
+        </main>
+      </div>
     </PullToRefresh>
   );
 }

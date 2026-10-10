@@ -31,7 +31,10 @@ describe("Recurring schedules API", () => {
   });
 
   it("GET returns 401 when unauthenticated", async () => {
-    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null }, error: { message: "No user" } });
+    mockSupabase.auth.getUser.mockResolvedValue({
+      data: { user: null },
+      error: { message: "No user" },
+    });
     const { GET } = await import("@/app/api/recurring-schedules/route");
     const req = new NextRequest("http://localhost:3000/api/recurring-schedules");
     const res = await GET(req, { params: Promise.resolve({}) });
@@ -41,11 +44,14 @@ describe("Recurring schedules API", () => {
   it("POST validates required fields", async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: { id: "u1" } }, error: null });
     const { POST } = await import("@/app/api/recurring-schedules/route");
-    const res = await POST(new NextRequest("http://localhost:3000/api/recurring-schedules", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ vendor_id: "v1" }),
-    }), { params: Promise.resolve({}) });
+    const res = await POST(
+      new NextRequest("http://localhost:3000/api/recurring-schedules", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vendor_id: "v1" }),
+      }),
+      { params: Promise.resolve({}) }
+    );
     expect(res.status).toBe(400);
     const body = await res.json();
     expect(body.error).toBe("Missing required fields");
@@ -57,19 +63,22 @@ describe("Recurring schedules API", () => {
     mockSupabase.from.mockReturnValue(buildMockSupabase(mockData));
 
     const { POST } = await import("@/app/api/recurring-schedules/route");
-    const res = await POST(new NextRequest("http://localhost:3000/api/recurring-schedules", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        vendor_id: "v1",
-        frequency: "weekly",
-        day_of_week: 1,
-        delivery_time: "09:00 AM - 11:00 AM",
-        delivery_address: "123 Main St",
-        payment_method: "card",
-        items: [{ menu_item_id: "p1", name: "Apple", price: 50, quantity: 2 }],
+    const res = await POST(
+      new NextRequest("http://localhost:3000/api/recurring-schedules", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          vendor_id: "v1",
+          frequency: "weekly",
+          day_of_week: 1,
+          delivery_time: "09:00 AM - 11:00 AM",
+          delivery_address: "123 Main St",
+          payment_method: "card",
+          items: [{ menu_item_id: "p1", name: "Apple", price: 50, quantity: 2 }],
+        }),
       }),
-    }), { params: Promise.resolve({}) });
+      { params: Promise.resolve({}) }
+    );
     expect(res.status).toBe(201);
     const body = await res.json();
     expect(body.id).toBe("s1");
@@ -100,7 +109,9 @@ describe("Recurring schedules API", () => {
     });
 
     const { DELETE } = await import("@/app/api/recurring-schedules/[id]/route");
-    const req = new NextRequest("http://localhost:3000/api/recurring-schedules/s1", { method: "DELETE" });
+    const req = new NextRequest("http://localhost:3000/api/recurring-schedules/s1", {
+      method: "DELETE",
+    });
     const res = await DELETE(req, { params: Promise.resolve({ id: "s1" }) });
     expect(res.status).toBe(200);
     const body = await res.json();

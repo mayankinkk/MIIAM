@@ -1,7 +1,7 @@
-import { createServerClient } from '@supabase/ssr'
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
-import logger from '@/lib/logger'
+import { createServerClient } from "@supabase/ssr";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import logger from "@/lib/logger";
 
 function getRequiredEnv(key: string): string {
   const value = process.env[key];
@@ -12,40 +12,44 @@ function getRequiredEnv(key: string): string {
 }
 
 export async function createClient() {
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
 
   return createServerClient(
-    getRequiredEnv('NEXT_PUBLIC_SUPABASE_URL'),
-    getRequiredEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+    getRequiredEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    getRequiredEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
     {
       cookies: {
         getAll() {
-          return cookieStore.getAll()
+          return cookieStore.getAll();
         },
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
-            )
-          } catch (e) { logger.warn({ err: e }, "Failed to set cookie"); }
+            );
+          } catch (e) {
+            logger.warn({ err: e }, "Failed to set cookie");
+          }
         },
       },
     }
-  )
+  );
 }
 
 export function createAdminClient() {
   if (typeof window !== "undefined") {
-    throw new Error("[MIIAM] createAdminClient() must only be called server-side. SERVICE_ROLE_KEY would leak to the client bundle.");
+    throw new Error(
+      "[MIIAM] createAdminClient() must only be called server-side. SERVICE_ROLE_KEY would leak to the client bundle."
+    );
   }
   return createSupabaseClient(
-    getRequiredEnv('NEXT_PUBLIC_SUPABASE_URL'),
-    getRequiredEnv('SUPABASE_SERVICE_ROLE_KEY'),
+    getRequiredEnv("NEXT_PUBLIC_SUPABASE_URL"),
+    getRequiredEnv("SUPABASE_SERVICE_ROLE_KEY"),
     {
       auth: {
         autoRefreshToken: false,
         persistSession: false,
       },
     }
-  )
+  );
 }

@@ -7,14 +7,18 @@ import { useLocationStore } from "@/lib/store/locationStore";
 
 export default function AddressQuickSelector() {
   const [open, setOpen] = useState(false);
-  const [addresses, setAddresses] = useState<Array<{ id: string; label: string; address: string; landmark?: string }>>([]);
+  const [addresses, setAddresses] = useState<
+    Array<{ id: string; label: string; address: string; landmark?: string }>
+  >([]);
   const { displayAddress, setLocation } = useLocationStore();
 
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem("miiam-addresses") || "[]");
       setAddresses(saved);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   if (addresses.length === 0) return null;
@@ -23,7 +27,7 @@ export default function AddressQuickSelector() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 text-xs font-bold text-on-surface-variant hover:text-accent transition-colors"
+        className="text-on-surface-variant hover:text-accent flex items-center gap-1.5 text-xs font-bold transition-colors"
       >
         <span className="material-symbols-outlined text-sm">location_on</span>
         Change
@@ -35,7 +39,7 @@ export default function AddressQuickSelector() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-end justify-center"
+            className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           >
             <motion.div
@@ -46,10 +50,10 @@ export default function AddressQuickSelector() {
               className="bg-surface-container-lowest w-full max-w-lg rounded-t-3xl p-6"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-10 h-1 bg-outline/30 rounded-full mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-on-surface mb-4">Select Address</h3>
+              <div className="bg-outline/30 mx-auto mb-4 h-1 w-10 rounded-full" />
+              <h3 className="text-on-surface mb-4 text-lg font-bold">Select Address</h3>
 
-              <div className="space-y-2 mb-4 max-h-60 overflow-y-auto">
+              <div className="mb-4 max-h-60 space-y-2 overflow-y-auto">
                 {addresses.map((addr) => (
                   <button
                     key={addr.id}
@@ -57,22 +61,24 @@ export default function AddressQuickSelector() {
                       setLocation({ displayAddress: addr.address });
                       setOpen(false);
                     }}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
+                    className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
                       displayAddress === addr.address
                         ? "border-primary bg-primary/5"
                         : "border-outline/10 hover:border-outline/30"
                     }`}
                   >
-                    <p className="text-sm font-bold text-on-surface">{addr.label}</p>
-                    <p className="text-xs text-on-surface-variant mt-0.5">{addr.address}</p>
-                    {addr.landmark && <p className="text-xs text-on-surface-variant/60 mt-0.5">{addr.landmark}</p>}
+                    <p className="text-on-surface text-sm font-bold">{addr.label}</p>
+                    <p className="text-on-surface-variant mt-0.5 text-xs">{addr.address}</p>
+                    {addr.landmark && (
+                      <p className="text-on-surface-variant/60 mt-0.5 text-xs">{addr.landmark}</p>
+                    )}
                   </button>
                 ))}
               </div>
 
               <Link
                 href="/app/addresses/add"
-                className="flex items-center justify-center gap-2 w-full py-3 border-2 border-dashed border-outline/20 rounded-xl text-sm font-bold text-on-surface-variant hover:border-primary hover:text-accent transition-colors"
+                className="border-outline/20 text-on-surface-variant hover:border-primary hover:text-accent flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3 text-sm font-bold transition-colors"
                 onClick={() => setOpen(false)}
               >
                 <span className="material-symbols-outlined text-lg">add</span>

@@ -76,9 +76,7 @@ export function useChat(
         (payload: Record<string, unknown>) => {
           const updatedMessage = payload.new as ChatMessage;
           if (participants && !participants.includes(updatedMessage.sender_type)) return;
-          setMessages((prev) =>
-            prev.map((m) => (m.id === updatedMessage.id ? updatedMessage : m))
-          );
+          setMessages((prev) => prev.map((m) => (m.id === updatedMessage.id ? updatedMessage : m)));
         }
       )
       .subscribe();
@@ -150,14 +148,14 @@ export function useChat(
       typingChannelRef.current.subscribe();
     }
     const channel = typingChannelRef.current;
-    
+
     if (isTyping) {
       await channel.track({ user_id: userIdRef.current, typing: true });
-      
+
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-      
+
       typingTimeoutRef.current = setTimeout(async () => {
         await channel.track({ user_id: userIdRef.current, typing: false });
       }, 3000);
@@ -170,16 +168,21 @@ export function useChat(
     const channel = supabase.channel(`typing-listeners-${orderId}`);
 
     channel.on("presence", { event: "sync" }, () => {
-      const state = channel.presenceState() as Record<string, Array<{ user_id: string; typing: boolean; presence_ref: string }>>;
+      const state = channel.presenceState() as Record<
+        string,
+        Array<{ user_id: string; typing: boolean; presence_ref: string }>
+      >;
       const typing: string[] = [];
-      
+
       Object.entries(state).forEach(([key, presences]) => {
-        const presence = presences[0] as { user_id: string; typing: boolean; presence_ref: string } | undefined;
+        const presence = presences[0] as
+          | { user_id: string; typing: boolean; presence_ref: string }
+          | undefined;
         if (presence?.typing && key !== currentUserId) {
           typing.push(key);
         }
       });
-      
+
       setTypingUsers(typing);
       setIsTyping(typing.length > 0);
     });
@@ -210,12 +213,13 @@ export function useChatList(userId: string) {
 
   useEffect(() => {
     async function loadChats() {
-      const { data: userOrders } = await supabase
-        .from("orders")
-        .select("id")
-        .eq("user_id", userId);
+      const { data: userOrders } = await supabase.from("orders").select("id").eq("user_id", userId);
       const orderIds = userOrders?.map((o: { id: string }) => o.id) || [];
-      if (orderIds.length === 0) { setChats([]); setLoading(false); return; }
+      if (orderIds.length === 0) {
+        setChats([]);
+        setLoading(false);
+        return;
+      }
       const { data, error } = await supabase
         .from("chat_messages")
         .select("order_id, sender_id, message, created_at")
@@ -224,18 +228,20 @@ export function useChatList(userId: string) {
 
       if (!error && data) {
         const chatMap: Record<string, ChatRoom> = {};
-        
-        data.forEach((msg: { order_id: string; sender_id: string; message: string; created_at: string }) => {
-          if (!chatMap[msg.order_id]) {
-            chatMap[msg.order_id] = {
-              order_id: msg.order_id,
-              participants: [],
-              last_message: msg.message,
-              last_message_at: msg.created_at,
-              unread_count: 0,
-            };
+
+        data.forEach(
+          (msg: { order_id: string; sender_id: string; message: string; created_at: string }) => {
+            if (!chatMap[msg.order_id]) {
+              chatMap[msg.order_id] = {
+                order_id: msg.order_id,
+                participants: [],
+                last_message: msg.message,
+                last_message_at: msg.created_at,
+                unread_count: 0,
+              };
+            }
           }
-        });
+        );
 
         setChats(Object.values(chatMap));
       }
@@ -256,7 +262,9 @@ export function useChatList(userId: string) {
               table: "chat_messages",
               filter: `order_id=in.(SELECT id FROM orders WHERE user_id = '${userId}')`,
             },
-            () => { loadChats(); }
+            () => {
+              loadChats();
+            }
           )
           .subscribe()
       : null;

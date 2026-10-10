@@ -1,9 +1,9 @@
 "use client";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export type Language = 'en' | 'hi' | 'as' | 'bn';
+export type Language = "en" | "hi" | "as" | "bn";
 
 interface LanguageState {
   language: Language;
@@ -13,11 +13,11 @@ interface LanguageState {
 export const useLanguageStore = create<LanguageState>()(
   persist(
     (set) => ({
-      language: 'en',
+      language: "en",
       setLanguage: (lang) => set({ language: lang }),
     }),
     {
-      name: 'language-storage',
+      name: "language-storage",
     }
   )
 );

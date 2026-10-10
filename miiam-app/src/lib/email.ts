@@ -33,7 +33,9 @@ const contentStyles = `
   border-radius: 0 0 10px 10px;
 `;
 
-function getOrderItemsHtml(items: Array<{ name: string; quantity: number; price: number }>): string {
+function getOrderItemsHtml(
+  items: Array<{ name: string; quantity: number; price: number }>
+): string {
   return items
     .map(
       (item) => `
@@ -80,9 +82,14 @@ export type RefundEmailData = {
   reason?: string;
 };
 
-export async function sendOrderConfirmationEmail(data: OrderEmailData): Promise<{ success: boolean; error?: string }> {
+export async function sendOrderConfirmationEmail(
+  data: OrderEmailData
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    logger.info({ orderId: data.orderId, email: data.customerEmail }, "DEV EMAIL - Order Confirmation");
+    logger.info(
+      { orderId: data.orderId, email: data.customerEmail },
+      "DEV EMAIL - Order Confirmation"
+    );
     return { success: true };
   }
 
@@ -178,13 +185,18 @@ const statusMessages: Record<string, { title: string; message: string }> = {
   },
 };
 
-export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Promise<{ success: boolean; error?: string }> {
+export async function sendOrderStatusUpdateEmail(
+  data: OrderStatusEmailData
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
     logger.info({ orderId: data.orderId, status: data.status }, "DEV EMAIL - Order Status Update");
     return { success: true };
   }
 
-  const statusInfo = statusMessages[data.status] || { title: "Order Update", message: "Your order status has been updated." };
+  const statusInfo = statusMessages[data.status] || {
+    title: "Order Update",
+    message: "Your order status has been updated.",
+  };
 
   try {
     const { error } = await resend.emails.send({
@@ -205,17 +217,25 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
               <p style="color: var(--color-primary); font-size: 24px; font-weight: bold; margin: 0;">${statusInfo.title}</p>
             </div>
             
-            ${data.riderName ? `
+            ${
+              data.riderName
+                ? `
             <div style="background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
               <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;"><strong>Rider Details:</strong></p>
               <p style="margin: 0; color: var(--color-on-surface);">${escapeHtml(data.riderName)}</p>
               ${data.riderPhone ? `<p style="margin: 5px 0 0 0; color: #0c831f;">📞 ${escapeHtml(data.riderPhone)}</p>` : ""}
             </div>
-            ` : ""}
+            `
+                : ""
+            }
             
-            ${data.estimatedDelivery ? `
+            ${
+              data.estimatedDelivery
+                ? `
             <p style="color: #666; margin-bottom: 20px;">Estimated delivery: <strong>${data.estimatedDelivery}</strong></p>
-            ` : ""}
+            `
+                : ""
+            }
             
             <p style="color: #999; font-size: 12px;">Order ID: ${data.orderId}</p>
           </div>
@@ -235,9 +255,14 @@ export async function sendOrderStatusUpdateEmail(data: OrderStatusEmailData): Pr
   }
 }
 
-export async function sendRefundNotificationEmail(data: RefundEmailData): Promise<{ success: boolean; error?: string }> {
+export async function sendRefundNotificationEmail(
+  data: RefundEmailData
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    logger.info({ orderId: data.orderId, email: data.customerEmail }, "DEV EMAIL - Refund Notification");
+    logger.info(
+      { orderId: data.orderId, email: data.customerEmail },
+      "DEV EMAIL - Refund Notification"
+    );
     return { success: true };
   }
 
@@ -282,7 +307,10 @@ export async function sendRefundNotificationEmail(data: RefundEmailData): Promis
   }
 }
 
-export async function sendWelcomeEmail(name: string, email: string): Promise<{ success: boolean; error?: string }> {
+export async function sendWelcomeEmail(
+  name: string,
+  email: string
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
     logger.info({ email }, "DEV EMAIL - Welcome");
     return { success: true };
@@ -343,9 +371,14 @@ export type BookingEmailData = {
   bookingId: string;
 };
 
-export async function sendBookingConfirmationEmail(data: BookingEmailData): Promise<{ success: boolean; error?: string }> {
+export async function sendBookingConfirmationEmail(
+  data: BookingEmailData
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    logger.info({ email: data.customerEmail, service: data.serviceName }, "DEV EMAIL - Booking confirmation");
+    logger.info(
+      { email: data.customerEmail, service: data.serviceName },
+      "DEV EMAIL - Booking confirmation"
+    );
     return { success: true };
   }
 
@@ -406,18 +439,32 @@ export type BookingStatusEmailData = {
 const bookingStatusMessages: Record<string, { title: string; message: string }> = {
   confirmed: { title: "Booking Confirmed", message: "Your booking has been confirmed." },
   "in-progress": { title: "Service In Progress", message: "Your service provider is on the way." },
-  completed: { title: "Service Completed", message: "Your service has been completed. We hope you loved it!" },
+  completed: {
+    title: "Service Completed",
+    message: "Your service has been completed. We hope you loved it!",
+  },
   cancelled: { title: "Booking Cancelled", message: "Your booking has been cancelled." },
-  "no-show": { title: "Provider No-Show", message: "The provider didn't arrive. Please contact support for a refund." },
+  "no-show": {
+    title: "Provider No-Show",
+    message: "The provider didn't arrive. Please contact support for a refund.",
+  },
 };
 
-export async function sendBookingStatusUpdateEmail(data: BookingStatusEmailData): Promise<{ success: boolean; error?: string }> {
+export async function sendBookingStatusUpdateEmail(
+  data: BookingStatusEmailData
+): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
-    logger.info({ bookingId: data.bookingId, status: data.status }, "DEV EMAIL - Booking Status Update");
+    logger.info(
+      { bookingId: data.bookingId, status: data.status },
+      "DEV EMAIL - Booking Status Update"
+    );
     return { success: true };
   }
 
-  const statusInfo = bookingStatusMessages[data.status] || { title: "Booking Update", message: "Your booking status has been updated." };
+  const statusInfo = bookingStatusMessages[data.status] || {
+    title: "Booking Update",
+    message: "Your booking status has been updated.",
+  };
 
   try {
     const { error } = await resend.emails.send({

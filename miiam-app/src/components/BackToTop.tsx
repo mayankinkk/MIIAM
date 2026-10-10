@@ -21,7 +21,7 @@ export default function BackToTop() {
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-24 right-4 z-40 w-12 h-12 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 flex items-center justify-center active:scale-90 transition-transform md:bottom-6"
+          className="bg-primary text-on-primary shadow-primary/30 fixed right-4 bottom-24 z-40 flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-transform active:scale-90 md:bottom-6"
           aria-label="Back to top"
         >
           <span className="material-symbols-outlined text-xl">arrow_upward</span>

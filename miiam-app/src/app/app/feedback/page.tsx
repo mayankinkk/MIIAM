@@ -20,7 +20,7 @@ function FeedbackContent() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createClient(), []);
-  
+
   const orderId = searchParams.get("orderId") || "";
   const serviceName = searchParams.get("service") || "Service";
   const providerName = searchParams.get("provider") || "Technician";
@@ -56,7 +56,7 @@ function FeedbackContent() {
       addToast("Please select a rating", "error");
       return;
     }
-    
+
     setIsSubmitting(true);
 
     try {
@@ -80,7 +80,10 @@ function FeedbackContent() {
 
       setSubmitted(true);
     } catch (error) {
-      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to submit feedback");
+      logger.error(
+        { err: error instanceof Error ? error : new Error(String(error)) },
+        "Failed to submit feedback"
+      );
       addToast("Failed to submit feedback. Please try again.", "error");
     } finally {
       setIsSubmitting(false);
@@ -89,27 +92,30 @@ function FeedbackContent() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-surface to-white flex items-center justify-center p-6">
-        <div className="text-center max-w-md">
-          <div className="w-24 h-24 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
-            <span className="material-symbols-outlined text-green-500 text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+      <div className="from-surface flex min-h-screen items-center justify-center bg-gradient-to-b to-white p-6">
+        <div className="max-w-md text-center">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-green-100">
+            <span
+              className="material-symbols-outlined text-6xl text-green-500"
+              style={{ fontVariationSettings: "'FILL' 1" }}
+            >
               check_circle
             </span>
           </div>
-          <h1 className="text-2xl font-black text-on-surface mb-2">{t.rating.thanksForRating}</h1>
-          <p className="text-[var(--color-on-surface-variant)] mb-8">
+          <h1 className="text-on-surface mb-2 text-2xl font-black">{t.rating.thanksForRating}</h1>
+          <p className="mb-8 text-[var(--color-on-surface-variant)]">
             Your feedback helps us improve our service.
           </p>
           <div className="space-y-3">
             <Link
               href="/app/home"
-              className="block w-full py-4 bg-primary text-on-primary rounded-xl font-bold hover:bg-primary-dim hover:text-on-primary transition-all"
+              className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary block w-full rounded-xl py-4 font-bold transition-all"
             >
               {t.common.home}
             </Link>
             <Link
               href="/app/services"
-              className="block w-full py-4 border-2 border-primary text-accent rounded-xl font-bold hover:bg-surface-container-low transition-all"
+              className="border-primary text-accent hover:bg-surface-container-low block w-full rounded-xl border-2 py-4 font-bold transition-all"
             >
               Book Another Service
             </Link>
@@ -120,34 +126,37 @@ function FeedbackContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-surface to-white">
+    <div className="from-surface min-h-screen bg-gradient-to-b to-white">
       {/* Header */}
-      <div className="bg-[var(--color-surface-container-lowest)] p-6 border-b border-pink-100">
-        <Link href="/app/home" className="flex items-center gap-2 text-[var(--color-on-surface-variant)] hover:text-accent">
+      <div className="border-b border-pink-100 bg-[var(--color-surface-container-lowest)] p-6">
+        <Link
+          href="/app/home"
+          className="hover:text-accent flex items-center gap-2 text-[var(--color-on-surface-variant)]"
+        >
           <span className="material-symbols-outlined">arrow_back</span>
           <span className="font-bold">Back</span>
         </Link>
       </div>
 
-      <Breadcrumbs items={[{ label: 'Home', href: '/app/home' }, { label: 'Feedback' }]} />
+      <Breadcrumbs items={[{ label: "Home", href: "/app/home" }, { label: "Feedback" }]} />
 
-      <div className="max-w-lg mx-auto p-6">
+      <div className="mx-auto max-w-lg p-6">
         {/* Service Info */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6">
-          <h2 className="text-lg font-bold text-on-surface mb-1">{serviceName}</h2>
-          <p className="text-sm text-[var(--color-outline)] mb-4">by {providerName}</p>
+        <div className="mb-6 rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-lg">
+          <h2 className="text-on-surface mb-1 text-lg font-bold">{serviceName}</h2>
+          <p className="mb-4 text-sm text-[var(--color-outline)]">by {providerName}</p>
           <div className="flex items-center justify-between">
             <span className="text-sm text-[var(--color-outline)]">Amount Paid</span>
-            <span className="text-xl font-black text-on-surface">₹{price}</span>
+            <span className="text-on-surface text-xl font-black">₹{price}</span>
           </div>
         </div>
 
         {/* Rating */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6">
-          <h3 className="text-lg font-bold text-on-surface mb-4 text-center">
+        <div className="mb-6 rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-lg">
+          <h3 className="text-on-surface mb-4 text-center text-lg font-bold">
             {t.rating.subtitle}
           </h3>
-          <div className="flex justify-center gap-2 mb-4">
+          <div className="mb-4 flex justify-center gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
@@ -160,7 +169,10 @@ function FeedbackContent() {
                   className="material-symbols-outlined text-5xl"
                   style={{
                     fontVariationSettings: "'FILL' 1",
-                    color: star <= (hoverRating || rating) ? "var(--color-status-warning)" : "var(--color-border-subtle)",
+                    color:
+                      star <= (hoverRating || rating)
+                        ? "var(--color-status-warning)"
+                        : "var(--color-border-subtle)",
                   }}
                 >
                   star
@@ -180,17 +192,17 @@ function FeedbackContent() {
 
         {/* Tags */}
         {rating > 0 && (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
-            <h3 className="text-lg font-bold text-on-surface mb-4">What did you like?</h3>
+          <div className="animate-fade-in mb-6 rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-lg">
+            <h3 className="text-on-surface mb-4 text-lg font-bold">What did you like?</h3>
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <button
                   key={tag}
                   onClick={() => toggleTag(tag)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                     selectedTags.includes(tag)
                       ? "bg-primary text-on-primary"
-                      : "bg-pink-50 text-[var(--color-on-surface-variant)] border border-pink-200 hover:border-primary"
+                      : "hover:border-primary border border-pink-200 bg-pink-50 text-[var(--color-on-surface-variant)]"
                   }`}
                 >
                   {tag}
@@ -202,15 +214,13 @@ function FeedbackContent() {
 
         {/* Review */}
         {rating > 0 && (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-lg mb-6 animate-fade-in">
-            <h3 className="text-lg font-bold text-on-surface mb-4">
-              {t.rating.shareExperience}
-            </h3>
+          <div className="animate-fade-in mb-6 rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-lg">
+            <h3 className="text-on-surface mb-4 text-lg font-bold">{t.rating.shareExperience}</h3>
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
               placeholder="Tell us about your experience..."
-              className="w-full p-4 rounded-xl border border-pink-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none resize-none"
+              className="focus:border-primary focus:ring-primary/20 w-full resize-none rounded-xl border border-pink-200 p-4 outline-none focus:ring-2"
               rows={4}
             />
           </div>
@@ -220,25 +230,33 @@ function FeedbackContent() {
         <button
           onClick={handleSubmit}
           disabled={rating === 0 || isSubmitting}
-          className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
+          className={`w-full rounded-xl py-4 text-lg font-bold transition-all ${
             rating > 0
               ? "bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary"
-              : "bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)] cursor-not-allowed"
+              : "cursor-not-allowed bg-[var(--color-surface-container-high)] text-[var(--color-outline-variant)]"
           }`}
         >
           {isSubmitting ? (
             <>
-              <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
               Submitting...
             </>
-          ) : "Submit Feedback"}
+          ) : (
+            "Submit Feedback"
+          )}
         </button>
       </div>
 
       <style jsx>{`
         @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .animate-fade-in {
           animation: fade-in 0.3s ease-out;
@@ -250,9 +268,9 @@ function FeedbackContent() {
 
 function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-surface to-white flex items-center justify-center">
+    <div className="from-surface flex min-h-screen items-center justify-center bg-gradient-to-b to-white">
       <div className="animate-pulse">
-        <div className="w-12 h-12 bg-pink-200 rounded-full mb-4"></div>
+        <div className="mb-4 h-12 w-12 rounded-full bg-pink-200"></div>
       </div>
     </div>
   );

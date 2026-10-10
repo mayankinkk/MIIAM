@@ -7,7 +7,9 @@ const logger = createRouteLogger("emails/order-confirmation");
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -23,7 +25,8 @@ export async function POST(request: NextRequest) {
 
     const { data: order, error: orderError } = await supabaseAdmin
       .from("orders")
-      .select(`
+      .select(
+        `
         id,
         user_id,
         vendor_id,
@@ -33,7 +36,8 @@ export async function POST(request: NextRequest) {
         discount_amount,
         users:user_id(email, full_name),
         vendors:vendor_id(shop_name)
-      `)
+      `
+      )
       .eq("id", orderId)
       .single();
 
@@ -65,12 +69,14 @@ export async function POST(request: NextRequest) {
       customerName: user.full_name || "Customer",
       customerEmail: user.email,
       vendorName: vendor?.shop_name || "Restaurant",
-      items: items?.map((i) => ({
-        name: i.name || "Item",
-        quantity: i.quantity,
-        price: i.price,
-      })) || [],
-      subtotal: (order.total_amount || 0) - (order.delivery_fee || 0) + (order.discount_amount || 0),
+      items:
+        items?.map((i) => ({
+          name: i.name || "Item",
+          quantity: i.quantity,
+          price: i.price,
+        })) || [],
+      subtotal:
+        (order.total_amount || 0) - (order.delivery_fee || 0) + (order.discount_amount || 0),
       deliveryFee: order.delivery_fee || 0,
       total: order.total_amount || 0,
       deliveryAddress: order.delivery_address || "",

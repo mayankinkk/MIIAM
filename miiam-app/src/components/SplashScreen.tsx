@@ -20,12 +20,12 @@ export default function SplashScreen() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--color-primary)] animate-fade-out-delayed pointer-events-none">
-      <div className="flex flex-col items-center justify-center animate-bounce-in">
-        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl mb-6">
-          <span className="text-4xl font-black text-[var(--color-accent)] tracking-tighter">M</span>
+    <div className="animate-fade-out-delayed pointer-events-none fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[var(--color-primary)]">
+      <div className="animate-bounce-in flex flex-col items-center justify-center">
+        <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-white shadow-2xl">
+          <span className="text-4xl font-black tracking-tighter text-[var(--color-accent)]">M</span>
         </div>
-        <h1 className="text-on-primary text-3xl font-black tracking-widest animate-pulse">MIIAM</h1>
+        <h1 className="text-on-primary animate-pulse text-3xl font-black tracking-widest">MIIAM</h1>
       </div>
     </div>
   );

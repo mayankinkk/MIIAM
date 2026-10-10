@@ -9,7 +9,12 @@ interface SuccessAnimationProps {
   className?: string;
 }
 
-export default function SuccessAnimation({ icon = "check_circle", title, subtitle, className = "" }: SuccessAnimationProps) {
+export default function SuccessAnimation({
+  icon = "check_circle",
+  title,
+  subtitle,
+  className = "",
+}: SuccessAnimationProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
@@ -21,7 +26,7 @@ export default function SuccessAnimation({ icon = "check_circle", title, subtitl
         initial={{ scale: 0 }}
         animate={{ scale: [0, 1.2, 1] }}
         transition={{ delay: 0.1, duration: 0.5 }}
-        className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4"
+        className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30"
       >
         <motion.span
           initial={{ opacity: 0 }}
@@ -38,7 +43,7 @@ export default function SuccessAnimation({ icon = "check_circle", title, subtitl
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-xl font-bold text-on-surface mb-1"
+        className="text-on-surface mb-1 text-xl font-bold"
       >
         {title}
       </motion.h3>
@@ -48,7 +53,7 @@ export default function SuccessAnimation({ icon = "check_circle", title, subtitl
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="text-sm text-on-surface-variant max-w-xs"
+          className="text-on-surface-variant max-w-xs text-sm"
         >
           {subtitle}
         </motion.p>

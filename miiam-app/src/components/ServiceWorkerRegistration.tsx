@@ -12,8 +12,7 @@ export function ServiceWorkerRegistration() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       const shouldRegister =
-        process.env.NODE_ENV === "production" ||
-        process.env.NEXT_PUBLIC_ENABLE_SW === "true";
+        process.env.NODE_ENV === "production" || process.env.NEXT_PUBLIC_ENABLE_SW === "true";
 
       if (!shouldRegister) return;
 
@@ -24,10 +23,7 @@ export function ServiceWorkerRegistration() {
             const installingWorker = registration.installing;
             if (installingWorker) {
               installingWorker.addEventListener("statechange", () => {
-                if (
-                  installingWorker.state === "installed" &&
-                  navigator.serviceWorker.controller
-                ) {
+                if (installingWorker.state === "installed" && navigator.serviceWorker.controller) {
                   setShowUpdate(true);
                 }
               });
@@ -43,16 +39,18 @@ export function ServiceWorkerRegistration() {
   if (!showUpdate) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-[200] md:left-auto md:right-6 md:max-w-sm">
-      <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-2xl flex items-center gap-3">
+    <div className="fixed right-4 bottom-4 left-4 z-[200] md:right-6 md:left-auto md:max-w-sm">
+      <div className="flex items-center gap-3 rounded-2xl bg-slate-900 p-4 text-white shadow-2xl">
         <span className="material-symbols-outlined text-2xl text-green-400">system_update</span>
         <div className="flex-1">
           <p className="text-sm font-bold">New version available</p>
-          <p className="text-xs text-[var(--color-outline-variant)]/60">Refresh to get the latest update</p>
+          <p className="text-xs text-[var(--color-outline-variant)]/60">
+            Refresh to get the latest update
+          </p>
         </div>
         <button
           onClick={handleUpdate}
-          className="bg-primary text-on-primary px-4 py-2 rounded-xl text-sm font-bold hover:bg-primary-dim hover:text-on-primary active:scale-95 transition-all shrink-0"
+          className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary shrink-0 rounded-xl px-4 py-2 text-sm font-bold transition-all active:scale-95"
         >
           Update
         </button>

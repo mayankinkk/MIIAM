@@ -21,41 +21,51 @@ export default function QuickBitesSection({ items }: QuickBitesSectionProps) {
 
   return (
     <div className="px-4 py-3">
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="text-lg">💸</span>
-          <h2 className="text-lg font-bold text-on-surface">Quick Bites Under ₹99</h2>
+          <h2 className="text-on-surface text-lg font-bold">Quick Bites Under ₹99</h2>
         </div>
-        <Link href="/app/food?filter=under_99" className="text-xs font-bold text-accent bg-primary/10 px-3 py-1.5 rounded-full">See All</Link>
+        <Link
+          href="/app/food?filter=under_99"
+          className="text-accent bg-primary/10 rounded-full px-3 py-1.5 text-xs font-bold"
+        >
+          See All
+        </Link>
       </div>
       <div className="grid grid-cols-2 gap-3">
         {items.map((item) => (
           <Link
             key={item.id}
             href={`/app/food`}
-            className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm card-glow active:scale-[0.97] transition-all"
+            className="bg-surface-container-lowest card-glow overflow-hidden rounded-2xl shadow-sm transition-all active:scale-[0.97]"
           >
             <div className="relative h-24 overflow-hidden">
               <BlurImage
-                src={item.image_url || "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"}
+                src={
+                  item.image_url ||
+                  "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
+                }
                 alt={item.name}
                 fill
                 className="object-cover"
                 sizes="200px"
                 fallbackSrc="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80"
               />
-              <div className="absolute top-2 right-2 bg-primary text-on-primary text-[10px] font-black px-2 py-1 rounded-full">
+              <div className="bg-primary text-on-primary absolute top-2 right-2 rounded-full px-2 py-1 text-[10px] font-black">
                 ₹{item.price}
               </div>
               {item.is_veg && (
-                <div className="absolute bottom-2 left-2 w-4 h-4 border-2 border-green-600 bg-white rounded-sm flex items-center justify-center">
-                  <div className="w-2 h-2 bg-green-600 rounded-full" />
+                <div className="absolute bottom-2 left-2 flex h-4 w-4 items-center justify-center rounded-sm border-2 border-green-600 bg-white">
+                  <div className="h-2 w-2 rounded-full bg-green-600" />
                 </div>
               )}
             </div>
             <div className="p-2.5">
-              <h3 className="font-bold text-sm text-on-surface line-clamp-1">{item.name}</h3>
-              <p className="text-[10px] text-on-surface-variant truncate mt-0.5">{item.vendor_name}</p>
+              <h3 className="text-on-surface line-clamp-1 text-sm font-bold">{item.name}</h3>
+              <p className="text-on-surface-variant mt-0.5 truncate text-[10px]">
+                {item.vendor_name}
+              </p>
             </div>
           </Link>
         ))}

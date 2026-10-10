@@ -1,13 +1,6 @@
 "use client";
 
-type BadgeVariant =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "warning"
-  | "error"
-  | "info"
-  | "neutral";
+type BadgeVariant = "primary" | "secondary" | "success" | "warning" | "error" | "info" | "neutral";
 type BadgeSize = "sm" | "md" | "lg";
 
 interface BadgeProps {
@@ -20,20 +13,13 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  primary:
-    "bg-[var(--color-primary)]/10 text-[var(--color-accent)]",
-  secondary:
-    "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)]",
-  success:
-    "bg-[var(--color-status-success)]/10 text-[var(--color-status-success)]",
-  warning:
-    "bg-[var(--color-status-warning)]/10 text-[var(--color-status-warning)]",
-  error:
-    "bg-[var(--color-status-error)]/10 text-[var(--color-status-error)]",
-  info:
-    "bg-[var(--color-status-info)]/10 text-[var(--color-status-info)]",
-  neutral:
-    "bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)]",
+  primary: "bg-[var(--color-primary)]/10 text-[var(--color-accent)]",
+  secondary: "bg-[var(--color-secondary)]/10 text-[var(--color-secondary)]",
+  success: "bg-[var(--color-status-success)]/10 text-[var(--color-status-success)]",
+  warning: "bg-[var(--color-status-warning)]/10 text-[var(--color-status-warning)]",
+  error: "bg-[var(--color-status-error)]/10 text-[var(--color-status-error)]",
+  info: "bg-[var(--color-status-info)]/10 text-[var(--color-status-info)]",
+  neutral: "bg-[var(--color-surface-variant)] text-[var(--color-on-surface-variant)]",
 };
 
 const sizeStyles: Record<BadgeSize, string> = {
@@ -62,9 +48,7 @@ function Badge({
   return (
     <span className={classes}>
       {dot && (
-        <span
-          className={`w-1.5 h-1.5 rounded-full bg-current ${pulse ? "animate-pulse" : ""}`}
-        />
+        <span className={`h-1.5 w-1.5 rounded-full bg-current ${pulse ? "animate-pulse" : ""}`} />
       )}
       {children}
     </span>

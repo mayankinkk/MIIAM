@@ -19,15 +19,19 @@ interface RecurringSchedule {
   delivery_time: string | null;
   delivery_address: string | null;
   payment_method: string | null;
-  items: Array<{ menu_item_id: string; name: string; price: number; quantity: number; image_url?: string }>;
+  items: Array<{
+    menu_item_id: string;
+    name: string;
+    price: number;
+    quantity: number;
+    image_url?: string;
+  }>;
   next_delivery_date: string | null;
   last_order_created_at: string | null;
   start_date: string | null;
   end_date: string | null;
   created_at: string;
 }
-
-
 
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -58,16 +62,26 @@ export default function SubscriptionsPage() {
       .order("created_at", { ascending: false });
 
     if (error) {
-      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Failed to load schedules");
+      logger.error(
+        { err: error instanceof Error ? error : new Error(String(error)) },
+        "Failed to load schedules"
+      );
       addToast("Failed to load subscriptions", "error");
     } else {
       setSchedules(data || []);
-      const ids = [...new Set((data || []).map((s: RecurringSchedule) => s.vendor_id).filter(Boolean))];
+      const ids = [
+        ...new Set((data || []).map((s: RecurringSchedule) => s.vendor_id).filter(Boolean)),
+      ];
       if (ids.length > 0) {
-        const { data: vendors } = await supabase.from("vendors").select("id, shop_name").in("id", ids);
+        const { data: vendors } = await supabase
+          .from("vendors")
+          .select("id, shop_name")
+          .in("id", ids);
         if (vendors) {
           const map: Record<string, string> = {};
-          vendors.forEach((v: { id: string; shop_name: string }) => { map[v.id] = v.shop_name; });
+          vendors.forEach((v: { id: string; shop_name: string }) => {
+            map[v.id] = v.shop_name;
+          });
           setVendorNames(map);
         }
       }
@@ -91,10 +105,21 @@ export default function SubscriptionsPage() {
   }
 
   async function cancelSchedule(id: string) {
-    if (!await confirm({ title: "Cancel Subscription", message: "Cancel this recurring subscription?", variant: "danger" })) return;
+    if (
+      !(await confirm({
+        title: "Cancel Subscription",
+        message: "Cancel this recurring subscription?",
+        variant: "danger",
+      }))
+    )
+      return;
     const { error } = await supabase
       .from("recurring_schedules")
-      .update({ status: "cancelled", end_date: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .update({
+        status: "cancelled",
+        end_date: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", id);
 
     if (error) {
@@ -115,35 +140,45 @@ export default function SubscriptionsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface px-6 pt-6" aria-label="Loading...">
+      <div className="bg-surface min-h-screen px-6 pt-6" aria-label="Loading...">
         <ListSkeleton count={3} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-surface pb-24">
-      <header className="bg-surface-container-lowest px-6 py-4 sticky top-0 z-10 shadow-sm">
+    <div className="bg-surface min-h-screen pb-24">
+      <header className="bg-surface-container-lowest sticky top-0 z-10 px-6 py-4 shadow-sm">
         <div className="flex items-center gap-4">
-          <Link href="/app/profile" aria-label="Go back" className="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center">
+          <Link
+            href="/app/profile"
+            aria-label="Go back"
+            className="bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+          >
             <span className="material-symbols-outlined text-on-surface">arrow_back</span>
           </Link>
           <div>
-            <h1 className="text-xl font-black text-on-surface">{t.profile.recurringOrders}</h1>
-            <p className="text-xs text-on-surface-variant">Manage your scheduled subscriptions</p>
+            <h1 className="text-on-surface text-xl font-black">{t.profile.recurringOrders}</h1>
+            <p className="text-on-surface-variant text-xs">Manage your scheduled subscriptions</p>
           </div>
         </div>
       </header>
 
-      <main className="px-6 mt-6 max-w-2xl mx-auto">
+      <main className="mx-auto mt-6 max-w-2xl px-6">
         {schedules.length === 0 ? (
-          <div className="text-center py-20">
-            <span className="material-symbols-outlined text-6xl text-on-surface-variant/30">repeat</span>
-            <p className="text-on-surface-variant font-semibold mt-4">{t.profile.scheduledSubscriptions}</p>
-            <p className="text-xs text-on-surface-variant/60 mt-1">Set up a recurring order during checkout</p>
+          <div className="py-20 text-center">
+            <span className="material-symbols-outlined text-on-surface-variant/30 text-6xl">
+              repeat
+            </span>
+            <p className="text-on-surface-variant mt-4 font-semibold">
+              {t.profile.scheduledSubscriptions}
+            </p>
+            <p className="text-on-surface-variant/60 mt-1 text-xs">
+              Set up a recurring order during checkout
+            </p>
             <Link
               href="/app/store"
-              className="inline-block mt-6 px-6 py-3 bg-primary text-on-primary font-bold rounded-xl hover:opacity-90 transition-all"
+              className="bg-primary text-on-primary mt-6 inline-block rounded-xl px-6 py-3 font-bold transition-all hover:opacity-90"
             >
               {t.common.seeAll}
             </Link>
@@ -155,52 +190,65 @@ export default function SubscriptionsPage() {
               return (
                 <div
                   key={schedule.id}
-                  className={`bg-surface-container-lowest rounded-2xl p-5 shadow-sm border-l-4 ${
+                  className={`bg-surface-container-lowest rounded-2xl border-l-4 p-5 shadow-sm ${
                     schedule.status === "active"
                       ? "border-green-500"
                       : schedule.status === "paused"
-                      ? "border-amber-400"
-                      : "border-[var(--color-outline-variant)]"
+                        ? "border-amber-400"
+                        : "border-[var(--color-outline-variant)]"
                   }`}
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="mb-3 flex items-start justify-between">
                     <div>
-                      <h3 className="font-extrabold text-on-surface">
+                      <h3 className="text-on-surface font-extrabold">
                         {vendorNames[schedule.vendor_id] || "Vendor"}
                       </h3>
-                      <p className="text-sm text-on-surface-variant">{getFrequencyLabel(schedule)}</p>
+                      <p className="text-on-surface-variant text-sm">
+                        {getFrequencyLabel(schedule)}
+                      </p>
                     </div>
                     <span
-                      className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                      className={`rounded-full px-2.5 py-1 text-xs font-bold ${
                         schedule.status === "active"
                           ? "bg-green-100 text-green-700"
                           : schedule.status === "paused"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-surface-container-high text-on-surface-variant"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-surface-container-high text-on-surface-variant"
                       }`}
                     >
                       {schedule.status}
                     </span>
                   </div>
 
-                  <div className="bg-surface rounded-xl p-3 space-y-2 mb-3">
+                  <div className="bg-surface mb-3 space-y-2 rounded-xl p-3">
                     {schedule.items.map((item) => (
                       <div key={item.menu_item_id} className="flex justify-between text-sm">
-                        <span className="text-on-surface font-medium">{item.name} × {item.quantity}</span>
-                        <span className="text-on-surface font-bold">₹{(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="text-on-surface font-medium">
+                          {item.name} × {item.quantity}
+                        </span>
+                        <span className="text-on-surface font-bold">
+                          ₹{(item.price * item.quantity).toFixed(2)}
+                        </span>
                       </div>
                     ))}
-                    <div className="border-t border-outline-variant/20 pt-2 flex justify-between text-sm font-extrabold text-accent">
+                    <div className="border-outline-variant/20 text-accent flex justify-between border-t pt-2 text-sm font-extrabold">
                       <span>{t.cart.total}</span>
                       <span>₹{total.toFixed(2)}</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 text-xs text-on-surface-variant mb-4">
+                  <div className="text-on-surface-variant mb-4 flex flex-wrap gap-2 text-xs">
                     {schedule.next_delivery_date && (
                       <span className="flex items-center gap-1">
-                        <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-                        Next: {new Date(schedule.next_delivery_date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
+                        <span className="material-symbols-outlined text-[14px]">
+                          calendar_month
+                        </span>
+                        Next:{" "}
+                        {new Date(schedule.next_delivery_date).toLocaleDateString("en-IN", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                        })}
                       </span>
                     )}
                     {schedule.delivery_time && (
@@ -215,10 +263,10 @@ export default function SubscriptionsPage() {
                     {(schedule.status === "active" || schedule.status === "paused") && (
                       <button
                         onClick={() => toggleStatus(schedule)}
-                        className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                        className={`flex-1 rounded-xl py-2.5 text-sm font-bold transition-all ${
                           schedule.status === "active"
-                            ? "bg-amber-50 text-amber-700 border border-amber-300 hover:bg-amber-100"
-                            : "bg-green-50 text-green-700 border border-green-300 hover:bg-green-100"
+                            ? "border border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100"
+                            : "border border-green-300 bg-green-50 text-green-700 hover:bg-green-100"
                         }`}
                       >
                         {schedule.status === "active" ? t.common.pause : t.common.resume}
@@ -226,9 +274,9 @@ export default function SubscriptionsPage() {
                     )}
                     <button
                       onClick={() => cancelSchedule(schedule.id)}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-bold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-all"
+                      className="flex-1 rounded-xl border border-red-200 bg-red-50 py-2.5 text-sm font-bold text-red-600 transition-all hover:bg-red-100"
                     >
-{t.common.cancel}
+                      {t.common.cancel}
                     </button>
                   </div>
                 </div>

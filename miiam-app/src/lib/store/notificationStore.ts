@@ -56,16 +56,19 @@ export const useNotificationStore = create<NotificationStore>()(
       addNotification: (notification) =>
         set((state) => ({
           notifications: [
-            { ...notification, id: Date.now().toString(), read: false, createdAt: new Date().toISOString() },
+            {
+              ...notification,
+              id: Date.now().toString(),
+              read: false,
+              createdAt: new Date().toISOString(),
+            },
             ...state.notifications,
           ],
         })),
 
       markAsRead: (id) =>
         set((state) => ({
-          notifications: state.notifications.map((n) =>
-            n.id === id ? { ...n, read: true } : n
-          ),
+          notifications: state.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
         })),
 
       markAllAsRead: () =>
@@ -113,9 +116,10 @@ export const useNotificationStore = create<NotificationStore>()(
 
       setToken: (token) => set({ token }),
 
-      updatePreferences: (prefs) => set((state) => ({
-        preferences: { ...state.preferences, ...prefs },
-      })),
+      updatePreferences: (prefs) =>
+        set((state) => ({
+          preferences: { ...state.preferences, ...prefs },
+        })),
     }),
     { name: "miiam-notifications" }
   )

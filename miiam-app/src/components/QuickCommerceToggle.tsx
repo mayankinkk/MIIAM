@@ -34,38 +34,36 @@ export function QuickCommerceToggle({ onToggle }: QuickCommerceToggleProps) {
   return (
     <button
       onClick={handleToggle}
-      className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all ${
-        isQuickMode 
-          ? "bg-[var(--color-primary)] text-on-primary shadow-lg shadow-[var(--color-primary)]/20" 
-          : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)] border border-[var(--color-border-subtle)]"
+      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-all ${
+        isQuickMode
+          ? "text-on-primary bg-[var(--color-primary)] shadow-[var(--color-primary)]/20 shadow-lg"
+          : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)]"
       }`}
     >
       <span className={`material-symbols-outlined text-lg ${isQuickMode ? "animate-pulse" : ""}`}>
         flash_on
       </span>
       <span>10-min Delivery</span>
-      {isQuickMode && (
-        <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs">
-          ON
-        </span>
-      )}
+      {isQuickMode && <span className="ml-1 rounded-full bg-white/20 px-2 py-0.5 text-xs">ON</span>}
     </button>
   );
 }
 
 export function QuickCommerceBadge() {
   const { isQuickMode } = useQuickCommerceStore();
-  
+
   if (!isQuickMode) return null;
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-[var(--color-primary)] text-on-primary px-4 py-2 rounded-full font-bold text-sm shadow-lg flex items-center gap-2 z-40"
-      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}>
-      <span className="material-symbols-outlined text-lg animate-pulse">flash_on</span>
+    <div
+      className="text-on-primary fixed bottom-20 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-bold shadow-lg"
+      style={{ marginBottom: "env(safe-area-inset-bottom, 0px)" }}
+    >
+      <span className="material-symbols-outlined animate-pulse text-lg">flash_on</span>
       <span>10-min delivery</span>
-      <button 
+      <button
         onClick={() => useQuickCommerceStore.getState().setQuickMode(false)}
-        className="ml-2 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30"
+        className="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/30"
       >
         <span className="material-symbols-outlined text-sm">close</span>
       </button>

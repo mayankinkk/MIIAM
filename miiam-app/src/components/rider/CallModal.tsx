@@ -24,24 +24,31 @@ export default function CallModal({ open, onClose, name, phone }: CallModalProps
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div role="dialog" aria-modal="true" aria-labelledby="call-modal-title" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 id="call-modal-title" className="font-bold text-lg">{t.rider.callModal.call}</h3>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="call-modal-title"
+        className="w-full max-w-sm rounded-2xl bg-[var(--color-surface-container-lowest)] p-6"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h3 id="call-modal-title" className="text-lg font-bold">
+            {t.rider.callModal.call}
+          </h3>
           <button onClick={onClose} aria-label="Close">
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
-        <div className="text-center py-6">
-          <div className="w-16 h-16 bg-brand-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="py-6 text-center">
+          <div className="bg-brand-secondary/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
             <span className="material-symbols-outlined text-brand-secondary text-3xl">person</span>
           </div>
-           <p className="font-bold mb-1">{name || t.rider.callModal.vendor}</p>
+          <p className="mb-1 font-bold">{name || t.rider.callModal.vendor}</p>
           <p className="text-sm text-[var(--color-outline)]">{phone}</p>
         </div>
         <a
           href={`tel:${phone}`}
-          className="w-full py-4 bg-status-success text-white font-bold rounded-xl flex items-center justify-center gap-2"
+          className="bg-status-success flex w-full items-center justify-center gap-2 rounded-xl py-4 font-bold text-white"
         >
           <span className="material-symbols-outlined">call</span>
           {t.rider.callModal.callNow}

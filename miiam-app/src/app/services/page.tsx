@@ -90,9 +90,24 @@ const stats = [
 ];
 
 const whyChooseUs = [
-  { icon: "verified_user", title: "Verified Experts", desc: "Background-checked professionals", color: "bg-green-100 text-green-600" },
-  { icon: "schedule", title: "Flexible Scheduling", desc: "Book at your convenience", color: "bg-accent/10 text-accent" },
-  { icon: "support_agent", title: "24/7 Support", desc: "Round-the-clock assistance", color: "bg-accent/10 text-accent" },
+  {
+    icon: "verified_user",
+    title: "Verified Experts",
+    desc: "Background-checked professionals",
+    color: "bg-green-100 text-green-600",
+  },
+  {
+    icon: "schedule",
+    title: "Flexible Scheduling",
+    desc: "Book at your convenience",
+    color: "bg-accent/10 text-accent",
+  },
+  {
+    icon: "support_agent",
+    title: "24/7 Support",
+    desc: "Round-the-clock assistance",
+    color: "bg-accent/10 text-accent",
+  },
 ];
 
 export default function ServicesLandingPage() {
@@ -105,49 +120,53 @@ export default function ServicesLandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-[var(--color-surface-container-lowest)] to-white">
       {/* Hero Section */}
-      <div className="relative pt-20 pb-12 px-6 text-center">
-        <div className="transition-all duration-700 opacity-100 translate-y-0">
-          <span className="inline-block text-sm font-bold text-[var(--color-accent)] bg-[var(--color-primary)]/10 px-4 py-1.5 rounded-full mb-4">
+      <div className="relative px-6 pt-20 pb-12 text-center">
+        <div className="translate-y-0 opacity-100 transition-all duration-700">
+          <span className="mb-4 inline-block rounded-full bg-[var(--color-primary)]/10 px-4 py-1.5 text-sm font-bold text-[var(--color-accent)]">
             Professional Home Services
           </span>
-          <h1 className="text-4xl md:text-5xl font-black text-[var(--color-on-surface)] mb-3 leading-tight">
+          <h1 className="mb-3 text-4xl leading-tight font-black text-[var(--color-on-surface)] md:text-5xl">
             Expert Services,
             <br />
             <span className="text-[var(--color-accent)]">At Your Doorstep</span>
           </h1>
-          <p className="text-[var(--color-outline)] text-lg max-w-md mx-auto">
+          <p className="mx-auto max-w-md text-lg text-[var(--color-outline)]">
             Book trusted professionals for home repair, cleaning, beauty & more
           </p>
         </div>
 
         {/* Stats Bar */}
-        <div className="flex justify-center gap-6 mt-10 transition-all duration-700 delay-300 opacity-100 translate-y-0">
+        <div className="mt-10 flex translate-y-0 justify-center gap-6 opacity-100 transition-all delay-300 duration-700">
           {stats.map((stat, i) => (
             <div key={i} className="text-center">
-              <div className="w-10 h-10 mx-auto rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center mb-2">
-                <span className="material-symbols-outlined text-[var(--color-accent)] text-lg">{stat.icon}</span>
+              <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-primary)]/10">
+                <span className="material-symbols-outlined text-lg text-[var(--color-accent)]">
+                  {stat.icon}
+                </span>
               </div>
-              <p className="font-black text-[var(--color-on-surface)] text-sm">{stat.number}</p>
-              <p className="text-[10px] text-[var(--color-outline)] font-medium">{stat.label}</p>
+              <p className="text-sm font-black text-[var(--color-on-surface)]">{stat.number}</p>
+              <p className="text-[10px] font-medium text-[var(--color-outline)]">{stat.label}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Services Grid */}
-      <div className="relative max-w-7xl mx-auto px-6 pb-20">
-        <div className="text-center mb-12 transition-all duration-1000 delay-300 opacity-100 translate-y-0">
-          <h2 className="text-3xl md:text-4xl font-black text-[var(--color-on-surface)] mb-3">Choose Your Service</h2>
+      <div className="relative mx-auto max-w-7xl px-6 pb-20">
+        <div className="mb-12 translate-y-0 text-center opacity-100 transition-all delay-300 duration-1000">
+          <h2 className="mb-3 text-3xl font-black text-[var(--color-on-surface)] md:text-4xl">
+            Choose Your Service
+          </h2>
           <p className="text-[var(--color-outline)]">Tap a card to explore and book</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {serviceCategories.map((category, index) => (
             <div
               key={category.id}
-              className="group relative transition-all duration-700 cursor-pointer opacity-100 translate-y-0"
+              className="group relative translate-y-0 cursor-pointer opacity-100 transition-all duration-700"
               style={{ transitionDelay: `${index * 100 + 200}ms` }}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
@@ -164,11 +183,11 @@ export default function ServicesLandingPage() {
             >
               {/* Card Glow */}
               <div
-                className={`absolute -inset-0.5 rounded-3xl opacity-0 transition-opacity duration-500 blur-xl bg-gradient-to-r ${category.gradient} ${hoveredCard === index ? "opacity-100" : ""}`}
+                className={`absolute -inset-0.5 rounded-3xl bg-gradient-to-r opacity-0 blur-xl transition-opacity duration-500 ${category.gradient} ${hoveredCard === index ? "opacity-100" : ""}`}
               />
 
               {/* Card Content */}
-              <div className="relative bg-[var(--color-surface-container-lowest)] rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2">
+              <div className="relative overflow-hidden rounded-3xl bg-[var(--color-surface-container-lowest)] shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
                 {/* Image Section */}
                 <div className="relative h-48 overflow-hidden">
                   <BlurImage
@@ -182,7 +201,7 @@ export default function ServicesLandingPage() {
 
                   {/* Floating Icon */}
                   <div
-                    className={`absolute top-4 right-4 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-lg ${hoveredCard === index ? "scale-110 rotate-12" : ""} ${
+                    className={`absolute top-4 right-4 flex h-14 w-14 items-center justify-center rounded-2xl shadow-lg transition-all duration-500 ${hoveredCard === index ? "scale-110 rotate-12" : ""} ${
                       category.color === "pink"
                         ? "bg-pink-500"
                         : category.color === "blue"
@@ -196,48 +215,68 @@ export default function ServicesLandingPage() {
                                 : "bg-accent"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>
+                    <span
+                      className="material-symbols-outlined text-white"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
                       {category.icon}
                     </span>
                   </div>
 
                   {/* Price Tag */}
                   <div className="absolute bottom-4 left-4">
-                    <span className="text-sm font-bold text-white bg-black/40 backdrop-blur px-3 py-1 rounded-full">{category.price}</span>
+                    <span className="rounded-full bg-black/40 px-3 py-1 text-sm font-bold text-white backdrop-blur">
+                      {category.price}
+                    </span>
                   </div>
                 </div>
 
                 {/* Content Section */}
                 <div className="p-5">
                   <div className="mb-2">
-                    <span className="text-xs font-medium text-[var(--color-accent)] uppercase tracking-wider">{category.subtitle}</span>
+                    <span className="text-xs font-medium tracking-wider text-[var(--color-accent)] uppercase">
+                      {category.subtitle}
+                    </span>
                   </div>
-                  <h3 className="text-xl font-black text-[var(--color-on-surface)] mb-2">{category.title}</h3>
-                  <p className="text-sm text-[var(--color-outline)] mb-4">{category.description}</p>
+                  <h3 className="mb-2 text-xl font-black text-[var(--color-on-surface)]">
+                    {category.title}
+                  </h3>
+                  <p className="mb-4 text-sm text-[var(--color-outline)]">{category.description}</p>
 
                   {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="mb-4 flex flex-wrap gap-2">
                     {category.services.slice(0, 3).map((service, i) => (
-                      <span key={i} className="text-xs font-medium text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] px-3 py-1 rounded-full">
+                      <span
+                        key={i}
+                        className="rounded-full bg-[var(--color-surface-container)] px-3 py-1 text-xs font-medium text-[var(--color-on-surface-variant)]"
+                      >
                         {service}
                       </span>
                     ))}
                     {category.services.length > 3 && (
-                      <span className="text-xs font-medium text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-3 py-1 rounded-full">
+                      <span className="rounded-full bg-[var(--color-surface-container)] px-3 py-1 text-xs font-medium text-[var(--color-outline-variant)]">
                         +{category.services.length - 3}
                       </span>
                     )}
                   </div>
 
                   {/* CTA */}
-                  <div className={`flex items-center gap-2 text-sm font-bold transition-all duration-300 ${hoveredCard === index ? "text-[var(--color-accent)]" : "text-[var(--color-outline-variant)]"}`}>
+                  <div
+                    className={`flex items-center gap-2 text-sm font-bold transition-all duration-300 ${hoveredCard === index ? "text-[var(--color-accent)]" : "text-[var(--color-outline-variant)]"}`}
+                  >
                     <span>Explore</span>
-                    <span className={`material-symbols-outlined transition-transform duration-300 ${hoveredCard === index ? "translate-x-1" : ""}`}>arrow_forward</span>
+                    <span
+                      className={`material-symbols-outlined transition-transform duration-300 ${hoveredCard === index ? "translate-x-1" : ""}`}
+                    >
+                      arrow_forward
+                    </span>
                   </div>
                 </div>
 
                 {/* Hover Border Effect */}
-                <div className={`absolute inset-0 rounded-3xl border-2 border-transparent transition-all duration-500 pointer-events-none ${hoveredCard === index ? "border-[var(--color-primary)]/30" : ""}`} />
+                <div
+                  className={`pointer-events-none absolute inset-0 rounded-3xl border-2 border-transparent transition-all duration-500 ${hoveredCard === index ? "border-[var(--color-primary)]/30" : ""}`}
+                />
               </div>
             </div>
           ))}
@@ -246,21 +285,31 @@ export default function ServicesLandingPage() {
 
       {/* Why Choose Us */}
       <div className="bg-[var(--color-surface-container-lowest)] py-16">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-[var(--color-on-surface)] mb-3">Why MIIAM?</h2>
-            <p className="text-[var(--color-outline)]">We bring the best service experience to your home</p>
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="mb-12 text-center">
+            <h2 className="mb-3 text-3xl font-black text-[var(--color-on-surface)]">Why MIIAM?</h2>
+            <p className="text-[var(--color-outline)]">
+              We bring the best service experience to your home
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-6 md:grid-cols-3">
             {whyChooseUs.map((item, i) => (
-              <div key={i} className="text-center p-6 rounded-2xl hover:bg-[var(--color-surface-container-lowest)] transition-colors">
-                <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4 ${item.color}`}>
-                  <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <div
+                key={i}
+                className="rounded-2xl p-6 text-center transition-colors hover:bg-[var(--color-surface-container-lowest)]"
+              >
+                <div
+                  className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl ${item.color}`}
+                >
+                  <span
+                    className="material-symbols-outlined text-2xl"
+                    style={{ fontVariationSettings: "'FILL' 1" }}
+                  >
                     {item.icon}
                   </span>
                 </div>
-                <h3 className="font-bold text-[var(--color-on-surface)] mb-2">{item.title}</h3>
+                <h3 className="mb-2 font-bold text-[var(--color-on-surface)]">{item.title}</h3>
                 <p className="text-sm text-[var(--color-outline)]">{item.desc}</p>
               </div>
             ))}
@@ -269,31 +318,35 @@ export default function ServicesLandingPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="relative py-20 px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative p-12 rounded-3xl overflow-hidden text-center">
+      <div className="relative px-6 py-20">
+        <div className="mx-auto max-w-4xl">
+          <div className="relative overflow-hidden rounded-3xl p-12 text-center">
             {/* Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary-dim" />
+            <div className="from-primary to-primary-dim absolute inset-0 bg-gradient-to-r" />
             <div className="absolute inset-0 opacity-20">
-              <div className="absolute top-0 right-0 w-64 h-64 border border-white/20 rounded-full" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 border border-white/20 rounded-full" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-white/10 rounded-full" />
+              <div className="absolute top-0 right-0 h-64 w-64 rounded-full border border-white/20" />
+              <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full border border-white/20" />
+              <div className="absolute top-1/2 left-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
             </div>
 
             {/* Content */}
             <div className="relative">
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">Need something else?</h2>
-              <p className="text-white/70 mb-8 text-lg">We constantly add new services. Let us know what you need!</p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <h2 className="mb-4 text-3xl font-black text-white md:text-4xl">
+                Need something else?
+              </h2>
+              <p className="mb-8 text-lg text-white/70">
+                We constantly add new services. Let us know what you need!
+              </p>
+              <div className="flex flex-col justify-center gap-4 sm:flex-row">
                 <Link
                   href="/app/services"
-                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)] rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/90 transition-all hover:scale-105"
+                  className="rounded-2xl bg-[var(--color-surface-container-lowest)] px-8 py-4 font-bold text-[var(--color-accent)] transition-all hover:scale-105 hover:bg-[var(--color-surface-container-lowest)]/90"
                 >
                   Browse All Services
                 </Link>
                 <Link
                   href="/app/support/chat"
-                  className="px-8 py-4 bg-[var(--color-surface-container-lowest)]/10 text-white border-2 border-white/20 rounded-2xl font-bold hover:bg-[var(--color-surface-container-lowest)]/20 transition-all"
+                  className="rounded-2xl border-2 border-white/20 bg-[var(--color-surface-container-lowest)]/10 px-8 py-4 font-bold text-white transition-all hover:bg-[var(--color-surface-container-lowest)]/20"
                 >
                   Request a Service
                 </Link>

@@ -36,23 +36,36 @@ export default function LiveChatSupport() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
-      if (user) setCurrentUserId(user.id);
-    });
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }: { data: { user: { id: string } | null } }) => {
+        if (user) setCurrentUserId(user.id);
+      });
   }, [supabase]);
 
   useEffect(() => {
     loadConversations();
-    const channel = supabase.channel("admin-support")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" }, () => {
-        loadConversations();
-        if (selectedConv) loadMessages(selectedConv);
-      })
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_conversations" }, () => {
-        loadConversations();
-      })
+    const channel = supabase
+      .channel("admin-support")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "support_messages" },
+        () => {
+          loadConversations();
+          if (selectedConv) loadMessages(selectedConv);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "support_conversations" },
+        () => {
+          loadConversations();
+        }
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [supabase, selectedConv]);
 
   async function loadConversations() {
@@ -62,7 +75,10 @@ export default function LiveChatSupport() {
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (!convs) { setLoading(false); return; }
+      if (!convs) {
+        setLoading(false);
+        return;
+      }
 
       const enriched = await Promise.all(
         convs.map(async (conv: SupportConversation) => {
@@ -118,12 +134,24 @@ export default function LiveChatSupport() {
   useEffect(() => {
     if (selectedConv) {
       loadMessages(selectedConv);
-      const channel = supabase.channel(`support-msg-${selectedConv}`)
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages", filter: `conversation_id=eq.${selectedConv}` }, () => {
-          loadMessages(selectedConv);
-        })
+      const channel = supabase
+        .channel(`support-msg-${selectedConv}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "support_messages",
+            filter: `conversation_id=eq.${selectedConv}`,
+          },
+          () => {
+            loadMessages(selectedConv);
+          }
+        )
         .subscribe();
-      return () => { supabase.removeChannel(channel); };
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [selectedConv, supabase]);
 
@@ -151,59 +179,97 @@ export default function LiveChatSupport() {
     loadConversations();
   }
 
-  if (loading) return <div className="px-8 py-4 text-[var(--color-outline-variant)]">Loading conversations...</div>;
+  if (loading)
+    return (
+      <div className="px-8 py-4 text-[var(--color-outline-variant)]">Loading conversations...</div>
+    );
 
   return (
     <div className="px-8">
-      <div className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Live Chat Support</div>
-      <p className="text-sm text-[var(--color-outline-variant)] mb-8">Customer support conversations from the chatbot</p>
+      <div className="mb-2 text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+        Live Chat Support
+      </div>
+      <p className="mb-8 text-sm text-[var(--color-outline-variant)]">
+        Customer support conversations from the chatbot
+      </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+      <div className="grid h-[calc(100vh-200px)] grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Conversation List */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm">
-          <div className="p-4 border-b border-[var(--color-border-subtle)]">
-            <h2 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">Conversations</h2>
+        <div className="overflow-hidden rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm">
+          <div className="border-b border-[var(--color-border-subtle)] p-4">
+            <h2 className="text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Conversations
+            </h2>
           </div>
-          <div className="overflow-y-auto h-full">
+          <div className="h-full overflow-y-auto">
             {conversations.length === 0 ? (
               <div className="p-8 text-center text-[var(--color-outline-variant)]">
-                <span className="material-symbols-outlined text-4xl mb-2">support_agent</span>
+                <span className="material-symbols-outlined mb-2 text-4xl">support_agent</span>
                 <p>No conversations yet</p>
-                <p className="text-xs mt-1">When customers chat with the bot and need human help, they&apos;ll appear here</p>
+                <p className="mt-1 text-xs">
+                  When customers chat with the bot and need human help, they&apos;ll appear here
+                </p>
               </div>
             ) : (
-              conversations.map(conv => (
+              conversations.map((conv) => (
                 <button
                   key={conv.id}
-                  onClick={() => { setSelectedConv(conv.id); }}
-                  className={`w-full p-4 text-left border-b border-slate-50 hover:bg-[var(--color-surface-subtle)] transition-colors ${
-                    selectedConv === conv.id ? "bg-[var(--color-primary)]/5 border-l-4 border-l-[var(--color-primary)]" : ""
+                  onClick={() => {
+                    setSelectedConv(conv.id);
+                  }}
+                  className={`w-full border-b border-slate-50 p-4 text-left transition-colors hover:bg-[var(--color-surface-subtle)] ${
+                    selectedConv === conv.id
+                      ? "border-l-4 border-l-[var(--color-primary)] bg-[var(--color-primary)]/5"
+                      : ""
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="mb-1 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full ${
-                        conv.status === "open" ? "bg-green-500 animate-pulse" :
-                        conv.status === "pending" ? "bg-amber-500" :
-                        conv.status === "resolved" ? "bg-accent" : "bg-gray-400"
-                      }`} />
-                      <span className="font-bold text-[var(--color-on-surface)] text-sm">{conv.user_name}</span>
+                      <span
+                        className={`h-2 w-2 rounded-full ${
+                          conv.status === "open"
+                            ? "animate-pulse bg-green-500"
+                            : conv.status === "pending"
+                              ? "bg-amber-500"
+                              : conv.status === "resolved"
+                                ? "bg-accent"
+                                : "bg-gray-400"
+                        }`}
+                      />
+                      <span className="text-sm font-bold text-[var(--color-on-surface)]">
+                        {conv.user_name}
+                      </span>
                     </div>
                     {conv.unreadCount > 0 && (
-                      <span className="bg-primary text-on-primary text-[10px] font-bold px-2 py-0.5 rounded-full">{conv.unreadCount}</span>
+                      <span className="bg-primary text-on-primary rounded-full px-2 py-0.5 text-[10px] font-bold">
+                        {conv.unreadCount}
+                      </span>
                     )}
                   </div>
-                  <p className="text-xs text-[var(--color-outline-variant)] mb-1">{conv.user_phone}</p>
-                  <p className="text-sm text-[var(--color-outline)] truncate">{conv.lastMessage}</p>
-                  <div className="flex items-center justify-between mt-1">
+                  <p className="mb-1 text-xs text-[var(--color-outline-variant)]">
+                    {conv.user_phone}
+                  </p>
+                  <p className="truncate text-sm text-[var(--color-outline)]">{conv.lastMessage}</p>
+                  <div className="mt-1 flex items-center justify-between">
                     <p className="text-[10px] text-[var(--color-outline-variant)]">
-                      {new Date(conv.created_at).toLocaleString("en-IN", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" })}
+                      {new Date(conv.created_at).toLocaleString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        day: "numeric",
+                        month: "short",
+                      })}
                     </p>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      conv.status === "open" ? "bg-green-100 text-green-700" :
-                      conv.status === "pending" ? "bg-amber-100 text-amber-700" :
-                      conv.status === "resolved" ? "bg-deal/10 text-deal" : "bg-gray-100 text-gray-700"
-                    }`}>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                        conv.status === "open"
+                          ? "bg-green-100 text-green-700"
+                          : conv.status === "pending"
+                            ? "bg-amber-100 text-amber-700"
+                            : conv.status === "resolved"
+                              ? "bg-deal/10 text-deal"
+                              : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
                       {conv.status}
                     </span>
                   </div>
@@ -214,24 +280,24 @@ export default function LiveChatSupport() {
         </div>
 
         {/* Chat Window */}
-        <div className="lg:col-span-2 bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] overflow-hidden shadow-sm flex flex-col">
+        <div className="flex flex-col overflow-hidden rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] shadow-sm lg:col-span-2">
           {selectedConv ? (
             <>
-              <div className="p-4 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
+              <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] p-4">
                 <div>
                   <h2 className="font-black text-[var(--color-on-surface)]">
-                    {conversations.find(c => c.id === selectedConv)?.user_name || "User"}
+                    {conversations.find((c) => c.id === selectedConv)?.user_name || "User"}
                   </h2>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
                     <span className="text-xs text-[var(--color-outline-variant)]">Online</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <select
-                    value={conversations.find(c => c.id === selectedConv)?.status || "open"}
+                    value={conversations.find((c) => c.id === selectedConv)?.status || "open"}
                     onChange={(e) => updateStatus(selectedConv, e.target.value)}
-                    className="text-xs font-bold px-3 py-1.5 rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]"
+                    className="rounded-lg border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-3 py-1.5 text-xs font-bold"
                   >
                     <option value="open">Open</option>
                     <option value="pending">Pending</option>
@@ -246,34 +312,39 @@ export default function LiveChatSupport() {
                   </button>
                 </div>
               </div>
-              <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                {messages.map(msg => (
+              <div className="flex-1 space-y-4 overflow-y-auto p-4">
+                {messages.map((msg) => (
                   <div
                     key={msg.id}
                     className={`flex ${msg.sender_type === "support" ? "justify-end" : "justify-start"}`}
                   >
                     {msg.sender_type !== "support" && (
-                      <div className="w-8 h-8 bg-slate-300 rounded-full flex items-center justify-center text-white text-xs font-black mr-2 flex-shrink-0 mt-auto">
+                      <div className="mt-auto mr-2 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-300 text-xs font-black text-white">
                         {msg.sender_type === "user" ? "👤" : "M"}
                       </div>
                     )}
                     <div
-                      className={`max-w-[75%] p-3 rounded-2xl ${
+                      className={`max-w-[75%] rounded-2xl p-3 ${
                         msg.sender_type === "support"
-                          ? "bg-[var(--color-primary)] text-on-primary rounded-br-md"
-                          : "bg-[var(--color-surface-container)] text-[var(--color-on-surface)] rounded-bl-md"
+                          ? "text-on-primary rounded-br-md bg-[var(--color-primary)]"
+                          : "rounded-bl-md bg-[var(--color-surface-container)] text-[var(--color-on-surface)]"
                       }`}
                     >
                       <p className="text-sm whitespace-pre-line">{msg.message}</p>
-                      <p className={`text-[10px] mt-1 ${msg.sender_type === "support" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}>
-                        {new Date(msg.created_at).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
+                      <p
+                        className={`mt-1 text-[10px] ${msg.sender_type === "support" ? "text-white/60" : "text-[var(--color-outline-variant)]"}`}
+                      >
+                        {new Date(msg.created_at).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </p>
                     </div>
                   </div>
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-              <div className="p-4 border-t border-[var(--color-border-subtle)]">
+              <div className="border-t border-[var(--color-border-subtle)] p-4">
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -281,11 +352,11 @@ export default function LiveChatSupport() {
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                     placeholder="Type a reply..."
-                    className="flex-1 bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/10"
+                    className="flex-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-4 py-3 focus:ring-2 focus:ring-[var(--color-primary)]/10 focus:outline-none"
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 bg-primary text-on-primary rounded-xl hover:bg-primary-dim"
+                    className="bg-primary text-on-primary hover:bg-primary-dim rounded-xl px-4"
                   >
                     <span className="material-symbols-outlined">send</span>
                   </button>
@@ -293,11 +364,13 @@ export default function LiveChatSupport() {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-[var(--color-outline-variant)]">
+            <div className="flex flex-1 items-center justify-center text-[var(--color-outline-variant)]">
               <div className="text-center">
-                <span className="material-symbols-outlined text-6xl mb-2">support_agent</span>
+                <span className="material-symbols-outlined mb-2 text-6xl">support_agent</span>
                 <p>Select a conversation to start</p>
-                <p className="text-xs mt-2">Conversations appear here when customers need human support</p>
+                <p className="mt-2 text-xs">
+                  Conversations appear here when customers need human support
+                </p>
               </div>
             </div>
           )}

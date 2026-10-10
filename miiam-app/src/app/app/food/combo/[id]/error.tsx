@@ -10,19 +10,19 @@ export default function ComboError({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-surface p-6">
-      <p className="text-xl font-black text-on-surface mb-2">Something went wrong</p>
-      <p className="text-sm text-on-surface-variant mb-4">{error.message}</p>
+    <div className="bg-surface flex min-h-screen flex-col items-center justify-center p-6">
+      <p className="text-on-surface mb-2 text-xl font-black">Something went wrong</p>
+      <p className="text-on-surface-variant mb-4 text-sm">{error.message}</p>
       <div className="flex gap-3">
         <button
           onClick={reset}
-          className="px-4 py-2 bg-primary text-on-primary rounded-xl font-bold text-sm"
+          className="bg-primary text-on-primary rounded-xl px-4 py-2 text-sm font-bold"
         >
           Try again
         </button>
         <Link
           href="/app/home"
-          className="px-4 py-2 bg-surface-container rounded-xl font-bold text-sm text-on-surface"
+          className="bg-surface-container text-on-surface rounded-xl px-4 py-2 text-sm font-bold"
         >
           Go home
         </Link>

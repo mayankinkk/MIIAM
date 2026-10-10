@@ -7,7 +7,10 @@ interface CheckoutPaymentMethodsProps {
   onChange: (method: string) => void;
 }
 
-export default function CheckoutPaymentMethods({ paymentMethod, onChange }: CheckoutPaymentMethodsProps) {
+export default function CheckoutPaymentMethods({
+  paymentMethod,
+  onChange,
+}: CheckoutPaymentMethodsProps) {
   const { t } = useTranslation();
 
   const methods = [
@@ -15,16 +18,16 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
   ];
 
   return (
-    <section className="px-4 py-4 border-b border-outline-variant/60">
-      <div className="flex items-center gap-2 mb-1">
+    <section className="border-outline-variant/60 border-b px-4 py-4">
+      <div className="mb-1 flex items-center gap-2">
         <span className="material-symbols-outlined text-accent text-[20px]">payments</span>
-        <h2 className="text-[15px] font-bold text-on-surface">{t.checkout.paymentMethod}</h2>
+        <h2 className="text-on-surface text-[15px] font-bold">{t.checkout.paymentMethod}</h2>
       </div>
-      <div className="divide-y divide-outline-variant/40">
+      <div className="divide-outline-variant/40 divide-y">
         {methods.map((pm) => (
           <label
             key={pm.id}
-            className={`flex items-center gap-3 py-3 cursor-pointer transition-colors ${
+            className={`flex cursor-pointer items-center gap-3 py-3 transition-colors ${
               paymentMethod === pm.id ? "" : "opacity-70 hover:opacity-100"
             }`}
           >
@@ -33,12 +36,18 @@ export default function CheckoutPaymentMethods({ paymentMethod, onChange }: Chec
               name="payment"
               checked={paymentMethod === pm.id}
               onChange={() => onChange(pm.id)}
-              className="w-5 h-5 text-accent accent-[var(--color-accent)] shrink-0"
+              className="text-accent h-5 w-5 shrink-0 accent-[var(--color-accent)]"
             />
-            <span className="material-symbols-outlined text-on-surface-variant shrink-0">{pm.icon}</span>
+            <span className="material-symbols-outlined text-on-surface-variant shrink-0">
+              {pm.icon}
+            </span>
             <div className="min-w-0">
-              <p className={`text-sm truncate ${paymentMethod === pm.id ? "font-bold text-on-surface" : "font-medium text-on-surface"}`}>{pm.label}</p>
-              <p className="text-xs text-on-surface-variant truncate">{pm.sub}</p>
+              <p
+                className={`truncate text-sm ${paymentMethod === pm.id ? "text-on-surface font-bold" : "text-on-surface font-medium"}`}
+              >
+                {pm.label}
+              </p>
+              <p className="text-on-surface-variant truncate text-xs">{pm.sub}</p>
             </div>
           </label>
         ))}

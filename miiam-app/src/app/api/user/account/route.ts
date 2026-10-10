@@ -11,13 +11,16 @@ export async function DELETE(request: NextRequest) {
   }
 
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 3, 60 * 1000)) {
+  if (!(await checkIpRateLimit(ip, 3, 60 * 1000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -26,7 +29,11 @@ export async function DELETE(request: NextRequest) {
 
     // Delete user data across tables (ignore errors for tables that may not exist)
     const safeDelete = async (table: string, column: string, value: string) => {
-      try { await admin.from(table).delete().eq(column, value); } catch { /* table may not exist */ }
+      try {
+        await admin.from(table).delete().eq(column, value);
+      } catch {
+        /* table may not exist */
+      }
     };
     await safeDelete("notifications", "user_id", user.id);
     await safeDelete("reviews", "user_id", user.id);
@@ -41,10 +48,19 @@ export async function DELETE(request: NextRequest) {
     const { error: deleteError } = await admin.auth.admin.deleteUser(user.id);
     if (deleteError) {
       logger.error({ err: deleteError }, "Failed to delete auth user");
-      return NextResponse.json({ error: "Failed to delete auth account. Data has been removed but the auth account still exists." }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Failed to delete auth account. Data has been removed but the auth account still exists.",
+        },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true, message: "Account and all data permanently deleted." });
+    return NextResponse.json({
+      success: true,
+      message: "Account and all data permanently deleted.",
+    });
   } catch (e) {
     logger.error({ err: e }, "Account deletion error");
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -9,32 +9,39 @@ interface CancelOrderModalProps {
   onClose: () => void;
 }
 
-export default function CancelOrderModal({ open, reasons, onSelectReason, onClose }: CancelOrderModalProps) {
+export default function CancelOrderModal({
+  open,
+  reasons,
+  onSelectReason,
+  onClose,
+}: CancelOrderModalProps) {
   const { t } = useTranslation();
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-sm p-4">
-        <h3 className="font-bold text-lg mb-4">{t.rider.modals.declineOrder}</h3>
-        <p className="text-sm text-[var(--color-outline)] mb-4">{t.rider.modals.declineOrderReason}</p>
-        <div className="space-y-2 max-h-60 overflow-y-auto">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+      <div className="w-full max-w-sm rounded-2xl bg-[var(--color-surface-container-lowest)] p-4">
+        <h3 className="mb-4 text-lg font-bold">{t.rider.modals.declineOrder}</h3>
+        <p className="mb-4 text-sm text-[var(--color-outline)]">
+          {t.rider.modals.declineOrderReason}
+        </p>
+        <div className="max-h-60 space-y-2 overflow-y-auto">
           {reasons.map((reason) => (
             <button
               key={reason}
               onClick={() => onSelectReason(reason)}
-              className="w-full text-left p-3 bg-[var(--color-surface-subtle)] rounded-xl hover:bg-[var(--color-surface-container)] text-sm"
+              className="w-full rounded-xl bg-[var(--color-surface-subtle)] p-3 text-left text-sm hover:bg-[var(--color-surface-container)]"
             >
               {reason}
             </button>
           ))}
         </div>
-        <button 
+        <button
           onClick={onClose}
-          className="w-full mt-4 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl"
+          className="mt-4 w-full rounded-xl bg-[var(--color-surface-container-high)] py-3 font-bold text-[var(--color-on-surface-variant)]"
         >
-{t.common.cancel}
+          {t.common.cancel}
         </button>
       </div>
     </div>

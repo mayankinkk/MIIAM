@@ -36,7 +36,7 @@ export function ReorderButton({ order }: ReorderButtonProps) {
 
   const handleReorder = async () => {
     setLoading(true);
-    
+
     try {
       const { data: menuItems } = await supabase
         .from("menu_items")
@@ -50,29 +50,36 @@ export function ReorderButton({ order }: ReorderButtonProps) {
       }
 
       for (const orderItem of order.items) {
-        const menuItem = menuItems.find((m: { id: string; name: string; price: number; image_url: string; vendor_id: string }) =>
-          m.name.toLowerCase() === orderItem.name.toLowerCase()
+        const menuItem = menuItems.find(
+          (m: { id: string; name: string; price: number; image_url: string; vendor_id: string }) =>
+            m.name.toLowerCase() === orderItem.name.toLowerCase()
         );
-        
+
         if (menuItem) {
-          addItem({
-            id: menuItem.id,
-            menu_item_id: menuItem.id,
-            vendor_id: menuItem.vendor_id,
-            vendor_name: order.vendor_name,
-            name: menuItem.name,
-            price: menuItem.price,
-            image_url: menuItem.image_url,
-          }, orderItem.quantity);
+          addItem(
+            {
+              id: menuItem.id,
+              menu_item_id: menuItem.id,
+              vendor_id: menuItem.vendor_id,
+              vendor_name: order.vendor_name,
+              name: menuItem.name,
+              price: menuItem.price,
+              image_url: menuItem.image_url,
+            },
+            orderItem.quantity
+          );
         }
       }
 
       router.push("/app/cart");
     } catch (error) {
-      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Reorder error");
+      logger.error(
+        { err: error instanceof Error ? error : new Error(String(error)) },
+        "Reorder error"
+      );
       addToast("Failed to reorder. Please try again.", "error");
     }
-    
+
     setLoading(false);
   };
 
@@ -80,11 +87,11 @@ export function ReorderButton({ order }: ReorderButtonProps) {
     <button
       onClick={handleReorder}
       disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+      className="text-on-primary flex items-center gap-2 rounded-xl bg-[var(--color-primary)] px-4 py-2 text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-50"
     >
       {loading ? (
         <>
-          <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
+          <span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>
           Adding...
         </>
       ) : (
@@ -103,47 +110,57 @@ interface OrderHistoryCardProps {
 
 export function OrderHistoryCard({ order }: OrderHistoryCardProps) {
   const date = new Date(order.created_at);
-  
+
   return (
-    <div className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 shadow-sm">
-      <div className="flex justify-between items-start mb-3">
+    <div className="rounded-xl bg-[var(--color-surface-container-lowest)] p-4 shadow-sm">
+      <div className="mb-3 flex items-start justify-between">
         <div>
-          <Link href={`/app/vendor/${order.vendor_id}`} className="font-bold text-[var(--color-on-surface)] hover:text-[var(--color-accent)]">
+          <Link
+            href={`/app/vendor/${order.vendor_id}`}
+            className="font-bold text-[var(--color-on-surface)] hover:text-[var(--color-accent)]"
+          >
             {order.vendor_name}
           </Link>
           <p className="text-xs text-[var(--color-outline)]">
-            {date.toLocaleDateString()} • {date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {date.toLocaleDateString()} •{" "}
+            {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </p>
         </div>
-        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-          order.status === "delivered" 
-            ? "bg-status-success/10 text-status-success" 
-            : order.status === "cancelled"
-            ? "bg-status-error/10 text-status-error"
-            : "bg-yellow-100 text-yellow-700"
-        }`}>
+        <span
+          className={`rounded-full px-2 py-1 text-xs font-bold ${
+            order.status === "delivered"
+              ? "bg-status-success/10 text-status-success"
+              : order.status === "cancelled"
+                ? "bg-status-error/10 text-status-error"
+                : "bg-yellow-100 text-yellow-700"
+          }`}
+        >
           {order.status}
         </span>
       </div>
 
-      <div className="space-y-1 mb-4">
+      <div className="mb-4 space-y-1">
         {order.items.slice(0, 3).map((item, idx) => (
           <p key={idx} className="text-sm text-[var(--color-on-surface-variant)]">
             {item.quantity}x {item.name}
           </p>
         ))}
         {order.items.length > 3 && (
-          <p className="text-sm text-[var(--color-outline)]">+{order.items.length - 3} more items</p>
+          <p className="text-sm text-[var(--color-outline)]">
+            +{order.items.length - 3} more items
+          </p>
         )}
       </div>
 
-      <div className="flex items-center justify-between pt-3 border-t border-[var(--color-border-subtle)]">
-        <span className="font-bold text-[var(--color-accent)]">₹{order.total_amount.toFixed(0)}</span>
+      <div className="flex items-center justify-between border-t border-[var(--color-border-subtle)] pt-3">
+        <span className="font-bold text-[var(--color-accent)]">
+          ₹{order.total_amount.toFixed(0)}
+        </span>
         <div className="flex gap-2">
           <ReorderButton order={order} />
-          <Link 
+          <Link
             href={`/app/orders/${order.id}`}
-            className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]"
+            className="rounded-xl border border-[var(--color-border-subtle)] px-4 py-2 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
           >
             Details
           </Link>

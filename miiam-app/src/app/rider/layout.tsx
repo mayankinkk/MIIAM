@@ -15,11 +15,21 @@ export default function RiderLayout({ children }: { children: React.ReactNode })
   // Load dark mode setting and apply to document
   useEffect(() => {
     async function loadDarkMode() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
-      const { data: rider } = await supabase.from("riders").select("id").eq("user_id", user.id).single();
+      const { data: rider } = await supabase
+        .from("riders")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
       if (!rider) return;
-      const { data: settings } = await supabase.from("rider_settings").select("dark_mode").eq("rider_id", rider.id).single();
+      const { data: settings } = await supabase
+        .from("rider_settings")
+        .select("dark_mode")
+        .eq("rider_id", rider.id)
+        .single();
       if (settings?.dark_mode) {
         document.documentElement.classList.add("dark");
       } else {
@@ -31,9 +41,17 @@ export default function RiderLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     if (isAuthPage) return;
-    supabase.auth.getSession().then(({ data: { session } }: { data: { session: { user: { id: string; email?: string } } | null } }) => {
-      if (!session) router.push("/rider/login");
-    });
+    supabase.auth
+      .getSession()
+      .then(
+        ({
+          data: { session },
+        }: {
+          data: { session: { user: { id: string; email?: string } } | null };
+        }) => {
+          if (!session) router.push("/rider/login");
+        }
+      );
   }, [isAuthPage, router]);
 
   return (

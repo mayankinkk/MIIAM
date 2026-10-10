@@ -25,9 +25,18 @@ const jakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "MIIAM — Food & Services App",
-    description:
+  description:
     "Order food, book home services - all in one app. Food delivery, grocery, printing, AC repair, plumbing and more.",
-  keywords: ["food delivery", "home services", "super app", "MIIAM", "grocery delivery", "printing", "AC repair", "plumbing"],
+  keywords: [
+    "food delivery",
+    "home services",
+    "super app",
+    "MIIAM",
+    "grocery delivery",
+    "printing",
+    "AC repair",
+    "plumbing",
+  ],
   manifest: "/manifest.json",
   metadataBase: new URL("https://miiam.in"),
   openGraph: {
@@ -58,9 +67,7 @@ export const metadata: Metadata = {
     title: "MIIAM",
   },
   icons: {
-    apple: [
-      { url: "/icons/apple-touch-icon.png", sizes: "180x180" },
-    ],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
     icon: [
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
@@ -89,8 +96,9 @@ export default function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <script dangerouslySetInnerHTML={{
-          __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
             try {
               var t = localStorage.getItem("miiam-theme");
               var s = t ? JSON.parse(t).state?.theme || "light" : "light";
@@ -104,8 +112,9 @@ export default function RootLayout({
               var lang = l ? JSON.parse(l).state?.language : "en";
               document.documentElement.lang = lang;
             } catch(e) { document.documentElement.lang = "en"; }
-          `
-        }} />
+          `,
+          }}
+        />
         <link rel="preconnect" href="https://ui-avatars.com" />
       </head>
       <body>
@@ -113,7 +122,10 @@ export default function RootLayout({
         <noscript>
           <div style={{ padding: "2rem", textAlign: "center", fontFamily: "sans-serif" }}>
             <h1 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>JavaScript Required</h1>
-            <p>MIIAM requires JavaScript to function. Please enable JavaScript in your browser settings.</p>
+            <p>
+              MIIAM requires JavaScript to function. Please enable JavaScript in your browser
+              settings.
+            </p>
           </div>
         </noscript>
         <OfflineBanner />

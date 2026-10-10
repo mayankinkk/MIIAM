@@ -16,9 +16,17 @@ interface PageAsset {
 }
 
 const SECTION_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  food_hero: { label: "Food Page Hero", icon: "restaurant", color: "bg-orange-50 border-orange-200" },
+  food_hero: {
+    label: "Food Page Hero",
+    icon: "restaurant",
+    color: "bg-orange-50 border-orange-200",
+  },
   home_hero: { label: "Home Page Hero", icon: "home", color: "bg-accent/10 border-accent/30" },
-  grocery_hero: { label: "Grocery Page Hero", icon: "local_grocery_store", color: "bg-green-50 border-green-200" },
+  grocery_hero: {
+    label: "Grocery Page Hero",
+    icon: "local_grocery_store",
+    color: "bg-green-50 border-green-200",
+  },
 };
 
 const DEFAULT_SECTIONS = Object.keys(SECTION_LABELS);
@@ -28,7 +36,12 @@ export default function PageAssetsPage() {
   const [assets, setAssets] = useState<PageAsset[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingAsset, setEditingAsset] = useState<PageAsset | null>(null);
-  const [editForm, setEditForm] = useState({ image_url: "", title: "", subtitle: "", is_active: true });
+  const [editForm, setEditForm] = useState({
+    image_url: "",
+    title: "",
+    subtitle: "",
+    is_active: true,
+  });
   const [showAddModal, setShowAddModal] = useState(false);
   const [newForm, setNewForm] = useState({ section: "", image_url: "", title: "", subtitle: "" });
   const [saving, setSaving] = useState(false);
@@ -80,14 +93,17 @@ export default function PageAssetsPage() {
   const handleAdd = async () => {
     if (!newForm.section || !newForm.image_url) return;
     setSaving(true);
-    const { error } = await supabase.from("page_assets").upsert({
-      section: newForm.section.toLowerCase().replace(/\s+/g, "_"),
-      image_url: newForm.image_url,
-      title: newForm.title || null,
-      subtitle: newForm.subtitle || null,
-      is_active: true,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "section" });
+    const { error } = await supabase.from("page_assets").upsert(
+      {
+        section: newForm.section.toLowerCase().replace(/\s+/g, "_"),
+        image_url: newForm.image_url,
+        title: newForm.title || null,
+        subtitle: newForm.subtitle || null,
+        is_active: true,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "section" }
+    );
     setSaving(false);
     if (!error) {
       setShowAddModal(false);
@@ -102,34 +118,41 @@ export default function PageAssetsPage() {
   };
 
   const handleDelete = async (asset: PageAsset) => {
-    if (!confirm(`Delete "${SECTION_LABELS[asset.section]?.label || asset.section}"? This cannot be undone.`)) return;
+    if (
+      !confirm(
+        `Delete "${SECTION_LABELS[asset.section]?.label || asset.section}"? This cannot be undone.`
+      )
+    )
+      return;
     await supabase.from("page_assets").delete().eq("id", asset.id);
     await loadAssets();
   };
 
-  const missingSections = DEFAULT_SECTIONS.filter(
-    (s) => !assets.some((a) => a.section === s)
-  );
+  const missingSections = DEFAULT_SECTIONS.filter((s) => !assets.some((a) => a.section === s));
 
   if (loading) {
     return (
-      <div className="px-8 flex items-center justify-center py-24">
-        <div className="w-10 h-10 border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)] rounded-full animate-spin" />
+      <div className="flex items-center justify-center px-8 py-24">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--color-primary)]/20 border-t-[var(--color-primary)]" />
       </div>
     );
   }
 
   return (
-    <div className="px-8 space-y-8">
+    <div className="space-y-8 px-8">
       {/* Header */}
-      <div className="flex justify-between items-end">
+      <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight mb-2">Content Manager</h1>
-          <p className="text-[var(--color-outline)]">Control hero banners and images shown to customers on each page.</p>
+          <h1 className="mb-2 text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            Content Manager
+          </h1>
+          <p className="text-[var(--color-outline)]">
+            Control hero banners and images shown to customers on each page.
+          </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold shadow-lg shadow-red-900/10 hover:scale-105 active:scale-95 transition-all"
+          className="text-on-primary rounded-xl bg-[var(--color-primary)] px-6 py-3 font-bold shadow-lg shadow-red-900/10 transition-all hover:scale-105 active:scale-95"
         >
           + Add Section
         </button>
@@ -137,7 +160,7 @@ export default function PageAssetsPage() {
 
       {/* Success toast */}
       {saveSuccess && (
-        <div className="fixed top-6 right-6 z-50 bg-green-500 text-white px-6 py-3 rounded-2xl shadow-lg font-bold animate-pop-in flex items-center gap-2">
+        <div className="animate-pop-in fixed top-6 right-6 z-50 flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-3 font-bold text-white shadow-lg">
           <span className="material-symbols-outlined">check_circle</span>
           {SECTION_LABELS[saveSuccess]?.label || saveSuccess} updated!
         </div>
@@ -145,12 +168,20 @@ export default function PageAssetsPage() {
 
       {/* Missing sections notice */}
       {missingSections.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-start gap-4">
-          <span className="material-symbols-outlined text-amber-500 text-2xl flex-shrink-0 mt-0.5">warning</span>
+        <div className="flex items-start gap-4 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <span className="material-symbols-outlined mt-0.5 flex-shrink-0 text-2xl text-amber-500">
+            warning
+          </span>
           <div>
-            <p className="font-bold text-amber-800 mb-1">Some page sections don't have assets yet</p>
-            <p className="text-sm text-amber-700">Missing: {missingSections.map(s => SECTION_LABELS[s]?.label || s).join(", ")}</p>
-            <p className="text-xs text-amber-600 mt-1">Run the SQL migration first, then they'll appear here automatically.</p>
+            <p className="mb-1 font-bold text-amber-800">
+              Some page sections don't have assets yet
+            </p>
+            <p className="text-sm text-amber-700">
+              Missing: {missingSections.map((s) => SECTION_LABELS[s]?.label || s).join(", ")}
+            </p>
+            <p className="mt-1 text-xs text-amber-600">
+              Run the SQL migration first, then they'll appear here automatically.
+            </p>
           </div>
         </div>
       )}
@@ -162,57 +193,91 @@ export default function PageAssetsPage() {
           return (
             <div
               key={asset.id}
-              className={`bg-[var(--color-surface-container-lowest)] rounded-3xl border shadow-sm overflow-hidden ${meta?.color || "border-[var(--color-border-subtle)]"}`}
+              className={`overflow-hidden rounded-3xl border bg-[var(--color-surface-container-lowest)] shadow-sm ${meta?.color || "border-[var(--color-border-subtle)]"}`}
             >
               <div className="flex flex-col md:flex-row">
                 {/* Preview */}
-                <div className="md:w-72 h-48 md:h-auto flex-shrink-0 relative bg-[var(--color-surface-container)]">
+                <div className="relative h-48 flex-shrink-0 bg-[var(--color-surface-container)] md:h-auto md:w-72">
                   <BlurImage
                     src={asset.image_url}
                     alt={asset.title || asset.section}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                     fill
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    {asset.title && <p className="text-white font-black text-lg leading-tight">{asset.title}</p>}
-                    {asset.subtitle && <p className="text-white/80 text-xs mt-0.5">{asset.subtitle}</p>}
+                  <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-4">
+                    {asset.title && (
+                      <p className="text-lg leading-tight font-black text-white">{asset.title}</p>
+                    )}
+                    {asset.subtitle && (
+                      <p className="mt-0.5 text-xs text-white/80">{asset.subtitle}</p>
+                    )}
                   </div>
                   {!asset.is_active && (
-                    <div className="absolute inset-0 bg-[var(--color-surface-container-lowest)]/70 flex items-center justify-center">
-                      <span className="bg-red-100 text-red-600 font-bold text-sm px-3 py-1 rounded-full">INACTIVE</span>
+                    <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-surface-container-lowest)]/70">
+                      <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-bold text-red-600">
+                        INACTIVE
+                      </span>
                     </div>
                   )}
                 </div>
 
                 {/* Info & Controls */}
-                <div className="flex-1 p-6 flex flex-col justify-between">
+                <div className="flex flex-1 flex-col justify-between p-6">
                   <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-[var(--color-surface-container)] rounded-xl flex items-center justify-center">
-                        <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">{meta?.icon || "image"}</span>
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-surface-container)]">
+                        <span className="material-symbols-outlined text-[var(--color-on-surface-variant)]">
+                          {meta?.icon || "image"}
+                        </span>
                       </div>
                       <div>
-                        <p className="font-black text-[var(--color-on-surface)]">{meta?.label || asset.section}</p>
-                        <p className="text-xs text-[var(--color-outline-variant)] font-mono">{asset.section}</p>
+                        <p className="font-black text-[var(--color-on-surface)]">
+                          {meta?.label || asset.section}
+                        </p>
+                        <p className="font-mono text-xs text-[var(--color-outline-variant)]">
+                          {asset.section}
+                        </p>
                       </div>
-                      <div className={`ml-auto px-3 py-1 rounded-full text-xs font-bold ${asset.is_active ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}>
+                      <div
+                        className={`ml-auto rounded-full px-3 py-1 text-xs font-bold ${asset.is_active ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-[var(--color-surface-container)] text-[var(--color-outline)]"}`}
+                      >
                         {asset.is_active ? "Active" : "Inactive"}
                       </div>
                     </div>
 
-                    <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4 space-y-2">
+                    <div className="space-y-2 rounded-xl bg-[var(--color-surface-subtle)] p-4">
                       <div>
-                        <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Image URL</p>
-                        <p className="text-sm text-[var(--color-on-surface)] font-mono truncate">{asset.image_url}</p>
+                        <p className="text-[10px] font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                          Image URL
+                        </p>
+                        <p className="truncate font-mono text-sm text-[var(--color-on-surface)]">
+                          {asset.image_url}
+                        </p>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Title</p>
-                          <p className="text-sm text-[var(--color-on-surface)]">{asset.title || <span className="text-[var(--color-outline-variant)]/60 italic">none</span>}</p>
+                          <p className="text-[10px] font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                            Title
+                          </p>
+                          <p className="text-sm text-[var(--color-on-surface)]">
+                            {asset.title || (
+                              <span className="text-[var(--color-outline-variant)]/60 italic">
+                                none
+                              </span>
+                            )}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold text-[var(--color-outline-variant)] uppercase tracking-widest">Subtitle</p>
-                          <p className="text-sm text-[var(--color-on-surface)]">{asset.subtitle || <span className="text-[var(--color-outline-variant)]/60 italic">none</span>}</p>
+                          <p className="text-[10px] font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                            Subtitle
+                          </p>
+                          <p className="text-sm text-[var(--color-on-surface)]">
+                            {asset.subtitle || (
+                              <span className="text-[var(--color-outline-variant)]/60 italic">
+                                none
+                              </span>
+                            )}
+                          </p>
                         </div>
                       </div>
                       <p className="text-[10px] text-[var(--color-outline-variant)]/60">
@@ -221,27 +286,27 @@ export default function PageAssetsPage() {
                     </div>
                   </div>
 
-                  <div className="flex gap-3 mt-4">
+                  <div className="mt-4 flex gap-3">
                     <button
                       onClick={() => handleEdit(asset)}
-                      className="flex-1 py-2.5 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] active:scale-95 transition-all flex items-center justify-center gap-2"
+                      className="text-on-primary flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--color-primary)] py-2.5 text-sm font-bold transition-all hover:bg-[#a00018] active:scale-95"
                     >
                       <span className="material-symbols-outlined text-sm">edit</span>
                       Edit
                     </button>
                     <button
                       onClick={() => handleToggleActive(asset)}
-                      className={`px-4 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all ${
+                      className={`rounded-xl px-4 py-2.5 text-sm font-bold transition-all active:scale-95 ${
                         asset.is_active
                           ? "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-red-50 hover:text-red-600"
-                          : "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 hover:bg-green-200"
+                          : "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-300"
                       }`}
                     >
                       {asset.is_active ? "Deactivate" : "Activate"}
                     </button>
                     <button
                       onClick={() => handleDelete(asset)}
-                      className="px-4 py-2.5 rounded-xl font-bold text-sm active:scale-95 transition-all bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-red-50 hover:text-red-600"
+                      className="rounded-xl bg-[var(--color-surface-container)] px-4 py-2.5 text-sm font-bold text-[var(--color-on-surface-variant)] transition-all hover:bg-red-50 hover:text-red-600 active:scale-95"
                       aria-label={`Delete ${SECTION_LABELS[asset.section]?.label || asset.section}`}
                     >
                       <span className="material-symbols-outlined text-sm">delete</span>
@@ -254,43 +319,54 @@ export default function PageAssetsPage() {
         })}
 
         {assets.length === 0 && (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-16 text-center">
-            <span className="material-symbols-outlined text-4xl text-[var(--color-outline-variant)]/60 mb-3 block">image_not_supported</span>
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-16 text-center">
+            <span className="material-symbols-outlined mb-3 block text-4xl text-[var(--color-outline-variant)]/60">
+              image_not_supported
+            </span>
             <p className="font-bold text-[var(--color-outline)]">No page assets found.</p>
-            <p className="text-sm text-[var(--color-outline-variant)] mt-1">Run the SQL migration to create the page_assets table first.</p>
+            <p className="mt-1 text-sm text-[var(--color-outline-variant)]">
+              Run the SQL migration to create the page_assets table first.
+            </p>
           </div>
         )}
       </div>
 
       {/* Edit Modal */}
       {editingAsset && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-xl w-full shadow-2xl">
-            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-xl rounded-3xl bg-[var(--color-surface-container-lowest)] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] p-6">
               <div>
                 <h2 className="text-xl font-black text-[var(--color-on-surface)]">
                   Edit {SECTION_LABELS[editingAsset.section]?.label || editingAsset.section}
                 </h2>
-                <p className="text-xs text-[var(--color-outline-variant)] font-mono mt-0.5">{editingAsset.section}</p>
+                <p className="mt-0.5 font-mono text-xs text-[var(--color-outline-variant)]">
+                  {editingAsset.section}
+                </p>
               </div>
-              <button onClick={() => setEditingAsset(null)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+              <button
+                onClick={() => setEditingAsset(null)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+              >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="space-y-4 p-6">
               {/* Live preview */}
               {editForm.image_url && (
-                <div className="relative h-36 rounded-2xl overflow-hidden bg-[var(--color-surface-container)]">
+                <div className="relative h-36 overflow-hidden rounded-2xl bg-[var(--color-surface-container)]">
                   <BlurImage
                     src={editForm.image_url}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                     fill
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                    {editForm.title && <p className="text-white font-black">{editForm.title}</p>}
-                    {editForm.subtitle && <p className="text-white/80 text-xs">{editForm.subtitle}</p>}
+                  <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-4">
+                    {editForm.title && <p className="font-black text-white">{editForm.title}</p>}
+                    {editForm.subtitle && (
+                      <p className="text-xs text-white/80">{editForm.subtitle}</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -305,46 +381,54 @@ export default function PageAssetsPage() {
               />
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-1.5">Title</label>
+                  <label className="mb-1.5 block text-xs font-bold tracking-widest text-[var(--color-outline)] uppercase">
+                    Title
+                  </label>
                   <input
                     value={editForm.title}
                     onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="w-full rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                     placeholder="e.g. Gourmet Selection"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-1.5">Subtitle</label>
+                  <label className="mb-1.5 block text-xs font-bold tracking-widest text-[var(--color-outline)] uppercase">
+                    Subtitle
+                  </label>
                   <input
                     value={editForm.subtitle}
                     onChange={(e) => setEditForm({ ...editForm, subtitle: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="w-full rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                     placeholder="e.g. Order from top restaurants"
                   />
                 </div>
               </div>
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label className="flex cursor-pointer items-center gap-3">
                 <div
                   onClick={() => setEditForm({ ...editForm, is_active: !editForm.is_active })}
-                  className={`w-12 h-7 rounded-full p-1 transition-colors cursor-pointer ${editForm.is_active ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                  className={`h-7 w-12 cursor-pointer rounded-full p-1 transition-colors ${editForm.is_active ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
-                  <div className={`w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow transition-transform ${editForm.is_active ? "translate-x-5" : ""}`} />
+                  <div
+                    className={`h-5 w-5 rounded-full bg-[var(--color-surface-container-lowest)] shadow transition-transform ${editForm.is_active ? "translate-x-5" : ""}`}
+                  />
                 </div>
-                <span className="text-sm font-semibold text-[var(--color-on-surface)]">{editForm.is_active ? "Active (shown to users)" : "Inactive (hidden)"}</span>
+                <span className="text-sm font-semibold text-[var(--color-on-surface)]">
+                  {editForm.is_active ? "Active (shown to users)" : "Inactive (hidden)"}
+                </span>
               </label>
             </div>
 
-            <div className="p-6 border-t border-[var(--color-border-subtle)] flex gap-3">
+            <div className="flex gap-3 border-t border-[var(--color-border-subtle)] p-6">
               <button
                 onClick={() => setEditingAsset(null)}
-                className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]"
+                className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving || !editForm.image_url}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                className="text-on-primary flex-1 rounded-xl bg-[var(--color-primary)] py-3 text-sm font-bold transition-all hover:bg-[#a00018] disabled:opacity-50"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
@@ -355,24 +439,33 @@ export default function PageAssetsPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl max-w-lg w-full shadow-2xl">
-            <div className="p-6 border-b border-[var(--color-border-subtle)] flex justify-between items-center">
-              <h2 className="text-xl font-black text-[var(--color-on-surface)]">Add Page Section</h2>
-              <button onClick={() => setShowAddModal(false)} className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-3xl bg-[var(--color-surface-container-lowest)] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] p-6">
+              <h2 className="text-xl font-black text-[var(--color-on-surface)]">
+                Add Page Section
+              </h2>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
+              >
                 <span className="material-symbols-outlined text-sm">close</span>
               </button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="space-y-4 p-6">
               <div>
-                <label className="block text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-1.5">Section Key *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-widest text-[var(--color-outline)] uppercase">
+                  Section Key *
+                </label>
                 <input
                   value={newForm.section}
                   onChange={(e) => setNewForm({ ...newForm, section: e.target.value })}
-                  className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3 font-mono text-sm focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                   placeholder="e.g. food_hero, home_hero"
                 />
-                <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">Use snake_case. Existing keys will be updated.</p>
+                <p className="mt-1 text-[10px] text-[var(--color-outline-variant)]">
+                  Use snake_case. Existing keys will be updated.
+                </p>
               </div>
               <ImageUpload
                 value={newForm.image_url}
@@ -384,36 +477,40 @@ export default function PageAssetsPage() {
               />
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-1.5">Title</label>
+                  <label className="mb-1.5 block text-xs font-bold tracking-widest text-[var(--color-outline)] uppercase">
+                    Title
+                  </label>
                   <input
                     value={newForm.title}
                     onChange={(e) => setNewForm({ ...newForm, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="w-full rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                     placeholder="Optional"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[var(--color-outline)] uppercase tracking-widest mb-1.5">Subtitle</label>
+                  <label className="mb-1.5 block text-xs font-bold tracking-widest text-[var(--color-outline)] uppercase">
+                    Subtitle
+                  </label>
                   <input
                     value={newForm.subtitle}
                     onChange={(e) => setNewForm({ ...newForm, subtitle: e.target.value })}
-                    className="w-full px-4 py-3 bg-[var(--color-surface-subtle)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                    className="w-full rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3 text-sm focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                     placeholder="Optional"
                   />
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-[var(--color-border-subtle)] flex gap-3">
+            <div className="flex gap-3 border-t border-[var(--color-border-subtle)] p-6">
               <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm hover:bg-[var(--color-surface-subtle)]"
+                className="flex-1 rounded-xl border border-[var(--color-border-subtle)] py-3 text-sm font-bold hover:bg-[var(--color-surface-subtle)]"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAdd}
                 disabled={saving || !newForm.section || !newForm.image_url}
-                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm hover:bg-[#a00018] disabled:opacity-50 transition-all"
+                className="text-on-primary flex-1 rounded-xl bg-[var(--color-primary)] py-3 text-sm font-bold transition-all hover:bg-[#a00018] disabled:opacity-50"
               >
                 {saving ? "Saving..." : "Add Section"}
               </button>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useCustomerLocation } from "@/lib/hooks/useShareLocation";
-import type * as Leaflet from 'leaflet';
+import type * as Leaflet from "leaflet";
 
 interface Props {
   orderId: string | null;
@@ -15,7 +15,7 @@ export default function CustomerLocationView({ orderId, className = "", height =
   const mapInstanceRef = useRef<Leaflet.Map | null>(null);
   const markerRef = useRef<Leaflet.Marker | null>(null);
   const accuracyRef = useRef<Leaflet.Circle | null>(null);
-  const leafletRef = useRef<typeof import('leaflet') | null>(null);
+  const leafletRef = useRef<typeof import("leaflet") | null>(null);
 
   const { location, loading } = useCustomerLocation({ orderId, enabled: !!orderId });
 
@@ -95,20 +95,32 @@ export default function CustomerLocationView({ orderId, className = "", height =
   if (!orderId) return null;
 
   return (
-    <div className={`bg-[var(--color-surface-container-lowest)] rounded-xl border border-outline-variant/30 overflow-hidden ${className}`}>
-      <div className="flex items-center justify-between px-3 py-2 border-b border-outline-variant/10">
+    <div
+      className={`border-outline-variant/30 overflow-hidden rounded-xl border bg-[var(--color-surface-container-lowest)] ${className}`}
+    >
+      <div className="border-outline-variant/10 flex items-center justify-between border-b px-3 py-2">
         <div className="flex items-center gap-2">
-          <span className="material-symbols-outlined text-secondary text-base" style={{ fontVariationSettings: "'FILL' 1" }}>
+          <span
+            className="material-symbols-outlined text-secondary text-base"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
             share_location
           </span>
-          <span className="text-xs font-bold text-on-surface">Customer Live Location</span>
+          <span className="text-on-surface text-xs font-bold">Customer Live Location</span>
           {location && (
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" aria-hidden="true" />
+            <span
+              className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500"
+              aria-hidden="true"
+            />
           )}
         </div>
         {location && (
-          <span className="text-[10px] text-on-surface-variant">
-            {new Date(location.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+          <span className="text-on-surface-variant text-[10px]">
+            {new Date(location.updatedAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            })}
           </span>
         )}
       </div>
@@ -120,18 +132,22 @@ export default function CustomerLocationView({ orderId, className = "", height =
           .leaflet-container .leaflet-pane > img.leaflet-tile { position: absolute; left: 0; bottom: -1px; }
         `}</style>
         {loading && !location && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-container text-on-surface-variant text-xs">
+          <div className="bg-surface-container text-on-surface-variant absolute inset-0 z-10 flex items-center justify-center text-xs">
             Waiting for customer to share...
           </div>
         )}
         {!loading && !location && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-surface-container text-on-surface-variant text-xs p-4 text-center">
-            <span className="material-symbols-outlined text-2xl text-outline-variant">location_off</span>
+          <div className="bg-surface-container text-on-surface-variant absolute inset-0 z-10 flex flex-col items-center justify-center p-4 text-center text-xs">
+            <span className="material-symbols-outlined text-outline-variant text-2xl">
+              location_off
+            </span>
             <p className="mt-1">Customer hasn't shared location</p>
-            <p className="text-[10px] text-outline">You can ask the customer to share it via chat</p>
+            <p className="text-outline text-[10px]">
+              You can ask the customer to share it via chat
+            </p>
           </div>
         )}
-        <div ref={mapRef} className="w-full h-full" style={{ position: "absolute", inset: 0 }} />
+        <div ref={mapRef} className="h-full w-full" style={{ position: "absolute", inset: 0 }} />
       </div>
     </div>
   );

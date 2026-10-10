@@ -15,21 +15,26 @@ interface AnimatedTabsProps {
   className?: string;
 }
 
-export default function AnimatedTabs({ tabs, activeTab, onTabChange, className = "" }: AnimatedTabsProps) {
+export default function AnimatedTabs({
+  tabs,
+  activeTab,
+  onTabChange,
+  className = "",
+}: AnimatedTabsProps) {
   return (
-    <div className={`flex gap-2 overflow-x-auto pb-2 scrollbar-hide ${className}`}>
+    <div className={`scrollbar-hide flex gap-2 overflow-x-auto pb-2 ${className}`}>
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`relative px-4 py-2.5 rounded-full text-sm font-bold transition-colors whitespace-nowrap ${
+          className={`relative rounded-full px-4 py-2.5 text-sm font-bold whitespace-nowrap transition-colors ${
             activeTab === tab.id ? "text-accent" : "text-on-surface-variant hover:text-on-surface"
           }`}
         >
           {activeTab === tab.id && (
             <motion.div
               layoutId="activeTab"
-              className="absolute inset-0 bg-primary/10 rounded-full"
+              className="bg-primary/10 absolute inset-0 rounded-full"
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
             />
           )}

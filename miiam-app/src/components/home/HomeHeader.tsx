@@ -15,7 +15,16 @@ interface HomeHeaderProps {
   onNotificationsClick: () => void;
 }
 
-export default function HomeHeader({ userName, greeting, timeIcon, location, unreadCount, etaMinutes, onLocationClick, onNotificationsClick }: HomeHeaderProps) {
+export default function HomeHeader({
+  userName,
+  greeting,
+  timeIcon,
+  location,
+  unreadCount,
+  etaMinutes,
+  onLocationClick,
+  onNotificationsClick,
+}: HomeHeaderProps) {
   const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
 
@@ -26,37 +35,49 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 bg-surface transition-all duration-200 ${scrolled ? "shadow-[0_2px_12px_rgba(0,0,0,0.08)]" : "border-b border-border-subtle"}`}>
+    <header
+      className={`bg-surface sticky top-0 z-50 transition-all duration-200 ${scrolled ? "shadow-[0_2px_12px_rgba(0,0,0,0.08)]" : "border-border-subtle border-b"}`}
+    >
       <div className="px-4 pt-3 pb-3">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-[17px] leading-snug font-extrabold text-on-surface truncate capitalize">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-on-surface truncate text-[17px] leading-snug font-extrabold capitalize">
               {greeting}, {userName} {timeIcon}
             </h1>
           </div>
           <button
             aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
             onClick={onNotificationsClick}
-            className="relative w-9 h-9 rounded-full bg-surface-container flex items-center justify-center shrink-0 active:scale-95 transition-all"
+            className="bg-surface-container relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all active:scale-95"
           >
-            <span className="material-symbols-outlined text-[20px] text-on-surface-variant" aria-hidden="true" style={{ fontVariationSettings: unreadCount > 0 ? "'FILL' 1" : "'FILL' 0" }}>notifications</span>
+            <span
+              className="material-symbols-outlined text-on-surface-variant text-[20px]"
+              aria-hidden="true"
+              style={{ fontVariationSettings: unreadCount > 0 ? "'FILL' 1" : "'FILL' 0" }}
+            >
+              notifications
+            </span>
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 bg-status-error rounded-full border-2 border-surface flex items-center justify-center animate-bounce">
-                <span className="text-[9px] text-white font-black leading-none px-0.5">{unreadCount > 9 ? "9+" : unreadCount}</span>
+              <span className="bg-status-error border-surface absolute -top-0.5 -right-0.5 flex h-4 min-w-[16px] animate-bounce items-center justify-center rounded-full border-2">
+                <span className="px-0.5 text-[9px] leading-none font-black text-white">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
               </span>
             )}
           </button>
           <Link
             href="/app/profile"
             aria-label="Profile"
-            className="w-9 h-9 rounded-full bg-surface-container border border-border-subtle flex items-center justify-center shrink-0 active:scale-95 transition-all"
+            className="bg-surface-container border-border-subtle flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all active:scale-95"
           >
-            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">person</span>
+            <span className="material-symbols-outlined text-on-surface-variant text-[20px]">
+              person
+            </span>
           </Link>
         </div>
 
         {etaMinutes != null && etaMinutes > 0 && (
-          <p className="text-[13px] font-bold text-on-surface mt-1 leading-snug">
+          <p className="text-on-surface mt-1 text-[13px] leading-snug font-bold">
             Delivery in ~{etaMinutes} min
           </p>
         )}
@@ -64,17 +85,26 @@ export default function HomeHeader({ userName, greeting, timeIcon, location, unr
         {/* Address row */}
         <button
           onClick={onLocationClick}
-          className="group flex items-center w-full mt-0.5 text-left"
+          className="group mt-0.5 flex w-full items-center text-left"
           aria-label="Change delivery location"
         >
-          <span className="text-[13px] text-on-surface-variant truncate group-hover:text-on-surface transition-colors">{location}</span>
-          <span className="material-symbols-outlined text-[18px] text-on-surface-variant shrink-0">arrow_drop_down</span>
+          <span className="text-on-surface-variant group-hover:text-on-surface truncate text-[13px] transition-colors">
+            {location}
+          </span>
+          <span className="material-symbols-outlined text-on-surface-variant shrink-0 text-[18px]">
+            arrow_drop_down
+          </span>
         </button>
 
         {/* Search */}
-        <Link href="/app/search" className="mt-2.5 flex items-center w-full h-11 bg-surface-container-high rounded-[10px] px-3.5 gap-3 hover:bg-surface-container-highest transition-all active:scale-[0.99]">
+        <Link
+          href="/app/search"
+          className="bg-surface-container-high hover:bg-surface-container-highest mt-2.5 flex h-11 w-full items-center gap-3 rounded-[10px] px-3.5 transition-all active:scale-[0.99]"
+        >
           <span className="material-symbols-outlined text-on-surface-variant text-xl">search</span>
-          <span className="text-on-surface-variant/80 text-sm flex-1 truncate">{t.home.searchPlaceholder}</span>
+          <span className="text-on-surface-variant/80 flex-1 truncate text-sm">
+            {t.home.searchPlaceholder}
+          </span>
           <span className="material-symbols-outlined text-on-surface-variant/60 text-lg">mic</span>
         </Link>
       </div>

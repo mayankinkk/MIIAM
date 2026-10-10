@@ -52,35 +52,30 @@ export default function BottomSheet({ isOpen, onClose, children, title }: Bottom
   return (
     <div className="fixed inset-0 z-50">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Sheet */}
       <div
         ref={sheetRef}
-        className="absolute bottom-0 left-0 right-0 bg-surface-container-lowest rounded-t-3xl max-h-[85vh] overflow-hidden transition-transform duration-300"
+        className="bg-surface-container-lowest absolute right-0 bottom-0 left-0 max-h-[85vh] overflow-hidden rounded-t-3xl transition-transform duration-300"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         {/* Handle */}
         <div className="flex justify-center pt-3 pb-2">
-          <div className="w-10 h-1 bg-on-surface-variant/30 rounded-full" />
+          <div className="bg-on-surface-variant/30 h-1 w-10 rounded-full" />
         </div>
 
         {/* Header */}
         {title && (
-          <div className="px-5 pb-3 border-b border-outline-variant/10">
-            <h2 className="text-lg font-black text-on-surface">{title}</h2>
+          <div className="border-outline-variant/10 border-b px-5 pb-3">
+            <h2 className="text-on-surface text-lg font-black">{title}</h2>
           </div>
         )}
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(85vh-60px)] p-5">
-          {children}
-        </div>
+        <div className="max-h-[calc(85vh-60px)] overflow-y-auto p-5">{children}</div>
       </div>
     </div>
   );

@@ -74,16 +74,16 @@ export const useAbTestStore = create<AbTestState>()(
 
       getVariant: (experimentId: string) => {
         const state = get();
-        const experiment = state.experiments.find(e => e.id === experimentId && e.isActive);
+        const experiment = state.experiments.find((e) => e.id === experimentId && e.isActive);
         if (!experiment) return null;
 
         if (experiment.endDate && new Date(experiment.endDate) < new Date()) {
           return null;
         }
 
-        const existing = state.assignments.find(a => a.experimentId === experimentId);
+        const existing = state.assignments.find((a) => a.experimentId === experimentId);
         if (existing) {
-          return experiment.variants.find(v => v.id === existing.variantId) || null;
+          return experiment.variants.find((v) => v.id === existing.variantId) || null;
         }
 
         const userId = getAnonymousUserId();
@@ -106,7 +106,7 @@ export const useAbTestStore = create<AbTestState>()(
 
       trackConversion: (experimentId: string, eventName: string, value?: number) => {
         const state = get();
-        const assignment = state.assignments.find(a => a.experimentId === experimentId);
+        const assignment = state.assignments.find((a) => a.experimentId === experimentId);
         if (!assignment) return;
 
         try {
@@ -143,17 +143,17 @@ function getAnonymousUserId(): string {
 export async function fetchActiveExperiments(supabase: {
   from: (table: string) => {
     select: (cols: string) => {
-      eq: (col: string, val: unknown) => {
+      eq: (
+        col: string,
+        val: unknown
+      ) => {
         then: (resolve: (result: { data: Experiment[] | null }) => void) => void;
       };
     };
   };
 }): Promise<Experiment[]> {
   try {
-    const result = await supabase
-      .from("experiments")
-      .select("*")
-      .eq("is_active", true);
+    const result = await supabase.from("experiments").select("*").eq("is_active", true);
     return result.data || [];
   } catch {
     return [];

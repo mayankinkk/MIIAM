@@ -72,26 +72,32 @@ export default function StorePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface pb-36">
-        <header className="bg-surface border-b border-outline-variant/10 px-5 pt-5 pb-3">
-          <div className="h-6 bg-surface-container rounded w-32 animate-pulse" />
-          <div className="h-3 bg-surface-container rounded w-48 mt-1 animate-pulse" />
+      <div className="bg-surface min-h-screen pb-36">
+        <header className="bg-surface border-outline-variant/10 border-b px-5 pt-5 pb-3">
+          <div className="bg-surface-container h-6 w-32 animate-pulse rounded" />
+          <div className="bg-surface-container mt-1 h-3 w-48 animate-pulse rounded" />
         </header>
-        <div className="px-5 py-4 flex gap-2 overflow-hidden">
+        <div className="flex gap-2 overflow-hidden px-5 py-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-9 bg-surface-container rounded-full w-20 animate-pulse flex-shrink-0" />
+            <div
+              key={i}
+              className="bg-surface-container h-9 w-20 flex-shrink-0 animate-pulse rounded-full"
+            />
           ))}
         </div>
-        <div className="px-5 grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 px-5">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10">
-              <div className="h-40 bg-surface-container animate-pulse" />
-              <div className="p-3 space-y-2">
-                <div className="h-4 bg-surface-container rounded w-3/4 animate-pulse" />
-                <div className="h-3 bg-surface-container rounded w-1/2 animate-pulse" />
-                <div className="flex justify-between items-center">
-                  <div className="h-5 bg-surface-container rounded w-16 animate-pulse" />
-                  <div className="h-8 bg-primary/20 rounded-lg w-8 animate-pulse" />
+            <div
+              key={i}
+              className="bg-surface-container-lowest border-outline-variant/10 overflow-hidden rounded-2xl border"
+            >
+              <div className="bg-surface-container h-40 animate-pulse" />
+              <div className="space-y-2 p-3">
+                <div className="bg-surface-container h-4 w-3/4 animate-pulse rounded" />
+                <div className="bg-surface-container h-3 w-1/2 animate-pulse rounded" />
+                <div className="flex items-center justify-between">
+                  <div className="bg-surface-container h-5 w-16 animate-pulse rounded" />
+                  <div className="bg-primary/20 h-8 w-8 animate-pulse rounded-lg" />
                 </div>
               </div>
             </div>
@@ -102,21 +108,23 @@ export default function StorePage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface pb-36">
+    <div className="bg-surface min-h-screen pb-36">
       {/* Header */}
-      <header className="bg-surface border-b border-outline-variant/10 px-5 pt-5 pb-3">
-        <h1 className="text-xl font-black text-on-surface">MIIAM Store</h1>
-        <p className="text-xs text-on-surface-variant mt-0.5">Everything you need, delivered fast</p>
+      <header className="bg-surface border-outline-variant/10 border-b px-5 pt-5 pb-3">
+        <h1 className="text-on-surface text-xl font-black">MIIAM Store</h1>
+        <p className="text-on-surface-variant mt-0.5 text-xs">
+          Everything you need, delivered fast
+        </p>
       </header>
 
       {/* Category Chips */}
       <div className="px-5 pt-4 pb-2">
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-2">
           {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`flex items-center gap-1.5 flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+              className={`flex flex-shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-bold transition-all ${
                 activeCategory === cat.id
                   ? "bg-primary text-on-primary border-primary"
                   : "bg-surface-container-lowest text-on-surface-variant border-outline-variant/15"
@@ -132,9 +140,11 @@ export default function StorePage() {
       {/* Items Grid */}
       <div className="px-5 pt-2">
         {filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <span className="material-symbols-outlined text-5xl text-on-surface-variant/30">inventory_2</span>
-            <p className="text-sm text-on-surface-variant mt-3">No items in this category</p>
+          <div className="py-16 text-center">
+            <span className="material-symbols-outlined text-on-surface-variant/30 text-5xl">
+              inventory_2
+            </span>
+            <p className="text-on-surface-variant mt-3 text-sm">No items in this category</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
@@ -144,65 +154,93 @@ export default function StorePage() {
                 <Link
                   key={item.id}
                   href={`/app/store/${item.id}`}
-                  className="block bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/10 active:scale-[0.97] transition-transform"
+                  className="bg-surface-container-lowest border-outline-variant/10 block overflow-hidden rounded-2xl border transition-transform active:scale-[0.97]"
                 >
-                  <div className="relative h-32 bg-surface-container overflow-hidden">
+                  <div className="bg-surface-container relative h-32 overflow-hidden">
                     <BlurImage
-                      src={item.image_url || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"}
+                      src={
+                        item.image_url ||
+                        "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                      }
                       alt={item.name}
                       fill
-                      className="w-full h-full"
+                      className="h-full w-full"
                       sizes="(max-width: 640px) 50vw, 25vw"
                       fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
                     />
                     {/* Veg badge */}
-                    <span className={`absolute top-2 left-2 w-5 h-5 border-2 ${item.is_veg ? "border-green-500 bg-white" : "border-red-500 bg-white"} rounded-sm flex items-center justify-center`}>
-                      <span className={`w-2 h-2 ${item.is_veg ? "bg-green-500" : "bg-red-500"} rounded-full`} />
+                    <span
+                      className={`absolute top-2 left-2 h-5 w-5 border-2 ${item.is_veg ? "border-green-500 bg-white" : "border-red-500 bg-white"} flex items-center justify-center rounded-sm`}
+                    >
+                      <span
+                        className={`h-2 w-2 ${item.is_veg ? "bg-green-500" : "bg-red-500"} rounded-full`}
+                      />
                     </span>
                     {/* Discount badge (deals only — price lives in the stack below) */}
                     {item.original_price && item.original_price > item.price && (
-                      <span className="absolute bottom-2 right-2 bg-deal text-white text-[10px] font-black px-2 py-1 rounded-lg">
-                        {Math.round(((item.original_price - item.price) / item.original_price) * 100)}% OFF
+                      <span className="bg-deal absolute right-2 bottom-2 rounded-lg px-2 py-1 text-[10px] font-black text-white">
+                        {Math.round(
+                          ((item.original_price - item.price) / item.original_price) * 100
+                        )}
+                        % OFF
                       </span>
                     )}
                   </div>
                   <div className="p-3">
-                    <h3 className="font-bold text-sm text-on-surface truncate">{item.name}</h3>
-                    <div className="flex flex-col items-start mt-0.5 leading-tight">
-                      <span className="text-sm font-black text-on-surface">₹{item.price}</span>
+                    <h3 className="text-on-surface truncate text-sm font-bold">{item.name}</h3>
+                    <div className="mt-0.5 flex flex-col items-start leading-tight">
+                      <span className="text-on-surface text-sm font-black">₹{item.price}</span>
                       {item.original_price && item.original_price > item.price && (
-                        <span className="text-[10px] text-on-surface-variant line-through">₹{item.original_price}</span>
+                        <span className="text-on-surface-variant text-[10px] line-through">
+                          ₹{item.original_price}
+                        </span>
                       )}
                     </div>
                     {item.vendor_name && (
-                      <p className="text-[10px] text-on-surface-variant/70 mt-1 truncate">{item.vendor_name}</p>
+                      <p className="text-on-surface-variant/70 mt-1 truncate text-[10px]">
+                        {item.vendor_name}
+                      </p>
                     )}
                     {/* Add to Cart */}
                     <div className="mt-2">
                       {qty === 0 ? (
                         <motion.button
-                          onClick={(e) => { e.preventDefault(); handleAdd(item); }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleAdd(item);
+                          }}
                           whileTap={{ scale: 0.95 }}
-                          className="w-full h-8 bg-primary text-on-primary border border-primary rounded-lg text-xs font-extrabold hover:brightness-95 transition-all"
+                          className="bg-primary text-on-primary border-primary h-8 w-full rounded-lg border text-xs font-extrabold transition-all hover:brightness-95"
                         >
                           ADD
                         </motion.button>
                       ) : (
-                        <div className="flex items-center justify-between bg-surface-container-lowest border border-primary rounded-lg overflow-hidden">
+                        <div className="bg-surface-container-lowest border-primary flex items-center justify-between overflow-hidden rounded-lg border">
                           <motion.button
-                            onClick={(e) => { e.preventDefault(); updateQuantity(item.id, qty - 1); }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              updateQuantity(item.id, qty - 1);
+                            }}
                             whileTap={{ scale: 0.8 }}
-                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center hover:brightness-95 transition-colors"
+                            className="bg-primary text-on-primary flex h-8 w-8 items-center justify-center font-bold transition-colors hover:brightness-95"
                           >
                             −
                           </motion.button>
-                          <motion.span key={qty} initial={{ scale: 1.3 }} animate={{ scale: 1 }} className="text-on-surface font-extrabold text-xs">
+                          <motion.span
+                            key={qty}
+                            initial={{ scale: 1.3 }}
+                            animate={{ scale: 1 }}
+                            className="text-on-surface text-xs font-extrabold"
+                          >
                             {qty}
                           </motion.span>
                           <motion.button
-                            onClick={(e) => { e.preventDefault(); handleAdd(item); }}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleAdd(item);
+                            }}
                             whileTap={{ scale: 1.2 }}
-                            className="bg-primary text-on-primary font-bold w-8 h-8 flex items-center justify-center hover:brightness-95 transition-colors"
+                            className="bg-primary text-on-primary flex h-8 w-8 items-center justify-center font-bold transition-colors hover:brightness-95"
                           >
                             +
                           </motion.button>

@@ -38,18 +38,18 @@ export default function OnboardingFlow() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] bg-surface flex flex-col items-center justify-center px-6">
+    <div className="bg-surface fixed inset-0 z-[100] flex flex-col items-center justify-center px-6">
       {/* Skip button */}
       <Link
         href="/app/home"
         onClick={handleDismiss}
-        className="absolute top-6 right-6 text-on-surface-variant text-sm font-bold px-4 py-2 rounded-full hover:bg-surface-container-high transition-colors"
+        className="text-on-surface-variant hover:bg-surface-container-high absolute top-6 right-6 rounded-full px-4 py-2 text-sm font-bold transition-colors"
       >
         Skip
       </Link>
 
       {/* Slides */}
-      <div className="flex-1 flex items-center justify-center w-full max-w-sm">
+      <div className="flex w-full max-w-sm flex-1 items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
@@ -59,23 +59,27 @@ export default function OnboardingFlow() {
             transition={{ duration: 0.3 }}
             className="flex flex-col items-center text-center"
           >
-            <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${slides[current].gradient} flex items-center justify-center mb-8`}>
+            <div
+              className={`h-32 w-32 rounded-full bg-gradient-to-br ${slides[current].gradient} mb-8 flex items-center justify-center`}
+            >
               <span className="text-6xl">{slides[current].emoji}</span>
             </div>
-            <h2 className="text-2xl font-black text-on-surface mb-3">{slides[current].title}</h2>
-            <p className="text-on-surface-variant text-sm max-w-xs leading-relaxed">{slides[current].description}</p>
+            <h2 className="text-on-surface mb-3 text-2xl font-black">{slides[current].title}</h2>
+            <p className="text-on-surface-variant max-w-xs text-sm leading-relaxed">
+              {slides[current].description}
+            </p>
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* Dots */}
-      <div className="flex gap-2 mb-8">
+      <div className="mb-8 flex gap-2">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
             className={`h-2 rounded-full transition-all duration-300 ${
-              i === current ? "w-8 bg-primary" : "w-2 bg-outline/30"
+              i === current ? "bg-primary w-8" : "bg-outline/30 w-2"
             }`}
           />
         ))}
@@ -85,7 +89,7 @@ export default function OnboardingFlow() {
       {current < slides.length - 1 ? (
         <button
           onClick={() => setCurrent(current + 1)}
-          className="w-full max-w-sm py-4 bg-primary text-on-primary font-bold rounded-2xl active:scale-[0.98] transition-transform"
+          className="bg-primary text-on-primary w-full max-w-sm rounded-2xl py-4 font-bold transition-transform active:scale-[0.98]"
         >
           Next
         </button>
@@ -93,7 +97,7 @@ export default function OnboardingFlow() {
         <Link
           href="/app/home"
           onClick={handleDismiss}
-          className="w-full max-w-sm py-4 bg-primary text-on-primary font-bold rounded-2xl text-center block active:scale-[0.98] transition-transform"
+          className="bg-primary text-on-primary block w-full max-w-sm rounded-2xl py-4 text-center font-bold transition-transform active:scale-[0.98]"
         >
           Get Started
         </Link>

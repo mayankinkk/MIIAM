@@ -24,35 +24,37 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
   return (
     <>
       <div className="space-y-3">
-        <div 
-          className="relative w-full h-56 rounded-2xl overflow-hidden cursor-pointer group"
+        <div
+          className="group relative h-56 w-full cursor-pointer overflow-hidden rounded-2xl"
           onClick={() => setShowModal(true)}
         >
           <Image
             src={images[selectedIndex].url}
             alt={images[selectedIndex].alt || name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
             unoptimized={!canOptimizeImage(images[selectedIndex].url)}
           />
           {images.length > 1 && (
-            <div className="absolute bottom-3 right-3 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <div className="absolute right-3 bottom-3 flex items-center gap-1 rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white">
               <span className="material-symbols-outlined text-sm">photo_library</span>
               {images.length} photos
             </div>
           )}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+          <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10" />
         </div>
-        
+
         {images.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-1">
             {images.map((img, idx) => (
               <button
                 key={img.id}
                 onClick={() => setSelectedIndex(idx)}
-                className={`relative flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                  idx === selectedIndex ? "border-[var(--color-primary)]" : "border-transparent opacity-70 hover:opacity-100"
+                className={`relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all ${
+                  idx === selectedIndex
+                    ? "border-[var(--color-primary)]"
+                    : "border-transparent opacity-70 hover:opacity-100"
                 }`}
               >
                 <Image
@@ -70,16 +72,19 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
-          <button 
-            className="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setShowModal(false)}
+        >
+          <button
+            className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white transition-colors hover:bg-white/30"
             onClick={() => setShowModal(false)}
           >
             <span className="material-symbols-outlined">close</span>
           </button>
-          
-          <div className="max-w-4xl w-full" onClick={e => e.stopPropagation()}>
-            <div className="relative w-full h-[70vh] rounded-2xl overflow-hidden mb-4">
+
+          <div className="w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <div className="relative mb-4 h-[70vh] w-full overflow-hidden rounded-2xl">
               <Image
                 src={images[selectedIndex].url}
                 alt={images[selectedIndex].alt || name}
@@ -89,14 +94,14 @@ export function FoodGallery({ images, name }: FoodGalleryProps) {
                 unoptimized={!canOptimizeImage(images[selectedIndex].url)}
               />
             </div>
-            
+
             {images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto justify-center">
+              <div className="flex justify-center gap-2 overflow-x-auto">
                 {images.map((img, idx) => (
                   <button
                     key={img.id}
                     onClick={() => setSelectedIndex(idx)}
-                    className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 flex-shrink-0 ${
+                    className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 ${
                       idx === selectedIndex ? "border-[var(--color-primary)]" : "border-white/30"
                     }`}
                   >

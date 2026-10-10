@@ -5,9 +5,9 @@ describe("calculateEta", () => {
   it("returns an EtaEstimate with positive values", () => {
     const result = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.6200,
-      vendorLng: 77.2150,
+      customerLng: 77.209,
+      vendorLat: 28.62,
+      vendorLng: 77.215,
     });
 
     expect(result.distanceKm).toBeGreaterThanOrEqual(0);
@@ -22,16 +22,16 @@ describe("calculateEta", () => {
   it("returns higher ETA for farther distances", () => {
     const near = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.6140,
+      customerLng: 77.209,
+      vendorLat: 28.614,
       vendorLng: 77.2091,
     });
 
     const far = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.7000,
-      vendorLng: 77.3000,
+      customerLng: 77.209,
+      vendorLat: 28.7,
+      vendorLng: 77.3,
     });
 
     expect(far.estimatedMinutes).toBeGreaterThanOrEqual(near.estimatedMinutes);
@@ -41,17 +41,17 @@ describe("calculateEta", () => {
   it("applies peak hour multiplier", () => {
     const base = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.6200,
-      vendorLng: 77.2150,
+      customerLng: 77.209,
+      vendorLat: 28.62,
+      vendorLng: 77.215,
       isPeakHour: false,
     });
 
     const peak = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.6200,
-      vendorLng: 77.2150,
+      customerLng: 77.209,
+      vendorLat: 28.62,
+      vendorLng: 77.215,
       isPeakHour: true,
     });
 
@@ -61,21 +61,23 @@ describe("calculateEta", () => {
   it("accounts for order item count", () => {
     const small = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.6200,
-      vendorLng: 77.2150,
+      customerLng: 77.209,
+      vendorLat: 28.62,
+      vendorLng: 77.215,
       orderItemCount: 1,
     });
 
     const large = calculateEta({
       customerLat: 28.6139,
-      customerLng: 77.2090,
-      vendorLat: 28.6200,
-      vendorLng: 77.2150,
+      customerLng: 77.209,
+      vendorLat: 28.62,
+      vendorLng: 77.215,
       orderItemCount: 10,
     });
 
-    expect(large.breakdown.preparationMinutes).toBeGreaterThanOrEqual(small.breakdown.preparationMinutes);
+    expect(large.breakdown.preparationMinutes).toBeGreaterThanOrEqual(
+      small.breakdown.preparationMinutes
+    );
   });
 });
 

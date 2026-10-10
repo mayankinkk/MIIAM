@@ -14,7 +14,12 @@ export interface Toast {
 
 interface ToastStore {
   toasts: Toast[];
-  addToast: (message: string, type?: ToastType, duration?: number, action?: Toast["action"]) => void;
+  addToast: (
+    message: string,
+    type?: ToastType,
+    duration?: number,
+    action?: Toast["action"]
+  ) => void;
   removeToast: (id: string) => void;
   clearToasts: () => void;
 }

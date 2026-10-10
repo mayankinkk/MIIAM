@@ -68,10 +68,16 @@ export default function VendorAnalytics() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [period, setPeriod] = useState<"week" | "month" | "all">("week");
   const [loading, setLoading] = useState(true);
-  const [menuItemNames, setMenuItemNames] = useState<Map<string, { name: string; category: string }>>(new Map());
+  const [menuItemNames, setMenuItemNames] = useState<
+    Map<string, { name: string; category: string }>
+  >(new Map());
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [forecast, setForecast] = useState<Forecast | null>(null);
-  const [dimRatings, setDimRatings] = useState<{ food_quality: number; packaging: number; delivery_time: number } | null>(null);
+  const [dimRatings, setDimRatings] = useState<{
+    food_quality: number;
+    packaging: number;
+    delivery_time: number;
+  } | null>(null);
 
   useEffect(() => {
     init();
@@ -109,7 +115,9 @@ export default function VendorAnalytics() {
     if (!v.city && !v.pincode) return;
     const { data } = await supabase
       .from("vendors")
-      .select("id, shop_name, type, rating, review_count, delivery_time_min, delivery_time_max, min_order_amount, city, pincode")
+      .select(
+        "id, shop_name, type, rating, review_count, delivery_time_min, delivery_time_max, min_order_amount, city, pincode"
+      )
       .neq("id", v.id)
       .eq("status", "active");
     if (!data) return;
@@ -165,7 +173,13 @@ export default function VendorAnalytics() {
       .not("food_quality", "is", null);
     if (!data || data.length === 0) return;
     const sum = (field: "food_quality" | "packaging" | "delivery_time") =>
-      data.reduce((s: number, r: { food_quality: number | null; packaging: number | null; delivery_time: number | null }) => s + (r[field] || 0), 0) / data.length;
+      data.reduce(
+        (
+          s: number,
+          r: { food_quality: number | null; packaging: number | null; delivery_time: number | null }
+        ) => s + (r[field] || 0),
+        0
+      ) / data.length;
     setDimRatings({
       food_quality: Math.round(sum("food_quality") * 10) / 10,
       packaging: Math.round(sum("packaging") * 10) / 10,
@@ -173,7 +187,17 @@ export default function VendorAnalytics() {
     });
   }
 
-  const { filteredOrders, deliveredOrders, totalRevenue, totalOrders, avgOrderValue, dailyRevenue, popularItems, peakHours, maxOrders } = useMemo(() => {
+  const {
+    filteredOrders,
+    deliveredOrders,
+    totalRevenue,
+    totalOrders,
+    avgOrderValue,
+    dailyRevenue,
+    popularItems,
+    peakHours,
+    maxOrders,
+  } = useMemo(() => {
     const now = new Date();
     const periodStart = new Date(now);
     if (period === "week") periodStart.setDate(periodStart.getDate() - 7);
@@ -204,14 +228,22 @@ export default function VendorAnalytics() {
       o.items?.forEach((item) => {
         const menuItem = menuItemNames.get(item.menu_item_id);
         const name = menuItem?.name || "Unknown";
-        const existing = itemMap.get(name) || { name, total_qty: 0, total_revenue: 0, order_count: 0, category: menuItem?.category || "" };
+        const existing = itemMap.get(name) || {
+          name,
+          total_qty: 0,
+          total_revenue: 0,
+          order_count: 0,
+          category: menuItem?.category || "",
+        };
         existing.total_qty += item.quantity;
         existing.total_revenue += item.unit_price * item.quantity;
         existing.order_count += 1;
         itemMap.set(name, existing);
       });
     });
-    const popular = Array.from(itemMap.values()).sort((a, b) => b.total_qty - a.total_qty).slice(0, 10);
+    const popular = Array.from(itemMap.values())
+      .sort((a, b) => b.total_qty - a.total_qty)
+      .slice(0, 10);
 
     const hourMap = new Map<number, { orders: number; revenue: number }>();
     for (let i = 0; i < 24; i++) hourMap.set(i, { orders: 0, revenue: 0 });
@@ -221,114 +253,170 @@ export default function VendorAnalytics() {
       entry.orders += 1;
       entry.revenue += o.total_amount;
     });
-    const hours: HourlyData[] = Array.from(hourMap.entries()).map(([hour, data]) => ({ hour, ...data }));
+    const hours: HourlyData[] = Array.from(hourMap.entries()).map(([hour, data]) => ({
+      hour,
+      ...data,
+    }));
     const maxOrd = Math.max(...hours.map((h) => h.orders), 1);
 
-    return { filteredOrders: filtered, deliveredOrders: delivered, totalRevenue: rev, totalOrders: count, avgOrderValue: avg, dailyRevenue: daily, popularItems: popular, peakHours: hours, maxOrders: maxOrd };
+    return {
+      filteredOrders: filtered,
+      deliveredOrders: delivered,
+      totalRevenue: rev,
+      totalOrders: count,
+      avgOrderValue: avg,
+      dailyRevenue: daily,
+      popularItems: popular,
+      peakHours: hours,
+      maxOrders: maxOrd,
+    };
   }, [orders, period, menuItemNames]);
 
-  const { avgCompetitorRating, avgCompetitorDeliveryMin, competitorCount } = useMemo(() => ({
-    avgCompetitorRating: competitors.length
-      ? (competitors.reduce((s, c) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
-      : "N/A",
-    avgCompetitorDeliveryMin: competitors.length
-      ? Math.round(competitors.reduce((s, c) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2, 0) / competitors.length)
-      : 0,
-    competitorCount: competitors.length,
-  }), [competitors]);
+  const { avgCompetitorRating, avgCompetitorDeliveryMin, competitorCount } = useMemo(
+    () => ({
+      avgCompetitorRating: competitors.length
+        ? (competitors.reduce((s, c) => s + (c.rating || 0), 0) / competitors.length).toFixed(1)
+        : "N/A",
+      avgCompetitorDeliveryMin: competitors.length
+        ? Math.round(
+            competitors.reduce(
+              (s, c) => s + ((c.delivery_time_min || 0) + (c.delivery_time_max || 30)) / 2,
+              0
+            ) / competitors.length
+          )
+        : 0,
+      competitorCount: competitors.length,
+    }),
+    [competitors]
+  );
 
   if (loading) {
     return (
-      <div className="p-4 md:p-8 space-y-6 animate-pulse">
-        <div className="h-8 bg-[var(--color-surface-container)] rounded w-48" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="animate-pulse space-y-6 p-4 md:p-8">
+        <div className="h-8 w-48 rounded bg-[var(--color-surface-container)]" />
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-[var(--color-surface-container)] rounded-2xl" />
+            <div key={i} className="h-24 rounded-2xl bg-[var(--color-surface-container)]" />
           ))}
         </div>
-        <div className="h-64 bg-[var(--color-surface-container)] rounded-2xl" />
+        <div className="h-64 rounded-2xl bg-[var(--color-surface-container)]" />
       </div>
     );
   }
 
   function exportCSV() {
     const rows = [["Date", "Orders", "Revenue", "Avg Order Value"]];
-    dailyRevenue.forEach(d => {
-      rows.push([d.date, String(d.orders), String(d.revenue), d.orders > 0 ? String(Math.round(d.revenue / d.orders)) : "0"]);
+    dailyRevenue.forEach((d) => {
+      rows.push([
+        d.date,
+        String(d.orders),
+        String(d.revenue),
+        d.orders > 0 ? String(Math.round(d.revenue / d.orders)) : "0",
+      ]);
     });
     rows.push([]);
     rows.push(["Popular Items", "Qty Sold", "Revenue", "Orders"]);
-    popularItems.forEach(i => {
+    popularItems.forEach((i) => {
       rows.push([i.name, String(i.total_qty), String(i.total_revenue), String(i.order_count)]);
     });
-    const csv = rows.map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+    const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `analytics_export_${new Date().toISOString().split("T")[0]}.csv`; a.click();
+    a.href = url;
+    a.download = `analytics_export_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
     URL.revokeObjectURL(url);
   }
 
   if (!vendorId) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center min-h-[60vh] text-center">
-        <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60 mb-4">analytics</span>
-        <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)] mb-2">No Vendor Found</h2>
+      <div className="flex min-h-[60vh] flex-col items-center justify-center p-8 text-center">
+        <span className="material-symbols-outlined mb-4 text-6xl text-[var(--color-outline-variant)]/60">
+          analytics
+        </span>
+        <h2 className="mb-2 text-2xl font-extrabold text-[var(--color-on-surface)]">
+          No Vendor Found
+        </h2>
         <p className="text-[var(--color-outline)]">Register your store to see analytics.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4 md:p-8 space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-8 p-4 md:p-8">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-3xl font-extrabold text-[var(--color-on-surface)] tracking-tight">Analytics</h1>
-          <p className="text-[var(--color-outline)] mt-1">Sales performance, competitor insights & demand forecast</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-[var(--color-on-surface)]">
+            Analytics
+          </h1>
+          <p className="mt-1 text-[var(--color-outline)]">
+            Sales performance, competitor insights & demand forecast
+          </p>
         </div>
         <div className="flex gap-2">
           {(["week", "month", "all"] as const).map((p) => (
-            <button key={p} onClick={() => setPeriod(p)} aria-pressed={period === p}
-              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${period === p ? "bg-[var(--color-primary)] text-on-primary" : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)]"}`}>
+            <button
+              key={p}
+              onClick={() => setPeriod(p)}
+              aria-pressed={period === p}
+              className={`rounded-xl px-4 py-2 text-sm font-bold transition-all ${period === p ? "text-on-primary bg-[var(--color-primary)]" : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"}`}
+            >
               {p === "week" ? "This Week" : p === "month" ? "This Month" : "All Time"}
             </button>
           ))}
-          <button onClick={exportCSV} className="px-4 py-2 rounded-xl text-sm font-bold bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-1">
+          <button
+            onClick={exportCSV}
+            className="flex items-center gap-1 rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-2 text-sm font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)]"
+          >
             <span className="material-symbols-outlined text-base">download</span> Export
           </button>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dim)] text-white rounded-2xl p-6">
-          <p className="text-white/80 text-sm font-medium">Total Revenue</p>
-          <p className="text-3xl font-black mt-1">₹{totalRevenue.toFixed(0)}</p>
-          <p className="text-white/80 text-xs mt-1">{deliveredOrders.length} orders</p>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="rounded-2xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary-dim)] p-6 text-white">
+          <p className="text-sm font-medium text-white/80">Total Revenue</p>
+          <p className="mt-1 text-3xl font-black">₹{totalRevenue.toFixed(0)}</p>
+          <p className="mt-1 text-xs text-white/80">{deliveredOrders.length} orders</p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-medium">Orders</p>
-          <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">{totalOrders}</p>
-          <p className="text-[var(--color-outline-variant)] text-xs mt-1">{deliveredOrders.length} delivered</p>
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="text-sm font-medium text-[var(--color-outline)]">Orders</p>
+          <p className="mt-1 text-3xl font-black text-[var(--color-on-surface)]">{totalOrders}</p>
+          <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+            {deliveredOrders.length} delivered
+          </p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-medium">Avg. Order Value</p>
-          <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">₹{avgOrderValue.toFixed(0)}</p>
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="text-sm font-medium text-[var(--color-outline)]">Avg. Order Value</p>
+          <p className="mt-1 text-3xl font-black text-[var(--color-on-surface)]">
+            ₹{avgOrderValue.toFixed(0)}
+          </p>
         </div>
-        <div className="bg-[var(--color-surface-container-lowest)] p-6 rounded-2xl shadow-sm border border-[var(--color-border-subtle)]">
-          <p className="text-[var(--color-outline)] text-sm font-medium">Items Sold</p>
-          <p className="text-3xl font-black text-[var(--color-on-surface)] mt-1">
-            {deliveredOrders.reduce((s, o) => s + (o.items?.reduce((si, i) => si + i.quantity, 0) || 0), 0)}
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <p className="text-sm font-medium text-[var(--color-outline)]">Items Sold</p>
+          <p className="mt-1 text-3xl font-black text-[var(--color-on-surface)]">
+            {deliveredOrders.reduce(
+              (s, o) => s + (o.items?.reduce((si, i) => si + i.quantity, 0) || 0),
+              0
+            )}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Revenue Chart */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Daily revenue bar chart">
-          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Daily Revenue</h3>
+        <div
+          className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm"
+          role="img"
+          aria-label="Daily revenue bar chart"
+        >
+          <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">Daily Revenue</h3>
           {dailyRevenue.length === 0 ? (
-            <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No data for this period</p>
+            <p className="py-8 text-center text-sm text-[var(--color-outline-variant)]">
+              No data for this period
+            </p>
           ) : (
             <div className="space-y-3">
               {dailyRevenue.map((d) => {
@@ -336,13 +424,22 @@ export default function VendorAnalytics() {
                 const pct = (d.revenue / maxRev) * 100;
                 return (
                   <div key={d.date} className="flex items-center gap-3">
-                    <span className="text-xs text-[var(--color-outline)] w-24 font-medium">{d.date}</span>
-                    <div className="flex-1 h-7 bg-[var(--color-surface-subtle)] rounded-lg overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[#e83350] rounded-lg flex items-center justify-end pr-2 transition-all" style={{ width: `${Math.max(pct, 5)}%` }}>
-                        <span className="text-[10px] text-white font-bold">₹{d.revenue.toFixed(0)}</span>
+                    <span className="w-24 text-xs font-medium text-[var(--color-outline)]">
+                      {d.date}
+                    </span>
+                    <div className="h-7 flex-1 overflow-hidden rounded-lg bg-[var(--color-surface-subtle)]">
+                      <div
+                        className="flex h-full items-center justify-end rounded-lg bg-gradient-to-r from-[var(--color-primary)] to-[#e83350] pr-2 transition-all"
+                        style={{ width: `${Math.max(pct, 5)}%` }}
+                      >
+                        <span className="text-[10px] font-bold text-white">
+                          ₹{d.revenue.toFixed(0)}
+                        </span>
                       </div>
                     </div>
-                    <span className="text-xs text-[var(--color-outline-variant)] w-8 text-right">{d.orders}</span>
+                    <span className="w-8 text-right text-xs text-[var(--color-outline-variant)]">
+                      {d.orders}
+                    </span>
                   </div>
                 );
               })}
@@ -351,20 +448,40 @@ export default function VendorAnalytics() {
         </div>
 
         {/* Peak Hours */}
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Peak hours bar chart showing order volume by hour">
-          <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Peak Hours</h3>
+        <div
+          className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm"
+          role="img"
+          aria-label="Peak hours bar chart showing order volume by hour"
+        >
+          <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">Peak Hours</h3>
           <div className="space-y-2">
             {peakHours.map((h) => {
               const pct = (h.orders / maxOrders) * 100;
-              const label = h.hour === 0 ? "12 AM" : h.hour < 12 ? `${h.hour} AM` : h.hour === 12 ? "12 PM" : `${h.hour - 12} PM`;
+              const label =
+                h.hour === 0
+                  ? "12 AM"
+                  : h.hour < 12
+                    ? `${h.hour} AM`
+                    : h.hour === 12
+                      ? "12 PM"
+                      : `${h.hour - 12} PM`;
               return (
                 <div key={h.hour} className="flex items-center gap-3">
-                  <span className="text-xs text-[var(--color-outline)] w-12 font-medium">{label}</span>
-                  <div className="flex-1 h-5 bg-[var(--color-surface-subtle)] rounded-lg overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-accent to-accent/70 rounded-lg transition-all" style={{ width: `${Math.max(pct, 2)}%` }} />
+                  <span className="w-12 text-xs font-medium text-[var(--color-outline)]">
+                    {label}
+                  </span>
+                  <div className="h-5 flex-1 overflow-hidden rounded-lg bg-[var(--color-surface-subtle)]">
+                    <div
+                      className="from-accent to-accent/70 h-full rounded-lg bg-gradient-to-r transition-all"
+                      style={{ width: `${Math.max(pct, 2)}%` }}
+                    />
                   </div>
-                  <span className="text-xs text-[var(--color-outline)] w-16 text-right font-medium">{h.orders} orders</span>
-                  <span className="text-xs text-[var(--color-outline-variant)] w-16 text-right">₹{h.revenue.toFixed(0)}</span>
+                  <span className="w-16 text-right text-xs font-medium text-[var(--color-outline)]">
+                    {h.orders} orders
+                  </span>
+                  <span className="w-16 text-right text-xs text-[var(--color-outline-variant)]">
+                    ₹{h.revenue.toFixed(0)}
+                  </span>
                 </div>
               );
             })}
@@ -375,11 +492,12 @@ export default function VendorAnalytics() {
       {/* Performance & Staffing */}
       {(() => {
         const topHours = [...peakHours].sort((a, b) => b.orders - a.orders).slice(0, 3);
-        const peakLabel = topHours.length > 0
-          ? `${topHours.map(h => `${h.hour === 0 ? "12 AM" : h.hour < 12 ? `${h.hour} AM` : h.hour === 12 ? "12 PM" : `${h.hour - 12} PM`} (${h.orders} orders)`).join(", ")}`
-          : "N/A";
+        const peakLabel =
+          topHours.length > 0
+            ? `${topHours.map((h) => `${h.hour === 0 ? "12 AM" : h.hour < 12 ? `${h.hour} AM` : h.hour === 12 ? "12 PM" : `${h.hour - 12} PM`} (${h.orders} orders)`).join(", ")}`
+            : "N/A";
         const prepTimes: number[] = [];
-        const delayedOrders = orders.filter(o => o.delay_minutes && o.delay_minutes > 0);
+        const delayedOrders = orders.filter((o) => o.delay_minutes && o.delay_minutes > 0);
         orders.forEach((o) => {
           if (o.status === "delivered" || o.status === "ready_for_pickup") {
             const placed = new Date(o.placed_at).getTime();
@@ -389,41 +507,63 @@ export default function VendorAnalytics() {
             }
           }
         });
-        const avgPrepTime = prepTimes.length > 0 ? Math.round(prepTimes.reduce((a, b) => a + b, 0) / prepTimes.length) : null;
-        const onTimeRate = prepTimes.length > 0
-          ? Math.round((prepTimes.filter(t => t <= 45).length / prepTimes.length) * 100)
-          : null;
+        const avgPrepTime =
+          prepTimes.length > 0
+            ? Math.round(prepTimes.reduce((a, b) => a + b, 0) / prepTimes.length)
+            : null;
+        const onTimeRate =
+          prepTimes.length > 0
+            ? Math.round((prepTimes.filter((t) => t <= 45).length / prepTimes.length) * 100)
+            : null;
         return (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-emerald-500">speed</span>
               <h3 className="font-bold text-[var(--color-on-surface)]">Performance & Staffing</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl">
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 mb-2 font-bold uppercase tracking-wider">Staffing Recommendation</p>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="rounded-xl bg-emerald-50 p-4 dark:bg-emerald-900/30">
+                <p className="mb-2 text-xs font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400">
+                  Staffing Recommendation
+                </p>
                 <p className="text-sm text-emerald-800 dark:text-emerald-300">
                   {topHours.length > 0
                     ? `Schedule extra staff during peak: ${peakLabel}`
                     : "Insufficient data for recommendation"}
                 </p>
               </div>
-              <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl text-center">
-                <p className="text-xs text-accent mb-1 font-bold uppercase tracking-wider">Avg Prep Time</p>
-                <p className="text-3xl font-black text-accent dark:text-accent">{avgPrepTime ?? "—"}</p>
-                <p className="text-xs text-accent dark:text-accent mt-1">minutes</p>
+              <div className="bg-accent/10 dark:bg-accent/20 rounded-xl p-4 text-center">
+                <p className="text-accent mb-1 text-xs font-bold tracking-wider uppercase">
+                  Avg Prep Time
+                </p>
+                <p className="text-accent dark:text-accent text-3xl font-black">
+                  {avgPrepTime ?? "—"}
+                </p>
+                <p className="text-accent dark:text-accent mt-1 text-xs">minutes</p>
               </div>
-              <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
-                <p className="text-xs text-green-600 dark:text-green-400 mb-1 font-bold uppercase tracking-wider">On-time Rate</p>
-                <p className="text-3xl font-black text-green-700 dark:text-green-300">{onTimeRate != null ? `${onTimeRate}%` : "—"}</p>
-                <p className="text-xs text-green-500 dark:text-green-400 mt-1">delivered within 45 min</p>
+              <div className="rounded-xl bg-green-50 p-4 text-center dark:bg-green-900/30">
+                <p className="mb-1 text-xs font-bold tracking-wider text-green-600 uppercase dark:text-green-400">
+                  On-time Rate
+                </p>
+                <p className="text-3xl font-black text-green-700 dark:text-green-300">
+                  {onTimeRate != null ? `${onTimeRate}%` : "—"}
+                </p>
+                <p className="mt-1 text-xs text-green-500 dark:text-green-400">
+                  delivered within 45 min
+                </p>
               </div>
             </div>
             {delayedOrders.length > 0 && (
-              <div className="mt-4 p-3 bg-red-50 dark:bg-red-900/30 rounded-xl flex items-center gap-2">
-                <span className="material-symbols-outlined text-red-500 text-sm">warning</span>
+              <div className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 p-3 dark:bg-red-900/30">
+                <span className="material-symbols-outlined text-sm text-red-500">warning</span>
                 <p className="text-xs text-red-700 dark:text-red-300">
-                  {delayedOrders.length} order{delayedOrders.length > 1 ? "s" : ""} reported with delays — avg {Math.round(delayedOrders.reduce((s, o) => s + (o.delay_minutes || 0), 0) / delayedOrders.length)} min delay
+                  {delayedOrders.length} order{delayedOrders.length > 1 ? "s" : ""} reported with
+                  delays — avg{" "}
+                  {Math.round(
+                    delayedOrders.reduce((s, o) => s + (o.delay_minutes || 0), 0) /
+                      delayedOrders.length
+                  )}{" "}
+                  min delay
                 </p>
               </div>
             )}
@@ -433,11 +573,13 @@ export default function VendorAnalytics() {
 
       {/* Rating Breakdown */}
       {dimRatings && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <div className="mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-amber-500">star</span>
             <h3 className="font-bold text-[var(--color-on-surface)]">Rating Breakdown</h3>
-            <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Detailed scores</span>
+            <span className="rounded-full bg-[var(--color-surface-container)] px-2 py-0.5 text-[10px] text-[var(--color-outline-variant)]">
+              Detailed scores
+            </span>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {[
@@ -445,17 +587,32 @@ export default function VendorAnalytics() {
               { label: "Packaging", field: dimRatings.packaging, icon: "inventory_2" },
               { label: "Delivery Time", field: dimRatings.delivery_time, icon: "schedule" },
             ].map((dim) => (
-              <div key={dim.label} className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
-                <div className="flex justify-center mb-2">
-                  <span className="material-symbols-outlined text-2xl text-amber-500">{dim.icon}</span>
+              <div
+                key={dim.label}
+                className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center"
+              >
+                <div className="mb-2 flex justify-center">
+                  <span className="material-symbols-outlined text-2xl text-amber-500">
+                    {dim.icon}
+                  </span>
                 </div>
-                <p className="text-3xl font-black text-[var(--color-on-surface)]">{dim.field.toFixed(1)}</p>
-                <div className="flex justify-center gap-0.5 mt-1">
+                <p className="text-3xl font-black text-[var(--color-on-surface)]">
+                  {dim.field.toFixed(1)}
+                </p>
+                <div className="mt-1 flex justify-center gap-0.5">
                   {[1, 2, 3, 4, 5].map((s) => (
-                    <span key={s} className={`material-symbols-outlined text-sm ${s <= Math.round(dim.field) ? "text-amber-500" : "text-[var(--color-outline-variant)]/40"}`} style={{ fontVariationSettings: `'FILL' ${s <= Math.round(dim.field) ? 1 : 0}` }}>star</span>
+                    <span
+                      key={s}
+                      className={`material-symbols-outlined text-sm ${s <= Math.round(dim.field) ? "text-amber-500" : "text-[var(--color-outline-variant)]/40"}`}
+                      style={{
+                        fontVariationSettings: `'FILL' ${s <= Math.round(dim.field) ? 1 : 0}`,
+                      }}
+                    >
+                      star
+                    </span>
                   ))}
                 </div>
-                <p className="text-xs text-[var(--color-outline)] mt-1">{dim.label}</p>
+                <p className="mt-1 text-xs text-[var(--color-outline)]">{dim.label}</p>
               </div>
             ))}
           </div>
@@ -464,54 +621,82 @@ export default function VendorAnalytics() {
 
       {/* Competitor Benchmarking */}
       {competitors.length > 0 && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
-          <div className="flex items-center justify-between mb-4">
+        <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="font-bold text-[var(--color-on-surface)]">Competitor Benchmarking</h3>
-            <span className="text-xs text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-1 rounded-full">{competitorCount} similar vendors</span>
+            <span className="rounded-full bg-[var(--color-surface-container)] px-2 py-1 text-xs text-[var(--color-outline-variant)]">
+              {competitorCount} similar vendors
+            </span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
-              <p className="text-xs text-[var(--color-outline)] mb-1">Your Rating</p>
-              <p className="text-2xl font-black text-amber-500">{vendor?.rating?.toFixed(1) || "0.0"}</p>
-              <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">vs avg {avgCompetitorRating}</p>
+          <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center">
+              <p className="mb-1 text-xs text-[var(--color-outline)]">Your Rating</p>
+              <p className="text-2xl font-black text-amber-500">
+                {vendor?.rating?.toFixed(1) || "0.0"}
+              </p>
+              <p className="mt-1 text-[10px] text-[var(--color-outline-variant)]">
+                vs avg {avgCompetitorRating}
+              </p>
             </div>
-            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
-              <p className="text-xs text-[var(--color-outline)] mb-1">Delivery Time</p>
-              <p className="text-2xl font-black text-accent">
+            <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center">
+              <p className="mb-1 text-xs text-[var(--color-outline)]">Delivery Time</p>
+              <p className="text-accent text-2xl font-black">
                 {vendor?.delivery_time_min || vendor?.delivery_time_minutes || "30"} min
               </p>
-              <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">vs avg {avgCompetitorDeliveryMin} min</p>
+              <p className="mt-1 text-[10px] text-[var(--color-outline-variant)]">
+                vs avg {avgCompetitorDeliveryMin} min
+              </p>
             </div>
-            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
-              <p className="text-xs text-[var(--color-outline)] mb-1">Min Order</p>
+            <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center">
+              <p className="mb-1 text-xs text-[var(--color-outline)]">Min Order</p>
               <p className="text-2xl font-black text-green-600">₹{vendor?.min_order_amount || 0}</p>
             </div>
-            <div className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center">
-              <p className="text-xs text-[var(--color-outline)] mb-1">Reviews</p>
-              <p className="text-2xl font-black text-accent">{vendor?.review_count || 0}</p>
-              <p className="text-[10px] text-[var(--color-outline-variant)] mt-1">competitors in area</p>
+            <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center">
+              <p className="mb-1 text-xs text-[var(--color-outline)]">Reviews</p>
+              <p className="text-accent text-2xl font-black">{vendor?.review_count || 0}</p>
+              <p className="mt-1 text-[10px] text-[var(--color-outline-variant)]">
+                competitors in area
+              </p>
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <caption className="sr-only">Competitor benchmarking data</caption>
-              <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
+              <thead className="rounded-xl bg-[var(--color-surface-subtle)]">
                 <tr>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Vendor</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Rating</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Reviews</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Delivery</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">Min Order</th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">
+                    Vendor
+                  </th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">
+                    Rating
+                  </th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">
+                    Reviews
+                  </th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">
+                    Delivery
+                  </th>
+                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase">
+                    Min Order
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--color-border-subtle)]">
                 {competitors.slice(0, 5).map((c) => (
                   <tr key={c.id || c.shop_name} className="hover:bg-[var(--color-surface-subtle)]">
                     <td className="p-3 font-bold text-[var(--color-on-surface)]">{c.shop_name}</td>
-                    <td className="p-3"><span className="text-amber-500">★</span> {c.rating?.toFixed(1) || "N/A"}</td>
-                    <td className="p-3 text-[var(--color-on-surface-variant)]">{c.review_count || 0}</td>
-                    <td className="p-3 text-[var(--color-on-surface-variant)]">{c.delivery_time_min || c.delivery_time_minutes || "N/A"} min</td>
-                    <td className="p-3 text-[var(--color-on-surface-variant)]">₹{c.min_order_amount || 0}</td>
+                    <td className="p-3">
+                      <span className="text-amber-500">★</span> {c.rating?.toFixed(1) || "N/A"}
+                    </td>
+                    <td className="p-3 text-[var(--color-on-surface-variant)]">
+                      {c.review_count || 0}
+                    </td>
+                    <td className="p-3 text-[var(--color-on-surface-variant)]">
+                      {c.delivery_time_min || c.delivery_time_minutes || "N/A"} min
+                    </td>
+                    <td className="p-3 text-[var(--color-on-surface-variant)]">
+                      ₹{c.min_order_amount || 0}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -522,43 +707,66 @@ export default function VendorAnalytics() {
 
       {/* Demand Forecasting */}
       {forecast && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]" role="img" aria-label="Demand forecast by day of week">
-          <div className="flex items-center gap-2 mb-4">
+        <div
+          className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm"
+          role="img"
+          aria-label="Demand forecast by day of week"
+        >
+          <div className="mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-accent">trending_up</span>
             <h3 className="font-bold text-[var(--color-on-surface)]">Demand Forecast</h3>
-            <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Based on last 90 days</span>
+            <span className="rounded-full bg-[var(--color-surface-container)] px-2 py-0.5 text-[10px] text-[var(--color-outline-variant)]">
+              Based on last 90 days
+            </span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl text-center">
-              <p className="text-xs text-accent dark:text-accent mb-1">Avg Daily Orders</p>
-              <p className="text-2xl font-black text-accent dark:text-accent">{forecast.avgDailyOrders}</p>
+          <div className="mb-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="bg-accent/10 dark:bg-accent/20 rounded-xl p-4 text-center">
+              <p className="text-accent dark:text-accent mb-1 text-xs">Avg Daily Orders</p>
+              <p className="text-accent dark:text-accent text-2xl font-black">
+                {forecast.avgDailyOrders}
+              </p>
             </div>
-            <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-xl text-center">
-              <p className="text-xs text-green-600 dark:text-green-400 mb-1">Busiest Day</p>
-              <p className="text-2xl font-black text-green-700 dark:text-green-300">{forecast.peakDay.name}</p>
-              <p className="text-[10px] text-green-500 dark:text-green-400">{forecast.peakDay.orders} orders</p>
+            <div className="rounded-xl bg-green-50 p-4 text-center dark:bg-green-900/30">
+              <p className="mb-1 text-xs text-green-600 dark:text-green-400">Busiest Day</p>
+              <p className="text-2xl font-black text-green-700 dark:text-green-300">
+                {forecast.peakDay.name}
+              </p>
+              <p className="text-[10px] text-green-500 dark:text-green-400">
+                {forecast.peakDay.orders} orders
+              </p>
             </div>
-            <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-center">
-              <p className="text-xs text-amber-600 dark:text-amber-400 mb-1">Slowest Day</p>
-              <p className="text-2xl font-black text-amber-700 dark:text-amber-300">{forecast.slowDay.name}</p>
-              <p className="text-[10px] text-amber-500 dark:text-amber-400">{forecast.slowDay.orders} orders</p>
+            <div className="rounded-xl bg-amber-50 p-4 text-center dark:bg-amber-900/30">
+              <p className="mb-1 text-xs text-amber-600 dark:text-amber-400">Slowest Day</p>
+              <p className="text-2xl font-black text-amber-700 dark:text-amber-300">
+                {forecast.slowDay.name}
+              </p>
+              <p className="text-[10px] text-amber-500 dark:text-amber-400">
+                {forecast.slowDay.orders} orders
+              </p>
             </div>
-            <div className="p-4 bg-accent/10 dark:bg-accent/20 rounded-xl text-center">
-              <p className="text-xs text-accent mb-1">Projected Weekly</p>
-              <p className="text-2xl font-black text-accent dark:text-accent">{forecast.projectedWeekly}</p>
-              <p className="text-[10px] text-accent dark:text-accent">orders</p>
+            <div className="bg-accent/10 dark:bg-accent/20 rounded-xl p-4 text-center">
+              <p className="text-accent mb-1 text-xs">Projected Weekly</p>
+              <p className="text-accent dark:text-accent text-2xl font-black">
+                {forecast.projectedWeekly}
+              </p>
+              <p className="text-accent dark:text-accent text-[10px]">orders</p>
             </div>
           </div>
           <div className="flex gap-3 overflow-x-auto pb-2">
             {forecast.dayOfWeek.map((d) => {
               const maxOrders = Math.max(...forecast.dayOfWeek.map((x) => x.orders), 1);
               return (
-                <div key={d.day} className="flex flex-col items-center gap-2 min-w-[60px]">
+                <div key={d.day} className="flex min-w-[60px] flex-col items-center gap-2">
                   <span className="text-xs font-bold text-[var(--color-outline)]">{d.day}</span>
-                  <div className="w-8 h-24 bg-[var(--color-surface-container)] rounded-lg overflow-hidden relative">
-                    <div className="absolute bottom-0 w-full bg-gradient-to-t from-deal to-deal/70 rounded-lg transition-all" style={{ height: `${(d.orders / maxOrders) * 100}%` }} />
+                  <div className="relative h-24 w-8 overflow-hidden rounded-lg bg-[var(--color-surface-container)]">
+                    <div
+                      className="from-deal to-deal/70 absolute bottom-0 w-full rounded-lg bg-gradient-to-t transition-all"
+                      style={{ height: `${(d.orders / maxOrders) * 100}%` }}
+                    />
                   </div>
-                  <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)]">{d.orders}</span>
+                  <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)]">
+                    {d.orders}
+                  </span>
                 </div>
               );
             })}
@@ -567,36 +775,65 @@ export default function VendorAnalytics() {
       )}
 
       {/* Popular Items */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
-        <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Popular Items</h3>
+      <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+        <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">Popular Items</h3>
         {popularItems.length === 0 ? (
           <>
-            <p className="text-[var(--color-outline-variant)] text-sm text-center py-8">No items sold yet</p>
-            <p className="text-[var(--color-outline-variant)] text-xs text-center opacity-60 -mt-6 mb-6">Analytics will appear once you start receiving orders</p>
+            <p className="py-8 text-center text-sm text-[var(--color-outline-variant)]">
+              No items sold yet
+            </p>
+            <p className="-mt-6 mb-6 text-center text-xs text-[var(--color-outline-variant)] opacity-60">
+              Analytics will appear once you start receiving orders
+            </p>
           </>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <caption className="sr-only">Popular items by quantity sold</caption>
-              <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
+              <thead className="rounded-xl bg-[var(--color-surface-subtle)]">
                 <tr>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">#</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Item</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Category</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Sold</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Orders</th>
-                  <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Revenue</th>
+                  <th className="p-3 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    #
+                  </th>
+                  <th className="p-3 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Item
+                  </th>
+                  <th className="p-3 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Category
+                  </th>
+                  <th className="p-3 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Sold
+                  </th>
+                  <th className="p-3 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Orders
+                  </th>
+                  <th className="p-3 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                    Revenue
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--color-border-subtle)]">
                 {popularItems.map((item, i) => (
-                  <tr key={item.name} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
-                    <td className="p-3 text-sm font-bold text-[var(--color-outline-variant)]">{i + 1}</td>
-                    <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">{item.name}</td>
+                  <tr
+                    key={item.name}
+                    className="transition-colors hover:bg-[var(--color-surface-subtle)]"
+                  >
+                    <td className="p-3 text-sm font-bold text-[var(--color-outline-variant)]">
+                      {i + 1}
+                    </td>
+                    <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">
+                      {item.name}
+                    </td>
                     <td className="p-3 text-xs text-[var(--color-outline)]">{item.category}</td>
-                    <td className="p-3 text-sm font-bold text-[var(--color-on-surface)] text-right">{item.total_qty}</td>
-                    <td className="p-3 text-sm text-[var(--color-on-surface-variant)] text-right">{item.order_count}</td>
-                    <td className="p-3 text-sm font-extrabold text-green-600 text-right">₹{item.total_revenue.toFixed(0)}</td>
+                    <td className="p-3 text-right text-sm font-bold text-[var(--color-on-surface)]">
+                      {item.total_qty}
+                    </td>
+                    <td className="p-3 text-right text-sm text-[var(--color-on-surface-variant)]">
+                      {item.order_count}
+                    </td>
+                    <td className="p-3 text-right text-sm font-extrabold text-green-600">
+                      ₹{item.total_revenue.toFixed(0)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -624,42 +861,68 @@ export default function VendorAnalytics() {
         const itemStats = new Map<string, { totalCustomers: number; repeatCustomers: number }>();
         userItemOrders.forEach((itemCounts) => {
           itemCounts.forEach((count, itemName) => {
-            if (!itemStats.has(itemName)) itemStats.set(itemName, { totalCustomers: 0, repeatCustomers: 0 });
+            if (!itemStats.has(itemName))
+              itemStats.set(itemName, { totalCustomers: 0, repeatCustomers: 0 });
             const s = itemStats.get(itemName)!;
             s.totalCustomers++;
             if (count > 1) s.repeatCustomers++;
           });
         });
         const reorderItems = Array.from(itemStats.entries())
-          .map(([name, s]) => ({ name, ...s, reorderRate: Math.round((s.repeatCustomers / s.totalCustomers) * 100) }))
-          .filter(i => i.totalCustomers > 1)
+          .map(([name, s]) => ({
+            name,
+            ...s,
+            reorderRate: Math.round((s.repeatCustomers / s.totalCustomers) * 100),
+          }))
+          .filter((i) => i.totalCustomers > 1)
           .sort((a, b) => b.reorderRate - a.reorderRate)
           .slice(0, 10);
         return reorderItems.length > 0 ? (
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined text-accent">replay</span>
               <h3 className="font-bold text-[var(--color-on-surface)]">Re-order Analysis</h3>
-              <span className="text-[10px] text-[var(--color-outline-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">Customer favorites</span>
+              <span className="rounded-full bg-[var(--color-surface-container)] px-2 py-0.5 text-[10px] text-[var(--color-outline-variant)]">
+                Customer favorites
+              </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-[var(--color-surface-subtle)] rounded-xl">
+                <thead className="rounded-xl bg-[var(--color-surface-subtle)]">
                   <tr>
-                    <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest">Item</th>
-                    <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Repeat Customers</th>
-                    <th className="p-3 text-[10px] font-black text-[var(--color-outline-variant)] uppercase tracking-widest text-right">Re-order Rate</th>
+                    <th className="p-3 text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Item
+                    </th>
+                    <th className="p-3 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Repeat Customers
+                    </th>
+                    <th className="p-3 text-right text-[10px] font-black tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Re-order Rate
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--color-border-subtle)]">
                   {reorderItems.map((item) => (
-                    <tr key={item.name} className="hover:bg-[var(--color-surface-subtle)] transition-colors">
-                      <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">{item.name}</td>
-                      <td className="p-3 text-sm font-bold text-accent text-right">{item.repeatCustomers}/{item.totalCustomers}</td>
+                    <tr
+                      key={item.name}
+                      className="transition-colors hover:bg-[var(--color-surface-subtle)]"
+                    >
+                      <td className="p-3 text-sm font-bold text-[var(--color-on-surface)]">
+                        {item.name}
+                      </td>
+                      <td className="text-accent p-3 text-right text-sm font-bold">
+                        {item.repeatCustomers}/{item.totalCustomers}
+                      </td>
                       <td className="p-3 text-right">
-                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                          item.reorderRate >= 50 ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : item.reorderRate >= 25 ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300" : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
-                        }`}>
+                        <span
+                          className={`rounded-full px-2 py-1 text-xs font-bold ${
+                            item.reorderRate >= 50
+                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                              : item.reorderRate >= 25
+                                ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                                : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
+                          }`}
+                        >
                           {item.reorderRate}%
                         </span>
                       </td>
@@ -673,21 +936,35 @@ export default function VendorAnalytics() {
       })()}
 
       {/* Order Status Breakdown */}
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm border border-[var(--color-border-subtle)]">
-        <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Order Status Breakdown</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {([
-            { status: "delivered", label: "Delivered", textClass: "text-green-600 dark:text-green-400" },
-            { status: "cancelled", label: "Cancelled", textClass: "text-red-600 dark:text-red-400" },
-            { status: "pending", label: "Pending", textClass: "text-amber-600 dark:text-amber-400" },
-            { status: "accepted", label: "In Progress", textClass: "text-accent" },
-          ] as const).map((s) => {
+      <div className="rounded-2xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-6 shadow-sm">
+        <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">Order Status Breakdown</h3>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {(
+            [
+              {
+                status: "delivered",
+                label: "Delivered",
+                textClass: "text-green-600 dark:text-green-400",
+              },
+              {
+                status: "cancelled",
+                label: "Cancelled",
+                textClass: "text-red-600 dark:text-red-400",
+              },
+              {
+                status: "pending",
+                label: "Pending",
+                textClass: "text-amber-600 dark:text-amber-400",
+              },
+              { status: "accepted", label: "In Progress", textClass: "text-accent" },
+            ] as const
+          ).map((s) => {
             const count = filteredOrders.filter((o) => o.status === s.status).length;
             const pct = filteredOrders.length > 0 ? (count / filteredOrders.length) * 100 : 0;
             return (
               <div key={s.status} className="text-center">
                 <div className={`text-3xl font-black ${s.textClass}`}>{count}</div>
-                <div className="text-sm text-[var(--color-outline)] font-medium">{s.label}</div>
+                <div className="text-sm font-medium text-[var(--color-outline)]">{s.label}</div>
                 <div className="text-xs text-[var(--color-outline-variant)]">{pct.toFixed(0)}%</div>
               </div>
             );

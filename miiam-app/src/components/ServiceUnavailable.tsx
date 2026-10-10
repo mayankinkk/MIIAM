@@ -8,18 +8,24 @@ interface ServiceUnavailableProps {
   icon: string;
 }
 
-export default function ServiceUnavailable({ serviceName, message, icon }: ServiceUnavailableProps) {
+export default function ServiceUnavailable({
+  serviceName,
+  message,
+  icon,
+}: ServiceUnavailableProps) {
   return (
-    <div className="min-h-screen bg-[var(--color-surface-container-lowest)] flex items-center justify-center p-6">
-      <div className="text-center max-w-md">
-        <div className="w-24 h-24 mx-auto mb-6 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center">
-          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]">{icon}</span>
+    <div className="flex min-h-screen items-center justify-center bg-[var(--color-surface-container-lowest)] p-6">
+      <div className="max-w-md text-center">
+        <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[var(--color-surface-container)]">
+          <span className="material-symbols-outlined text-5xl text-[var(--color-outline-variant)]">
+            {icon}
+          </span>
         </div>
-        <h2 className="text-2xl font-black text-[var(--color-on-surface)] mb-2">{serviceName}</h2>
-        <p className="text-[var(--color-on-surface-variant)] mb-6">{message}</p>
-        <Link 
+        <h2 className="mb-2 text-2xl font-black text-[var(--color-on-surface)]">{serviceName}</h2>
+        <p className="mb-6 text-[var(--color-on-surface-variant)]">{message}</p>
+        <Link
           href="/app/home"
-          className="inline-block px-6 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90"
+          className="text-on-primary inline-block rounded-xl bg-[var(--color-primary)] px-6 py-3 font-bold hover:opacity-90"
         >
           Back to Home
         </Link>

@@ -13,7 +13,10 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -25,18 +28,16 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
     }
 
     // Upsert push subscription
-    const { error } = await supabase
-      .from("push_subscriptions")
-      .upsert(
-        {
-          user_id: userId || user.id,
-          endpoint: subscription.endpoint,
-          p256dh: subscription.keys?.p256dh || "",
-          auth: subscription.keys?.auth || "",
-          created_at: new Date().toISOString(),
-        },
-        { onConflict: "endpoint" }
-      );
+    const { error } = await supabase.from("push_subscriptions").upsert(
+      {
+        user_id: userId || user.id,
+        endpoint: subscription.endpoint,
+        p256dh: subscription.keys?.p256dh || "",
+        auth: subscription.keys?.auth || "",
+        created_at: new Date().toISOString(),
+      },
+      { onConflict: "endpoint" }
+    );
 
     if (error) {
       logger.error({ err: error }, "Failed to store push subscription");
@@ -53,7 +54,10 @@ export const POST = withRateLimit(async function POST(request: NextRequest) {
 export const GET = withRateLimit(async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

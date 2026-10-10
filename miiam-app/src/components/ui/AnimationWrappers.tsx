@@ -6,14 +6,18 @@ import { useUiA11yStore } from "@/lib/store/uiA11yStore";
 
 function useMounted() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   return mounted;
 }
 
 function useReducedMotion() {
   const [mounted, setMounted] = useState(false);
   const reducedMotion = useUiA11yStore((s) => s.reducedMotion);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   return mounted ? reducedMotion : false;
 }
 
@@ -141,10 +145,23 @@ export function StaggerItem({ children, className = "" }: Props) {
   );
 }
 
-export function PressScale({ children, onClick, className = "" }: { children: ReactNode; onClick?: () => void; className?: string }) {
+export function PressScale({
+  children,
+  onClick,
+  className = "",
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+  className?: string;
+}) {
   const mounted = useMounted();
   const reduced = useReducedMotion();
-  if (!mounted || reduced) return <div className={`cursor-pointer ${className}`} onClick={onClick}>{children}</div>;
+  if (!mounted || reduced)
+    return (
+      <div className={`cursor-pointer ${className}`} onClick={onClick}>
+        {children}
+      </div>
+    );
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -157,7 +174,15 @@ export function PressScale({ children, onClick, className = "" }: { children: Re
   );
 }
 
-export function CartBounce({ children, isBouncing, className = "" }: { children: ReactNode; isBouncing: boolean; className?: string }) {
+export function CartBounce({
+  children,
+  isBouncing,
+  className = "",
+}: {
+  children: ReactNode;
+  isBouncing: boolean;
+  className?: string;
+}) {
   const mounted = useMounted();
   const reduced = useReducedMotion();
   if (!mounted || reduced) return <div className={className}>{children}</div>;

@@ -23,7 +23,7 @@ export function canOptimizeImage(src: string): boolean {
     const url = new URL(src);
     if (url.protocol !== "https:") return false;
     return OPTIMIZED_HOSTS.some((host) =>
-      host.startsWith("*.") ? url.hostname.endsWith(host.slice(1)) : url.hostname === host,
+      host.startsWith("*.") ? url.hostname.endsWith(host.slice(1)) : url.hostname === host
     );
   } catch {
     return false;

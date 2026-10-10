@@ -23,14 +23,22 @@ interface CheckoutScheduledDeliveryProps {
 }
 
 export default function CheckoutScheduledDelivery({
-  scheduledDate, onScheduledDateChange,
-  scheduledTime, onScheduledTimeChange,
-  showDatePicker, onShowDatePickerChange,
-  showTimePicker, onShowTimePickerChange,
-  isRecurring, onIsRecurringChange,
-  recurringFrequency, onRecurringFrequencyChange,
-  recurringDayOfWeek, onRecurringDayOfWeekChange,
-  vendorIds, onClearSchedule,
+  scheduledDate,
+  onScheduledDateChange,
+  scheduledTime,
+  onScheduledTimeChange,
+  showDatePicker,
+  onShowDatePickerChange,
+  showTimePicker,
+  onShowTimePickerChange,
+  isRecurring,
+  onIsRecurringChange,
+  recurringFrequency,
+  onRecurringFrequencyChange,
+  recurringDayOfWeek,
+  onRecurringDayOfWeekChange,
+  vendorIds,
+  onClearSchedule,
 }: CheckoutScheduledDeliveryProps) {
   const { t } = useTranslation();
 
@@ -48,30 +56,41 @@ export default function CheckoutScheduledDelivery({
       const date = new Date();
       date.setDate(date.getDate() + days);
       return {
-        value: date.toISOString().split('T')[0],
-        label: days === 0 ? "Today" : days === 1 ? "Tomorrow" : date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }),
+        value: date.toISOString().split("T")[0],
+        label:
+          days === 0
+            ? "Today"
+            : days === 1
+              ? "Tomorrow"
+              : date.toLocaleDateString("en-IN", {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                }),
       };
     });
   }, []);
 
   return (
-    <section className="px-4 py-4 border-b border-outline-variant/60">
-      <div className="flex items-center gap-2 mb-1">
+    <section className="border-outline-variant/60 border-b px-4 py-4">
+      <div className="mb-1 flex items-center gap-2">
         <span className="material-symbols-outlined text-accent text-[20px]">schedule</span>
         <div className="min-w-0">
-          <h2 className="text-[15px] font-bold text-on-surface">{t.checkout.scheduleDelivery}</h2>
-          <p className="text-xs text-on-surface-variant truncate">{t.checkout.scheduleDesc}</p>
+          <h2 className="text-on-surface text-[15px] font-bold">{t.checkout.scheduleDelivery}</h2>
+          <p className="text-on-surface-variant truncate text-xs">{t.checkout.scheduleDesc}</p>
         </div>
       </div>
 
       {/* Date Picker */}
       <button
         onClick={() => onShowDatePickerChange(!showDatePicker)}
-        className="w-full mt-2.5 px-3.5 py-3 rounded-xl border border-outline-variant/40 flex items-center justify-between hover:border-primary transition-all"
+        className="border-outline-variant/40 hover:border-primary mt-2.5 flex w-full items-center justify-between rounded-xl border px-3.5 py-3 transition-all"
       >
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div className="flex min-w-0 items-center gap-2.5">
           <span className="material-symbols-outlined text-accent text-[20px]">calendar_month</span>
-          <span className={`text-sm truncate ${scheduledDate ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+          <span
+            className={`truncate text-sm ${scheduledDate ? "text-on-surface font-bold" : "text-on-surface-variant"}`}
+          >
             {scheduledDate || t.checkout.selectDate}
           </span>
         </div>
@@ -84,17 +103,17 @@ export default function CheckoutScheduledDelivery({
         <div className="mt-3">
           <input
             type="date"
-            min={new Date().toISOString().split('T')[0]}
+            min={new Date().toISOString().split("T")[0]}
             value={scheduledDate}
             onChange={(e) => onScheduledDateChange(e.target.value)}
-            className="w-full px-3.5 py-3 rounded-xl border border-outline-variant/40 focus:border-primary focus:outline-none text-sm"
+            className="border-outline-variant/40 focus:border-primary w-full rounded-xl border px-3.5 py-3 text-sm focus:outline-none"
           />
-          <div className="flex gap-2 mt-3 flex-wrap">
+          <div className="mt-3 flex flex-wrap gap-2">
             {dateOptions.map((d) => (
               <button
                 key={d.value}
                 onClick={() => onScheduledDateChange(d.value)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                className={`rounded-lg border px-3 py-1.5 text-xs font-bold transition-all ${
                   scheduledDate === d.value
                     ? "bg-primary text-on-primary border-primary"
                     : "border-outline-variant/40 hover:border-primary text-on-surface-variant"
@@ -110,11 +129,13 @@ export default function CheckoutScheduledDelivery({
       {/* Time Picker */}
       <button
         onClick={() => onShowTimePickerChange(!showTimePicker)}
-        className="w-full mt-2.5 px-3.5 py-3 rounded-xl border border-outline-variant/40 flex items-center justify-between hover:border-primary transition-all"
+        className="border-outline-variant/40 hover:border-primary mt-2.5 flex w-full items-center justify-between rounded-xl border px-3.5 py-3 transition-all"
       >
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div className="flex min-w-0 items-center gap-2.5">
           <span className="material-symbols-outlined text-accent text-[20px]">access_time</span>
-          <span className={`text-sm truncate ${scheduledTime ? "font-bold text-on-surface" : "text-on-surface-variant"}`}>
+          <span
+            className={`truncate text-sm ${scheduledTime ? "text-on-surface font-bold" : "text-on-surface-variant"}`}
+          >
             {scheduledTime || t.checkout.selectTimeSlot}
           </span>
         </div>
@@ -123,12 +144,15 @@ export default function CheckoutScheduledDelivery({
         </span>
       </button>
       {showTimePicker && (
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
           {timeSlots.map((slot) => (
             <button
               key={slot}
-              onClick={() => { onScheduledTimeChange(slot); onShowTimePickerChange(false); }}
-              className={`py-2.5 px-3 rounded-lg text-xs font-bold border transition-all text-left ${
+              onClick={() => {
+                onScheduledTimeChange(slot);
+                onShowTimePickerChange(false);
+              }}
+              className={`rounded-lg border px-3 py-2.5 text-left text-xs font-bold transition-all ${
                 scheduledTime === slot
                   ? "bg-primary text-on-primary border-primary"
                   : "border-outline-variant/40 hover:border-primary text-on-surface-variant"
@@ -144,7 +168,7 @@ export default function CheckoutScheduledDelivery({
       {(scheduledDate || scheduledTime) && (
         <button
           onClick={onClearSchedule}
-          className="mt-3 w-full py-2.5 rounded-xl text-xs font-bold border border-status-error/30 text-status-error hover:bg-status-error/10"
+          className="border-status-error/30 text-status-error hover:bg-status-error/10 mt-3 w-full rounded-xl border py-2.5 text-xs font-bold"
         >
           {t.checkout.clearSchedule}
         </button>
@@ -152,13 +176,17 @@ export default function CheckoutScheduledDelivery({
 
       {/* Recurring Order Toggle */}
       {scheduledDate && scheduledTime && (
-        <div className="mt-3 p-3.5 rounded-xl border border-accent/30 bg-accent/5">
-          <label className={`flex items-center justify-between gap-3 ${vendorIds.length > 1 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}>
-            <div className="flex items-center gap-2.5 min-w-0">
+        <div className="border-accent/30 bg-accent/5 mt-3 rounded-xl border p-3.5">
+          <label
+            className={`flex items-center justify-between gap-3 ${vendorIds.length > 1 ? "cursor-not-allowed opacity-50" : "cursor-pointer"}`}
+          >
+            <div className="flex min-w-0 items-center gap-2.5">
               <span className="material-symbols-outlined text-accent shrink-0">repeat</span>
               <div className="min-w-0">
-                <p className="font-bold text-accent text-sm">{t.checkout.recurringOrder}</p>
-                <p className="text-xs text-accent">{vendorIds.length > 1 ? t.checkout.notForMultiVendor : t.checkout.autoReorder}</p>
+                <p className="text-accent text-sm font-bold">{t.checkout.recurringOrder}</p>
+                <p className="text-accent text-xs">
+                  {vendorIds.length > 1 ? t.checkout.notForMultiVendor : t.checkout.autoReorder}
+                </p>
               </div>
             </div>
             <input
@@ -166,18 +194,20 @@ export default function CheckoutScheduledDelivery({
               checked={isRecurring}
               disabled={vendorIds.length > 1}
               onChange={(e) => onIsRecurringChange(e.target.checked)}
-              className="w-5 h-5 text-accent accent-[var(--color-accent)] rounded shrink-0"
+              className="text-accent h-5 w-5 shrink-0 rounded accent-[var(--color-accent)]"
             />
           </label>
 
           {isRecurring && (
             <div className="mt-3 space-y-2.5">
               <div>
-                <label className="text-xs font-bold text-accent block mb-1">{t.checkout.repeatEvery}</label>
+                <label className="text-accent mb-1 block text-xs font-bold">
+                  {t.checkout.repeatEvery}
+                </label>
                 <select
                   value={recurringFrequency}
                   onChange={(e) => onRecurringFrequencyChange(e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg border border-outline-variant/40 text-sm font-semibold bg-surface focus:outline-none focus:border-primary"
+                  className="border-outline-variant/40 bg-surface focus:border-primary w-full rounded-lg border px-3 py-2.5 text-sm font-semibold focus:outline-none"
                 >
                   <option value="daily">{t.checkout.daily}</option>
                   <option value="weekly">{t.checkout.weekly}</option>
@@ -187,19 +217,31 @@ export default function CheckoutScheduledDelivery({
               </div>
               {(recurringFrequency === "weekly" || recurringFrequency === "biweekly") && (
                 <div>
-                  <label className="text-xs font-bold text-accent block mb-1">{t.checkout.onDay}</label>
+                  <label className="text-accent mb-1 block text-xs font-bold">
+                    {t.checkout.onDay}
+                  </label>
                   <select
                     value={recurringDayOfWeek}
                     onChange={(e) => onRecurringDayOfWeekChange(Number(e.target.value))}
-                    className="w-full px-3 py-2.5 rounded-lg border border-outline-variant/40 text-sm font-semibold bg-surface focus:outline-none focus:border-primary"
+                    className="border-outline-variant/40 bg-surface focus:border-primary w-full rounded-lg border px-3 py-2.5 text-sm font-semibold focus:outline-none"
                   >
-                    {[t.checkout.sunday, t.checkout.monday, t.checkout.tuesday, t.checkout.wednesday, t.checkout.thursday, t.checkout.friday, t.checkout.saturday].map((day, i) => (
-                      <option key={day} value={i}>{day}</option>
+                    {[
+                      t.checkout.sunday,
+                      t.checkout.monday,
+                      t.checkout.tuesday,
+                      t.checkout.wednesday,
+                      t.checkout.thursday,
+                      t.checkout.friday,
+                      t.checkout.saturday,
+                    ].map((day, i) => (
+                      <option key={day} value={i}>
+                        {day}
+                      </option>
                     ))}
                   </select>
                 </div>
               )}
-              <p className="text-xs text-accent flex items-center gap-1">
+              <p className="text-accent flex items-center gap-1 text-xs">
                 <span className="material-symbols-outlined text-[14px]">info</span>
                 {t.checkout.recurringNote}
               </p>
@@ -210,12 +252,22 @@ export default function CheckoutScheduledDelivery({
 
       {/* Scheduled Order Info */}
       {scheduledDate && scheduledTime && (
-        <div className="mt-3 p-3 bg-status-success/10 rounded-xl border border-status-success/20 flex items-start gap-2.5">
-          <span className="material-symbols-outlined text-accent shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+        <div className="bg-status-success/10 border-status-success/20 mt-3 flex items-start gap-2.5 rounded-xl border p-3">
+          <span
+            className="material-symbols-outlined text-accent shrink-0"
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            check_circle
+          </span>
           <div className="min-w-0">
-            <p className="font-bold text-accent text-sm">{t.checkout.scheduledForDelivery}</p>
-            <p className="text-sm text-accent break-words">
-              {new Date(scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' })} at {scheduledTime}
+            <p className="text-accent text-sm font-bold">{t.checkout.scheduledForDelivery}</p>
+            <p className="text-accent text-sm break-words">
+              {new Date(scheduledDate).toLocaleDateString("en-IN", {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              at {scheduledTime}
             </p>
           </div>
         </div>

@@ -26,14 +26,14 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-24 right-4 z-40 md:bottom-6">
+    <div className="fixed right-4 bottom-24 z-40 md:bottom-6">
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute bottom-16 right-0 flex flex-col gap-2 items-end"
+            className="absolute right-0 bottom-16 flex flex-col items-end gap-2"
           >
             {actions.map((action, i) => (
               <motion.div
@@ -46,11 +46,17 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
                 <Link
                   href={action.href}
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-2 bg-surface-container-lowest shadow-lg rounded-full pl-4 pr-3 py-2 hover:scale-105 active:scale-95 transition-transform"
+                  className="bg-surface-container-lowest flex items-center gap-2 rounded-full py-2 pr-3 pl-4 shadow-lg transition-transform hover:scale-105 active:scale-95"
                 >
-                  <span className="text-xs font-bold text-on-surface whitespace-nowrap">{action.label}</span>
-                  <div className={`w-8 h-8 ${action.color} rounded-full flex items-center justify-center`}>
-                    <span className="material-symbols-outlined text-white text-sm">{action.icon}</span>
+                  <span className="text-on-surface text-xs font-bold whitespace-nowrap">
+                    {action.label}
+                  </span>
+                  <div
+                    className={`h-8 w-8 ${action.color} flex items-center justify-center rounded-full`}
+                  >
+                    <span className="material-symbols-outlined text-sm text-white">
+                      {action.icon}
+                    </span>
                   </div>
                 </Link>
               </motion.div>
@@ -62,7 +68,7 @@ export default function QuickActionsFAB({ actions = defaultActions }: QuickActio
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => setOpen(!open)}
-        className="w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 flex items-center justify-center"
+        className="bg-primary text-on-primary shadow-primary/30 flex h-14 w-14 items-center justify-center rounded-full shadow-lg"
       >
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}

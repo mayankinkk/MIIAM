@@ -1,7 +1,7 @@
 "use client";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type TableBooking = {
   id: string;
@@ -10,13 +10,13 @@ export type TableBooking = {
   date: string;
   time: string;
   guests: number;
-  status: 'confirmed' | 'cancelled';
+  status: "confirmed" | "cancelled";
   createdAt: string;
 };
 
 type DiningStore = {
   bookings: TableBooking[];
-  addBooking: (booking: Omit<TableBooking, 'id' | 'createdAt' | 'status'>) => void;
+  addBooking: (booking: Omit<TableBooking, "id" | "createdAt" | "status">) => void;
   cancelBooking: (id: string) => void;
 };
 
@@ -31,20 +31,18 @@ export const useDiningStore = create<DiningStore>()(
               ...booking,
               id: `book_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
               createdAt: new Date().toISOString(),
-              status: 'confirmed',
+              status: "confirmed",
             },
             ...state.bookings,
           ],
         })),
       cancelBooking: (id) =>
         set((state) => ({
-          bookings: state.bookings.map((b) =>
-            b.id === id ? { ...b, status: 'cancelled' } : b
-          ),
+          bookings: state.bookings.map((b) => (b.id === id ? { ...b, status: "cancelled" } : b)),
         })),
     }),
     {
-      name: 'miiam-dining-storage',
+      name: "miiam-dining-storage",
     }
   )
 );

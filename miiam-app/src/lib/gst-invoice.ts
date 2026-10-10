@@ -38,10 +38,7 @@ const PAGE_HEIGHT = 842;
 const MARGIN = 40;
 
 function escapePdfText(s: string): string {
-  return s
-    .replace(/\\/g, "\\\\")
-    .replace(/\(/g, "\\(")
-    .replace(/\)/g, "\\)");
+  return s.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }
 
 function formatINR(n: number): string {
@@ -78,9 +75,7 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
   drawings.push(`0.85 0.85 0.85 rg`);
   drawings.push(`${MARGIN} ${PAGE_HEIGHT - 80} ${PAGE_WIDTH - 2 * MARGIN} 28 re f`);
   drawings.push(`0 0 0 rg`);
-  lines.push(
-    `BT /F2 18 Tf ${MARGIN + 8} ${PAGE_HEIGHT - 65} Td (TAX INVOICE) Tj ET`
-  );
+  lines.push(`BT /F2 18 Tf ${MARGIN + 8} ${PAGE_HEIGHT - 65} Td (TAX INVOICE) Tj ET`);
   lines.push(
     `BT /F1 9 Tf ${PAGE_WIDTH - MARGIN - 220} ${PAGE_HEIGHT - 65} Td (Invoice #: ${escapePdfText(data.invoiceNumber)}) Tj ET`
   );
@@ -88,12 +83,8 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
   cursorY = PAGE_HEIGHT - 110;
 
   // Seller block
-  lines.push(
-    `BT /F2 10 Tf ${MARGIN} ${cursorY} Td (Sold By:) Tj ET`
-  );
-  lines.push(
-    `BT /F1 9 Tf ${MARGIN} +${-(12)} Td (${escapePdfText(data.seller.name)}) Tj ET`
-  );
+  lines.push(`BT /F2 10 Tf ${MARGIN} ${cursorY} Td (Sold By:) Tj ET`);
+  lines.push(`BT /F1 9 Tf ${MARGIN} +${-12} Td (${escapePdfText(data.seller.name)}) Tj ET`);
   for (const ln of wrapText(data.seller.address, 60)) {
     cursorY -= 11;
     lines.push(`BT /F1 8 Tf ${MARGIN} ${cursorY} Td (${escapePdfText(ln)}) Tj ET`);
@@ -104,9 +95,7 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
 
   // Buyer block
   const buyerX = PAGE_WIDTH / 2 + 20;
-  lines.push(
-    `BT /F2 10 Tf ${buyerX} ${PAGE_HEIGHT - 110} Td (Bill To:) Tj ET`
-  );
+  lines.push(`BT /F2 10 Tf ${buyerX} ${PAGE_HEIGHT - 110} Td (Bill To:) Tj ET`);
   lines.push(
     `BT /F1 9 Tf ${buyerX} ${PAGE_HEIGHT - 122} Td (${escapePdfText(data.buyer.name)}) Tj ET`
   );
@@ -128,7 +117,9 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
   cursorY = Math.min(cursorY - 11, buyerY) - 25;
 
   // Order & date row
-  lines.push(`BT /F1 8 Tf ${MARGIN} ${cursorY} Td (Order ID: ${escapePdfText(data.orderId)}    Date: ${escapePdfText(data.invoiceDate)}    Payment: ${escapePdfText(data.paymentMode)}) Tj ET`);
+  lines.push(
+    `BT /F1 8 Tf ${MARGIN} ${cursorY} Td (Order ID: ${escapePdfText(data.orderId)}    Date: ${escapePdfText(data.invoiceDate)}    Payment: ${escapePdfText(data.paymentMode)}) Tj ET`
+  );
   cursorY -= 24;
 
   // Table header
@@ -148,8 +139,12 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
     const wrapped = wrapText(ln.description, 50);
     lines.push(`BT /F1 8 Tf ${colX[0]} ${cursorY} Td (${escapePdfText(wrapped[0] || "")}) Tj ET`);
     lines.push(`BT /F1 8 Tf ${colX[1]} ${cursorY} Td (${ln.quantity}) Tj ET`);
-    lines.push(`BT /F1 8 Tf ${colX[2]} ${cursorY} Td (${escapePdfText(formatINR(ln.unitPrice))}) Tj ET`);
-    lines.push(`BT /F1 8 Tf ${colX[3]} ${cursorY} Td (${escapePdfText(formatINR(ln.amount))}) Tj ET`);
+    lines.push(
+      `BT /F1 8 Tf ${colX[2]} ${cursorY} Td (${escapePdfText(formatINR(ln.unitPrice))}) Tj ET`
+    );
+    lines.push(
+      `BT /F1 8 Tf ${colX[3]} ${cursorY} Td (${escapePdfText(formatINR(ln.amount))}) Tj ET`
+    );
     cursorY -= 14;
     for (let i = 1; i < wrapped.length; i++) {
       lines.push(`BT /F1 8 Tf ${colX[0]} ${cursorY} Td (${escapePdfText(wrapped[i])}) Tj ET`);
@@ -170,13 +165,18 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
     const font = bold ? "/F2" : "/F1";
     const size = bold ? 10 : 9;
     lines.push(`BT ${font} ${size} Tf ${labelX} ${cursorY} Td (${escapePdfText(label)}) Tj ET`);
-    lines.push(`BT ${font} ${size} Tf ${valX - (bold ? 0 : 5)} ${cursorY} Td (${escapePdfText(val)}) Tj ET`);
+    lines.push(
+      `BT ${font} ${size} Tf ${valX - (bold ? 0 : 5)} ${cursorY} Td (${escapePdfText(val)}) Tj ET`
+    );
     cursorY -= bold ? 16 : 13;
   };
   drawTotal("Subtotal", formatINR(data.subtotal), false);
-  if (data.cgst > 0) drawTotal(`CGST @ ${(TAX_RATE * 50).toFixed(0)}%`, formatINR(data.cgst), false);
-  if (data.sgst > 0) drawTotal(`SGST @ ${(TAX_RATE * 50).toFixed(0)}%`, formatINR(data.sgst), false);
-  if (data.igst > 0) drawTotal(`IGST @ ${(TAX_RATE * 100).toFixed(0)}%`, formatINR(data.igst), false);
+  if (data.cgst > 0)
+    drawTotal(`CGST @ ${(TAX_RATE * 50).toFixed(0)}%`, formatINR(data.cgst), false);
+  if (data.sgst > 0)
+    drawTotal(`SGST @ ${(TAX_RATE * 50).toFixed(0)}%`, formatINR(data.sgst), false);
+  if (data.igst > 0)
+    drawTotal(`IGST @ ${(TAX_RATE * 100).toFixed(0)}%`, formatINR(data.igst), false);
   drawings.push(`${MARGIN} ${cursorY + 4} ${PAGE_WIDTH - 2 * MARGIN} 0.5 re S`);
   cursorY -= 6;
   drawTotal("Total", formatINR(data.total), true);
@@ -191,8 +191,12 @@ export function generateInvoicePdf(data: InvoiceData): Buffer {
   }
 
   cursorY = 50;
-  lines.push(`BT /F1 7 Tf ${MARGIN} ${cursorY} Td (This is a computer-generated invoice. No signature required.) Tj ET`);
-  lines.push(`BT /F1 7 Tf ${MARGIN} ${cursorY - 10} Td (MIIAM Print Services · miiam.app · support@miiam.app) Tj ET`);
+  lines.push(
+    `BT /F1 7 Tf ${MARGIN} ${cursorY} Td (This is a computer-generated invoice. No signature required.) Tj ET`
+  );
+  lines.push(
+    `BT /F1 7 Tf ${MARGIN} ${cursorY - 10} Td (MIIAM Print Services · miiam.app · support@miiam.app) Tj ET`
+  );
 
   return assemblePdf(lines, drawings);
 }

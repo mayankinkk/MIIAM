@@ -12,7 +12,11 @@ interface Props {
 }
 
 export default function ShareLocationToggle({ orderId, userId, enabled, className = "" }: Props) {
-  const { sharing, error, lastSent, start, stop } = useShareLocation({ orderId, userId, active: enabled });
+  const { sharing, error, lastSent, start, stop } = useShareLocation({
+    orderId,
+    userId,
+    active: enabled,
+  });
   const [busy, setBusy] = useState(false);
 
   if (!enabled) return null;
@@ -38,10 +42,10 @@ export default function ShareLocationToggle({ orderId, userId, enabled, classNam
         onClick={handleToggle}
         disabled={busy}
         aria-pressed={sharing}
-        className={`w-full rounded-xl py-3 px-4 font-bold flex items-center justify-center gap-2 transition-all border ${
+        className={`flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 font-bold transition-all ${
           sharing
-            ? "bg-tertiary text-on-tertiary border-tertiary-dim shadow-lg shadow-tertiary/20"
-            : "bg-[var(--color-surface-container-lowest)] text-on-surface border-outline-variant hover:bg-surface-container"
+            ? "bg-tertiary text-on-tertiary border-tertiary-dim shadow-tertiary/20 shadow-lg"
+            : "text-on-surface border-outline-variant hover:bg-surface-container bg-[var(--color-surface-container-lowest)]"
         }`}
       >
         <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -49,18 +53,22 @@ export default function ShareLocationToggle({ orderId, userId, enabled, classNam
         </span>
         {sharing ? "Sharing Live Location" : "Share Live Location"}
         {sharing && (
-          <span className="w-2 h-2 bg-tertiary-dim rounded-full animate-pulse" aria-hidden="true" />
+          <span className="bg-tertiary-dim h-2 w-2 animate-pulse rounded-full" aria-hidden="true" />
         )}
       </button>
       {sharing && lastSent && (
-        <p className="text-[11px] text-on-surface-variant text-center mt-2 flex items-center justify-center gap-1">
+        <p className="text-on-surface-variant mt-2 flex items-center justify-center gap-1 text-center text-[11px]">
           <span className="material-symbols-outlined text-xs">check_circle</span>
           Rider can see your live location · last updated{" "}
-          {new Date(lastSent.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+          {new Date(lastSent.updatedAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })}
         </p>
       )}
       {error && (
-        <p className="text-[11px] text-error text-center mt-2 flex items-center justify-center gap-1">
+        <p className="text-error mt-2 flex items-center justify-center gap-1 text-center text-[11px]">
           <span className="material-symbols-outlined text-xs">error</span>
           {error}
         </p>

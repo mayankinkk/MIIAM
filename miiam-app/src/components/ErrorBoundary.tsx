@@ -43,13 +43,17 @@ export default class ErrorBoundary extends Component<Props, State> {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center justify-center py-16 px-6 text-center"
+          className="flex flex-col items-center justify-center px-6 py-16 text-center"
         >
-          <div className="w-20 h-20 bg-status-error/10 rounded-full flex items-center justify-center mb-5">
-            <span className="material-symbols-outlined text-4xl text-status-error">{icon || "error"}</span>
+          <div className="bg-status-error/10 mb-5 flex h-20 w-20 items-center justify-center rounded-full">
+            <span className="material-symbols-outlined text-status-error text-4xl">
+              {icon || "error"}
+            </span>
           </div>
-          <h3 className="text-lg font-bold text-on-surface mb-1">{title || "Something went wrong"}</h3>
-          <p className="text-sm text-on-surface-variant/70 max-w-xs mb-5">
+          <h3 className="text-on-surface mb-1 text-lg font-bold">
+            {title || "Something went wrong"}
+          </h3>
+          <p className="text-on-surface-variant/70 mb-5 max-w-xs text-sm">
             {errorObj?.message || "An unexpected error occurred."}
           </p>
           <button
@@ -60,7 +64,7 @@ export default class ErrorBoundary extends Component<Props, State> {
                 this.setState({ hasError: false, error: undefined });
               }
             }}
-            className="px-6 py-3 bg-primary text-on-primary font-bold rounded-xl active:scale-[0.98] transition-transform"
+            className="bg-primary text-on-primary rounded-xl px-6 py-3 font-bold transition-transform active:scale-[0.98]"
           >
             Try Again
           </button>

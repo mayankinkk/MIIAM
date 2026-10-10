@@ -26,21 +26,87 @@ export default function EnhancedProfilePage() {
   const { settings, updateSetting, triggerHaptic } = useHapticStore();
 
   const menuItems = [
-    { id: "orders", icon: "receipt_long", label: t.profile.myOrders, sub: t.profile.viewAllOrders, color: "text-accent", bg: "bg-accent/10" },
-    { id: "bookings", icon: "calendar_month", label: t.profile.bookings, sub: t.profile.serviceAppointments, color: "text-amber-500", bg: "bg-amber-50" },
-    { id: "subscriptions", icon: "repeat", label: t.profile.recurringOrders, sub: t.profile.scheduledSubscriptions, color: "text-accent", bg: "bg-accent/10" },
-    { id: "addresses", icon: "location_on", label: t.profile.savedAddresses, sub: t.profile.manageDeliveryAddresses, color: "text-green-500", bg: "bg-green-50" },
-    { id: "favorites", icon: "favorite", label: t.profile.favorites, sub: t.profile.yourSavedItems, color: "text-red-500", bg: "bg-red-50" },
-    { id: "payment", icon: "payment", label: t.profile.paymentMethods, sub: t.profile.cardsUpiWallets, color: "text-accent", bg: "bg-accent/10" },
-    { id: "support", icon: "support_agent", label: t.profile.helpSupport, sub: t.profile.twentyFourSevenSupport, color: "text-accent", bg: "bg-accent/10" },
-    { id: "settings", icon: "settings", label: t.profile.settings, sub: t.profile.appPreferences, color: "text-[var(--color-outline)]", bg: "bg-[var(--color-surface-subtle)]" },
-    { id: "haptic", icon: "vibration", label: t.profile.hapticFeedback, sub: t.profile.vibrationSettings, color: "text-cyan-500", bg: "bg-cyan-50", special: true },
+    {
+      id: "orders",
+      icon: "receipt_long",
+      label: t.profile.myOrders,
+      sub: t.profile.viewAllOrders,
+      color: "text-accent",
+      bg: "bg-accent/10",
+    },
+    {
+      id: "bookings",
+      icon: "calendar_month",
+      label: t.profile.bookings,
+      sub: t.profile.serviceAppointments,
+      color: "text-amber-500",
+      bg: "bg-amber-50",
+    },
+    {
+      id: "subscriptions",
+      icon: "repeat",
+      label: t.profile.recurringOrders,
+      sub: t.profile.scheduledSubscriptions,
+      color: "text-accent",
+      bg: "bg-accent/10",
+    },
+    {
+      id: "addresses",
+      icon: "location_on",
+      label: t.profile.savedAddresses,
+      sub: t.profile.manageDeliveryAddresses,
+      color: "text-green-500",
+      bg: "bg-green-50",
+    },
+    {
+      id: "favorites",
+      icon: "favorite",
+      label: t.profile.favorites,
+      sub: t.profile.yourSavedItems,
+      color: "text-red-500",
+      bg: "bg-red-50",
+    },
+    {
+      id: "payment",
+      icon: "payment",
+      label: t.profile.paymentMethods,
+      sub: t.profile.cardsUpiWallets,
+      color: "text-accent",
+      bg: "bg-accent/10",
+    },
+    {
+      id: "support",
+      icon: "support_agent",
+      label: t.profile.helpSupport,
+      sub: t.profile.twentyFourSevenSupport,
+      color: "text-accent",
+      bg: "bg-accent/10",
+    },
+    {
+      id: "settings",
+      icon: "settings",
+      label: t.profile.settings,
+      sub: t.profile.appPreferences,
+      color: "text-[var(--color-outline)]",
+      bg: "bg-[var(--color-surface-subtle)]",
+    },
+    {
+      id: "haptic",
+      icon: "vibration",
+      label: t.profile.hapticFeedback,
+      sub: t.profile.vibrationSettings,
+      color: "text-cyan-500",
+      bg: "bg-cyan-50",
+      special: true,
+    },
   ];
 
   useEffect(() => {
     async function loadUserAndProfile() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (user) {
           setUser(user);
           const { data: profileData } = await supabase
@@ -62,11 +128,11 @@ export default function EnhancedProfilePage() {
             .from("favorites")
             .select("*", { count: "exact", head: true })
             .eq("user_id", user.id);
-          
+
           setStats({
             orders: orderCount || 0,
             reviews: reviewCount || 0,
-            saved: favCount || 0
+            saved: favCount || 0,
           });
         }
       } catch (err) {
@@ -78,7 +144,12 @@ export default function EnhancedProfilePage() {
     loadUserAndProfile();
   }, [supabase]);
 
-  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split("@")[0] || "User";
+  const displayName =
+    profile?.full_name ||
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split("@")[0] ||
+    "User";
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -87,7 +158,7 @@ export default function EnhancedProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
+      <div className="bg-surface min-h-screen pb-24 dark:bg-[var(--color-surface)]">
         <ProfileSkeleton />
       </div>
     );
@@ -95,29 +166,34 @@ export default function EnhancedProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24 flex flex-col">
-        <header className="bg-gradient-to-br from-primary to-primary-container text-on-primary p-6 pb-12 rounded-b-[3rem]">
+      <div className="bg-surface flex min-h-screen flex-col pb-24 dark:bg-[var(--color-surface)]">
+        <header className="from-primary to-primary-container text-on-primary rounded-b-[3rem] bg-gradient-to-br p-6 pb-12">
           <h1 className="text-xl font-black">{t.profile.title}</h1>
         </header>
-        <main className="flex-1 flex items-center justify-center px-6 -mt-6">
-          <div className="text-center space-y-5 max-w-sm">
-            <div className="flex items-center justify-center w-20 h-20 mx-auto bg-primary/10 rounded-full">
+        <main className="-mt-6 flex flex-1 items-center justify-center px-6">
+          <div className="max-w-sm space-y-5 text-center">
+            <div className="bg-primary/10 mx-auto flex h-20 w-20 items-center justify-center rounded-full">
               <span className="material-symbols-outlined text-accent text-4xl">person</span>
             </div>
             <div className="space-y-1">
-              <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)]">You're browsing as a guest</h2>
-              <p className="text-sm text-[var(--color-on-surface)]/70">Orders placed from this device show up under My Orders. Saved addresses stay on this device too.</p>
+              <h2 className="text-2xl font-extrabold text-[var(--color-on-surface)]">
+                You're browsing as a guest
+              </h2>
+              <p className="text-sm text-[var(--color-on-surface)]/70">
+                Orders placed from this device show up under My Orders. Saved addresses stay on this
+                device too.
+              </p>
             </div>
             <div className="space-y-3">
               <Link
                 href="/app/orders"
-                className="block w-full bg-[var(--color-primary)] text-on-primary py-3.5 rounded-xl font-bold text-sm text-center hover:scale-[1.02] active:scale-95 transition-all"
+                className="text-on-primary block w-full rounded-xl bg-[var(--color-primary)] py-3.5 text-center text-sm font-bold transition-all hover:scale-[1.02] active:scale-95"
               >
                 My Orders
               </Link>
               <Link
                 href="/app/home"
-                className="block w-full border border-[var(--color-outline-variant)] text-[var(--color-on-surface)] py-3.5 rounded-xl font-bold text-sm text-center hover:bg-[var(--color-surface-container)] transition-colors"
+                className="block w-full rounded-xl border border-[var(--color-outline-variant)] py-3.5 text-center text-sm font-bold text-[var(--color-on-surface)] transition-colors hover:bg-[var(--color-surface-container)]"
               >
                 Start Ordering
               </Link>
@@ -129,66 +205,89 @@ export default function EnhancedProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface dark:bg-[var(--color-surface)] pb-24">
+    <div className="bg-surface min-h-screen pb-24 dark:bg-[var(--color-surface)]">
       {/* Header */}
-      <header className="bg-gradient-to-br from-primary to-primary-container text-on-primary p-6 pb-12 rounded-b-[3rem]">
-        <div className="flex items-center justify-between mb-6">
+      <header className="from-primary to-primary-container text-on-primary rounded-b-[3rem] bg-gradient-to-br p-6 pb-12">
+        <div className="mb-6 flex items-center justify-between">
           <h1 className="text-xl font-black">{t.profile.title}</h1>
-          <Link href="/app/profile/edit" aria-label="Edit profile" className="p-2 bg-[var(--color-surface-container-lowest)]/10 rounded-full hover:bg-[var(--color-surface-container-lowest)]/20 transition-colors">
+          <Link
+            href="/app/profile/edit"
+            aria-label="Edit profile"
+            className="rounded-full bg-[var(--color-surface-container-lowest)]/10 p-2 transition-colors hover:bg-[var(--color-surface-container-lowest)]/20"
+          >
             <span className="material-symbols-outlined">edit</span>
           </Link>
         </div>
 
         {/* Profile Card */}
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 rounded-full bg-[var(--color-surface-container-lowest)]/20 flex items-center justify-center text-3xl font-black border-4 border-white/30 overflow-hidden">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-4 border-white/30 bg-[var(--color-surface-container-lowest)]/20 text-3xl font-black">
             {profile?.avatar_url ? (
-              <BlurImage src={profile.avatar_url} alt="Avatar" fill className="w-full h-full" sizes="80px" />
+              <BlurImage
+                src={profile.avatar_url}
+                alt="Avatar"
+                fill
+                className="h-full w-full"
+                sizes="80px"
+              />
             ) : (
               user?.email?.[0]?.toUpperCase() || "U"
             )}
           </div>
           <div>
             <h2 className="text-2xl font-black">{displayName}</h2>
-            <p className="text-white/80 text-sm">{user?.email}</p>
-            {profile?.phone && <p className="text-white/60 text-sm">{profile.phone}</p>}
-
+            <p className="text-sm text-white/80">{user?.email}</p>
+            {profile?.phone && <p className="text-sm text-white/60">{profile.phone}</p>}
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-3 gap-4 mt-8">
-          <div className="bg-[var(--color-surface-container-lowest)]/10 rounded-xl p-3 text-center">
+        <div className="mt-8 grid grid-cols-3 gap-4">
+          <div className="rounded-xl bg-[var(--color-surface-container-lowest)]/10 p-3 text-center">
             <p className="text-2xl font-black">{stats.orders}</p>
-            <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.orders}</p>
+            <p className="text-[10px] tracking-wider text-white/70 uppercase">{t.profile.orders}</p>
           </div>
-          <div className="bg-[var(--color-surface-container-lowest)]/10 rounded-xl p-3 text-center">
+          <div className="rounded-xl bg-[var(--color-surface-container-lowest)]/10 p-3 text-center">
             <p className="text-2xl font-black">{stats.reviews}</p>
-            <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.reviews}</p>
+            <p className="text-[10px] tracking-wider text-white/70 uppercase">
+              {t.profile.reviews}
+            </p>
           </div>
-          <div className="bg-[var(--color-surface-container-lowest)]/10 rounded-xl p-3 text-center">
+          <div className="rounded-xl bg-[var(--color-surface-container-lowest)]/10 p-3 text-center">
             <p className="text-2xl font-black">{stats.saved}</p>
-            <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.profile.saved}</p>
+            <p className="text-[10px] tracking-wider text-white/70 uppercase">{t.profile.saved}</p>
           </div>
         </div>
       </header>
 
-      <Breadcrumbs items={[{ label: t.profile.home, href: '/app/home' }, { label: t.profile.profileLabel }]} />
+      <Breadcrumbs
+        items={[{ label: t.profile.home, href: "/app/home" }, { label: t.profile.profileLabel }]}
+      />
 
       {/* Menu Items */}
-      <main className="px-6 -mt-6 space-y-4">
+      <main className="-mt-6 space-y-4 px-6">
         {/* Menu Sections */}
         <div className="space-y-2">
           {menuItems.slice(0, 4).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+            <Link
+              key={item.id}
+              href={`/app/${item.id}`}
+              className="block flex items-center gap-4 rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 transition-shadow hover:shadow-md dark:bg-[var(--color-surface-container)]"
+            >
+              <div className={`h-12 w-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
               <div className="flex-1">
-                <p className="font-bold text-[var(--color-on-surface)] dark:text-[var(--color-on-surface)]">{item.label}</p>
-                <p className="text-xs text-[var(--color-outline)] dark:text-[var(--color-outline)]">{item.sub}</p>
+                <p className="font-bold text-[var(--color-on-surface)] dark:text-[var(--color-on-surface)]">
+                  {item.label}
+                </p>
+                <p className="text-xs text-[var(--color-outline)] dark:text-[var(--color-outline)]">
+                  {item.sub}
+                </p>
               </div>
-              <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">
+                chevron_right
+              </span>
             </Link>
           ))}
         </div>
@@ -196,15 +295,21 @@ export default function EnhancedProfilePage() {
         {/* Second Section */}
         <div className="space-y-2">
           {menuItems.slice(4, 5).map((item) => (
-            <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-              <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+            <Link
+              key={item.id}
+              href={`/app/${item.id}`}
+              className="block flex items-center gap-4 rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 transition-shadow hover:shadow-md dark:bg-[var(--color-surface-container)]"
+            >
+              <div className={`h-12 w-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                 <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
               </div>
               <div className="flex-1">
                 <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
                 <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
               </div>
-              <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
+              <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">
+                chevron_right
+              </span>
             </Link>
           ))}
         </div>
@@ -214,7 +319,7 @@ export default function EnhancedProfilePage() {
           {/* Theme Toggle */}
           <div className="bg-surface-container-lowest rounded-2xl p-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center">
+              <div className="bg-surface-container flex h-12 w-12 items-center justify-center rounded-xl">
                 <span className="material-symbols-outlined text-on-surface-variant">palette</span>
               </div>
               <div className="flex-1">
@@ -227,63 +332,83 @@ export default function EnhancedProfilePage() {
             </div>
           </div>
 
-          {menuItems.slice(5).map((item) => (
+          {menuItems.slice(5).map((item) =>
             item.special ? (
-              <button 
+              <button
                 key={item.id}
                 onClick={() => {
                   triggerHaptic("medium");
                   setShowHapticSettings(!showHapticSettings);
                 }}
-                className="w-full bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow"
+                className="flex w-full items-center gap-4 rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 transition-shadow hover:shadow-md dark:bg-[var(--color-surface-container)]"
               >
-                <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+                <div className={`h-12 w-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
                 </div>
                 <div className="flex-1 text-left">
                   <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
                   <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
                 </div>
-                <span className={`material-symbols-outlined text-[var(--color-outline-variant)]/60 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}>expand_more</span>
+                <span
+                  className={`material-symbols-outlined text-[var(--color-outline-variant)]/60 transition-transform ${showHapticSettings ? "rotate-180" : ""}`}
+                >
+                  expand_more
+                </span>
               </button>
             ) : (
-              <Link key={item.id} href={`/app/${item.id}`} className="block bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-                <div className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center`}>
+              <Link
+                key={item.id}
+                href={`/app/${item.id}`}
+                className="block flex items-center gap-4 rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 transition-shadow hover:shadow-md dark:bg-[var(--color-surface-container)]"
+              >
+                <div className={`h-12 w-12 rounded-xl ${item.bg} flex items-center justify-center`}>
                   <span className={`material-symbols-outlined ${item.color}`}>{item.icon}</span>
                 </div>
                 <div className="flex-1">
                   <p className="font-bold text-[var(--color-on-surface)]">{item.label}</p>
                   <p className="text-xs text-[var(--color-outline)]">{item.sub}</p>
                 </div>
-                <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">chevron_right</span>
+                <span className="material-symbols-outlined text-[var(--color-outline-variant)]/60">
+                  chevron_right
+                </span>
               </Link>
             )
-          ))}
+          )}
         </div>
 
         {/* Haptic Feedback Settings Panel */}
         {showHapticSettings && (
-          <div className="bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 space-y-2 animate-fade-in">
-            <div className="flex items-center gap-3 mb-4 pb-3 border-b border-[var(--color-border-subtle)]">
+          <div className="animate-fade-in space-y-2 rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 dark:bg-[var(--color-surface-container)]">
+            <div className="mb-4 flex items-center gap-3 border-b border-[var(--color-border-subtle)] pb-3">
               <span className="material-symbols-outlined text-accent">vibration</span>
-              <p className="font-bold text-[var(--color-on-surface)]">{t.profile.hapticFeedbackSettings}</p>
+              <p className="font-bold text-[var(--color-on-surface)]">
+                {t.profile.hapticFeedbackSettings}
+              </p>
             </div>
-            
+
             <button
               onClick={() => updateSetting("enabled", !settings.enabled)}
-              className="w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors"
+              className="flex w-full items-center justify-between rounded-xl px-2 py-3 transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-cyan-500">power_settings_new</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50">
+                  <span className="material-symbols-outlined text-cyan-500">
+                    power_settings_new
+                  </span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.enableHaptics}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">
+                    {t.profile.enableHaptics}
+                  </p>
                   <p className="text-xs text-[var(--color-outline)]">{t.profile.masterToggle}</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.enabled ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.enabled ? "left-6" : "left-1"}`} />
+              <div
+                className={`relative h-7 w-12 rounded-full transition-colors ${settings.enabled ? "bg-primary" : "bg-slate-300"}`}
+              >
+                <div
+                  className={`absolute top-1 h-5 w-5 rounded-full bg-[var(--color-surface-container-lowest)] shadow-md transition-all ${settings.enabled ? "left-6" : "left-1"}`}
+                />
               </div>
             </button>
 
@@ -293,19 +418,25 @@ export default function EnhancedProfilePage() {
                 triggerHaptic("light");
                 updateSetting("light", !settings.light);
               }}
-              className={`w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
+              className={`flex w-full items-center justify-between rounded-xl px-2 py-3 transition-colors hover:bg-[var(--color-surface-subtle)] ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-green-500 text-lg">circle</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50">
+                  <span className="material-symbols-outlined text-lg text-green-500">circle</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.lightTap}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">
+                    {t.profile.lightTap}
+                  </p>
                   <p className="text-xs text-[var(--color-outline)]">{t.profile.briefFeedback}</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.light ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.light ? "left-6" : "left-1"}`} />
+              <div
+                className={`relative h-7 w-12 rounded-full transition-colors ${settings.light ? "bg-primary" : "bg-slate-300"}`}
+              >
+                <div
+                  className={`absolute top-1 h-5 w-5 rounded-full bg-[var(--color-surface-container-lowest)] shadow-md transition-all ${settings.light ? "left-6" : "left-1"}`}
+                />
               </div>
             </button>
 
@@ -315,19 +446,29 @@ export default function EnhancedProfilePage() {
                 triggerHaptic("medium");
                 updateSetting("medium", !settings.medium);
               }}
-              className={`w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
+              className={`flex w-full items-center justify-between rounded-xl px-2 py-3 transition-colors hover:bg-[var(--color-surface-subtle)] ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-amber-500 text-lg">radio_button_checked</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50">
+                  <span className="material-symbols-outlined text-lg text-amber-500">
+                    radio_button_checked
+                  </span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.mediumTap}</p>
-                  <p className="text-xs text-[var(--color-outline)]">{t.profile.standardFeedback}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">
+                    {t.profile.mediumTap}
+                  </p>
+                  <p className="text-xs text-[var(--color-outline)]">
+                    {t.profile.standardFeedback}
+                  </p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.medium ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.medium ? "left-6" : "left-1"}`} />
+              <div
+                className={`relative h-7 w-12 rounded-full transition-colors ${settings.medium ? "bg-primary" : "bg-slate-300"}`}
+              >
+                <div
+                  className={`absolute top-1 h-5 w-5 rounded-full bg-[var(--color-surface-container-lowest)] shadow-md transition-all ${settings.medium ? "left-6" : "left-1"}`}
+                />
               </div>
             </button>
 
@@ -337,30 +478,36 @@ export default function EnhancedProfilePage() {
                 triggerHaptic("heavy");
                 updateSetting("heavy", !settings.heavy);
               }}
-              className={`w-full flex items-center justify-between py-3 hover:bg-[var(--color-surface-subtle)] rounded-xl px-2 transition-colors ${!settings.enabled ? "opacity-50" : ""}`}
+              className={`flex w-full items-center justify-between rounded-xl px-2 py-3 transition-colors hover:bg-[var(--color-surface-subtle)] ${!settings.enabled ? "opacity-50" : ""}`}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-red-500 text-lg">lens</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50">
+                  <span className="material-symbols-outlined text-lg text-red-500">lens</span>
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-[var(--color-on-surface)]">{t.profile.heavyTap}</p>
+                  <p className="font-semibold text-[var(--color-on-surface)]">
+                    {t.profile.heavyTap}
+                  </p>
                   <p className="text-xs text-[var(--color-outline)]">{t.profile.strongFeedback}</p>
                 </div>
               </div>
-              <div className={`w-12 h-7 rounded-full relative transition-colors ${settings.heavy ? "bg-primary" : "bg-slate-300"}`}>
-                <div className={`absolute top-1 w-5 h-5 bg-[var(--color-surface-container-lowest)] rounded-full shadow-md transition-all ${settings.heavy ? "left-6" : "left-1"}`} />
+              <div
+                className={`relative h-7 w-12 rounded-full transition-colors ${settings.heavy ? "bg-primary" : "bg-slate-300"}`}
+              >
+                <div
+                  className={`absolute top-1 h-5 w-5 rounded-full bg-[var(--color-surface-container-lowest)] shadow-md transition-all ${settings.heavy ? "left-6" : "left-1"}`}
+                />
               </div>
             </button>
           </div>
         )}
 
         {/* Logout */}
-        <button 
+        <button
           onClick={handleLogout}
-          className="w-full bg-[var(--color-surface-container-lowest)] dark:bg-[var(--color-surface-container)] rounded-2xl p-4 flex items-center gap-4 hover:bg-red-50 transition-colors group"
+          className="group flex w-full items-center gap-4 rounded-2xl bg-[var(--color-surface-container-lowest)] p-4 transition-colors hover:bg-red-50 dark:bg-[var(--color-surface-container)]"
         >
-          <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-red-100">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 group-hover:bg-red-100">
             <span className="material-symbols-outlined text-red-500">logout</span>
           </div>
           <div className="flex-1">
@@ -370,7 +517,7 @@ export default function EnhancedProfilePage() {
         </button>
 
         {/* App Version */}
-        <p className="text-center text-xs text-[var(--color-outline-variant)] py-6">
+        <p className="py-6 text-center text-xs text-[var(--color-outline-variant)]">
           MIIAM v2.5.0 • {t.profile.madeWithLove}
         </p>
       </main>

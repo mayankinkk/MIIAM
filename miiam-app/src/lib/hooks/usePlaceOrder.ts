@@ -35,269 +35,326 @@ export function usePlaceOrder(supabase: SupabaseClient) {
   const locationStore = useLocationStore();
   const userPincode = locationStore.pincode;
 
-  const validateCheckout = useCallback((deliveryAddress: DeliveryAddress | null, phone: string): boolean => {
-    if (items.length === 0) {
-      addToast("Your cart is empty! Add items from the Food page first.", "error");
-      return false;
-    }
-    if (!deliveryAddress) {
-      addToast("Please enter your delivery address", "error");
-      return false;
-    }
-    if (!deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state) {
-      addToast("Please enter your complete delivery address", "error");
-      return false;
-    }
-    if (!deliveryAddress.postal_code || deliveryAddress.postal_code.length < 4) {
-      addToast("Please enter a valid pincode", "error");
-      return false;
-    }
-    if (!normalizePhone(phone)) {
-      addToast("Please enter a valid phone number", "error");
-      return false;
-    }
-    return true;
-  }, [items, addToast]);
-
-  const placeOrder = useCallback(async ({
-    deliveryAddress,
-    paymentMethod,
-    discount,
-    subtotal,
-    deliveryFee,
-    promoCode,
-    scheduledDate,
-    scheduledTime,
-    specialInstructions,
-    tipAmount,
-    isRecurring,
-    recurringFrequency,
-    recurringDayOfWeek,
-    phone,
-    paymentDetails,
-    serviceCharge,
-  }: {
-    deliveryAddress: DeliveryAddress | null;
-    paymentMethod: string;
-    discount: number;
-    subtotal: number;
-    deliveryFee: number;
-    promoCode: string;
-    scheduledDate: string;
-    scheduledTime: string;
-    specialInstructions: string;
-    tipAmount: number;
-    isRecurring: boolean;
-    recurringFrequency: string;
-    recurringDayOfWeek: number;
-    phone: string;
-    paymentDetails?: PaymentDetails;
-    serviceCharge?: number;
-  }) => {
-    if (!validateCheckout(deliveryAddress, phone)) return false;
-
-    if (promoCode && discount > 0) {
-      try {
-        const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-        const res = await fetch("/api/promo/validate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: promoCode, subtotal, vendorIds }),
-        });
-        const data = await res.json();
-        if (!data.valid) {
-          addToast(`Promo validation failed: ${data.error}`, "error");
-          return false;
-        }
-      } catch {
-        logger.warn("Could not verify promo code server-side — proceeding");
+  const validateCheckout = useCallback(
+    (deliveryAddress: DeliveryAddress | null, phone: string): boolean => {
+      if (items.length === 0) {
+        addToast("Your cart is empty! Add items from the Food page first.", "error");
+        return false;
       }
-    }
+      if (!deliveryAddress) {
+        addToast("Please enter your delivery address", "error");
+        return false;
+      }
+      if (!deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state) {
+        addToast("Please enter your complete delivery address", "error");
+        return false;
+      }
+      if (!deliveryAddress.postal_code || deliveryAddress.postal_code.length < 4) {
+        addToast("Please enter a valid pincode", "error");
+        return false;
+      }
+      if (!normalizePhone(phone)) {
+        addToast("Please enter a valid phone number", "error");
+        return false;
+      }
+      return true;
+    },
+    [items, addToast]
+  );
 
-    if (scheduledDate && !scheduledTime) {
-      logger.warn("Scheduled date provided without time — ignoring scheduled delivery");
-    } else if (!scheduledDate && scheduledTime) {
-      logger.warn("Scheduled time provided without date — ignoring scheduled delivery");
-    }
+  const placeOrder = useCallback(
+    async ({
+      deliveryAddress,
+      paymentMethod,
+      discount,
+      subtotal,
+      deliveryFee,
+      promoCode,
+      scheduledDate,
+      scheduledTime,
+      specialInstructions,
+      tipAmount,
+      isRecurring,
+      recurringFrequency,
+      recurringDayOfWeek,
+      phone,
+      paymentDetails,
+      serviceCharge,
+    }: {
+      deliveryAddress: DeliveryAddress | null;
+      paymentMethod: string;
+      discount: number;
+      subtotal: number;
+      deliveryFee: number;
+      promoCode: string;
+      scheduledDate: string;
+      scheduledTime: string;
+      specialInstructions: string;
+      tipAmount: number;
+      isRecurring: boolean;
+      recurringFrequency: string;
+      recurringDayOfWeek: number;
+      phone: string;
+      paymentDetails?: PaymentDetails;
+      serviceCharge?: number;
+    }) => {
+      if (!validateCheckout(deliveryAddress, phone)) return false;
 
-    const finalAddress = deliveryAddress
-      ? [deliveryAddress.flat, deliveryAddress.street, deliveryAddress.city, deliveryAddress.state, deliveryAddress.postal_code].filter(Boolean).join(", ")
-      : "";
-
-    if (userPincode && userPincode !== "000000") {
-      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-      if (vendorIds.length > 0) {
-        const { data: vendors } = await supabase.from("vendors").select("id, pincode, shop_name, min_order_amount, opening_hours").in("id", vendorIds);
-        const unserviceable = vendors?.filter(v => v.pincode && v.pincode !== userPincode) || [];
-        if (unserviceable.length > 0) {
-          addToast(`Some items (${unserviceable.map(v => v.shop_name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`, "error");
-          return false;
-        }
-        for (const vendor of vendors || []) {
-          const vendorItems = items.filter(i => i.vendor_id === vendor.id);
-          const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
-          if (vendor.min_order_amount && vendorTotal < vendor.min_order_amount) {
-            addToast(`Minimum order of ₹${vendor.min_order_amount} required for ${vendor.shop_name}. Your total: ₹${vendorTotal}`, "error");
+      if (promoCode && discount > 0) {
+        try {
+          const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+          const res = await fetch("/api/promo/validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: promoCode, subtotal, vendorIds }),
+          });
+          const data = await res.json();
+          if (!data.valid) {
+            addToast(`Promo validation failed: ${data.error}`, "error");
             return false;
           }
-          if (!scheduledDate && vendor.opening_hours) {
-            const { open } = isVendorOpen(vendor.opening_hours);
-            if (!open) {
-              addToast(`${vendor.shop_name} is currently closed. Please try again during opening hours or schedule for later.`, "error");
+        } catch {
+          logger.warn("Could not verify promo code server-side — proceeding");
+        }
+      }
+
+      if (scheduledDate && !scheduledTime) {
+        logger.warn("Scheduled date provided without time — ignoring scheduled delivery");
+      } else if (!scheduledDate && scheduledTime) {
+        logger.warn("Scheduled time provided without date — ignoring scheduled delivery");
+      }
+
+      const finalAddress = deliveryAddress
+        ? [
+            deliveryAddress.flat,
+            deliveryAddress.street,
+            deliveryAddress.city,
+            deliveryAddress.state,
+            deliveryAddress.postal_code,
+          ]
+            .filter(Boolean)
+            .join(", ")
+        : "";
+
+      if (userPincode && userPincode !== "000000") {
+        const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+        if (vendorIds.length > 0) {
+          const { data: vendors } = await supabase
+            .from("vendors")
+            .select("id, pincode, shop_name, min_order_amount, opening_hours")
+            .in("id", vendorIds);
+          const unserviceable =
+            vendors?.filter((v) => v.pincode && v.pincode !== userPincode) || [];
+          if (unserviceable.length > 0) {
+            addToast(
+              `Some items (${unserviceable.map((v) => v.shop_name).join(", ")}) are not deliverable at your location. Please remove them to proceed.`,
+              "error"
+            );
+            return false;
+          }
+          for (const vendor of vendors || []) {
+            const vendorItems = items.filter((i) => i.vendor_id === vendor.id);
+            const vendorTotal = vendorItems.reduce((s, i) => s + i.price * i.quantity, 0);
+            if (vendor.min_order_amount && vendorTotal < vendor.min_order_amount) {
+              addToast(
+                `Minimum order of ₹${vendor.min_order_amount} required for ${vendor.shop_name}. Your total: ₹${vendorTotal}`,
+                "error"
+              );
               return false;
+            }
+            if (!scheduledDate && vendor.opening_hours) {
+              const { open } = isVendorOpen(vendor.opening_hours);
+              if (!open) {
+                addToast(
+                  `${vendor.shop_name} is currently closed. Please try again during opening hours or schedule for later.`,
+                  "error"
+                );
+                return false;
+              }
             }
           }
         }
       }
-    }
 
-    if (!scheduledDate) {
-      const stockItems = items
-        .filter(i => i.vendor_id !== SERVICES_VENDOR_ID)
-        .map(i => ({ menu_item_id: i.menu_item_id, quantity: i.quantity, name: i.name, vendor_id: i.vendor_id || "" }));
-      if (stockItems.length > 0) {
-        const stockResult = await checkStock(stockItems);
-        if (!stockResult.available) {
-          const outItems = stockResult.items.filter(i => !i.in_stock);
-          addToast(`Some items are out of stock: ${outItems.map(i => i.name).join(", ")}. Please remove them from your cart.`, "error");
-          return false;
-        }
-        if (!stockResult.checked) {
-          // Lookup failed — don't block the order, but warn: final stock is
-          // enforced atomically by decrementStock after the order is created.
-          logger.warn({ err: stockResult.error }, "Stock check unavailable — proceeding with atomic decrement");
-          addToast("Couldn't verify stock right now — we'll confirm availability when your order is placed.", "info");
-        }
-      }
-    }
-
-    const phoneE164 = normalizePhone(phone);
-    if (!phoneE164) {
-      addToast("Please enter a valid phone number", "error");
-      return false;
-    }
-
-    const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
-
-    // Lines without a real vendor (e.g. store items with a null vendor_id)
-    // cannot be written to orders.vendor_id — say so instead of dropping them
-    // silently once the cart has already been cleared.
-    const skipped = items.filter((i) => !isUuid(i.vendor_id));
-    if (skipped.length > 0 && skipped.length < items.length) {
-      addToast(
-        `Not included in this order: ${skipped.map((i) => i.name).join(", ")} (no store assigned)`,
-        "info"
-      );
-    }
-
-    // One order per vendor, created server-side so guests never need a session.
-    const groups = vendorIds
-      .filter((vendorId) => isUuid(vendorId))
-      .map((vendorId) => ({
-        vendor_id: vendorId,
-        items: items
-          .filter((i) => i.vendor_id === vendorId)
+      if (!scheduledDate) {
+        const stockItems = items
+          .filter((i) => i.vendor_id !== SERVICES_VENDOR_ID)
           .map((i) => ({
             menu_item_id: i.menu_item_id,
-            name: i.name,
             quantity: i.quantity,
-            unit_price: i.price,
-            special_notes: i.special_notes || undefined,
-          })),
-      }));
-
-    if (groups.length === 0) {
-      addToast("Some items in your cart can't be ordered right now. Please refresh and try again.", "error");
-      return false;
-    }
-
-    try {
-      let user = null;
-      const { data: { user: fetchedUser }, error: authError } = await supabase.auth.getUser();
-      if (fetchedUser) {
-        user = fetchedUser;
-      } else if (authError) {
-        const { data: { session } } = await supabase.auth.getSession();
-        user = session?.user ?? null;
-      }
-
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: phoneE164,
-          address: {
-            flat: deliveryAddress?.flat ?? null,
-            street: deliveryAddress?.street ?? "",
-            city: deliveryAddress?.city ?? "",
-            state: deliveryAddress?.state ?? "",
-            postal_code: deliveryAddress?.postal_code ?? "",
-            lat: deliveryAddress?.lat ?? null,
-            lng: deliveryAddress?.lng ?? null,
-          },
-          paymentMethod,
-          subtotal,
-          serviceCharge,
-          deliveryFee,
-          discount,
-          tipAmount,
-          promoCode,
-          scheduledDate,
-          scheduledTime,
-          specialInstructions,
-          groups,
-        }),
-      });
-
-      const data = (await res.json().catch(() => ({}))) as {
-        ok?: boolean;
-        orderIds?: string[];
-        firstOrderId?: string;
-        stockWarnings?: string[];
-        error?: string;
-      };
-
-      if (!res.ok || !data.ok) {
-        addToast(data.error || "Could not place your order. Please try again.", "error");
-        return false;
-      }
-
-      const orderIds = data.orderIds ?? [];
-      const firstOrderId = data.firstOrderId || orderIds[0] || "";
-
-      // Remember the order on this device so it can be tracked without an account.
-      for (const orderId of orderIds) rememberGuestOrder(orderId, phoneE164);
-
-      if (data.stockWarnings && data.stockWarnings.length > 0) {
-        addToast(data.stockWarnings[0], "info");
-      }
-
-      if (user) {
-        for (const orderId of orderIds) {
-          try {
-            await fetch("/api/emails/order-confirmation", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderId }),
-            });
-          } catch (emailErr) {
-            logger.warn({ err: emailErr }, "Failed to send confirmation email");
+            name: i.name,
+            vendor_id: i.vendor_id || "",
+          }));
+        if (stockItems.length > 0) {
+          const stockResult = await checkStock(stockItems);
+          if (!stockResult.available) {
+            const outItems = stockResult.items.filter((i) => !i.in_stock);
+            addToast(
+              `Some items are out of stock: ${outItems.map((i) => i.name).join(", ")}. Please remove them from your cart.`,
+              "error"
+            );
+            return false;
+          }
+          if (!stockResult.checked) {
+            // Lookup failed — don't block the order, but warn: final stock is
+            // enforced atomically by decrementStock after the order is created.
+            logger.warn(
+              { err: stockResult.error },
+              "Stock check unavailable — proceeding with atomic decrement"
+            );
+            addToast(
+              "Couldn't verify stock right now — we'll confirm availability when your order is placed.",
+              "info"
+            );
           }
         }
       }
 
-      if (isRecurring && !user) {
-        addToast("Recurring orders need an account — your first order went through as a one-time order.", "info");
-      } else if (isRecurring && vendorIds.length === 1 && scheduledDate && scheduledTime && user) {
-        try {
-          const { error: scheduleError } = await supabase
-            .from("recurring_schedules")
-            .insert({
+      const phoneE164 = normalizePhone(phone);
+      if (!phoneE164) {
+        addToast("Please enter a valid phone number", "error");
+        return false;
+      }
+
+      const vendorIds = Array.from(new Set(items.map((i) => i.vendor_id).filter(Boolean)));
+
+      // Lines without a real vendor (e.g. store items with a null vendor_id)
+      // cannot be written to orders.vendor_id — say so instead of dropping them
+      // silently once the cart has already been cleared.
+      const skipped = items.filter((i) => !isUuid(i.vendor_id));
+      if (skipped.length > 0 && skipped.length < items.length) {
+        addToast(
+          `Not included in this order: ${skipped.map((i) => i.name).join(", ")} (no store assigned)`,
+          "info"
+        );
+      }
+
+      // One order per vendor, created server-side so guests never need a session.
+      const groups = vendorIds
+        .filter((vendorId) => isUuid(vendorId))
+        .map((vendorId) => ({
+          vendor_id: vendorId,
+          items: items
+            .filter((i) => i.vendor_id === vendorId)
+            .map((i) => ({
+              menu_item_id: i.menu_item_id,
+              name: i.name,
+              quantity: i.quantity,
+              unit_price: i.price,
+              special_notes: i.special_notes || undefined,
+            })),
+        }));
+
+      if (groups.length === 0) {
+        addToast(
+          "Some items in your cart can't be ordered right now. Please refresh and try again.",
+          "error"
+        );
+        return false;
+      }
+
+      try {
+        let user = null;
+        const {
+          data: { user: fetchedUser },
+          error: authError,
+        } = await supabase.auth.getUser();
+        if (fetchedUser) {
+          user = fetchedUser;
+        } else if (authError) {
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+          user = session?.user ?? null;
+        }
+
+        const res = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: phoneE164,
+            address: {
+              flat: deliveryAddress?.flat ?? null,
+              street: deliveryAddress?.street ?? "",
+              city: deliveryAddress?.city ?? "",
+              state: deliveryAddress?.state ?? "",
+              postal_code: deliveryAddress?.postal_code ?? "",
+              lat: deliveryAddress?.lat ?? null,
+              lng: deliveryAddress?.lng ?? null,
+            },
+            paymentMethod,
+            subtotal,
+            serviceCharge,
+            deliveryFee,
+            discount,
+            tipAmount,
+            promoCode,
+            scheduledDate,
+            scheduledTime,
+            specialInstructions,
+            groups,
+          }),
+        });
+
+        const data = (await res.json().catch(() => ({}))) as {
+          ok?: boolean;
+          orderIds?: string[];
+          firstOrderId?: string;
+          stockWarnings?: string[];
+          error?: string;
+        };
+
+        if (!res.ok || !data.ok) {
+          addToast(data.error || "Could not place your order. Please try again.", "error");
+          return false;
+        }
+
+        const orderIds = data.orderIds ?? [];
+        const firstOrderId = data.firstOrderId || orderIds[0] || "";
+
+        // Remember the order on this device so it can be tracked without an account.
+        for (const orderId of orderIds) rememberGuestOrder(orderId, phoneE164);
+
+        if (data.stockWarnings && data.stockWarnings.length > 0) {
+          addToast(data.stockWarnings[0], "info");
+        }
+
+        if (user) {
+          for (const orderId of orderIds) {
+            try {
+              await fetch("/api/emails/order-confirmation", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId }),
+              });
+            } catch (emailErr) {
+              logger.warn({ err: emailErr }, "Failed to send confirmation email");
+            }
+          }
+        }
+
+        if (isRecurring && !user) {
+          addToast(
+            "Recurring orders need an account — your first order went through as a one-time order.",
+            "info"
+          );
+        } else if (
+          isRecurring &&
+          vendorIds.length === 1 &&
+          scheduledDate &&
+          scheduledTime &&
+          user
+        ) {
+          try {
+            const { error: scheduleError } = await supabase.from("recurring_schedules").insert({
               user_id: user.id,
               vendor_id: vendorIds[0],
               status: "active",
               frequency: recurringFrequency,
-              day_of_week: recurringFrequency === "weekly" || recurringFrequency === "biweekly" ? recurringDayOfWeek : null,
+              day_of_week:
+                recurringFrequency === "weekly" || recurringFrequency === "biweekly"
+                  ? recurringDayOfWeek
+                  : null,
               delivery_time: scheduledTime || null,
               delivery_address: finalAddress,
               payment_method: paymentMethod,
@@ -316,51 +373,65 @@ export function usePlaceOrder(supabase: SupabaseClient) {
                 let h = hours;
                 if (period?.toUpperCase() === "PM" && h < 12) h += 12;
                 if (period?.toUpperCase() === "AM" && h === 12) h = 0;
-                return new Date(`${scheduledDate}T${String(h).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`).toISOString();
+                return new Date(
+                  `${scheduledDate}T${String(h).padStart(2, "0")}:${String(minutes || 0).padStart(2, "0")}:00`
+                ).toISOString();
               })(),
             });
-          if (scheduleError) logger.warn({ err: scheduleError }, "Failed to create recurring schedule");
-        } catch (scheduleErr) {
-          logger.warn({ err: scheduleErr }, "Failed to create recurring schedule");
+            if (scheduleError)
+              logger.warn({ err: scheduleError }, "Failed to create recurring schedule");
+          } catch (scheduleErr) {
+            logger.warn({ err: scheduleErr }, "Failed to create recurring schedule");
+          }
         }
-      }
 
-      clearCart();
-      const msg = isRecurring && !user
-        ? "🎉 Order placed! Tracking your order..."
-        : isRecurring
-          ? "🎉 Recurring order set up! First order on its way."
-          : "🎉 Order placed! Tracking your order...";
-      addToast(msg, "success");
-      const targetPath = firstOrderId ? `/app/orders/${firstOrderId}` : "/app/orders";
-      router.push(targetPath);
-      return true;
-    } catch (error: unknown) {
-      logger.error({ err: error }, "Order placement failed");
-      let errorMessage = "Something went wrong. Please try again.";
-      if (error && typeof error === "object" && "message" in error) {
-        const msg = String((error as { message: unknown }).message);
-        const code = "code" in error ? String((error as { code: unknown }).code) : "";
-        if (code === "23503" || msg.includes("violates foreign key")) {
-          errorMessage = "Some items are no longer available. Please refresh and try again.";
-        } else if (code === "23505" || msg.includes("duplicate")) {
-          errorMessage = "Order already exists. Check your orders page.";
-        } else if (code === "42501" || msg.includes("permission") || msg.includes("row-level security")) {
-          errorMessage = "Permission denied. Please log in again.";
-        } else if (code === "PGRST301" || msg.includes("JSON")) {
-          errorMessage = "Invalid order data. Please try again.";
-        } else if (msg.includes("network") || msg.includes("fetch") || msg.includes("Failed to fetch")) {
-          errorMessage = "Network error: Please check your internet connection.";
-        } else if (msg.includes("miiam_food")) {
-          errorMessage = "Cart error: Please remove items and add again from Food page.";
-        } else {
-          errorMessage = "Something went wrong. Please try again.";
+        clearCart();
+        const msg =
+          isRecurring && !user
+            ? "🎉 Order placed! Tracking your order..."
+            : isRecurring
+              ? "🎉 Recurring order set up! First order on its way."
+              : "🎉 Order placed! Tracking your order...";
+        addToast(msg, "success");
+        const targetPath = firstOrderId ? `/app/orders/${firstOrderId}` : "/app/orders";
+        router.push(targetPath);
+        return true;
+      } catch (error: unknown) {
+        logger.error({ err: error }, "Order placement failed");
+        let errorMessage = "Something went wrong. Please try again.";
+        if (error && typeof error === "object" && "message" in error) {
+          const msg = String((error as { message: unknown }).message);
+          const code = "code" in error ? String((error as { code: unknown }).code) : "";
+          if (code === "23503" || msg.includes("violates foreign key")) {
+            errorMessage = "Some items are no longer available. Please refresh and try again.";
+          } else if (code === "23505" || msg.includes("duplicate")) {
+            errorMessage = "Order already exists. Check your orders page.";
+          } else if (
+            code === "42501" ||
+            msg.includes("permission") ||
+            msg.includes("row-level security")
+          ) {
+            errorMessage = "Permission denied. Please log in again.";
+          } else if (code === "PGRST301" || msg.includes("JSON")) {
+            errorMessage = "Invalid order data. Please try again.";
+          } else if (
+            msg.includes("network") ||
+            msg.includes("fetch") ||
+            msg.includes("Failed to fetch")
+          ) {
+            errorMessage = "Network error: Please check your internet connection.";
+          } else if (msg.includes("miiam_food")) {
+            errorMessage = "Cart error: Please remove items and add again from Food page.";
+          } else {
+            errorMessage = "Something went wrong. Please try again.";
+          }
         }
+        addToast(errorMessage, "error");
+        return false;
       }
-      addToast(errorMessage, "error");
-      return false;
-    }
-  }, [items, validateCheckout, supabase, userPincode, addToast, router, clearCart]);
+    },
+    [items, validateCheckout, supabase, userPincode, addToast, router, clearCart]
+  );
 
   return { validateCheckout, placeOrder };
 }

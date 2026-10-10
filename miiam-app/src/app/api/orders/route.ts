@@ -91,7 +91,9 @@ export async function POST(request: NextRequest) {
   let userId: string | null = null;
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     userId = user?.id ?? null;
   } catch (err) {
     logger.warn({ err }, "Session lookup failed — placing as guest");
@@ -99,10 +101,7 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient();
 
-  const scheduledIso = buildScheduledIso(
-    payload.scheduledDate || "",
-    payload.scheduledTime || ""
-  );
+  const scheduledIso = buildScheduledIso(payload.scheduledDate || "", payload.scheduledTime || "");
 
   const subtotal = payload.subtotal;
   const serviceCharge = payload.serviceCharge ?? FLAT_SERVICE_CHARGE;
@@ -204,7 +203,9 @@ export async function POST(request: NextRequest) {
 
       if (!payload.scheduledDate) {
         const stockItems = group.items
-          .filter((i) => group.vendor_id !== SERVICES_VENDOR_ID && knownMenuItemIds.has(i.menu_item_id))
+          .filter(
+            (i) => group.vendor_id !== SERVICES_VENDOR_ID && knownMenuItemIds.has(i.menu_item_id)
+          )
           .map((i) => ({
             menu_item_id: i.menu_item_id,
             quantity: i.quantity,

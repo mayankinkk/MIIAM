@@ -14,8 +14,14 @@ const jobOpenings = [
     department: "Delivery",
     location: "Gauripur, Dhubri",
     type: "Full-time",
-    description: "Deliver food orders to customers on time with a smile. Must have own bike and valid license.",
-    requirements: ["Own bike with valid registration", "Valid driving license", "Smartphone with data", "Age 18+"],
+    description:
+      "Deliver food orders to customers on time with a smile. Must have own bike and valid license.",
+    requirements: [
+      "Own bike with valid registration",
+      "Valid driving license",
+      "Smartphone with data",
+      "Age 18+",
+    ],
     icon: "delivery_dining",
     color: "bg-[var(--color-primary)]",
   },
@@ -25,7 +31,8 @@ const jobOpenings = [
     department: "Delivery",
     location: "Gauripur, Dhubri",
     type: "Part-time",
-    description: "Flexible hours. Earn extra income on weekends and evenings. Perfect for students.",
+    description:
+      "Flexible hours. Earn extra income on weekends and evenings. Perfect for students.",
     requirements: ["Own bike (optional)", "Flexible schedule", "Age 16+", "Smartphone required"],
     icon: "schedule",
     color: "bg-teal-600",
@@ -57,7 +64,7 @@ export default function CareersPage() {
   const supabase = createClient();
   const [activeDept, setActiveDept] = useState("All");
   const [showApplyForm, setShowApplyForm] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<typeof jobOpenings[0] | null>(null);
+  const [selectedJob, setSelectedJob] = useState<(typeof jobOpenings)[0] | null>(null);
   const [formData, setFormData] = useState({
     // Basic Info
     fullName: "",
@@ -103,13 +110,19 @@ export default function CareersPage() {
   const [showStatusCheck, setShowStatusCheck] = useState(false);
   const [statusPhone, setStatusPhone] = useState("");
   const [checkingStatus, setCheckingStatus] = useState(false);
-  const [foundStatus, setFoundStatus] = useState<{status: string, name: string} | null>(null);
+  const [foundStatus, setFoundStatus] = useState<{ status: string; name: string } | null>(null);
 
   const checkStatus = async () => {
     if (!statusPhone || statusPhone.length < 10) return;
     setCheckingStatus(true);
     setFoundStatus(null);
-    const { data } = await supabase.from("job_applications").select("status, full_name").eq("phone_number", statusPhone).order('created_at', {ascending: false}).limit(1).single();
+    const { data } = await supabase
+      .from("job_applications")
+      .select("status, full_name")
+      .eq("phone_number", statusPhone)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
     if (data) {
       setFoundStatus({ status: data.status, name: data.full_name });
     } else {
@@ -120,18 +133,20 @@ export default function CareersPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "hired": return "bg-green-100 text-green-700";
-      case "reviewed": return "bg-deal/10 text-deal";
-      default: return "bg-amber-100 text-amber-700";
+      case "hired":
+        return "bg-green-100 text-green-700";
+      case "reviewed":
+        return "bg-deal/10 text-deal";
+      default:
+        return "bg-amber-100 text-amber-700";
     }
   };
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const filteredJobs = activeDept === "All"
-    ? jobOpenings
-    : jobOpenings.filter(job => job.department === activeDept);
+  const filteredJobs =
+    activeDept === "All" ? jobOpenings : jobOpenings.filter((job) => job.department === activeDept);
 
-  const handleApply = (job: typeof jobOpenings[0]) => {
+  const handleApply = (job: (typeof jobOpenings)[0]) => {
     setSelectedJob(job);
     setShowApplyForm(true);
   };
@@ -154,10 +169,13 @@ export default function CareersPage() {
     };
 
     try {
-      if (formData.passportPicture) passportUrl = await uploadFile(formData.passportPicture, "passport");
-      if (formData.drivingLicenseUrl) drivingLicenseUrl = await uploadFile(formData.drivingLicenseUrl, "license");
+      if (formData.passportPicture)
+        passportUrl = await uploadFile(formData.passportPicture, "passport");
+      if (formData.drivingLicenseUrl)
+        drivingLicenseUrl = await uploadFile(formData.drivingLicenseUrl, "license");
       if (formData.rcUrl) rcUrl = await uploadFile(formData.rcUrl, "rc");
-      if (formData.aadhaarCardUrl) aadhaarUrl = await uploadFile(formData.aadhaarCardUrl, "aadhaar");
+      if (formData.aadhaarCardUrl)
+        aadhaarUrl = await uploadFile(formData.aadhaarCardUrl, "aadhaar");
 
       const { error } = await supabase.from("job_applications").insert({
         full_name: formData.fullName,
@@ -197,7 +215,9 @@ export default function CareersPage() {
       if (error) {
         useToastStore.getState().addToast("Something went wrong. Please try again.", "error");
       } else {
-        useToastStore.getState().addToast("Application submitted! We'll contact you soon.", "success");
+        useToastStore
+          .getState()
+          .addToast("Application submitted! We'll contact you soon.", "success");
       }
     } catch (err) {
       useToastStore.getState().addToast("Error uploading files. Please try again.", "error");
@@ -205,12 +225,38 @@ export default function CareersPage() {
 
     setShowApplyForm(false);
     setFormData({
-      fullName: "", phoneNumber: "", email: "", passportPicture: null,
-      ageOrDob: "", gender: "", currentAddress: "", city: "Gauripur", pincode: "", landmark: "",
-      vehicleType: "", vehicleNumber: "", drivingLicenseNumber: "", drivingLicenseUrl: null, rcUrl: null,
-      workType: "", preferredArea: "Gauripur", availableMorning: false, availableAfternoon: false, availableNight: false,
-      workMonday: false, workTuesday: false, workWednesday: false, workThursday: false, workFriday: false, workSaturday: false, workSunday: false,
-      hasDeliveryExperience: null, previousPlatform: "", hasSmartphone: null, comfortableGoogleMaps: null, aadhaarCardUrl: null,
+      fullName: "",
+      phoneNumber: "",
+      email: "",
+      passportPicture: null,
+      ageOrDob: "",
+      gender: "",
+      currentAddress: "",
+      city: "Gauripur",
+      pincode: "",
+      landmark: "",
+      vehicleType: "",
+      vehicleNumber: "",
+      drivingLicenseNumber: "",
+      drivingLicenseUrl: null,
+      rcUrl: null,
+      workType: "",
+      preferredArea: "Gauripur",
+      availableMorning: false,
+      availableAfternoon: false,
+      availableNight: false,
+      workMonday: false,
+      workTuesday: false,
+      workWednesday: false,
+      workThursday: false,
+      workFriday: false,
+      workSaturday: false,
+      workSunday: false,
+      hasDeliveryExperience: null,
+      previousPlatform: "",
+      hasSmartphone: null,
+      comfortableGoogleMaps: null,
+      aadhaarCardUrl: null,
     });
     setIsSubmitting(false);
   };
@@ -219,18 +265,24 @@ export default function CareersPage() {
     <div className="min-h-screen bg-[#f8f8f8]">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-[var(--color-surface-container-lowest)] shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-black text-[var(--color-accent)] tracking-tighter">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+          <Link
+            href="/"
+            className="text-2xl font-black tracking-tighter text-[var(--color-accent)]"
+          >
             MIIAM
           </Link>
           <div className="flex items-center gap-6">
-            <button 
+            <button
               onClick={() => setShowStatusCheck(true)}
-              className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)] transition-colors"
+              className="text-sm font-bold text-[var(--color-on-surface-variant)] transition-colors hover:text-[var(--color-accent)]"
             >
               Check Status
             </button>
-            <Link href="/" className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)]">
+            <Link
+              href="/"
+              className="text-sm font-bold text-[var(--color-on-surface-variant)] hover:text-[var(--color-accent)]"
+            >
               ← Back to Home
             </Link>
           </div>
@@ -238,34 +290,36 @@ export default function CareersPage() {
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[var(--color-primary)] to-[#c59507] px-4 py-20 text-center text-on-primary">
-        <div className="max-w-3xl mx-auto">
-          <span className="inline-block bg-[var(--color-surface-container-lowest)]/20 text-on-primary text-xs font-bold px-4 py-2 rounded-full mb-6 backdrop-blur-sm">
+      <section className="text-on-primary bg-gradient-to-br from-[var(--color-primary)] to-[#c59507] px-4 py-20 text-center">
+        <div className="mx-auto max-w-3xl">
+          <span className="text-on-primary mb-6 inline-block rounded-full bg-[var(--color-surface-container-lowest)]/20 px-4 py-2 text-xs font-bold backdrop-blur-sm">
             🚀 JOIN OUR TEAM
           </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-            Build Your Career with MIIAM
-          </h1>
-          <p className="text-on-primary/80 text-lg mb-8 max-w-xl mx-auto">
-            We're building Assam's fastest food delivery platform. Join us and make an impact while growing your career.
+          <h1 className="mb-4 text-4xl font-extrabold md:text-5xl">Build Your Career with MIIAM</h1>
+          <p className="text-on-primary/80 mx-auto mb-8 max-w-xl text-lg">
+            We're building Assam's fastest food delivery platform. Join us and make an impact while
+            growing your career.
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
-              <a href="#openings" className="bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)] px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform shadow-xl">
-                View Open Positions
-              </a>
-              <button 
-                onClick={() => setShowStatusCheck(true)}
-                className="bg-[var(--color-surface-container-lowest)]/20 text-on-primary px-8 py-4 rounded-xl font-bold hover:bg-white/30 transition-colors"
-              >
-                Check Application Status
-              </button>
-            </div>
+          <div className="flex flex-wrap justify-center gap-4">
+            <a
+              href="#openings"
+              className="rounded-xl bg-[var(--color-surface-container-lowest)] px-8 py-4 font-bold text-[var(--color-accent)] shadow-xl transition-transform hover:scale-105"
+            >
+              View Open Positions
+            </a>
+            <button
+              onClick={() => setShowStatusCheck(true)}
+              className="text-on-primary rounded-xl bg-[var(--color-surface-container-lowest)]/20 px-8 py-4 font-bold transition-colors hover:bg-white/30"
+            >
+              Check Application Status
+            </button>
+          </div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="bg-[var(--color-surface-container-lowest)] px-4 py-10 border-b border-[var(--color-border-subtle)]">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-10">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-8 text-center md:grid-cols-4">
           {[
             { value: "100+", label: "Team Members" },
             { value: "500+", label: "Delivery Partners" },
@@ -274,26 +328,37 @@ export default function CareersPage() {
           ].map((stat) => (
             <div key={stat.label}>
               <p className="text-3xl font-extrabold text-[var(--color-accent)]">{stat.value}</p>
-              <p className="text-[var(--color-outline)] text-sm">{stat.label}</p>
+              <p className="text-sm text-[var(--color-outline)]">{stat.label}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* Benefits */}
-      <section className="max-w-6xl mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-extrabold text-[var(--color-on-surface)] mb-2">Why Work at MIIAM?</h2>
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <div className="mb-12 text-center">
+          <h2 className="mb-2 text-3xl font-extrabold text-[var(--color-on-surface)]">
+            Why Work at MIIAM?
+          </h2>
           <p className="text-[var(--color-outline)]">Great benefits that set us apart</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {benefits.map((benefit) => (
-            <div key={benefit.title} className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow">
-              <div className={`w-14 h-14 bg-gradient-to-br ${benefit.color} rounded-xl flex items-center justify-center mb-4`}>
-                <span className="material-symbols-outlined text-white text-2xl">{benefit.icon}</span>
+            <div
+              key={benefit.title}
+              className="rounded-2xl bg-[var(--color-surface-container-lowest)] p-6 shadow-sm transition-shadow hover:shadow-lg"
+            >
+              <div
+                className={`h-14 w-14 bg-gradient-to-br ${benefit.color} mb-4 flex items-center justify-center rounded-xl`}
+              >
+                <span className="material-symbols-outlined text-2xl text-white">
+                  {benefit.icon}
+                </span>
               </div>
-              <h3 className="text-lg font-bold text-[var(--color-on-surface)] mb-2">{benefit.title}</h3>
-              <p className="text-[var(--color-outline)] text-sm">{benefit.description}</p>
+              <h3 className="mb-2 text-lg font-bold text-[var(--color-on-surface)]">
+                {benefit.title}
+              </h3>
+              <p className="text-sm text-[var(--color-outline)]">{benefit.description}</p>
             </div>
           ))}
         </div>
@@ -301,21 +366,23 @@ export default function CareersPage() {
 
       {/* Job Openings */}
       <section id="openings" className="bg-[var(--color-surface-container-lowest)] px-4 py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-extrabold text-[var(--color-on-surface)] mb-2">Open Positions</h2>
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 text-center">
+            <h2 className="mb-2 text-3xl font-extrabold text-[var(--color-on-surface)]">
+              Open Positions
+            </h2>
             <p className="text-[var(--color-outline)]">Find your perfect role and apply today</p>
           </div>
 
           {/* Department Filter */}
-          <div className="flex flex-wrap gap-2 justify-center mb-8">
+          <div className="mb-8 flex flex-wrap justify-center gap-2">
             {departments.map((dept) => (
               <button
                 key={dept}
                 onClick={() => setActiveDept(dept)}
-                className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all ${
                   activeDept === dept
-                    ? "bg-[var(--color-primary)] text-on-primary"
+                    ? "text-on-primary bg-[var(--color-primary)]"
                     : "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container-high)]"
                 }`}
               >
@@ -327,15 +394,24 @@ export default function CareersPage() {
           {/* Jobs List */}
           <div className="space-y-4">
             {filteredJobs.map((job) => (
-              <div key={job.id} className="bg-[var(--color-surface-subtle)] rounded-2xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div
+                key={job.id}
+                className="rounded-2xl bg-[var(--color-surface-subtle)] p-6 transition-shadow hover:shadow-md"
+              >
+                <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                   <div className="flex items-start gap-4">
-                    <div className={`w-14 h-14 ${job.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                      <span className="material-symbols-outlined text-white text-2xl">{job.icon}</span>
+                    <div
+                      className={`h-14 w-14 ${job.color} flex flex-shrink-0 items-center justify-center rounded-xl`}
+                    >
+                      <span className="material-symbols-outlined text-2xl text-white">
+                        {job.icon}
+                      </span>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-[var(--color-on-surface)]">{job.title}</h3>
-                      <div className="flex flex-wrap gap-3 mt-2 text-sm text-[var(--color-outline)]">
+                      <h3 className="text-lg font-bold text-[var(--color-on-surface)]">
+                        {job.title}
+                      </h3>
+                      <div className="mt-2 flex flex-wrap gap-3 text-sm text-[var(--color-outline)]">
                         <span className="flex items-center gap-1">
                           <span className="material-symbols-outlined text-sm">location_on</span>
                           {job.location}
@@ -345,21 +421,28 @@ export default function CareersPage() {
                           {job.type}
                         </span>
                       </div>
-                      <p className="text-[var(--color-on-surface-variant)] text-sm mt-2 line-clamp-2">{job.description}</p>
+                      <p className="mt-2 line-clamp-2 text-sm text-[var(--color-on-surface-variant)]">
+                        {job.description}
+                      </p>
                     </div>
                   </div>
                   <button
                     onClick={() => handleApply(job)}
-                    className="bg-[var(--color-primary)] text-on-primary px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#e5b62e] transition-colors flex-shrink-0"
+                    className="text-on-primary flex-shrink-0 rounded-xl bg-[var(--color-primary)] px-6 py-3 text-sm font-bold transition-colors hover:bg-[#e5b62e]"
                   >
                     Apply Now
                   </button>
                 </div>
-                <div className="mt-4 pt-4 border-t border-[var(--color-border-subtle)]">
-                  <p className="text-xs text-[var(--color-outline)] font-semibold mb-2">Requirements:</p>
+                <div className="mt-4 border-t border-[var(--color-border-subtle)] pt-4">
+                  <p className="mb-2 text-xs font-semibold text-[var(--color-outline)]">
+                    Requirements:
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {job.requirements.map((req, i) => (
-                      <span key={i} className="bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] text-xs px-3 py-1 rounded-full border border-[var(--color-border-subtle)]">
+                      <span
+                        key={i}
+                        className="rounded-full border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-3 py-1 text-xs text-[var(--color-on-surface-variant)]"
+                      >
                         {req}
                       </span>
                     ))}
@@ -370,22 +453,26 @@ export default function CareersPage() {
           </div>
 
           {filteredJobs.length === 0 && (
-            <div className="text-center py-16">
-              <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">work_off</span>
-              <p className="text-[var(--color-outline)] mt-4 font-bold">No open positions in this department</p>
-              <p className="text-[var(--color-outline-variant)] text-sm">Check back later or explore other roles</p>
+            <div className="py-16 text-center">
+              <span className="material-symbols-outlined text-6xl text-[var(--color-outline-variant)]/60">
+                work_off
+              </span>
+              <p className="mt-4 font-bold text-[var(--color-outline)]">
+                No open positions in this department
+              </p>
+              <p className="text-sm text-[var(--color-outline-variant)]">
+                Check back later or explore other roles
+              </p>
             </div>
           )}
         </div>
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-br from-[var(--color-primary)] to-[#c59507] px-4 py-20 text-center text-on-primary">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
-            Don't See the Perfect Role?
-          </h2>
-          <p className="text-on-primary/80 text-lg mb-8">
+      <section className="text-on-primary bg-gradient-to-br from-[var(--color-primary)] to-[#c59507] px-4 py-20 text-center">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="mb-4 text-3xl font-extrabold md:text-4xl">Don't See the Perfect Role?</h2>
+          <p className="text-on-primary/80 mb-8 text-lg">
             Send us your resume anyway. We're always looking for talented people to join our team.
           </p>
           <button
@@ -393,7 +480,7 @@ export default function CareersPage() {
               setSelectedJob(null);
               setShowApplyForm(true);
             }}
-            className="bg-[var(--color-surface-container-lowest)] text-[var(--color-accent)] px-10 py-4 rounded-xl font-bold text-lg hover:scale-105 transition-transform shadow-xl"
+            className="rounded-xl bg-[var(--color-surface-container-lowest)] px-10 py-4 text-lg font-bold text-[var(--color-accent)] shadow-xl transition-transform hover:scale-105"
           >
             Send Your Resume
           </button>
@@ -402,12 +489,27 @@ export default function CareersPage() {
 
       {/* Footer */}
       <footer className="bg-slate-950 px-4 py-12 text-center">
-        <div className="flex justify-center gap-6 mb-4">
-          <Link href="/terms" className="text-[var(--color-outline)] text-sm hover:text-white transition-colors">Terms</Link>
-          <Link href="/privacy" className="text-[var(--color-outline)] text-sm hover:text-white transition-colors">Privacy</Link>
-          <Link href="/refunds" className="text-[var(--color-outline)] text-sm hover:text-white transition-colors">Refund Policy</Link>
+        <div className="mb-4 flex justify-center gap-6">
+          <Link
+            href="/terms"
+            className="text-sm text-[var(--color-outline)] transition-colors hover:text-white"
+          >
+            Terms
+          </Link>
+          <Link
+            href="/privacy"
+            className="text-sm text-[var(--color-outline)] transition-colors hover:text-white"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/refunds"
+            className="text-sm text-[var(--color-outline)] transition-colors hover:text-white"
+          >
+            Refund Policy
+          </Link>
         </div>
-        <p className="text-[var(--color-outline)] text-sm">
+        <p className="text-sm text-[var(--color-outline)]">
           © 2026 MIIAM. All rights reserved. Gauripur, Dhubri.
         </p>
       </footer>
@@ -415,62 +517,120 @@ export default function CareersPage() {
       {/* Application Modal */}
       {showApplyForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-[var(--color-surface-container-lowest)] border-b border-[var(--color-border-subtle)] px-6 py-4 flex items-center justify-between">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-[var(--color-surface-container-lowest)]">
+            <div className="sticky top-0 flex items-center justify-between border-b border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-6 py-4">
               <div>
                 <h2 className="text-xl font-bold text-[var(--color-on-surface)]">
                   {selectedJob ? `Apply: ${selectedJob.title}` : "Apply for Delivery Rider"}
                 </h2>
-                <p className="text-xs text-[var(--color-outline)]">We'll get back to you within 3 business days</p>
+                <p className="text-xs text-[var(--color-outline)]">
+                  We'll get back to you within 3 business days
+                </p>
               </div>
               <button
                 onClick={() => setShowApplyForm(false)}
-                className="w-10 h-10 bg-[var(--color-surface-container)] rounded-full flex items-center justify-center"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-container)]"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 p-6">
               {/* Section 1: Basic Info */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">person</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    person
+                  </span>
                   Basic Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Full Name *</label>
-                    <input type="text" required placeholder="Enter your full name" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter your full name"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Phone Number *</label>
-                    <input type="tel" required placeholder="10-digit phone number" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.phoneNumber} onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="10-digit phone number"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.phoneNumber}
+                      onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                    />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Email Address *</label>
-                    <input type="email" required placeholder="Enter your email" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="Enter your email"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Passport Picture *</label>
-                    <input type="file" required accept="image/*" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] text-sm" onChange={(e) => setFormData({ ...formData, passportPicture: e.target.files?.[0] || null })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Passport Picture *
+                    </label>
+                    <input
+                      type="file"
+                      required
+                      accept="image/*"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                      onChange={(e) =>
+                        setFormData({ ...formData, passportPicture: e.target.files?.[0] || null })
+                      }
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Section 2: Personal Info */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">badge</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    badge
+                  </span>
                   Personal Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Age / Date of Birth *</label>
-                    <input type="text" required placeholder="e.g., 25 years or 15/01/1999" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.ageOrDob} onChange={(e) => setFormData({ ...formData, ageOrDob: e.target.value })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Age / Date of Birth *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g., 25 years or 15/01/1999"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.ageOrDob}
+                      onChange={(e) => setFormData({ ...formData, ageOrDob: e.target.value })}
+                    />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Gender (Optional)</label>
-                    <select className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.gender} onChange={(e) => setFormData({ ...formData, gender: e.target.value })}>
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Gender (Optional)
+                    </label>
+                    <select
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.gender}
+                      onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                    >
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -481,44 +641,90 @@ export default function CareersPage() {
               </div>
 
               {/* Section 3: Address */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">location_on</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    location_on
+                  </span>
                   Address
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Current Address *</label>
-                    <input type="text" required placeholder="House/Flat/Street name" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.currentAddress} onChange={(e) => setFormData({ ...formData, currentAddress: e.target.value })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Current Address *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="House/Flat/Street name"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.currentAddress}
+                      onChange={(e) => setFormData({ ...formData, currentAddress: e.target.value })}
+                    />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">City *</label>
-                      <input type="text" required defaultValue="Guwahati" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
+                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                        City *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        defaultValue="Guwahati"
+                        className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                        value={formData.city}
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">Pincode *</label>
-                      <input type="text" required placeholder="6-digit pincode" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.pincode} onChange={(e) => setFormData({ ...formData, pincode: e.target.value })} />
+                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                        Pincode *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="6-digit pincode"
+                        className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                        value={formData.pincode}
+                        onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                      />
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Landmark (Optional)</label>
-                    <input type="text" placeholder="Near landmark, if any" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.landmark} onChange={(e) => setFormData({ ...formData, landmark: e.target.value })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Landmark (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Near landmark, if any"
+                      className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      value={formData.landmark}
+                      onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
+                    />
                   </div>
                 </div>
               </div>
 
               {/* Section 4: Vehicle Details */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">two_wheeler</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    two_wheeler
+                  </span>
                   Vehicle Details
                 </h3>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">Vehicle Type *</label>
-                      <select required value={formData.vehicleType} onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })} className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]">
+                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                        Vehicle Type *
+                      </label>
+                      <select
+                        required
+                        value={formData.vehicleType}
+                        onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
+                        className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                      >
                         <option value="">Select Vehicle</option>
                         <option value="Bike">Bike</option>
                         <option value="Scooter">Scooter</option>
@@ -527,25 +733,69 @@ export default function CareersPage() {
                     </div>
                     {formData.vehicleType !== "Cycle" && (
                       <div>
-                        <label className="text-sm font-semibold text-[var(--color-on-surface)]">Vehicle Number *</label>
-                        <input type="text" required placeholder="e.g., AS-01-AB-1234" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.vehicleNumber} onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })} />
+                        <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                          Vehicle Number *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g., AS-01-AB-1234"
+                          className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                          value={formData.vehicleNumber}
+                          onChange={(e) =>
+                            setFormData({ ...formData, vehicleNumber: e.target.value })
+                          }
+                        />
                       </div>
                     )}
                   </div>
                   {formData.vehicleType !== "Cycle" && (
                     <>
                       <div>
-                        <label className="text-sm font-semibold text-[var(--color-on-surface)]">Driving License Number *</label>
-                        <input type="text" required placeholder="Enter license number" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.drivingLicenseNumber} onChange={(e) => setFormData({ ...formData, drivingLicenseNumber: e.target.value })} />
+                        <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                          Driving License Number *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Enter license number"
+                          className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                          value={formData.drivingLicenseNumber}
+                          onChange={(e) =>
+                            setFormData({ ...formData, drivingLicenseNumber: e.target.value })
+                          }
+                        />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
-                          <label className="text-sm font-semibold text-[var(--color-on-surface)]">Upload Driving License *</label>
-                          <input type="file" required accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] text-sm" onChange={(e) => setFormData({ ...formData, drivingLicenseUrl: e.target.files?.[0] || null })} />
+                          <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                            Upload Driving License *
+                          </label>
+                          <input
+                            type="file"
+                            required
+                            accept="image/*,.pdf"
+                            className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                drivingLicenseUrl: e.target.files?.[0] || null,
+                              })
+                            }
+                          />
                         </div>
                         <div>
-                          <label className="text-sm font-semibold text-[var(--color-on-surface)]">RC Upload (Optional)</label>
-                          <input type="file" accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] text-sm" onChange={(e) => setFormData({ ...formData, rcUrl: e.target.files?.[0] || null })} />
+                          <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                            RC Upload (Optional)
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*,.pdf"
+                            className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                            onChange={(e) =>
+                              setFormData({ ...formData, rcUrl: e.target.files?.[0] || null })
+                            }
+                          />
                         </div>
                       </div>
                     </>
@@ -554,46 +804,103 @@ export default function CareersPage() {
               </div>
 
               {/* Section 5: Work Preferences */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">schedule</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    schedule
+                  </span>
                   Work Preferences
                 </h3>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">Full-time / Part-time *</label>
-                      <select required className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.workType} onChange={(e) => setFormData({ ...formData, workType: e.target.value })}>
+                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                        Full-time / Part-time *
+                      </label>
+                      <select
+                        required
+                        className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                        value={formData.workType}
+                        onChange={(e) => setFormData({ ...formData, workType: e.target.value })}
+                      >
                         <option value="">Select</option>
                         <option value="Full-time">Full-time</option>
                         <option value="Part-time">Part-time</option>
                       </select>
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">Preferred Area *</label>
-                      <input type="text" required placeholder="e.g., Gauripur" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.preferredArea} onChange={(e) => setFormData({ ...formData, preferredArea: e.target.value })} />
+                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                        Preferred Area *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g., Gauripur"
+                        className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                        value={formData.preferredArea}
+                        onChange={(e) =>
+                          setFormData({ ...formData, preferredArea: e.target.value })
+                        }
+                      />
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Available Time Slots</label>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      <label className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer ${formData.availableMorning ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="checkbox" className="accent-[var(--color-primary)] hidden" checked={formData.availableMorning} onChange={(e) => setFormData({ ...formData, availableMorning: e.target.checked })} />
-                        <span className="text-sm text-[var(--color-on-surface)]">Morning (6AM-12PM)</span>
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Available Time Slots
+                    </label>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <label
+                        className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 ${formData.availableMorning ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.availableMorning}
+                          onChange={(e) =>
+                            setFormData({ ...formData, availableMorning: e.target.checked })
+                          }
+                        />
+                        <span className="text-sm text-[var(--color-on-surface)]">
+                          Morning (6AM-12PM)
+                        </span>
                       </label>
-                      <label className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer ${formData.availableAfternoon ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="checkbox" className="accent-[var(--color-primary)] hidden" checked={formData.availableAfternoon} onChange={(e) => setFormData({ ...formData, availableAfternoon: e.target.checked })} />
-                        <span className="text-sm text-[var(--color-on-surface)]">Afternoon (12PM-6PM)</span>
+                      <label
+                        className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 ${formData.availableAfternoon ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.availableAfternoon}
+                          onChange={(e) =>
+                            setFormData({ ...formData, availableAfternoon: e.target.checked })
+                          }
+                        />
+                        <span className="text-sm text-[var(--color-on-surface)]">
+                          Afternoon (12PM-6PM)
+                        </span>
                       </label>
-                      <label className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer ${formData.availableNight ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="checkbox" className="accent-[var(--color-primary)] hidden" checked={formData.availableNight} onChange={(e) => setFormData({ ...formData, availableNight: e.target.checked })} />
-                        <span className="text-sm text-[var(--color-on-surface)]">Night (6PM-12AM)</span>
+                      <label
+                        className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 ${formData.availableNight ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.availableNight}
+                          onChange={(e) =>
+                            setFormData({ ...formData, availableNight: e.target.checked })
+                          }
+                        />
+                        <span className="text-sm text-[var(--color-on-surface)]">
+                          Night (6PM-12AM)
+                        </span>
                       </label>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Working Days</label>
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Working Days
+                    </label>
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {[
                         { key: "workMonday", label: "Mon" },
                         { key: "workTuesday", label: "Tue" },
@@ -603,9 +910,21 @@ export default function CareersPage() {
                         { key: "workSaturday", label: "Sat" },
                         { key: "workSunday", label: "Sun" },
                       ].map((day) => (
-                        <label key={day.key} className={`flex items-center gap-2 px-4 py-2 rounded-xl border cursor-pointer ${formData[day.key as keyof typeof formData] ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                          <input type="checkbox" className="accent-[var(--color-primary)] hidden" checked={formData[day.key as keyof typeof formData] as boolean} onChange={(e) => setFormData({ ...formData, [day.key]: e.target.checked })} />
-                          <span className="text-sm text-[var(--color-on-surface)]">{day.label}</span>
+                        <label
+                          key={day.key}
+                          className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 ${formData[day.key as keyof typeof formData] ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                        >
+                          <input
+                            type="checkbox"
+                            className="hidden accent-[var(--color-primary)]"
+                            checked={formData[day.key as keyof typeof formData] as boolean}
+                            onChange={(e) =>
+                              setFormData({ ...formData, [day.key]: e.target.checked })
+                            }
+                          />
+                          <span className="text-sm text-[var(--color-on-surface)]">
+                            {day.label}
+                          </span>
                         </label>
                       ))}
                     </div>
@@ -614,63 +933,139 @@ export default function CareersPage() {
               </div>
 
               {/* Section 6: Experience */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">work_history</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    work_history
+                  </span>
                   Delivery Experience
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">Do you have delivery experience?</label>
-                    <div className="flex gap-4 mt-2">
-                      <label className={`flex items-center gap-2 px-6 py-3 rounded-xl border cursor-pointer ${formData.hasDeliveryExperience === true ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="radio" name="experience" className="accent-[var(--color-primary)] hidden" checked={formData.hasDeliveryExperience === true} onChange={() => setFormData({ ...formData, hasDeliveryExperience: true })} />
+                    <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                      Do you have delivery experience?
+                    </label>
+                    <div className="mt-2 flex gap-4">
+                      <label
+                        className={`flex cursor-pointer items-center gap-2 rounded-xl border px-6 py-3 ${formData.hasDeliveryExperience === true ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="radio"
+                          name="experience"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.hasDeliveryExperience === true}
+                          onChange={() => setFormData({ ...formData, hasDeliveryExperience: true })}
+                        />
                         <span className="text-sm text-[var(--color-on-surface)]">Yes</span>
                       </label>
-                      <label className={`flex items-center gap-2 px-6 py-3 rounded-xl border cursor-pointer ${formData.hasDeliveryExperience === false ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="radio" name="experience" className="accent-[var(--color-primary)] hidden" checked={formData.hasDeliveryExperience === false} onChange={() => setFormData({ ...formData, hasDeliveryExperience: false, previousPlatform: "" })} />
+                      <label
+                        className={`flex cursor-pointer items-center gap-2 rounded-xl border px-6 py-3 ${formData.hasDeliveryExperience === false ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="radio"
+                          name="experience"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.hasDeliveryExperience === false}
+                          onChange={() =>
+                            setFormData({
+                              ...formData,
+                              hasDeliveryExperience: false,
+                              previousPlatform: "",
+                            })
+                          }
+                        />
                         <span className="text-sm text-[var(--color-on-surface)]">No</span>
                       </label>
                     </div>
                   </div>
                   {formData.hasDeliveryExperience && (
                     <div>
-                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">If yes, which platform? (Optional)</label>
-                      <input type="text" placeholder="e.g., Swiggy, Zomato, Blinkit" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)]" value={formData.previousPlatform} onChange={(e) => setFormData({ ...formData, previousPlatform: e.target.value })} />
+                      <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                        If yes, which platform? (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Swiggy, Zomato, Blinkit"
+                        className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 focus:border-[var(--color-primary)] focus:outline-none"
+                        value={formData.previousPlatform}
+                        onChange={(e) =>
+                          setFormData({ ...formData, previousPlatform: e.target.value })
+                        }
+                      />
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Section 7: Device Check */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">smartphone</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    smartphone
+                  </span>
                   Device Check
                 </h3>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between bg-[var(--color-surface-container-lowest)] px-4 py-3 rounded-xl border border-[var(--color-border-subtle)]">
-                    <span className="text-sm text-[var(--color-on-surface)]">Do you own a smartphone?</span>
+                  <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3">
+                    <span className="text-sm text-[var(--color-on-surface)]">
+                      Do you own a smartphone?
+                    </span>
                     <div className="flex gap-2">
-                      <label className={`flex items-center gap-1 px-4 py-2 rounded-lg border cursor-pointer ${formData.hasSmartphone === true ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="radio" name="smartphone" className="accent-[var(--color-primary)] hidden" checked={formData.hasSmartphone === true} onChange={() => setFormData({ ...formData, hasSmartphone: true })} />
+                      <label
+                        className={`flex cursor-pointer items-center gap-1 rounded-lg border px-4 py-2 ${formData.hasSmartphone === true ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="radio"
+                          name="smartphone"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.hasSmartphone === true}
+                          onChange={() => setFormData({ ...formData, hasSmartphone: true })}
+                        />
                         <span className="text-sm text-[var(--color-on-surface)]">Yes</span>
                       </label>
-                      <label className={`flex items-center gap-1 px-4 py-2 rounded-lg border cursor-pointer ${formData.hasSmartphone === false ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="radio" name="smartphone" className="accent-[var(--color-primary)] hidden" checked={formData.hasSmartphone === false} onChange={() => setFormData({ ...formData, hasSmartphone: false })} />
+                      <label
+                        className={`flex cursor-pointer items-center gap-1 rounded-lg border px-4 py-2 ${formData.hasSmartphone === false ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="radio"
+                          name="smartphone"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.hasSmartphone === false}
+                          onChange={() => setFormData({ ...formData, hasSmartphone: false })}
+                        />
                         <span className="text-sm text-[var(--color-on-surface)]">No</span>
                       </label>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between bg-[var(--color-surface-container-lowest)] px-4 py-3 rounded-xl border border-[var(--color-border-subtle)]">
-                    <span className="text-sm text-[var(--color-on-surface)]">Comfortable using Google Maps?</span>
+                  <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3">
+                    <span className="text-sm text-[var(--color-on-surface)]">
+                      Comfortable using Google Maps?
+                    </span>
                     <div className="flex gap-2">
-                      <label className={`flex items-center gap-1 px-4 py-2 rounded-lg border cursor-pointer ${formData.comfortableGoogleMaps === true ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="radio" name="maps" className="accent-[var(--color-primary)] hidden" checked={formData.comfortableGoogleMaps === true} onChange={() => setFormData({ ...formData, comfortableGoogleMaps: true })} />
+                      <label
+                        className={`flex cursor-pointer items-center gap-1 rounded-lg border px-4 py-2 ${formData.comfortableGoogleMaps === true ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="radio"
+                          name="maps"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.comfortableGoogleMaps === true}
+                          onChange={() => setFormData({ ...formData, comfortableGoogleMaps: true })}
+                        />
                         <span className="text-sm text-[var(--color-on-surface)]">Yes</span>
                       </label>
-                      <label className={`flex items-center gap-1 px-4 py-2 rounded-lg border cursor-pointer ${formData.comfortableGoogleMaps === false ? 'border-[var(--color-primary)] bg-red-50' : 'border-[var(--color-border-subtle)]'}`}>
-                        <input type="radio" name="maps" className="accent-[var(--color-primary)] hidden" checked={formData.comfortableGoogleMaps === false} onChange={() => setFormData({ ...formData, comfortableGoogleMaps: false })} />
+                      <label
+                        className={`flex cursor-pointer items-center gap-1 rounded-lg border px-4 py-2 ${formData.comfortableGoogleMaps === false ? "border-[var(--color-primary)] bg-red-50" : "border-[var(--color-border-subtle)]"}`}
+                      >
+                        <input
+                          type="radio"
+                          name="maps"
+                          className="hidden accent-[var(--color-primary)]"
+                          checked={formData.comfortableGoogleMaps === false}
+                          onChange={() =>
+                            setFormData({ ...formData, comfortableGoogleMaps: false })
+                          }
+                        />
                         <span className="text-sm text-[var(--color-on-surface)]">No</span>
                       </label>
                     </div>
@@ -679,19 +1074,37 @@ export default function CareersPage() {
               </div>
 
               {/* Section 8: Verification */}
-              <div className="bg-[var(--color-surface-subtle)] rounded-xl p-4">
-                <h3 className="text-sm font-bold text-[var(--color-on-surface)] mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[var(--color-accent)]">verified_user</span>
+              <div className="rounded-xl bg-[var(--color-surface-subtle)] p-4">
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[var(--color-on-surface)]">
+                  <span className="material-symbols-outlined text-[var(--color-accent)]">
+                    verified_user
+                  </span>
                   ID Verification
                 </h3>
                 <div>
-                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">Upload Aadhaar Card *</label>
-                  <input type="file" required accept="image/*,.pdf" className="w-full mt-1 px-4 py-3 bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border-subtle)] focus:outline-none focus:border-[var(--color-primary)] text-sm" onChange={(e) => setFormData({ ...formData, aadhaarCardUrl: e.target.files?.[0] || null })} />
-                  <p className="text-xs text-[var(--color-outline-variant)] mt-1">Accepted formats: JPG, PNG, PDF</p>
+                  <label className="text-sm font-semibold text-[var(--color-on-surface)]">
+                    Upload Aadhaar Card *
+                  </label>
+                  <input
+                    type="file"
+                    required
+                    accept="image/*,.pdf"
+                    className="mt-1 w-full rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] px-4 py-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                    onChange={(e) =>
+                      setFormData({ ...formData, aadhaarCardUrl: e.target.files?.[0] || null })
+                    }
+                  />
+                  <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                    Accepted formats: JPG, PNG, PDF
+                  </p>
                 </div>
               </div>
 
-              <button type="submit" disabled={isSubmitting} className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-bold rounded-xl hover:bg-[#e5b62e] transition-colors disabled:opacity-50">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="text-on-primary w-full rounded-xl bg-[var(--color-primary)] py-4 font-bold transition-colors hover:bg-[#e5b62e] disabled:opacity-50"
+              >
                 {isSubmitting ? "Submitting..." : "Submit Application"}
               </button>
             </form>
@@ -700,13 +1113,19 @@ export default function CareersPage() {
       )}
       {/* Status Check Modal */}
       {showStatusCheck && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-scale-in">
-            <div className="p-6 border-b border-[var(--color-border-subtle)] flex items-center justify-between">
-              <h3 className="text-xl font-black text-[var(--color-on-surface)]">Check Your Status</h3>
-              <button 
-                onClick={() => { setShowStatusCheck(false); setFoundStatus(null); setStatusPhone(""); }}
-                className="w-10 h-10 bg-[var(--color-surface-subtle)] rounded-full flex items-center justify-center hover:bg-[var(--color-surface-container)] transition-colors"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="animate-scale-in w-full max-w-md overflow-hidden rounded-3xl bg-[var(--color-surface-container-lowest)] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[var(--color-border-subtle)] p-6">
+              <h3 className="text-xl font-black text-[var(--color-on-surface)]">
+                Check Your Status
+              </h3>
+              <button
+                onClick={() => {
+                  setShowStatusCheck(false);
+                  setFoundStatus(null);
+                  setStatusPhone("");
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-surface-subtle)] transition-colors hover:bg-[var(--color-surface-container)]"
               >
                 <span className="material-symbols-outlined text-[var(--color-outline)]">close</span>
               </button>
@@ -715,55 +1134,73 @@ export default function CareersPage() {
               {!foundStatus ? (
                 <div className="space-y-6">
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <span className="material-symbols-outlined text-[var(--color-accent)] text-3xl">fact_check</span>
+                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-primary)]/10">
+                      <span className="material-symbols-outlined text-3xl text-[var(--color-accent)]">
+                        fact_check
+                      </span>
                     </div>
-                    <p className="text-[var(--color-on-surface-variant)]">Enter the phone number you used during application to track your progress.</p>
+                    <p className="text-[var(--color-on-surface-variant)]">
+                      Enter the phone number you used during application to track your progress.
+                    </p>
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[var(--color-outline-variant)] uppercase tracking-widest mb-2 block">Phone Number</label>
-                    <input 
-                      type="tel" 
+                    <label className="mb-2 block text-xs font-bold tracking-widest text-[var(--color-outline-variant)] uppercase">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
                       value={statusPhone}
                       onChange={(e) => setStatusPhone(e.target.value)}
-                      placeholder="e.g., 9876543210" 
-                      className="w-full px-5 py-4 bg-[var(--color-surface-subtle)] border-2 border-[var(--color-border-subtle)] rounded-2xl focus:border-[var(--color-primary)] outline-none transition-all text-lg font-bold"
+                      placeholder="e.g., 9876543210"
+                      className="w-full rounded-2xl border-2 border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)] px-5 py-4 text-lg font-bold transition-all outline-none focus:border-[var(--color-primary)]"
                     />
                   </div>
-                  <button 
+                  <button
                     onClick={checkStatus}
                     disabled={checkingStatus || statusPhone.length < 10}
-                    className="w-full py-4 bg-[var(--color-primary)] text-on-primary font-bold rounded-2xl shadow-xl shadow-[var(--color-primary)]/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                    className="text-on-primary w-full rounded-2xl bg-[var(--color-primary)] py-4 font-bold shadow-[var(--color-primary)]/20 shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:scale-100 disabled:opacity-50"
                   >
                     {checkingStatus ? "Checking..." : "Track My Application"}
                   </button>
                 </div>
               ) : (
-                <div className="text-center space-y-6 animate-fade-in">
-                  <div className="w-20 h-20 bg-[var(--color-surface-subtle)] rounded-full flex items-center justify-center mx-auto mb-2 border-4 border-white shadow-lg overflow-hidden">
-                    <div className={`w-full h-full flex items-center justify-center ${getStatusColor(foundStatus.status)}`}>
+                <div className="animate-fade-in space-y-6 text-center">
+                  <div className="mx-auto mb-2 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-[var(--color-surface-subtle)] shadow-lg">
+                    <div
+                      className={`flex h-full w-full items-center justify-center ${getStatusColor(foundStatus.status)}`}
+                    >
                       <span className="material-symbols-outlined text-4xl">
-                        {foundStatus.status === 'hired' ? 'verified' : foundStatus.status === 'reviewed' ? 'visibility' : 'pending_actions'}
+                        {foundStatus.status === "hired"
+                          ? "verified"
+                          : foundStatus.status === "reviewed"
+                            ? "visibility"
+                            : "pending_actions"}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-2xl font-black text-[var(--color-on-surface)]">Hi, {foundStatus.name.split(' ')[0]}!</h4>
-                    <p className="text-[var(--color-outline)] text-sm mt-1">Your application status is:</p>
+                    <h4 className="text-2xl font-black text-[var(--color-on-surface)]">
+                      Hi, {foundStatus.name.split(" ")[0]}!
+                    </h4>
+                    <p className="mt-1 text-sm text-[var(--color-outline)]">
+                      Your application status is:
+                    </p>
                   </div>
-                  <div className={`inline-block px-8 py-3 rounded-2xl text-lg font-black uppercase tracking-widest ${getStatusColor(foundStatus.status)}`}>
+                  <div
+                    className={`inline-block rounded-2xl px-8 py-3 text-lg font-black tracking-widest uppercase ${getStatusColor(foundStatus.status)}`}
+                  >
                     {foundStatus.status}
                   </div>
-                  <p className="text-[var(--color-outline)] text-sm px-4">
-                    {foundStatus.status === 'hired' 
-                      ? "Congratulations! Our team will contact you shortly for onboarding details." 
-                      : foundStatus.status === 'reviewed'
-                      ? "Your application has been reviewed. We'll be in touch soon for the next steps."
-                      : "We've received your application and it's currently under review. Please check back later."}
+                  <p className="px-4 text-sm text-[var(--color-outline)]">
+                    {foundStatus.status === "hired"
+                      ? "Congratulations! Our team will contact you shortly for onboarding details."
+                      : foundStatus.status === "reviewed"
+                        ? "Your application has been reviewed. We'll be in touch soon for the next steps."
+                        : "We've received your application and it's currently under review. Please check back later."}
                   </p>
-                  <button 
+                  <button
                     onClick={() => setFoundStatus(null)}
-                    className="text-[var(--color-accent)] font-bold text-sm hover:underline pt-4 block w-full"
+                    className="block w-full pt-4 text-sm font-bold text-[var(--color-accent)] hover:underline"
                   >
                     Check another number
                   </button>

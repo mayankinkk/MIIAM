@@ -14,14 +14,18 @@ async function getRequestMeta(req: NextRequest) {
 export const GET = withRateLimit(async function GET() {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { data, error } = await supabase
       .from("user_sessions")
-      .select("id, session_token, device_info, ip_address, user_agent, location_label, is_current, last_active_at, created_at, revoked_at")
+      .select(
+        "id, session_token, device_info, ip_address, user_agent, location_label, is_current, last_active_at, created_at, revoked_at"
+      )
       .eq("user_id", user.id)
       .is("revoked_at", null)
       .order("last_active_at", { ascending: false })
@@ -39,7 +43,9 @@ export const GET = withRateLimit(async function GET() {
 export const POST = withRateLimit(async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

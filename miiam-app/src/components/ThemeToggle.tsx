@@ -13,25 +13,27 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   ];
 
   return (
-    <div className={`relative flex gap-1 bg-surface-container rounded-xl p-1 ${className}`}>
+    <div className={`bg-surface-container relative flex gap-1 rounded-xl p-1 ${className}`}>
       {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => setTheme(opt.value)}
-          className={`relative z-10 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
-            theme === opt.value ? "text-on-surface" : "text-on-surface-variant hover:text-on-surface"
+          className={`relative z-10 flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-bold transition-colors ${
+            theme === opt.value
+              ? "text-on-surface"
+              : "text-on-surface-variant hover:text-on-surface"
           }`}
           title={opt.label}
         >
           {theme === opt.value && (
             <motion.div
               layoutId="theme-indicator"
-              className="absolute inset-0 bg-surface-container-lowest rounded-lg shadow-sm"
+              className="bg-surface-container-lowest absolute inset-0 rounded-lg shadow-sm"
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             />
           )}
-          <span className="material-symbols-outlined text-sm relative z-10">{opt.icon}</span>
-          <span className="hidden sm:inline relative z-10">{opt.label}</span>
+          <span className="material-symbols-outlined relative z-10 text-sm">{opt.icon}</span>
+          <span className="relative z-10 hidden sm:inline">{opt.label}</span>
         </button>
       ))}
     </div>

@@ -24,22 +24,31 @@ export default function SkipOrderModal({ open, onConfirm, onCancel }: SkipOrderM
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-      <div role="dialog" aria-modal="true" aria-labelledby="skip-order-title" className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-sm">
-        <h3 id="skip-order-title" className="font-bold text-xl text-center mb-2">{t.rider.modals.skipOrder}</h3>
-        <p className="text-sm text-[var(--color-outline)] text-center mb-6">{t.rider.modals.skipOrderDesc}</p>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="skip-order-title"
+        className="w-full max-w-sm rounded-2xl bg-[var(--color-surface-container-lowest)] p-6"
+      >
+        <h3 id="skip-order-title" className="mb-2 text-center text-xl font-bold">
+          {t.rider.modals.skipOrder}
+        </h3>
+        <p className="mb-6 text-center text-sm text-[var(--color-outline)]">
+          {t.rider.modals.skipOrderDesc}
+        </p>
         <div className="flex gap-3">
-          <button 
+          <button
             onClick={onCancel}
-            className="flex-1 py-3 bg-[var(--color-surface-container-high)] text-[var(--color-on-surface-variant)] font-bold rounded-xl"
+            className="flex-1 rounded-xl bg-[var(--color-surface-container-high)] py-3 font-bold text-[var(--color-on-surface-variant)]"
           >
-{t.common.cancel}
+            {t.common.cancel}
           </button>
-          <button 
+          <button
             onClick={onConfirm}
-            className="flex-1 py-3 bg-status-error text-white font-bold rounded-xl"
+            className="bg-status-error flex-1 rounded-xl py-3 font-bold text-white"
           >
-{t.rider.modals.skip}
+            {t.rider.modals.skip}
           </button>
         </div>
       </div>

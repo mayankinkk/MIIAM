@@ -14,14 +14,16 @@ interface AdminAuthExtension {
 
 export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
-  if (!await checkIpRateLimit(ip, 10, 60_000)) {
+  if (!(await checkIpRateLimit(ip, 10, 60_000))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 
   try {
     // Require authenticated admin
     const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -47,21 +49,23 @@ export async function POST(request: NextRequest) {
       .select("id")
       .eq("email", email.toLowerCase())
       .maybeSingle();
-    
-    const userRecord = existingProfile ? { id: existingProfile.id, email: email.toLowerCase() } : null;
+
+    const userRecord = existingProfile
+      ? { id: existingProfile.id, email: email.toLowerCase() }
+      : null;
 
     if (!userRecord) {
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: email.toLowerCase(),
         email_confirm: true,
-        user_metadata: { email: email.toLowerCase(), full_name: fullName || email.split('@')[0] }
+        user_metadata: { email: email.toLowerCase(), full_name: fullName || email.split("@")[0] },
       });
-      
+
       if (createError) {
         logger.error({ err: createError }, "Create user error");
         return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
       }
-      
+
       const { data: sessionData, error: sessionError } = await (
         supabaseAdmin.auth.admin as unknown as AdminAuthExtension
       ).createSession({ userId: newUser.user.id });
@@ -79,10 +83,10 @@ export async function POST(request: NextRequest) {
 
     if (sessionError) {
       logger.error({ err: sessionError }, "Create session error");
-      return NextResponse.json({ 
-        success: true, 
+      return NextResponse.json({
+        success: true,
         userId: userRecord.id,
-        email: userRecord.email 
+        email: userRecord.email,
       });
     }
 

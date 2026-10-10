@@ -71,7 +71,8 @@ export default function SettingsPage() {
         const res = await supabase
           .from("site_settings")
           .select("id", { count: "exact", head: true });
-        if (res.error) return { label: "Database", status: "down" as const, value: res.error.message };
+        if (res.error)
+          return { label: "Database", status: "down" as const, value: res.error.message };
         return { label: "Database", status: "healthy" as const, value: "Connected" };
       } catch {
         return { label: "Database", status: "down" as const, value: "Connection failed" };
@@ -83,8 +84,17 @@ export default function SettingsPage() {
       try {
         const res = await fetch("/api/settings");
         const ms = Math.round(performance.now() - start);
-        if (!res.ok) return { label: "API Response", status: "down" as const, value: `${res.status} — ${ms}ms` };
-        return { label: "API Response", status: ms > 1000 ? "slow" as const : "healthy" as const, value: `${ms}ms` };
+        if (!res.ok)
+          return {
+            label: "API Response",
+            status: "down" as const,
+            value: `${res.status} — ${ms}ms`,
+          };
+        return {
+          label: "API Response",
+          status: ms > 1000 ? ("slow" as const) : ("healthy" as const),
+          value: `${ms}ms`,
+        };
       } catch {
         return { label: "API Response", status: "down" as const, value: "Unreachable" };
       }
@@ -97,7 +107,8 @@ export default function SettingsPage() {
     })();
 
     const netCheck = (() => {
-      if (navigator.onLine) return { label: "Network", status: "healthy" as const, value: "Online" };
+      if (navigator.onLine)
+        return { label: "Network", status: "healthy" as const, value: "Online" };
       return { label: "Network", status: "down" as const, value: "Offline" };
     })();
 
@@ -108,7 +119,11 @@ export default function SettingsPage() {
         const data = await res.json();
         const ms = Math.round(performance.now() - start);
         const count = data.settings ? Object.keys(data.settings).length : 0;
-        return { label: "Settings Sync", status: ms > 1000 ? "slow" as const : "healthy" as const, value: `${count} keys loaded in ${ms}ms` };
+        return {
+          label: "Settings Sync",
+          status: ms > 1000 ? ("slow" as const) : ("healthy" as const),
+          value: `${count} keys loaded in ${ms}ms`,
+        };
       } catch {
         return { label: "Settings Sync", status: "down" as const, value: "Sync failed" };
       }
@@ -126,7 +141,10 @@ export default function SettingsPage() {
         setSettings(data.settings);
       }
     } catch (e) {
-      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to load settings");
+      logger.error(
+        { err: e instanceof Error ? e : new Error(String(e)) },
+        "Failed to load settings"
+      );
     }
   }, []);
 
@@ -153,7 +171,10 @@ export default function SettingsPage() {
         setSaveError(data.error || `Failed (${res.status})`);
       }
     } catch (e) {
-      logger.error({ err: e instanceof Error ? e : new Error(String(e)) }, "Failed to save settings");
+      logger.error(
+        { err: e instanceof Error ? e : new Error(String(e)) },
+        "Failed to save settings"
+      );
       setSaveError("Network error — save failed");
     }
     setLoading(false);
@@ -173,21 +194,31 @@ export default function SettingsPage() {
   const isOn = (key: string) => settings[key] === "true";
 
   return (
-    <div className="px-8 space-y-8">
+    <div className="space-y-8 px-8">
       <div>
         <h1 className="text-3xl font-black text-[var(--color-on-surface)]">Settings</h1>
-        <p className="text-[var(--color-outline-variant)] text-sm">Platform configuration and preferences</p>
+        <p className="text-sm text-[var(--color-outline-variant)]">
+          Platform configuration and preferences
+        </p>
       </div>
 
       <div className="flex gap-4">
-        {["general", "delivery", "payments", "notifications", "support", "legal", "system health"].map((tab) => (
+        {[
+          "general",
+          "delivery",
+          "payments",
+          "notifications",
+          "support",
+          "legal",
+          "system health",
+        ].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-lg text-sm font-bold uppercase ${
+            className={`rounded-lg px-4 py-2 text-sm font-bold uppercase ${
               activeTab === tab
-                ? "bg-[var(--color-primary)] text-on-primary"
-                : "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)] border border-[var(--color-border-subtle)]"
+                ? "text-on-primary bg-[var(--color-primary)]"
+                : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface-variant)]"
             }`}
           >
             {tab}
@@ -197,96 +228,132 @@ export default function SettingsPage() {
 
       {activeTab === "general" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Platform Details</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Platform Details
+            </h3>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label htmlFor="settings-platform-name" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Name</label>
+                <label
+                  htmlFor="settings-platform-name"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Platform Name
+                </label>
                 <input
                   id="settings-platform-name"
                   value={settings.platform_name || ""}
                   onChange={(e) => handleChange("platform_name", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-support-email" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
+                <label
+                  htmlFor="settings-support-email"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Support Email
+                </label>
                 <input
                   id="settings-support-email"
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-support-phone" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
+                <label
+                  htmlFor="settings-support-phone"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Support Phone
+                </label>
                 <input
                   id="settings-support-phone"
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-platform-url" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform URL</label>
+                <label
+                  htmlFor="settings-platform-url"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Platform URL
+                </label>
                 <input
                   id="settings-platform-url"
                   value={settings.platform_url || ""}
                   onChange={(e) => handleChange("platform_url", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Business Configuration</h3>
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Business Configuration
+            </h3>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
+              <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] p-4">
                 <div>
                   <p className="font-bold text-[var(--color-on-surface)]">Maintenance Mode</p>
-                  <p className="text-xs text-[var(--color-outline-variant)]">Disable platform for maintenance</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">
+                    Disable platform for maintenance
+                  </p>
                 </div>
                 <button
                   onClick={() => toggleKey("maintenance_mode")}
                   role="switch"
                   aria-checked={isOn("maintenance_mode")}
                   aria-label="Toggle Maintenance Mode"
-                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-[var(--color-surface-container-high)]"}`}
+                  className={`relative h-6 w-12 rounded-full transition-colors ${isOn("maintenance_mode") ? "bg-red-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`} />
+                  <span
+                    className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] transition-all ${isOn("maintenance_mode") ? "right-1" : "left-1"}`}
+                  />
                 </button>
               </div>
-              <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
+              <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] p-4">
                 <div>
                   <p className="font-bold text-[var(--color-on-surface)]">New User Registration</p>
-                  <p className="text-xs text-[var(--color-outline-variant)]">Allow new users to sign up</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">
+                    Allow new users to sign up
+                  </p>
                 </div>
                 <button
                   onClick={() => toggleKey("new_user_registration")}
                   role="switch"
                   aria-checked={isOn("new_user_registration")}
                   aria-label="Toggle New User Registration"
-                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                  className={`relative h-6 w-12 rounded-full transition-colors ${isOn("new_user_registration") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`} />
+                  <span
+                    className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] transition-all ${isOn("new_user_registration") ? "right-1" : "left-1"}`}
+                  />
                 </button>
               </div>
-              <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
+              <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] p-4">
                 <div>
                   <p className="font-bold text-[var(--color-on-surface)]">Partner Onboarding</p>
-                  <p className="text-xs text-[var(--color-outline-variant)]">Allow new vendors to apply</p>
+                  <p className="text-xs text-[var(--color-outline-variant)]">
+                    Allow new vendors to apply
+                  </p>
                 </div>
                 <button
                   onClick={() => toggleKey("partner_onboarding")}
                   role="switch"
                   aria-checked={isOn("partner_onboarding")}
                   aria-label="Toggle Partner Onboarding"
-                  className={`w-12 h-6 rounded-full relative transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                  className={`relative h-6 w-12 rounded-full transition-colors ${isOn("partner_onboarding") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`} />
+                  <span
+                    className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] transition-all ${isOn("partner_onboarding") ? "right-1" : "left-1"}`}
+                  />
                 </button>
               </div>
             </div>
@@ -295,73 +362,112 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "delivery" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Delivery Settings</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+          <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+            Delivery Settings
+          </h3>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label htmlFor="settings-delivery-fee" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Default Delivery Fee (₹)</label>
+              <label
+                htmlFor="settings-delivery-fee"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Default Delivery Fee (₹)
+              </label>
               <input
                 id="settings-delivery-fee"
                 value={settings.default_delivery_fee || ""}
                 onChange={(e) => handleChange("default_delivery_fee", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-service-charge" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Service Charge (₹ per vendor)</label>
+              <label
+                htmlFor="settings-service-charge"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Service Charge (₹ per vendor)
+              </label>
               <input
                 id="settings-service-charge"
                 type="number"
                 min="0"
                 value={settings.service_charge || ""}
                 onChange={(e) => handleChange("service_charge", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
-              <p className="text-xs text-[var(--color-outline-variant)] mt-1">Charged per vendor in cart. Default: ₹15</p>
+              <p className="mt-1 text-xs text-[var(--color-outline-variant)]">
+                Charged per vendor in cart. Default: ₹15
+              </p>
             </div>
             <div>
-              <label htmlFor="settings-free-delivery" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Free Delivery Above (₹)</label>
+              <label
+                htmlFor="settings-free-delivery"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Free Delivery Above (₹)
+              </label>
               <input
                 id="settings-free-delivery"
                 value={settings.free_delivery_above || ""}
                 onChange={(e) => handleChange("free_delivery_above", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-delivery-radius" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Delivery Radius (km)</label>
+              <label
+                htmlFor="settings-delivery-radius"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Max Delivery Radius (km)
+              </label>
               <input
                 id="settings-delivery-radius"
                 value={settings.max_delivery_radius || ""}
                 onChange={(e) => handleChange("max_delivery_radius", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-max-order" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Max Order Value (₹)</label>
+              <label
+                htmlFor="settings-max-order"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Max Order Value (₹)
+              </label>
               <input
                 id="settings-max-order"
                 value={settings.max_order_value || ""}
                 onChange={(e) => handleChange("max_order_value", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-cancellation-grace" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Cancellation Grace Period (seconds)</label>
+              <label
+                htmlFor="settings-cancellation-grace"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Cancellation Grace Period (seconds)
+              </label>
               <input
                 id="settings-cancellation-grace"
                 value={settings.cancellation_grace_period || ""}
                 onChange={(e) => handleChange("cancellation_grace_period", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-auto-accept" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Auto-Accept Orders</label>
+              <label
+                htmlFor="settings-auto-accept"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Auto-Accept Orders
+              </label>
               <select
                 id="settings-auto-accept"
                 value={settings.auto_accept_orders || "true"}
                 onChange={(e) => handleChange("auto_accept_orders", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               >
                 <option value="true">Enabled</option>
                 <option value="false">Disabled</option>
@@ -372,34 +478,51 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "payments" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Payment Settings</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+          <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+            Payment Settings
+          </h3>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label htmlFor="settings-platform-commission" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Platform Commission (%)</label>
+              <label
+                htmlFor="settings-platform-commission"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Platform Commission (%)
+              </label>
               <input
                 id="settings-platform-commission"
                 value={settings.platform_commission || ""}
                 onChange={(e) => handleChange("platform_commission", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-gateway-fee" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payment Gateway Fee (%)</label>
+              <label
+                htmlFor="settings-gateway-fee"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Payment Gateway Fee (%)
+              </label>
               <input
                 id="settings-gateway-fee"
                 value={settings.payment_gateway_fee || ""}
                 onChange={(e) => handleChange("payment_gateway_fee", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
             <div>
-              <label htmlFor="settings-payout-frequency" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Payout Frequency</label>
+              <label
+                htmlFor="settings-payout-frequency"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Payout Frequency
+              </label>
               <select
                 id="settings-payout-frequency"
                 value={settings.payout_frequency || "daily"}
                 onChange={(e) => handleChange("payout_frequency", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -407,12 +530,17 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label htmlFor="settings-min-payout" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Min Payout Amount (₹)</label>
+              <label
+                htmlFor="settings-min-payout"
+                className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+              >
+                Min Payout Amount (₹)
+              </label>
               <input
                 id="settings-min-payout"
                 value={settings.min_payout_amount || ""}
                 onChange={(e) => handleChange("min_payout_amount", e.target.value)}
-                className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
               />
             </div>
           </div>
@@ -420,52 +548,68 @@ export default function SettingsPage() {
       )}
 
       {activeTab === "notifications" && (
-        <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-          <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Notification Settings</h3>
+        <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+          <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+            Notification Settings
+          </h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
+            <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] p-4">
               <div>
                 <p className="font-bold text-[var(--color-on-surface)]">Order Updates</p>
-                <p className="text-xs text-[var(--color-outline-variant)]">Send push notifications for order status changes</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">
+                  Send push notifications for order status changes
+                </p>
               </div>
               <button
                 onClick={() => toggleKey("notif_order_updates")}
                 role="switch"
                 aria-checked={isOn("notif_order_updates")}
                 aria-label="Toggle Order Update Notifications"
-                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                className={`relative h-6 w-12 rounded-full transition-colors ${isOn("notif_order_updates") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
-                <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`} />
+                <span
+                  className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] transition-all ${isOn("notif_order_updates") ? "right-1" : "left-1"}`}
+                />
               </button>
             </div>
-            <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
+            <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] p-4">
               <div>
-                <p className="font-bold text-[var(--color-on-surface)]">Promotional Notifications</p>
-                <p className="text-xs text-[var(--color-outline-variant)]">Send offers and deals to users</p>
+                <p className="font-bold text-[var(--color-on-surface)]">
+                  Promotional Notifications
+                </p>
+                <p className="text-xs text-[var(--color-outline-variant)]">
+                  Send offers and deals to users
+                </p>
               </div>
               <button
                 onClick={() => toggleKey("notif_promotions")}
                 role="switch"
                 aria-checked={isOn("notif_promotions")}
                 aria-label="Toggle Promotional Notifications"
-                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                className={`relative h-6 w-12 rounded-full transition-colors ${isOn("notif_promotions") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
-                <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`} />
+                <span
+                  className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] transition-all ${isOn("notif_promotions") ? "right-1" : "left-1"}`}
+                />
               </button>
             </div>
-            <div className="flex items-center justify-between p-4 border border-[var(--color-border-subtle)] rounded-xl">
+            <div className="flex items-center justify-between rounded-xl border border-[var(--color-border-subtle)] p-4">
               <div>
                 <p className="font-bold text-[var(--color-on-surface)]">SMS Notifications</p>
-                <p className="text-xs text-[var(--color-outline-variant)]">Send SMS for critical updates</p>
+                <p className="text-xs text-[var(--color-outline-variant)]">
+                  Send SMS for critical updates
+                </p>
               </div>
               <button
                 onClick={() => toggleKey("notif_sms")}
                 role="switch"
                 aria-checked={isOn("notif_sms")}
                 aria-label="Toggle SMS Notifications"
-                className={`w-12 h-6 rounded-full relative transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
+                className={`relative h-6 w-12 rounded-full transition-colors ${isOn("notif_sms") ? "bg-green-500" : "bg-[var(--color-surface-container-high)]"}`}
               >
-                <span className={`absolute top-1 w-4 h-4 bg-[var(--color-surface-container-lowest)] rounded-full transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`} />
+                <span
+                  className={`absolute top-1 h-4 w-4 rounded-full bg-[var(--color-surface-container-lowest)] transition-all ${isOn("notif_sms") ? "right-1" : "left-1"}`}
+                />
               </button>
             </div>
           </div>
@@ -474,138 +618,197 @@ export default function SettingsPage() {
 
       {activeTab === "support" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Contact Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Contact Information
+            </h3>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label htmlFor="settings-support-phone-number" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone Number</label>
+                <label
+                  htmlFor="settings-support-phone-number"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Support Phone Number
+                </label>
                 <input
                   id="settings-support-phone-number"
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
                   placeholder="+919957873472"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-phone-label" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Phone Display Label</label>
+                <label
+                  htmlFor="settings-phone-label"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Phone Display Label
+                </label>
                 <input
                   id="settings-phone-label"
                   value={settings.support_phone_label || ""}
                   onChange={(e) => handleChange("support_phone_label", e.target.value)}
                   placeholder="99578 73472 (Toll free)"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-support-email-support" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
+                <label
+                  htmlFor="settings-support-email-support"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Support Email
+                </label>
                 <input
                   id="settings-support-email-support"
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
                   placeholder="support@miiam.in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-whatsapp" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">WhatsApp Number</label>
+                <label
+                  htmlFor="settings-whatsapp"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  WhatsApp Number
+                </label>
                 <input
                   id="settings-whatsapp"
                   value={settings.support_whatsapp || ""}
                   onChange={(e) => handleChange("support_whatsapp", e.target.value)}
                   placeholder="+919957873472"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-chat-response" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Chat Response Time</label>
+                <label
+                  htmlFor="settings-chat-response"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Chat Response Time
+                </label>
                 <input
                   id="settings-chat-response"
                   value={settings.support_response_time || ""}
                   onChange={(e) => handleChange("support_response_time", e.target.value)}
                   placeholder="2 mins"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-email-response" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Email Response Time</label>
+                <label
+                  htmlFor="settings-email-response"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Email Response Time
+                </label>
                 <input
                   id="settings-email-response"
                   value={settings.support_email_response_time || ""}
                   onChange={(e) => handleChange("support_email_response_time", e.target.value)}
                   placeholder="24 hours"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Social Media Links</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Social Media Links
+            </h3>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label htmlFor="settings-twitter" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Twitter / X</label>
+                <label
+                  htmlFor="settings-twitter"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Twitter / X
+                </label>
                 <input
                   id="settings-twitter"
                   value={settings.support_twitter || ""}
                   onChange={(e) => handleChange("support_twitter", e.target.value)}
                   placeholder="https://twitter.com/miiam_in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-instagram" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Instagram</label>
+                <label
+                  htmlFor="settings-instagram"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Instagram
+                </label>
                 <input
                   id="settings-instagram"
                   value={settings.support_instagram || ""}
                   onChange={(e) => handleChange("support_instagram", e.target.value)}
                   placeholder="https://instagram.com/miiam_in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-facebook" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Facebook</label>
+                <label
+                  htmlFor="settings-facebook"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Facebook
+                </label>
                 <input
                   id="settings-facebook"
                   value={settings.support_facebook || ""}
                   onChange={(e) => handleChange("support_facebook", e.target.value)}
                   placeholder="https://facebook.com/miiam.in"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-linkedin" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">LinkedIn</label>
+                <label
+                  htmlFor="settings-linkedin"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  LinkedIn
+                </label>
                 <input
                   id="settings-linkedin"
                   value={settings.support_linkedin || ""}
                   onChange={(e) => handleChange("support_linkedin", e.target.value)}
                   placeholder="https://linkedin.com/company/miiam"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-youtube" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">YouTube</label>
+                <label
+                  htmlFor="settings-youtube"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  YouTube
+                </label>
                 <input
                   id="settings-youtube"
                   value={settings.support_youtube || ""}
                   onChange={(e) => handleChange("support_youtube", e.target.value)}
                   placeholder="https://youtube.com/@miiam"
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
             <div className="flex items-start gap-3">
               <span className="material-symbols-outlined text-amber-600">info</span>
               <div>
                 <p className="font-bold text-amber-800">How it works</p>
-                <p className="text-sm text-amber-700 mt-1">
-                  These values are stored in the database and used by the Customer App and Rider App support pages.
-                  Changes here will reflect immediately in both apps.
+                <p className="mt-1 text-sm text-amber-700">
+                  These values are stored in the database and used by the Customer App and Rider App
+                  support pages. Changes here will reflect immediately in both apps.
                 </p>
               </div>
             </div>
@@ -615,100 +818,164 @@ export default function SettingsPage() {
 
       {activeTab === "legal" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Contact Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Contact Information
+            </h3>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
-                <label htmlFor="settings-legal-email" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Email</label>
+                <label
+                  htmlFor="settings-legal-email"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Support Email
+                </label>
                 <input
                   id="settings-legal-email"
                   type="email"
                   value={settings.support_email || ""}
                   onChange={(e) => handleChange("support_email", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-legal-phone" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Support Phone</label>
+                <label
+                  htmlFor="settings-legal-phone"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Support Phone
+                </label>
                 <input
                   id="settings-legal-phone"
                   type="tel"
                   value={settings.support_phone || ""}
                   onChange={(e) => handleChange("support_phone", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-grievance-email" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Grievance Email</label>
+                <label
+                  htmlFor="settings-grievance-email"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Grievance Email
+                </label>
                 <input
                   id="settings-grievance-email"
                   type="email"
                   value={settings.grievance_email || ""}
                   onChange={(e) => handleChange("grievance_email", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-business-address" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Business Address</label>
+                <label
+                  htmlFor="settings-business-address"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Business Address
+                </label>
                 <input
                   id="settings-business-address"
                   type="text"
                   value={settings.business_address || ""}
                   onChange={(e) => handleChange("business_address", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-legal-city" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">City</label>
+                <label
+                  htmlFor="settings-legal-city"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  City
+                </label>
                 <input
                   id="settings-legal-city"
                   type="text"
                   value={settings.city || ""}
                   onChange={(e) => handleChange("city", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-legal-state" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">State</label>
+                <label
+                  htmlFor="settings-legal-state"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  State
+                </label>
                 <input
                   id="settings-legal-state"
                   type="text"
                   value={settings.state || ""}
                   onChange={(e) => handleChange("state", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
               <div>
-                <label htmlFor="settings-legal-pincode" className="block text-xs font-bold text-[var(--color-outline-variant)] uppercase mb-2">Pincode</label>
+                <label
+                  htmlFor="settings-legal-pincode"
+                  className="mb-2 block text-xs font-bold text-[var(--color-outline-variant)] uppercase"
+                >
+                  Pincode
+                </label>
                 <input
                   id="settings-legal-pincode"
                   type="text"
                   value={settings.pincode || ""}
                   onChange={(e) => handleChange("pincode", e.target.value)}
-                  className="w-full p-4 border border-[var(--color-border-subtle)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  className="w-full rounded-xl border border-[var(--color-border-subtle)] p-4 focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm mb-6">Policy Pages</h3>
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <h3 className="mb-6 text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+              Policy Pages
+            </h3>
             <div className="space-y-4">
               <p className="text-sm text-[var(--color-outline)]">
-                Policy content is managed in the Terms of Service page. Updates to contacts above will reflect automatically on the site.
+                Policy content is managed in the Terms of Service page. Updates to contacts above
+                will reflect automatically on the site.
               </p>
               <div className="grid grid-cols-3 gap-4">
-                <a href="/terms" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">description</span>
-                  <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Terms of Service</p>
+                <a
+                  href="/terms"
+                  target="_blank"
+                  className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center hover:bg-[var(--color-surface-container)]"
+                >
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">
+                    description
+                  </span>
+                  <p className="mt-2 text-sm font-bold text-[var(--color-on-surface)]">
+                    Terms of Service
+                  </p>
                 </a>
-                <a href="/privacy" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">privacy_tip</span>
-                  <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Privacy Policy</p>
+                <a
+                  href="/privacy"
+                  target="_blank"
+                  className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center hover:bg-[var(--color-surface-container)]"
+                >
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">
+                    privacy_tip
+                  </span>
+                  <p className="mt-2 text-sm font-bold text-[var(--color-on-surface)]">
+                    Privacy Policy
+                  </p>
                 </a>
-                <a href="/terms#refund" target="_blank" className="p-4 bg-[var(--color-surface-subtle)] rounded-xl text-center hover:bg-[var(--color-surface-container)]">
-                  <span className="material-symbols-outlined text-[var(--color-primary)]">attach_money</span>
-                  <p className="font-bold text-[var(--color-on-surface)] text-sm mt-2">Refund Policy</p>
+                <a
+                  href="/terms#refund"
+                  target="_blank"
+                  className="rounded-xl bg-[var(--color-surface-subtle)] p-4 text-center hover:bg-[var(--color-surface-container)]"
+                >
+                  <span className="material-symbols-outlined text-[var(--color-primary)]">
+                    attach_money
+                  </span>
+                  <p className="mt-2 text-sm font-bold text-[var(--color-on-surface)]">
+                    Refund Policy
+                  </p>
                 </a>
               </div>
             </div>
@@ -718,46 +985,52 @@ export default function SettingsPage() {
 
       {activeTab === "system health" && (
         <div className="space-y-6">
-          <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-8 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-black text-[var(--color-on-surface)] uppercase tracking-widest text-sm">System Health</h3>
+          <div className="rounded-3xl border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] p-8 shadow-sm">
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-sm font-black tracking-widest text-[var(--color-on-surface)] uppercase">
+                System Health
+              </h3>
               <button
                 onClick={runHealthChecks}
                 aria-label="Refresh health checks"
-                className="px-4 py-2 bg-[var(--color-primary)] text-on-primary rounded-xl text-sm font-bold hover:opacity-90"
+                className="text-on-primary rounded-xl bg-[var(--color-primary)] px-4 py-2 text-sm font-bold hover:opacity-90"
               >
                 Refresh
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {health.map((item) => (
                 <div
                   key={item.label}
-                  className={`p-5 rounded-2xl border transition-colors ${
+                  className={`rounded-2xl border p-5 transition-colors ${
                     item.status === "healthy"
-                      ? "bg-green-50 border-green-200 dark:bg-green-950 dark:border-green-800"
+                      ? "border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950"
                       : item.status === "down"
-                      ? "bg-red-50 border-red-200 dark:bg-red-950 dark:border-red-800"
-                      : item.status === "slow"
-                      ? "bg-amber-50 border-amber-200 dark:bg-amber-950 dark:border-amber-800"
-                      : "bg-[var(--color-surface-subtle)] border-[var(--color-border-subtle)]"
+                        ? "border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950"
+                        : item.status === "slow"
+                          ? "border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950"
+                          : "border-[var(--color-border-subtle)] bg-[var(--color-surface-subtle)]"
                   }`}
                 >
-                  <div className="flex items-center gap-3 mb-2">
+                  <div className="mb-2 flex items-center gap-3">
                     <span
-                      className={`w-3 h-3 rounded-full ${
+                      className={`h-3 w-3 rounded-full ${
                         item.status === "healthy"
                           ? "bg-green-500"
                           : item.status === "down"
-                          ? "bg-red-500"
-                          : item.status === "slow"
-                          ? "bg-amber-500"
-                          : "bg-[var(--color-outline-variant)] animate-pulse"
+                            ? "bg-red-500"
+                            : item.status === "slow"
+                              ? "bg-amber-500"
+                              : "animate-pulse bg-[var(--color-outline-variant)]"
                       }`}
                     />
-                    <p className="font-black text-[var(--color-on-surface)] text-sm uppercase tracking-wider">{item.label}</p>
+                    <p className="text-sm font-black tracking-wider text-[var(--color-on-surface)] uppercase">
+                      {item.label}
+                    </p>
                   </div>
-                  <p className="text-[var(--color-on-surface-variant)] text-xs font-medium ml-6">{item.value}</p>
+                  <p className="ml-6 text-xs font-medium text-[var(--color-on-surface-variant)]">
+                    {item.value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -765,15 +1038,15 @@ export default function SettingsPage() {
         </div>
       )}
 
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         {saveError && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-700">
             <span className="material-symbols-outlined text-base">error</span>
             <span className="font-bold">{saveError}</span>
           </div>
         )}
         {saved && (
-          <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+          <div className="flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-700">
             <span className="material-symbols-outlined text-base">check_circle</span>
             <span className="font-bold">Settings saved!</span>
           </div>
@@ -782,7 +1055,7 @@ export default function SettingsPage() {
         <button
           onClick={saveSettings}
           disabled={loading}
-          className="px-8 py-4 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold hover:opacity-90 disabled:opacity-50"
+          className="text-on-primary rounded-xl bg-[var(--color-primary)] px-8 py-4 font-bold hover:opacity-90 disabled:opacity-50"
         >
           {loading ? "Saving..." : "Save Changes"}
         </button>

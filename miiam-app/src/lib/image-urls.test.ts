@@ -20,7 +20,9 @@ describe("canOptimizeImage", () => {
   });
 
   it("rejects hosts outside remotePatterns", () => {
-    expect(canOptimizeImage("https://chatgpt.com/backend-api/estuary/content?id=file_1")).toBe(false);
+    expect(canOptimizeImage("https://chatgpt.com/backend-api/estuary/content?id=file_1")).toBe(
+      false
+    );
     expect(canOptimizeImage("https://evil.com/x.png")).toBe(false);
     expect(canOptimizeImage("https://notsupabase.co/img.png")).toBe(false);
     expect(canOptimizeImage("https://evil.images.unsplash.com/x.png")).toBe(false);

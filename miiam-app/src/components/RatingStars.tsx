@@ -51,7 +51,7 @@ export default function RatingStars({
         );
       })}
       {showValue && (
-        <span className={`ml-1 font-bold text-on-surface ${size === "sm" ? "text-xs" : "text-sm"}`}>
+        <span className={`text-on-surface ml-1 font-bold ${size === "sm" ? "text-xs" : "text-sm"}`}>
           {rating.toFixed(1)}
         </span>
       )}

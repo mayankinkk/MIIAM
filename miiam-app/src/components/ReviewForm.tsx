@@ -23,10 +23,12 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) return;
-    
+
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         addToast("Please login to submit review", "warning");
         setLoading(false);
@@ -59,7 +61,10 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
       setSubmitted(true);
       onSuccess?.();
     } catch (error: unknown) {
-      logger.error({ err: error instanceof Error ? error : new Error(String(error)) }, "Error submitting review");
+      logger.error(
+        { err: error instanceof Error ? error : new Error(String(error)) },
+        "Error submitting review"
+      );
       addToast("Failed to submit review", "error");
     } finally {
       setLoading(false);
@@ -68,19 +73,22 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
 
   if (submitted) {
     return (
-      <div className="bg-status-success/10 border border-status-success/20 rounded-xl p-6 text-center">
-        <span className="material-symbols-outlined text-4xl text-status-success">check_circle</span>
-        <h3 className="font-bold text-status-success mt-2">Thank you for your review!</h3>
-        <p className="text-sm text-status-success">Your feedback helps others</p>
+      <div className="bg-status-success/10 border-status-success/20 rounded-xl border p-6 text-center">
+        <span className="material-symbols-outlined text-status-success text-4xl">check_circle</span>
+        <h3 className="text-status-success mt-2 font-bold">Thank you for your review!</h3>
+        <p className="text-status-success text-sm">Your feedback helps others</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-[var(--color-surface-container-lowest)] rounded-xl p-6 shadow-sm">
-      <h3 className="font-bold text-[var(--color-on-surface)] mb-4">Rate your experience</h3>
-      
-      <div className="flex items-center gap-1 mb-4" role="radiogroup" aria-label="Rating">
+    <form
+      onSubmit={handleSubmit}
+      className="rounded-xl bg-[var(--color-surface-container-lowest)] p-6 shadow-sm"
+    >
+      <h3 className="mb-4 font-bold text-[var(--color-on-surface)]">Rate your experience</h3>
+
+      <div className="mb-4 flex items-center gap-1" role="radiogroup" aria-label="Rating">
         {[1, 2, 3, 4, 5].map((star) => (
           <button
             key={star}
@@ -93,18 +101,21 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
             onMouseLeave={() => setHoverRating(0)}
             className="p-3"
           >
-            <span 
+            <span
               className="material-symbols-outlined text-4xl transition-all"
-              style={{ 
+              style={{
                 fontVariationSettings: "'FILL' 1",
-                color: star <= (hoverRating || rating) ? "var(--color-tertiary)" : "var(--color-border-subtle)"
+                color:
+                  star <= (hoverRating || rating)
+                    ? "var(--color-tertiary)"
+                    : "var(--color-border-subtle)",
               }}
             >
               star
             </span>
           </button>
         ))}
-        <span className="ml-2 text-[var(--color-on-surface-variant)] font-medium">
+        <span className="ml-2 font-medium text-[var(--color-on-surface-variant)]">
           {rating > 0 ? `${rating}/5` : "Tap to rate"}
         </span>
       </div>
@@ -113,14 +124,14 @@ export default function ReviewForm({ vendorId, orderId, onSuccess }: ReviewFormP
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         placeholder="Share your experience (optional)"
-        className="w-full p-3 border border-[var(--color-border-subtle)] rounded-xl text-sm focus:border-[var(--color-primary)] focus:outline-none mb-4"
+        className="mb-4 w-full rounded-xl border border-[var(--color-border-subtle)] p-3 text-sm focus:border-[var(--color-primary)] focus:outline-none"
         rows={3}
       />
 
       <button
         type="submit"
         disabled={loading || rating === 0}
-        className="w-full py-3 bg-primary text-on-primary font-bold rounded-xl hover:bg-primary-dim hover:text-on-primary transition-all disabled:opacity-50"
+        className="bg-primary text-on-primary hover:bg-primary-dim hover:text-on-primary w-full rounded-xl py-3 font-bold transition-all disabled:opacity-50"
       >
         {loading ? "Submitting..." : "Submit Review"}
       </button>

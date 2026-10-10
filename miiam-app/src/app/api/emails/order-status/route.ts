@@ -20,14 +20,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Order ID and status required" }, { status: 400 });
     }
 
-    const validStatuses = ["accepted", "processing", "preparing", "shopping", "picking_up", "on_the_way", "delivered", "cancelled"];
+    const validStatuses = [
+      "accepted",
+      "processing",
+      "preparing",
+      "shopping",
+      "picking_up",
+      "on_the_way",
+      "delivered",
+      "cancelled",
+    ];
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
-      .select(`
+      .select(
+        `
         id,
         user_id,
         vendor_id,
@@ -35,7 +45,8 @@ export async function POST(request: NextRequest) {
         users:user_id(email, full_name),
         vendors:vendor_id(shop_name),
         riders:rider_id(name, phone)
-      `)
+      `
+      )
       .eq("id", orderId)
       .single();
 
