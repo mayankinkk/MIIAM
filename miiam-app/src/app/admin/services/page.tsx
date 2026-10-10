@@ -10,6 +10,8 @@ type ServiceStatus = "pending" | "confirmed" | "in_progress" | "completed" | "ca
 interface ServiceBooking {
   id: string;
   service_type: string;
+  sub_service?: string | null;
+  user_id?: string | null;
   user_name: string;
   user_phone: string;
   address: string;
@@ -19,6 +21,8 @@ interface ServiceBooking {
   amount: number;
   provider_id: string | null;
   provider_name: string | null;
+  technician_name?: string | null;
+  technician_phone?: string | null;
   created_at: string;
 }
 
@@ -92,6 +96,10 @@ export default function EnhancedServicesDashboard() {
   const [editingItem, setEditingItem] = useState<ServiceItem | null>(null);
   const [itemForm, setItemForm] = useState({ name: "", category_id: "", description: "", price: "", price_min: "", price_max: "", original_price: "", duration: "", image_url: "", included: "", warranty_days: "7", badge: "", rating: "0", reviews: "0", sort_order: "0" });
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [assignBooking, setAssignBooking] = useState<ServiceBooking | null>(null);
+  const [techName, setTechName] = useState("");
+  const [techPhone, setTechPhone] = useState("");
+  const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
     loadBookings();
@@ -233,6 +241,41 @@ export default function EnhancedServicesDashboard() {
     setBookings(prev => prev.map(b =>
       b.id === bookingId ? { ...b, status: newStatus } : b
     ));
+  }
+
+  async function handleAssignTechnician() {
+    if (!assignBooking || !techName.trim() || assigning) return;
+    setAssigning(true);
+    try {
+      const { error } = await supabase
+        .from("service_bookings")
+        .update({ technician_name: techName.trim(), technician_phone: techPhone.trim() })
+        .eq("id", assignBooking.id);
+      if (error) throw error;
+      setBookings(prev => prev.map(b =>
+        b.id === assignBooking.id
+          ? { ...b, technician_name: techName.trim(), technician_phone: techPhone.trim() }
+          : b
+      ));
+      if (assignBooking.user_id) {
+        await supabase.from("notifications").insert({
+          user_id: assignBooking.user_id,
+          title: "Technician Assigned ✓",
+          body: `${techName.trim()} has been assigned to your ${assignBooking.sub_service || assignBooking.service_type} service. Contact: ${techPhone.trim() || "N/A"}`,
+          type: "booking",
+          read: false,
+          created_at: new Date().toISOString(),
+        });
+      }
+      useToastStore.getState().addToast(`Technician ${techName.trim()} assigned`, "success");
+      setAssignBooking(null);
+      setTechName("");
+      setTechPhone("");
+    } catch (e) {
+      useToastStore.getState().addToast("Failed to assign technician", "error");
+      console.error("Failed to assign technician", e);
+    }
+    setAssigning(false);
   }
 
   const totalRevenue = bookings
@@ -566,8 +609,24 @@ export default function EnhancedServicesDashboard() {
                       <div>{booking.scheduled_date}</div>
                       <div className="text-xs">{booking.scheduled_time}</div>
                     </td>
-                    <td className="p-4 text-[var(--color-on-surface-variant)]">
-                      {booking.provider_name || <span className="text-[var(--color-outline-variant)]">Unassigned</span>}
+                    <td className="p-4">
+                      {booking.technician_name ? (
+                        <div>
+                          <p className="text-sm font-bold text-[var(--color-on-surface)]">{booking.technician_name}</p>
+                          {booking.technician_phone && <p className="text-xs text-[var(--color-outline-variant)]">{booking.technician_phone}</p>}
+                        </div>
+                      ) : booking.provider_name ? (
+                        <p className="text-sm text-[var(--color-on-surface-variant)]">{booking.provider_name}</p>
+                      ) : (
+                        <button
+                          onClick={() => { setAssignBooking(booking); setTechName(""); setTechPhone(""); }}
+                          disabled={["completed", "cancelled"].includes(booking.status)}
+                          className="text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1 disabled:opacity-40 disabled:no-underline"
+                        >
+                          <span className="material-symbols-outlined text-sm">person_add</span>
+                          Assign
+                        </button>
+                      )}
                     </td>
                     <td className="p-4">
                       <select
@@ -1155,6 +1214,57 @@ export default function EnhancedServicesDashboard() {
                   <span className="material-symbols-outlined text-sm">delete</span>
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Assign Technician Modal */}
+      {assignBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setAssignBooking(null)}>
+          <div className="bg-[var(--color-surface-container-lowest)] rounded-2xl p-6 w-full max-w-md shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-black text-[var(--color-on-surface)] mb-1">Assign Technician</h3>
+            <p className="text-xs text-[var(--color-outline-variant)] mb-4">
+              {assignBooking.service_type} • {assignBooking.user_name || "Customer"}
+            </p>
+            <div className="space-y-3">
+              <div>
+                <label htmlFor="tech-name" className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Technician Name *</label>
+                <input
+                  id="tech-name"
+                  type="text"
+                  value={techName}
+                  onChange={(e) => setTechName(e.target.value)}
+                  placeholder="e.g. Rahul Kumar"
+                  className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm"
+                />
+              </div>
+              <div>
+                <label htmlFor="tech-phone" className="text-xs font-bold text-[var(--color-outline)] mb-1 block">Phone (optional)</label>
+                <input
+                  id="tech-phone"
+                  type="tel"
+                  value={techPhone}
+                  onChange={(e) => setTechPhone(e.target.value)}
+                  placeholder="e.g. 9876543210"
+                  className="w-full border border-[var(--color-border-subtle)] rounded-xl px-4 py-3 text-sm"
+                />
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setAssignBooking(null)}
+                className="flex-1 py-3 border border-[var(--color-border-subtle)] rounded-xl font-bold text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignTechnician}
+                disabled={!techName.trim() || assigning}
+                className="flex-1 py-3 bg-[var(--color-primary)] text-on-primary rounded-xl font-bold text-sm disabled:opacity-50"
+              >
+                {assigning ? "Assigning..." : "Assign"}
+              </button>
             </div>
           </div>
         </div>
