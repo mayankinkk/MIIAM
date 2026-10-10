@@ -27,7 +27,7 @@ export default function VendorOrders() {
   const [showRejectModal, setShowRejectModal] = useState<string | null>(null);
   const [rejectReason, setRejectReason] = useState("");
   const [activeTab, setActiveTab] = useState<TabType>("orders");
-  const [serviceBookings, setServiceBookings] = useState<{ id: string; status: string; scheduled_date: string | null; scheduled_time: string | null; sub_service: string | null; user_name: string | null; user_phone: string | null; amount: number | null }[]>([]);
+  const [serviceBookings, setServiceBookings] = useState<{ id: string; status: string; scheduled_date: string | null; scheduled_time: string | null; sub_service: string | null; service_type: string | null; user_name: string | null; user_phone: string | null; address: string | null; amount: number | null; technician_name: string | null; technician_phone: string | null }[]>([]);
   const [serviceBookingsLoading, setServiceBookingsLoading] = useState(false);
   const rejectReasons = ["Out of stock", "Too busy", "Store closing", "Item unavailable", "Other"];
   const { unreadByOrder } = useUnreadMessages(vendorUserId);
@@ -74,11 +74,22 @@ export default function VendorOrders() {
     setServiceBookingsLoading(true);
     const { data } = await supabase
       .from("service_bookings")
-      .select("id, status, scheduled_date, scheduled_time, sub_service, user_name, user_phone, amount")
+      .select("id, status, scheduled_date, scheduled_time, sub_service, service_type, user_name, user_phone, address, amount, technician_name, technician_phone")
       .eq("provider_id", vId)
       .order("created_at", { ascending: false });
     if (data) setServiceBookings(data);
     setServiceBookingsLoading(false);
+  }
+
+  async function updateServiceStatus(bookingId: string, status: string) {
+    const { error } = await supabase.from("service_bookings").update({ status }).eq("id", bookingId);
+    if (error) return;
+    setServiceBookings((prev) => prev.map((b) => (b.id === bookingId ? { ...b, status } : b)));
+  }
+
+  function navigateToAddress(address: string | null) {
+    if (!address) return;
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, "_blank", "noopener");
   }
 
   const updateStatus = async (orderId: string, status: OrderStatus, reason?: string) => {
@@ -172,28 +183,66 @@ export default function VendorOrders() {
                     <div className="flex items-center gap-3 mb-2">
                       <span className="font-extrabold text-[var(--color-on-surface)]">#{sb.id.slice(0, 8).toUpperCase()}</span>
                       <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase ${
-                        sb.status === "pending" ? "bg-amber-100 text-amber-700" :
+                        sb.status === "pending" ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400" :
                         sb.status === "confirmed" ? "bg-deal/10 text-deal" :
                         sb.status === "in_progress" ? "bg-deal/10 text-deal" :
-                        sb.status === "completed" ? "bg-green-100 text-green-700" :
-                        sb.status === "cancelled" ? "bg-red-100 text-red-700" :
+                        sb.status === "completed" ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
+                        sb.status === "cancelled" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
                         "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]"
                       }`}>
                         {sb.status.replace(/_/g, " ")}
                       </span>
                     </div>
                     <div className="flex flex-wrap gap-4 text-sm text-[var(--color-outline)]">
-                      {sb.sub_service && <span>{sb.sub_service}</span>}
+                      {(sb.sub_service || sb.service_type) && <span className="capitalize">{sb.sub_service || sb.service_type}</span>}
                       {sb.scheduled_date && (
                         <span>{new Date(sb.scheduled_date + "T00:00:00").toLocaleDateString()} {sb.scheduled_time || ""}</span>
                       )}
                       {sb.user_name && <span>{sb.user_name}</span>}
                     </div>
+                    {sb.address && (
+                      <p className="text-xs text-[var(--color-outline-variant)] mt-1 truncate max-w-[400px]">{sb.address}</p>
+                    )}
+                    {sb.technician_name && (
+                      <p className="text-xs text-green-700 dark:text-green-400 font-bold mt-1">
+                        Tech: {sb.technician_name}{sb.technician_phone ? ` • ${sb.technician_phone}` : ""}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right">
                     {sb.amount != null && <p className="text-xl font-black text-[var(--color-primary)]">₹{sb.amount}</p>}
-                    {sb.user_phone && <p className="text-xs text-[var(--color-outline-variant)]">{sb.user_phone}</p>}
+                    {sb.user_phone && (
+                      <a href={`tel:${sb.user_phone}`} className="text-xs text-[var(--color-outline-variant)] hover:text-[var(--color-primary)] font-bold">
+                        {sb.user_phone}
+                      </a>
+                    )}
                   </div>
+                </div>
+                {/* Job actions */}
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {sb.status === "pending" && (
+                    <button onClick={() => updateServiceStatus(sb.id, "confirmed")} className="px-4 py-2 bg-green-600 text-white rounded-xl font-bold text-xs hover:bg-green-700 transition-colors">Accept</button>
+                  )}
+                  {sb.status === "confirmed" && (
+                    <button onClick={() => updateServiceStatus(sb.id, "in_progress")} className="px-4 py-2 bg-amber-600 text-white rounded-xl font-bold text-xs hover:bg-amber-700 transition-colors">Start Job</button>
+                  )}
+                  {sb.status === "in_progress" && (
+                    <button onClick={() => updateServiceStatus(sb.id, "completed")} className="px-4 py-2 bg-primary text-on-primary rounded-xl font-bold text-xs hover:bg-primary-hover transition-colors">Mark Complete</button>
+                  )}
+                  {["pending", "confirmed", "in_progress"].includes(sb.status) && (
+                    <>
+                      {sb.address && (
+                        <button onClick={() => navigateToAddress(sb.address)} className="px-4 py-2 border border-[var(--color-border-subtle)] rounded-xl font-bold text-xs text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-subtle)] flex items-center gap-1">
+                          <span className="material-symbols-outlined text-sm">navigation</span>
+                          Navigate
+                        </button>
+                      )}
+                      <a href={`/tech/share-location/${sb.id}`} target="_blank" rel="noopener noreferrer" className="px-4 py-2 border border-green-200 text-green-700 rounded-xl font-bold text-xs hover:bg-green-50 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm">gps_fixed</span>
+                        Share Live Location
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
             ))

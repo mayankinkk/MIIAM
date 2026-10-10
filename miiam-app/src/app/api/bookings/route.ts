@@ -97,10 +97,32 @@ export async function POST(request: NextRequest) {
     const supabase = createAdminClient();
 
     const body = await request.json();
-    const { service_type, sub_service, user_name, user_phone, address, scheduled_date, scheduled_time, amount, notes, provider_id } = body;
+    const { service_type, sub_service, user_name, user_phone, address, scheduled_date, scheduled_time, amount, notes, provider_id, lat, lng } = body;
 
     if (!service_type || !scheduled_date || !scheduled_time || !address) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Geocode dropoff coords: client passes lat/lng when available; otherwise
+    // try a best-effort forward geocode of the address text (Nominatim).
+    let bookingLat: number | null = typeof lat === "number" && Number.isFinite(lat) ? lat : null;
+    let bookingLng: number | null = typeof lng === "number" && Number.isFinite(lng) ? lng : null;
+    if (bookingLat == null || bookingLng == null) {
+      try {
+        const geoRes = await fetch(
+          `${process.env.NEXT_PUBLIC_NOMINATIM_SEARCH_URL || "https://nominatim.openstreetmap.org/search"}?q=${encodeURIComponent(address)}&format=json&limit=1`,
+          { headers: { "Accept-Language": "en", "User-Agent": "MIIAM/1.0" } }
+        );
+        if (geoRes.ok) {
+          const hits = await geoRes.json();
+          if (Array.isArray(hits) && hits[0]) {
+            bookingLat = parseFloat(hits[0].lat);
+            bookingLng = parseFloat(hits[0].lon);
+          }
+        }
+      } catch {
+        // geocode is best-effort — booking still succeeds without coords
+      }
     }
 
     const user_id = user.id;
@@ -117,6 +139,8 @@ export async function POST(request: NextRequest) {
       provider_id: provider_id || null,
       notes: notes || null,
       status: "confirmed",
+      lat: bookingLat,
+      lng: bookingLng,
     };
 
     // Check for conflicting bookings

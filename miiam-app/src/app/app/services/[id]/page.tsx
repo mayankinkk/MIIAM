@@ -59,9 +59,20 @@ function ServiceDetailContent() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setError("Please login to book"); setAdding(false); return; }
+      // Pull dropoff coords from the most relevant saved address (match by street text)
+      let dropLat: number | null = null;
+      let dropLng: number | null = null;
+      try {
+        const saved: { street?: string; lat?: number; lng?: number }[] = JSON.parse(localStorage.getItem("miiam_addresses") || "[]");
+        const match = saved.find((a) => a.street && address.includes(a.street.slice(0, 30)));
+        if (match && typeof match.lat === "number" && typeof match.lng === "number") {
+          dropLat = match.lat;
+          dropLng = match.lng;
+        }
+      } catch { /* no saved addresses */ }
       const res = await fetch("/api/bookings", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ service_type: service.category, sub_service: service.name, user_name: user.user_metadata?.full_name || "", user_phone: phone, address, scheduled_date: selectedDate, scheduled_time: selectedTime, amount: service.price, notes: null, provider_id: null }),
+        body: JSON.stringify({ service_type: service.category, sub_service: service.name, user_name: user.user_metadata?.full_name || "", user_phone: phone, address, scheduled_date: selectedDate, scheduled_time: selectedTime, amount: service.price, notes: null, provider_id: null, lat: dropLat, lng: dropLng }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Booking failed");
@@ -149,7 +160,7 @@ function ServiceDetailContent() {
             </span>
           )}
           {service.rating > 0 && (
-            <span className="bg-white text-accent text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-0.5">
+            <span className="bg-white dark:bg-[var(--color-surface-container)] text-accent text-xs font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-0.5">
               <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
               {service.rating}
             </span>

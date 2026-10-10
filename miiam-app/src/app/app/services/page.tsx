@@ -499,7 +499,7 @@ function ServicesContent() {
                       </span>
                     )}
                     <div className="absolute bottom-2 left-2 flex gap-1.5">
-                      <span className="bg-white/95 backdrop-blur-sm text-on-surface text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                      <span className="bg-white/95 dark:bg-[var(--color-surface-container)]/95 backdrop-blur-sm text-on-surface text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
                         <span className="material-symbols-outlined text-[12px]">schedule</span>
                         {service.duration}
                       </span>

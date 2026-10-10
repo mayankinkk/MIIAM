@@ -18,20 +18,31 @@ interface InsightOrder {
   placed_at: string;
 }
 
+interface InsightBooking {
+  id: string;
+  service_type: string;
+  status: string;
+  created_at: string;
+  amount: number | null;
+}
+
 export default function CustomerInsights() {
   const supabase = useMemo(() => createClient(), []);
   const [users, setUsers] = useState<InsightUser[]>([]);
   const [orders, setOrders] = useState<InsightOrder[]>([]);
+  const [bookings, setBookings] = useState<InsightBooking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      const [usersRes, ordersRes] = await Promise.all([
+      const [usersRes, ordersRes, bookingsRes] = await Promise.all([
         supabase.from("profiles").select("*"),
-        supabase.from("orders").select("id, user_id, placed_at")
+        supabase.from("orders").select("id, user_id, placed_at"),
+        supabase.from("service_bookings").select("id, service_type, status, created_at, amount"),
       ]);
       if (usersRes.data) setUsers(usersRes.data);
       if (ordersRes.data) setOrders(ordersRes.data);
+      if (bookingsRes.data) setBookings(bookingsRes.data);
       setLoading(false);
     }
     fetchData();
@@ -62,6 +73,29 @@ export default function CustomerInsights() {
     return count;
   });
   const maxActivity = Math.max(...activityByHour, 1);
+
+  // Services analytics — booking conversion / completion per service type
+  const serviceTypes = useMemo(() => {
+    const map: Record<string, { total: number; completed: number; cancelled: number; active: number; revenue: number }> = {};
+    bookings.forEach((b) => {
+      if (!map[b.service_type]) map[b.service_type] = { total: 0, completed: 0, cancelled: 0, active: 0, revenue: 0 };
+      map[b.service_type].total += 1;
+      if (b.status === "completed") {
+        map[b.service_type].completed += 1;
+        map[b.service_type].revenue += b.amount || 0;
+      } else if (b.status === "cancelled") {
+        map[b.service_type].cancelled += 1;
+      } else {
+        map[b.service_type].active += 1;
+      }
+    });
+    return map;
+  }, [bookings]);
+
+  const maxServiceTotal = Math.max(...Object.values(serviceTypes).map((s) => s.total), 1);
+  const overallCompletionRate = bookings.length > 0
+    ? Math.round((bookings.filter((b) => b.status === "completed").length / bookings.length) * 100)
+    : 0;
 
   if (loading) return <div className="px-8">Loading insights...</div>;
 
@@ -189,6 +223,57 @@ export default function CustomerInsights() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Services Analytics — booking conversion & completion by type */}
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-3xl border border-[var(--color-border-subtle)] p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-black text-[var(--color-on-surface)]">Services — Booking Conversion</h2>
+          <div className="text-right">
+            <p className="text-xs font-bold text-[var(--color-outline-variant)] uppercase">Overall Completion</p>
+            <p className="text-xl font-black text-green-600">{overallCompletionRate}%</p>
+          </div>
+        </div>
+        {Object.keys(serviceTypes).length === 0 ? (
+          <p className="text-[var(--color-outline-variant)] text-center py-8">No service bookings yet</p>
+        ) : (
+          <div className="space-y-4">
+            {Object.entries(serviceTypes)
+              .sort((a, b) => b[1].total - a[1].total)
+              .map(([type, s]) => {
+                const completionRate = s.total > 0 ? Math.round((s.completed / s.total) * 100) : 0;
+                const cancelRate = s.total > 0 ? Math.round((s.cancelled / s.total) * 100) : 0;
+                return (
+                  <div key={type} className="p-4 rounded-xl bg-[var(--color-surface-subtle)] border border-[var(--color-border-subtle)]">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-accent text-lg">home_repair_service</span>
+                        <span className="font-bold text-[var(--color-on-surface)] capitalize">{type.replaceAll("_", " ")}</span>
+                      </div>
+                      <span className="text-sm font-black text-[var(--color-on-surface)]">₹{s.revenue.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-xs text-[var(--color-outline)]">
+                      <span>{s.total} bookings</span>
+                      <span className="text-green-600 font-bold">{s.completed} completed ({completionRate}%)</span>
+                      <span className="text-amber-600">{s.active} active</span>
+                      <span className="text-red-600">{s.cancelled} cancelled ({cancelRate}%)</span>
+                    </div>
+                    {/* completion bar */}
+                    <div className="flex h-2 mt-2 rounded-full overflow-hidden bg-[var(--color-surface-container)]">
+                      <div className="bg-green-500 transition-all" style={{ width: `${(s.completed / maxServiceTotal) * 100}%` }} />
+                      <div className="bg-amber-400 transition-all" style={{ width: `${(s.active / maxServiceTotal) * 100}%` }} />
+                      <div className="bg-red-400 transition-all" style={{ width: `${(s.cancelled / maxServiceTotal) * 100}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        )}
+        <div className="flex items-center gap-4 mt-4 text-xs text-[var(--color-outline-variant)]">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500" /> Completed</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400" /> Active</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Cancelled</span>
         </div>
       </div>
 
