@@ -23,11 +23,12 @@ export async function GET() {
 
     const admin = createAdminClient();
 
-    const [ordersRes, vendorsRes, ridersRes, usersRes] = await Promise.all([
+    const [ordersRes, vendorsRes, ridersRes, usersRes, bookingsRes] = await Promise.all([
       admin.from("orders").select("id, total_amount, status, placed_at, vendor_id").order("placed_at", { ascending: false }).limit(500),
       admin.from("vendors").select("id, shop_name, owner_name, type, status, created_at").order("created_at", { ascending: false }).limit(8),
       admin.from("riders").select("id, status").limit(200),
       admin.from("profiles").select("id, created_at").limit(1000),
+      admin.from("service_bookings").select("id, service_type, status, amount, created_at").order("created_at", { ascending: false }).limit(500),
     ]);
 
     return NextResponse.json({
@@ -35,11 +36,13 @@ export async function GET() {
       vendors: vendorsRes.data || [],
       riders: ridersRes.data || [],
       users: usersRes.data || [],
+      bookings: bookingsRes.data || [],
       errors: {
         orders: ordersRes.error?.message || null,
         vendors: vendorsRes.error?.message || null,
         riders: ridersRes.error?.message || null,
         users: usersRes.error?.message || null,
+        bookings: bookingsRes.error?.message || null,
       },
     });
   } catch (error) {
