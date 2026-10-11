@@ -34,13 +34,13 @@ export function QuickCommerceToggle({ onToggle }: QuickCommerceToggleProps) {
   return (
     <button
       onClick={handleToggle}
-      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition-all ${
+      className={`flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-xs font-semibold transition-all ${
         isQuickMode
           ? "text-on-primary bg-[var(--color-primary)] shadow-[var(--color-primary)]/20 shadow-lg"
           : "border border-[var(--color-border-subtle)] bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)]"
       }`}
     >
-      <span className={`material-symbols-outlined text-lg ${isQuickMode ? "animate-pulse" : ""}`}>
+      <span className={`material-symbols-outlined text-sm ${isQuickMode ? "animate-pulse" : ""}`}>
         flash_on
       </span>
       <span>10-min Delivery</span>

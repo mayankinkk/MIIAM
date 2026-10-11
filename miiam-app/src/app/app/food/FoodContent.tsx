@@ -149,7 +149,7 @@ function SortDropdown({ sort, setSort }: { sort: SortOption; setSort: (s: SortOp
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Sort restaurants"
-        className="bg-surface-container flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-transform active:scale-95"
+        className="bg-surface-container flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-transform active:scale-95"
       >
         <span className="material-symbols-outlined text-sm" aria-hidden="true">
           swap_vert
@@ -222,7 +222,7 @@ function PriceRangeFilter({ onApply }: { onApply: (min: number, max: number) => 
           setOpen(!open);
           if (navigator.vibrate) navigator.vibrate(10);
         }}
-        className="bg-surface-container flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-transform active:scale-95"
+        className="bg-surface-container flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold transition-transform active:scale-95"
       >
         <span className="material-symbols-outlined text-sm">attach_money</span>₹{min}–{max}
       </button>
@@ -919,10 +919,22 @@ export default function FoodPageContent() {
         </div>
       )}
 
-      {/* Circular Category Icons - Photo Style */}
-      <div className="px-4 py-4">
+      {/* Search Bar — primary action, first */}
+      <div className="px-4 pt-3 pb-2">
+        <SearchAutocomplete
+          onSelect={(term) => setSearchQuery(term)}
+          preventNavigation
+          className="w-full"
+        />
+      </div>
+
+      {/* "What's on your mind?" — Category Row */}
+      <div className="px-4 pt-2 pb-3">
+        <p className="text-on-surface-variant mb-3 px-1 text-[11px] font-semibold tracking-wider uppercase">
+          What&apos;s on your mind?
+        </p>
         <div
-          className="scrollbar-hide flex gap-4 overflow-x-auto pb-2"
+          className="scrollbar-hide flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1"
           role="tablist"
           aria-label="Food categories"
         >
@@ -940,17 +952,26 @@ export default function FoodPageContent() {
             role="tab"
             aria-selected={selectedCategory === "all"}
             tabIndex={selectedCategory === "all" ? 0 : -1}
-            className="flex flex-shrink-0 flex-col items-center gap-1.5"
+            className="flex flex-shrink-0 snap-start flex-col items-center gap-1.5"
           >
             <div
-              className={`h-16 w-16 overflow-hidden rounded-full border-2 transition-all ${selectedCategory === "all" ? "border-primary shadow-primary/30 shadow-lg" : "border-surface-container-high"}`}
+              className={`flex h-[68px] w-[68px] items-center justify-center overflow-hidden rounded-full border-2 transition-all ${
+                selectedCategory === "all"
+                  ? "border-accent bg-primary shadow-primary/30 shadow-md"
+                  : "border-outline-variant/40 bg-surface-container-high"
+              }`}
             >
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-400 to-red-500">
-                <span className="text-2xl">🍽</span>
-              </div>
+              <span
+                className={`material-symbols-outlined text-[28px] ${
+                  selectedCategory === "all" ? "text-on-primary" : "text-accent"
+                }`}
+                aria-hidden="true"
+              >
+                restaurant_menu
+              </span>
             </div>
             <span
-              className={`text-[10px] font-bold ${selectedCategory === "all" ? "text-accent" : "text-on-surface-variant"}`}
+              className={`text-[11px] ${selectedCategory === "all" ? "font-bold text-accent" : "font-medium text-on-surface-variant"}`}
             >
               {t.food.all}
             </span>
@@ -971,10 +992,14 @@ export default function FoodPageContent() {
               role="tab"
               aria-selected={selectedCategory === cat.id}
               tabIndex={selectedCategory === cat.id ? 0 : -1}
-              className="flex flex-shrink-0 flex-col items-center gap-1.5"
+              className="flex flex-shrink-0 snap-start flex-col items-center gap-1.5"
             >
               <div
-                className={`h-16 w-16 overflow-hidden rounded-full border-2 transition-all ${selectedCategory === cat.id ? "border-primary shadow-primary/30 shadow-lg" : "border-surface-container-high"}`}
+                className={`h-[68px] w-[68px] overflow-hidden rounded-full border-2 transition-all ${
+                  selectedCategory === cat.id
+                    ? "border-accent shadow-primary/30 shadow-md"
+                    : "border-outline-variant/40"
+                }`}
               >
                 <div className="relative h-full w-full">
                   <BlurImage
@@ -982,13 +1007,13 @@ export default function FoodPageContent() {
                     alt={cat.name}
                     fill
                     className="object-cover"
-                    sizes="64px"
+                    sizes="68px"
                     fallbackSrc={cat.image}
                   />
                 </div>
               </div>
               <span
-                className={`text-[10px] font-bold ${selectedCategory === cat.id ? "text-accent" : "text-on-surface-variant"}`}
+                className={`text-[11px] ${selectedCategory === cat.id ? "font-bold text-accent" : "font-medium text-on-surface-variant"}`}
               >
                 {cat.name}
               </span>
@@ -997,18 +1022,9 @@ export default function FoodPageContent() {
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="px-4 pb-3">
-        <SearchAutocomplete
-          onSelect={(term) => setSearchQuery(term)}
-          preventNavigation
-          className="w-full"
-        />
-      </div>
-
-      {/* Veg/Non-veg Filter + Express + Sort — Sticky */}
-      <div className="bg-surface/95 border-outline/5 sticky top-0 z-20 flex flex-wrap gap-2 border-b px-4 py-3 backdrop-blur-lg">
-        <VegFilterPill value={vegFilter} onChange={setVegFilter} />
+      {/* Filter Row — single scrollable row */}
+      <div className="border-outline/5 scrollbar-hide sticky top-0 z-20 flex gap-2 overflow-x-auto border-b bg-surface/95 px-4 py-2.5 backdrop-blur-lg">
+        <VegFilterPill value={vegFilter} onChange={setVegFilter} size="sm" />
         <QuickCommerceToggle
           onToggle={(on) => {
             setQuickOnly(on);

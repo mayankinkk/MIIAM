@@ -18,9 +18,9 @@ export default function VegFilterPill({
   size = "md",
 }: VegFilterPillProps) {
   const { t } = useTranslation();
-  const pillSize = size === "sm" ? "px-3 py-1.5 text-[11px]" : "px-4 py-2 text-xs";
+  const pillSize = size === "sm" ? "h-9 px-3 text-xs" : "h-10 px-4 text-xs";
 
-  const base = `rounded-full font-bold transition-all cursor-pointer inline-flex items-center gap-1.5 ${pillSize} ${className}`;
+  const base = `rounded-full font-semibold transition-all cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap ${pillSize} ${className}`;
 
   return (
     <div className="flex gap-2">
