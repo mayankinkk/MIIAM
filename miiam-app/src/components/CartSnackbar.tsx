@@ -45,8 +45,7 @@ export default function CartSnackbar() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="fixed right-3 left-3 z-[60] md:right-6 md:left-auto md:max-w-md"
-          style={{ bottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}
+          className="fixed bottom-[calc(72px+env(safe-area-inset-bottom,0px))] left-1/2 z-[60] w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2"
         >
           <div className="bg-primary text-on-primary flex items-center gap-3 rounded-2xl px-3 py-2.5 shadow-lg shadow-black/20">
             {justAdded && itemImage ? (

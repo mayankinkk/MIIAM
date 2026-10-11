@@ -98,37 +98,37 @@ export default function HomePage() {
       id: "food?filter=under_99",
       label: "Under ₹99",
       icon: "local_fire_department",
-      color: "from-orange-400 to-red-400",
+      color: "from-deal to-deal/70",
     },
     {
       id: "food?filter=under_149",
       label: "Under ₹149",
       icon: "savings",
-      color: "from-emerald-400 to-teal-400",
+      color: "from-accent to-accent/70",
     },
     {
       id: "food?filter=under_199",
       label: "Under ₹199",
       icon: "star",
-      color: "from-accent to-accent/70",
+      color: "from-primary to-primary-dim",
     },
     {
       id: "food?filter=under_249",
       label: "Under ₹249",
       icon: "new_releases",
-      color: "from-deal to-deal/70",
+      color: "from-[#c2410c] to-[#ea580c]",
     },
     {
       id: "food?filter=combos",
       label: "Combos",
       icon: "merge",
-      color: "from-amber-400 to-orange-400",
+      color: "from-[#d97706] to-[#f59e0b]",
     },
     {
       id: "food?filter=bakery",
       label: "Bakery",
       icon: "bakery_dining",
-      color: "from-pink-400 to-rose-400",
+      color: "from-[#db2777] to-[#f43f5e]",
     },
   ];
   const [categories, setCategories] = useState(defaultCategories);

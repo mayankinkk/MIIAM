@@ -12,19 +12,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <ThemeProvider>
       <OnboardingGate>
         <SwipeBackProvider>
-          <div className="bg-surface text-on-surface min-h-screen transition-colors">
+          <div className="bg-surface-container text-on-surface min-h-screen transition-colors">
             <a href="#main-content" className="skip-link">
               Skip to content
             </a>
             <NotificationPermission />
             <InstallPrompt />
             <ServiceSettingsSync />
-            <div className="mx-auto max-w-7xl">
+            {/* Phone-width column on desktop so mobile-first tiles/nav don't stretch */}
+            <div className="bg-surface mx-auto min-h-screen w-full max-w-md shadow-[0_0_40px_rgba(0,0,0,0.06)]">
               <PageTransition>
-                <main id="main-content">{children}</main>
+                <main id="main-content" className="pb-20">
+                  {children}
+                </main>
               </PageTransition>
+              <BottomNavBar />
             </div>
-            <BottomNavBar />
           </div>
         </SwipeBackProvider>
       </OnboardingGate>

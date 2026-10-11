@@ -8,10 +8,10 @@ interface Department {
 }
 
 const DEPARTMENTS: Department[] = [
-  { id: "food", label: "Food", icon: "restaurant", color: "from-orange-400 to-red-400" },
-  { id: "store", label: "Grocery", icon: "storefront", color: "from-emerald-400 to-teal-500" },
-  { id: "services", label: "Services", icon: "handyman", color: "from-accent to-accent/70" },
-  { id: "flowers", label: "Flowers", icon: "local_florist", color: "from-pink-400 to-rose-500" },
+  { id: "food", label: "Food", icon: "restaurant", color: "from-deal to-deal/70" },
+  { id: "store", label: "Grocery", icon: "storefront", color: "from-accent to-accent/70" },
+  { id: "services", label: "Services", icon: "handyman", color: "from-primary to-primary-dim" },
+  { id: "flowers", label: "Flowers", icon: "local_florist", color: "from-[#db2777] to-[#f43f5e]" },
 ];
 
 export default function HomeDepartments() {

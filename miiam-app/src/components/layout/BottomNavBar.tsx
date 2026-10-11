@@ -35,7 +35,7 @@ export default function BottomNavBar() {
   return (
     <nav
       aria-label="Main navigation"
-      className="bg-surface border-border-default fixed right-0 bottom-0 left-0 z-50 border-t-2 md:hidden"
+      className="bg-surface border-border-default fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t-2"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="flex h-14 items-stretch">
