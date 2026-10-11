@@ -69,7 +69,11 @@ export default function VendorOrders() {
       const id = await getVendorIdForUser();
       if (id) {
         setVendorId(id);
-        await Promise.all([loadOrders(id), loadServiceBookings(id)]);
+        await loadOrders(id);
+      }
+      // service_bookings.provider_id references profiles(id) (auth uid), not vendors.id
+      if (user) {
+        await loadServiceBookings(user.id);
       }
     } finally {
       setLoading(false);
