@@ -7,26 +7,52 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+const DISMISS_KEY = "miiam_install_prompt_dismissed";
+
+function isDismissed(): boolean {
+  try {
+    return localStorage.getItem(DISMISS_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markDismissed() {
+  try {
+    localStorage.setItem(DISMISS_KEY, "1");
+  } catch {
+    /* private mode */
+  }
+}
+
 export default function InstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
+    if (isDismissed()) {
+      setInstalled(true);
+      return;
+    }
+
     const handler = (e: Event) => {
       e.preventDefault();
+      if (isDismissed()) return;
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowPrompt(true);
     };
     window.addEventListener("beforeinstallprompt", handler);
 
     const installedHandler = () => {
+      markDismissed();
       setInstalled(true);
       setShowPrompt(false);
     };
     window.addEventListener("appinstalled", installedHandler);
 
     if (window.matchMedia("(display-mode: standalone)").matches) {
+      markDismissed();
       setInstalled(true);
     }
 
@@ -40,9 +66,16 @@ export default function InstallPrompt() {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const result = await deferredPrompt.userChoice;
+    markDismissed();
     if (result.outcome === "accepted") {
       setInstalled(true);
     }
+    setDeferredPrompt(null);
+    setShowPrompt(false);
+  };
+
+  const handleDismiss = () => {
+    markDismissed();
     setDeferredPrompt(null);
     setShowPrompt(false);
   };
@@ -65,7 +98,7 @@ export default function InstallPrompt() {
           </p>
         </div>
         <button
-          onClick={() => setShowPrompt(false)}
+          onClick={handleDismiss}
           className="text-on-surface-variant hover:text-on-surface"
           aria-label="Dismiss install prompt"
         >
