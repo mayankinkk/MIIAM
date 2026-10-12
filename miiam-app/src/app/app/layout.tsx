@@ -6,6 +6,7 @@ import ThemeProvider from "@/components/ThemeProvider";
 import PageTransition from "@/components/PageTransition";
 import OnboardingGate from "@/components/OnboardingGate";
 import SwipeBackProvider from "@/components/SwipeBackProvider";
+import ViewCartBar from "@/components/ViewCartBar";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -27,6 +28,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </main>
               </PageTransition>
               <BottomNavBar />
+              <ViewCartBar />
             </div>
           </div>
         </SwipeBackProvider>
