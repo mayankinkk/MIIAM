@@ -465,6 +465,7 @@ export default function FoodPageContent() {
   const initialFilter = searchParams.get("filter") || "all";
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [activeFilter, setActiveFilter] = useState(initialFilter);
+  const [expandedBucket, setExpandedBucket] = useState<string | null>(null);
   const [vegFilter, setVegFilter] = useState<"all" | "veg" | "non_veg">(() => {
     if (typeof window !== "undefined")
       return (localStorage.getItem("miiam-veg-filter") as "all" | "veg" | "non_veg") || "all";
@@ -850,27 +851,18 @@ export default function FoodPageContent() {
           )}
         </div>
       )}
-      <header className="bg-surface-container-lowest sticky top-0 z-10 px-6 py-4 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
+      <header className="bg-surface-container-lowest sticky top-0 z-10 px-6 py-3 shadow-sm">
+        <div className="flex items-center gap-3">
           <Link
             href="/app/home"
             aria-label="Back to explore"
-            className="bg-surface-container flex h-10 w-10 items-center justify-center rounded-full"
+            className="bg-surface-container flex h-9 w-9 items-center justify-center rounded-full"
           >
-            <span className="material-symbols-outlined" aria-hidden="true">
+            <span className="material-symbols-outlined text-xl" aria-hidden="true">
               arrow_back
             </span>
           </Link>
-          <h1 className="text-on-surface text-xl font-black">{t.food.title}</h1>
-          <Link
-            href="/app/cart"
-            aria-label="View cart"
-            className="bg-surface-container relative flex h-10 w-10 items-center justify-center rounded-full"
-          >
-            <span className="material-symbols-outlined" aria-hidden="true">
-              shopping_cart
-            </span>
-          </Link>
+          <h1 className="text-on-surface text-base font-bold">{t.food.title}</h1>
         </div>
       </header>
 
@@ -1082,43 +1074,109 @@ export default function FoodPageContent() {
                   dbCategory: "under_249",
                   filter: "under_249",
                 },
-              ]
-                .filter((bucket) => activeFilter === "all" || activeFilter === bucket.filter)
-                .map((bucket) => {
-                  // Prefer store_items from DB, fall back to filtering menu_items
-                  const isViewingBucket = activeFilter === bucket.filter;
-                  const vegMatch = (item: StoreItem | FoodMenuItem) =>
-                    vegFilter === "all" || item.is_veg === (vegFilter === "veg");
-                  const dbItems = storeItems
-                    .filter((item) => item.category === bucket.dbCategory && vegMatch(item))
-                    .slice(0, isViewingBucket ? undefined : 10);
-                  const fallbackItems =
-                    dbItems.length === 0
-                      ? menuItems
-                          .filter(
-                            (item) => item.price > 0 && item.price <= bucket.max && vegMatch(item)
-                          )
-                          .slice(0, isViewingBucket ? undefined : 10)
-                      : [];
-                  const items = dbItems.length > 0 ? dbItems : fallbackItems;
-                  if (items.length === 0) return null;
-                  return (
-                    <div key={bucket.max}>
-                      <div className="mb-3 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">{bucket.emoji}</span>
-                          <h2 className="text-on-surface text-lg font-bold">{bucket.label}</h2>
-                        </div>
-                        <button
-                          onClick={() => {
-                            setActiveFilter(bucket.filter);
-                            if (navigator.vibrate) navigator.vibrate(10);
-                          }}
-                          className="text-accent text-xs font-bold transition-transform hover:underline active:scale-95"
-                        >
-                          View More
-                        </button>
+              ].map((bucket) => {
+                // Prefer store_items from DB, fall back to filtering menu_items
+                const isExpanded = expandedBucket === bucket.filter;
+                const vegMatch = (item: StoreItem | FoodMenuItem) =>
+                  vegFilter === "all" || item.is_veg === (vegFilter === "veg");
+                const dbItems = storeItems
+                  .filter((item) => item.category === bucket.dbCategory && vegMatch(item))
+                  .slice(0, isExpanded ? undefined : 10);
+                const fallbackItems =
+                  dbItems.length === 0
+                    ? menuItems
+                        .filter(
+                          (item) => item.price > 0 && item.price <= bucket.max && vegMatch(item)
+                        )
+                        .slice(0, isExpanded ? undefined : 10)
+                    : [];
+                const items = dbItems.length > 0 ? dbItems : fallbackItems;
+                if (items.length === 0) return null;
+                return (
+                  <div key={bucket.max}>
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{bucket.emoji}</span>
+                        <h2 className="text-on-surface text-lg font-bold">{bucket.label}</h2>
                       </div>
+                      <button
+                        onClick={() => {
+                          setExpandedBucket(isExpanded ? null : bucket.filter);
+                          if (navigator.vibrate) navigator.vibrate(10);
+                        }}
+                        className="text-accent text-xs font-bold transition-transform hover:underline active:scale-95"
+                      >
+                        {isExpanded ? "View Less" : "View More"}
+                      </button>
+                    </div>
+                    {isExpanded ? (
+                      /* Expanded: vertical 2-column grid */
+                      <div className="grid grid-cols-2 gap-3">
+                        {items.map((item) => {
+                          const isStoreItem = "original_price" in item;
+                          const restaurant = isStoreItem
+                            ? restaurants.find((r) => r.id === (item as StoreItem).vendor_id)
+                            : restaurants.find((r) => r.id === (item as FoodMenuItem).vendor_id);
+                          const itemName = item.name;
+                          const itemImage =
+                            (item as StoreItem).image_url ||
+                            (item as FoodMenuItem).image_url ||
+                            "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
+                          const itemPrice = item.price;
+                          const itemVeg =
+                            (item as StoreItem).is_veg ?? (item as FoodMenuItem).is_veg;
+                          const vendorId =
+                            (item as StoreItem).vendor_id || (item as FoodMenuItem).vendor_id;
+                          const vendorName = isStoreItem
+                            ? (item as StoreItem).vendor_name || restaurant?.shop_name
+                            : restaurant?.shop_name || "Restaurant";
+                          const linkHref = isStoreItem
+                            ? `/app/store/${item.id}`
+                            : vendorId
+                              ? `/app/food/${vendorId}`
+                              : "#";
+                          return (
+                            <Link
+                              key={item.id}
+                              href={linkHref}
+                              className="bg-surface-container-lowest card-lift overflow-hidden rounded-2xl shadow-sm transition-transform active:scale-[0.98]"
+                            >
+                              <div className="bg-surface-container relative h-28 overflow-hidden">
+                                <BlurImage
+                                  src={itemImage}
+                                  alt={itemName}
+                                  fill
+                                  className="h-full w-full"
+                                  sizes="180px"
+                                  fallbackSrc="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80"
+                                />
+                                <div className="absolute top-1.5 left-1.5">
+                                  <span
+                                    className={`h-3.5 w-3.5 border-[1.5px] ${itemVeg ? "border-green-600 bg-white" : "border-red-600 bg-white"} flex items-center justify-center rounded-sm`}
+                                  >
+                                    <span
+                                      className={`h-1.5 w-1.5 ${itemVeg ? "bg-green-600" : "bg-red-600"} rounded-full`}
+                                    />
+                                  </span>
+                                </div>
+                                <span className="bg-deal absolute right-1.5 bottom-1.5 rounded-full px-2 py-0.5 text-[10px] font-black text-white shadow-sm">
+                                  ₹{itemPrice}
+                                </span>
+                              </div>
+                              <div className="p-2.5">
+                                <h3 className="text-on-surface line-clamp-2 text-xs leading-tight font-bold">
+                                  {itemName}
+                                </h3>
+                                <p className="text-on-surface-variant mt-1 truncate text-[10px]">
+                                  {vendorName}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      /* Collapsed: horizontal scroll preview */
                       <div className="scrollbar-hide flex gap-3 overflow-x-auto pb-2">
                         {items.map((item) => {
                           const isStoreItem = "original_price" in item;
@@ -1183,9 +1241,10 @@ export default function FoodPageContent() {
                           );
                         })}
                       </div>
-                    </div>
-                  );
-                })}
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
