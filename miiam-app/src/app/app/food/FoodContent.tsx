@@ -23,11 +23,13 @@ import { useLocationStore } from "@/lib/store/locationStore";
 import { EmptyState } from "@/components/ui/EmptyStates";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlurImage from "@/components/BlurImage";
-import VegFilterPill from "@/components/VegFilterPill";
 import { QuickCommerceToggle } from "@/components/QuickCommerceToggle";
 import { NetworkError } from "@/components/ui/EmptyStates";
 import { withRetry } from "@/lib/retry";
 import logger from "@/lib/logger";
+import QuickAddToCart from "@/components/AddToCartButton";
+import CouponsStrip from "@/components/CouponsStrip";
+import CompactVegToggle from "@/components/CompactVegToggle";
 
 function isNetworkError(err: unknown): boolean {
   if (err instanceof TypeError && err.message.includes("fetch")) return true;
@@ -862,7 +864,27 @@ export default function FoodPageContent() {
               arrow_back
             </span>
           </Link>
-          <h1 className="text-on-surface text-base font-bold">{t.food.title}</h1>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-on-surface text-base font-bold">{t.food.title}</h1>
+            <button
+              onClick={() => {
+                if (navigator.vibrate) navigator.vibrate(10);
+                window.location.href = "/app/home?selectLocation=true";
+              }}
+              className="text-on-surface-variant flex max-w-full items-center gap-1 text-[11px] font-medium hover:text-on-surface"
+              aria-label="Change delivery location"
+            >
+              <span className="material-symbols-outlined text-xs" aria-hidden="true">
+                location_on
+              </span>
+              <span className="truncate">
+                Deliver to: {displayAddress || `${userCity || "Select location"}${userPincode ? ` · ${userPincode}` : ""}`}
+              </span>
+              <span className="material-symbols-outlined text-xs" aria-hidden="true">
+                expand_more
+              </span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -1014,9 +1036,12 @@ export default function FoodPageContent() {
         </div>
       </div>
 
+      {/* Coupons / Offers Strip */}
+      <CouponsStrip />
+
       {/* Filter Row — single scrollable row */}
       <div className="border-outline/5 scrollbar-hide sticky top-0 z-20 flex gap-2 overflow-x-auto border-b bg-surface/95 px-4 py-2.5 backdrop-blur-lg">
-        <VegFilterPill value={vegFilter} onChange={setVegFilter} size="sm" />
+        <CompactVegToggle value={vegFilter} onChange={setVegFilter} />
         <QuickCommerceToggle
           onToggle={(on) => {
             setQuickOnly(on);
@@ -1167,9 +1192,39 @@ export default function FoodPageContent() {
                                 <h3 className="text-on-surface line-clamp-2 text-xs leading-tight font-bold">
                                   {itemName}
                                 </h3>
-                                <p className="text-on-surface-variant mt-1 truncate text-[10px]">
+                                <p className="text-on-surface-variant mt-0.5 truncate text-[10px]">
                                   {vendorName}
                                 </p>
+                                {restaurant?.rating != null && Number(restaurant.rating) > 0 && (
+                                  <div className="mt-0.5 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[10px] text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                      star
+                                    </span>
+                                    <span className="text-on-surface text-[10px] font-semibold">
+                                      {Number(restaurant.rating).toFixed(1)}
+                                    </span>
+                                    {restaurant.review_count != null && Number(restaurant.review_count) > 0 && (
+                                      <span className="text-on-surface-variant text-[9px]">
+                                        ({Number(restaurant.review_count)})
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                                <div className="mt-2 flex items-center justify-between">
+                                  <span className="text-on-surface text-xs font-bold">₹{itemPrice}</span>
+                                  <QuickAddToCart
+                                    size="sm"
+                                    item={{
+                                      menu_item_id: String(item.id),
+                                      vendor_id: vendorId || "",
+                                      vendor_name: vendorName || "Restaurant",
+                                      name: itemName,
+                                      price: itemPrice,
+                                      image_url: itemImage,
+                                      is_veg: itemVeg,
+                                    }}
+                                  />
+                                </div>
                               </div>
                             </Link>
                           );
@@ -1233,9 +1288,33 @@ export default function FoodPageContent() {
                                 <h3 className="text-on-surface line-clamp-2 text-[11px] leading-tight font-bold">
                                   {itemName}
                                 </h3>
-                                <p className="text-on-surface-variant mt-1 truncate text-[9px]">
+                                <p className="text-on-surface-variant mt-0.5 truncate text-[9px]">
                                   {vendorName}
                                 </p>
+                                {restaurant?.rating != null && Number(restaurant.rating) > 0 && (
+                                  <div className="mt-0.5 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[10px] text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>
+                                      star
+                                    </span>
+                                    <span className="text-on-surface text-[10px] font-semibold">
+                                      {Number(restaurant.rating).toFixed(1)}
+                                    </span>
+                                  </div>
+                                )}
+                                <div className="mt-2 flex items-center justify-between">
+                                  <QuickAddToCart
+                                    size="sm"
+                                    item={{
+                                      menu_item_id: String(item.id),
+                                      vendor_id: vendorId || "",
+                                      vendor_name: vendorName || "Restaurant",
+                                      name: itemName,
+                                      price: itemPrice,
+                                      image_url: itemImage,
+                                      is_veg: itemVeg,
+                                    }}
+                                  />
+                                </div>
                               </div>
                             </Link>
                           );
